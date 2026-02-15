@@ -1,0 +1,400 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="bg-gradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="50%" stop-color="#16213e"/>
+      <stop offset="100%" stop-color="#0f3460"/>
+    </linearGradient>
+
+    <linearGradient id="titre-gradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff4757"/>
+      <stop offset="100%" stop-color="#c0392b"/>
+    </linearGradient>
+
+    <linearGradient id="btn-online-gradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e74c3c"/>
+      <stop offset="40%" stop-color="#c0392b"/>
+      <stop offset="100%" stop-color="#96281b"/>
+    </linearGradient>
+
+    <linearGradient id="btn-online-hover" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff6b6b"/>
+      <stop offset="100%" stop-color="#e74c3c"/>
+    </linearGradient>
+
+    <linearGradient id="btn-horsline-gradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#576574"/>
+      <stop offset="40%" stop-color="#4a5568"/>
+      <stop offset="100%" stop-color="#2d3436"/>
+    </linearGradient>
+
+    <linearGradient id="panneau-regles-gradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2c3e50"/>
+      <stop offset="100%" stop-color="#1a252f"/>
+    </linearGradient>
+
+    <linearGradient id="vitrine-gradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d4e6f1" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#aed6f1" stop-opacity="0.05"/>
+    </linearGradient>
+
+    <!-- Filtres -->
+    <filter id="lueur-titre">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="ombre-bouton">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#e74c3c" flood-opacity="0.4"/>
+    </filter>
+
+    <filter id="ombre-douce">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#00000060"/>
+    </filter>
+
+    <filter id="lueur-neon-rouge">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Pattern sol centre commercial -->
+    <pattern id="carrelage-menu" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+      <rect width="80" height="80" fill="#141b2d"/>
+      <rect width="39" height="39" fill="#18223a"/>
+      <rect x="41" y="41" width="39" height="39" fill="#18223a"/>
+      <line x1="0" y1="0" x2="80" y2="0" stroke="#1e2d4a" stroke-width="0.5"/>
+      <line x1="0" y1="40" x2="80" y2="40" stroke="#1e2d4a" stroke-width="0.5"/>
+      <line x1="0" y1="0" x2="0" y2="80" stroke="#1e2d4a" stroke-width="0.5"/>
+      <line x1="40" y1="0" x2="40" y2="80" stroke="#1e2d4a" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- ============================== -->
+  <!-- FOND - Ambiance centre commercial nuit -->
+  <!-- ============================== -->
+  <g id="fond">
+    <rect id="fond-base" width="1200" height="800" fill="url(#bg-gradient)"/>
+    <rect id="fond-carrelage" width="1200" height="800" fill="url(#carrelage-menu)" opacity="0.4"/>
+  </g>
+
+  <!-- ============================== -->
+  <!-- DECOR - Silhouette centre commercial -->
+  <!-- ============================== -->
+  <g id="decor-centre-commercial" opacity="0.12">
+    <!-- Vitrines gauche -->
+    <rect id="vitrine-g1" x="30" y="180" width="180" height="500" fill="url(#vitrine-gradient)" rx="5" stroke="#aed6f1" stroke-width="0.5" stroke-opacity="0.2"/>
+    <rect id="vitrine-g2" x="30" y="180" width="180" height="40" fill="#3498db" opacity="0.15" rx="5"/>
+    <rect id="vitrine-g1-mannequin-1" x="70" y="300" width="20" height="50" fill="#ecf0f1" rx="10"/>
+    <circle cx="80" cy="288" r="10" fill="#ecf0f1"/>
+    <rect id="vitrine-g1-mannequin-2" x="130" y="310" width="20" height="50" fill="#ecf0f1" rx="10"/>
+    <circle cx="140" cy="298" r="10" fill="#ecf0f1"/>
+
+    <!-- Vitrines droite -->
+    <rect id="vitrine-d1" x="990" y="180" width="180" height="500" fill="url(#vitrine-gradient)" rx="5" stroke="#aed6f1" stroke-width="0.5" stroke-opacity="0.2"/>
+    <rect id="vitrine-d2" x="990" y="180" width="180" height="40" fill="#3498db" opacity="0.15" rx="5"/>
+    <rect id="vitrine-d1-mannequin-1" x="1040" y="300" width="20" height="50" fill="#ecf0f1" rx="10"/>
+    <circle cx="1050" cy="288" r="10" fill="#ecf0f1"/>
+    <rect id="vitrine-d1-mannequin-2" x="1110" y="310" width="20" height="50" fill="#ecf0f1" rx="10"/>
+    <circle cx="1120" cy="298" r="10" fill="#ecf0f1"/>
+
+    <!-- Piliers -->
+    <rect id="pilier-g" x="240" y="100" width="30" height="600" fill="#ecf0f1" opacity="0.3" rx="3"/>
+    <rect id="pilier-d" x="930" y="100" width="30" height="600" fill="#ecf0f1" opacity="0.3" rx="3"/>
+
+    <!-- Escalator decoratif -->
+    <line x1="250" y1="700" x2="340" y2="500" stroke="#ecf0f1" stroke-width="2" opacity="0.2"/>
+    <line x1="270" y1="700" x2="360" y2="500" stroke="#ecf0f1" stroke-width="2" opacity="0.2"/>
+    <line x1="930" y1="700" x2="850" y2="500" stroke="#ecf0f1" stroke-width="2" opacity="0.2"/>
+    <line x1="950" y1="700" x2="870" y2="500" stroke="#ecf0f1" stroke-width="2" opacity="0.2"/>
+  </g>
+
+  <!-- ============================== -->
+  <!-- LUMIERES DECORATIVES -->
+  <!-- ============================== -->
+  <g id="lumieres-deco" opacity="0.04">
+    <circle id="spot-1" cx="400" cy="200" r="250" fill="#e74c3c"/>
+    <circle id="spot-2" cx="800" cy="200" r="250" fill="#e74c3c"/>
+    <circle id="spot-3" cx="600" cy="500" r="300" fill="#f39c12"/>
+  </g>
+
+  <!-- ============================== -->
+  <!-- TITRE "VIRUS" - Lettres dessinées en paths -->
+  <!-- ============================== -->
+  <g id="titre" filter="url(#lueur-titre)" transform="translate(-3,0)">
+    <!-- Ombre decalee -->
+    <g id="titre-ombre" transform="translate(4,4)" opacity="0.3">
+      <path d="M395,75 L415,75 L440,152 L465,75 L485,75 L452,172 L428,172 Z" fill="#000"/>
+      <path d="M500,75 L540,75 L540,90 L528,90 L528,157 L540,157 L540,172 L500,172 L500,157 L512,157 L512,90 L500,90 Z" fill="#000"/>
+      <path d="M555,75 L605,75 Q622,75 622,97 L622,108 Q622,124 608,127 L625,172 L607,172 L591,129 L571,129 L571,172 L555,172 Z M571,90 L571,115 L600,115 Q607,115 607,105 L607,100 Q607,90 600,90 Z" fill="#000"/>
+      <path d="M638,75 L654,75 L654,142 Q654,157 668,157 Q682,157 682,142 L682,75 L698,75 L698,148 Q698,172 668,172 Q638,172 638,148 Z" fill="#000"/>
+      <path d="M728,92 Q728,75 748,75 L780,75 Q798,75 798,92 L798,95 L782,95 L782,93 Q782,88 775,88 L750,88 Q743,88 743,95 L743,108 Q743,115 750,115 L775,115 Q798,115 798,132 L798,155 Q798,172 778,172 L748,172 Q728,172 728,155 L728,150 L743,150 L743,155 Q743,160 750,160 L775,160 Q782,160 782,153 L782,138 Q782,132 775,132 L750,132 Q728,132 728,115 Z" fill="#000"/>
+    </g>
+
+    <!-- Lettres principales -->
+    <g id="titre-lettres">
+      <!-- V -->
+      <path id="lettre-V" d="M395,75 L415,75 L440,152 L465,75 L485,75 L452,172 L428,172 Z" fill="url(#titre-gradient)"/>
+      <!-- I -->
+      <path id="lettre-I" d="M500,75 L540,75 L540,90 L528,90 L528,157 L540,157 L540,172 L500,172 L500,157 L512,157 L512,90 L500,90 Z" fill="url(#titre-gradient)"/>
+      <!-- R -->
+      <path id="lettre-R" d="M555,75 L605,75 Q622,75 622,97 L622,108 Q622,124 608,127 L625,172 L607,172 L591,129 L571,129 L571,172 L555,172 Z M571,90 L571,115 L600,115 Q607,115 607,105 L607,100 Q607,90 600,90 Z" fill="url(#titre-gradient)"/>
+      <!-- U -->
+      <path id="lettre-U" d="M638,75 L654,75 L654,142 Q654,157 668,157 Q682,157 682,142 L682,75 L698,75 L698,148 Q698,172 668,172 Q638,172 638,148 Z" fill="url(#titre-gradient)"/>
+      <!-- S -->
+      <path id="lettre-S" d="M728,92 Q728,75 748,75 L780,75 Q798,75 798,92 L798,95 L782,95 L782,93 Q782,88 775,88 L750,88 Q743,88 743,95 L743,108 Q743,115 750,115 L775,115 Q798,115 798,132 L798,155 Q798,172 778,172 L748,172 Q728,172 728,155 L728,150 L743,150 L743,155 Q743,160 750,160 L775,160 Q782,160 782,153 L782,138 Q782,132 775,132 L750,132 Q728,132 728,115 Z" fill="url(#titre-gradient)"/>
+    </g>
+
+    <!-- Gouttes "infectees" qui coulent des lettres -->
+    <g id="titre-gouttes" fill="#c0392b">
+      <ellipse cx="428" cy="178" rx="4" ry="6"/>
+      <ellipse cx="430" cy="190" rx="3" ry="3"/>
+      <ellipse cx="571" cy="178" rx="3" ry="5"/>
+      <ellipse cx="698" cy="178" rx="4" ry="7"/>
+      <ellipse cx="700" cy="192" rx="2.5" ry="2.5"/>
+      <ellipse cx="782" cy="178" rx="3" ry="5"/>
+    </g>
+
+    <!-- Lignes decoratives -->
+    <line id="titre-ligne-g" x1="350" y1="200" x2="540" y2="200" stroke="#e74c3c" stroke-width="2" opacity="0.6"/>
+    <line id="titre-ligne-d" x1="660" y1="200" x2="850" y2="200" stroke="#e74c3c" stroke-width="2" opacity="0.6"/>
+    <circle id="titre-point-central" cx="600" cy="200" r="4" fill="#e74c3c" opacity="0.8"/>
+  </g>
+
+
+  <!-- ============================== -->
+  <!-- ICONE VIRUS (decoration titre) -->
+  <!-- ============================== -->
+  <g id="icone-virus-gauche" transform="translate(340, 120)" opacity="0.7">
+    <circle cx="0" cy="0" r="18" fill="none" stroke="#e74c3c" stroke-width="2"/>
+    <circle cx="0" cy="0" r="10" fill="#e74c3c" opacity="0.3"/>
+    <line x1="0" y1="-18" x2="0" y2="-26" stroke="#e74c3c" stroke-width="2"/>
+    <circle cx="0" cy="-28" r="3" fill="#e74c3c"/>
+    <line x1="18" y1="0" x2="26" y2="0" stroke="#e74c3c" stroke-width="2"/>
+    <circle cx="28" cy="0" r="3" fill="#e74c3c"/>
+    <line x1="-18" y1="0" x2="-26" y2="0" stroke="#e74c3c" stroke-width="2"/>
+    <circle cx="-28" cy="0" r="3" fill="#e74c3c"/>
+    <line x1="13" y1="-13" x2="18" y2="-18" stroke="#e74c3c" stroke-width="2"/>
+    <circle cx="20" cy="-20" r="2.5" fill="#e74c3c"/>
+    <line x1="-13" y1="13" x2="-18" y2="18" stroke="#e74c3c" stroke-width="2"/>
+    <circle cx="-20" cy="20" r="2.5" fill="#e74c3c"/>
+  </g>
+
+  <g id="icone-virus-droite" transform="translate(860, 120)" opacity="0.7">
+    <circle cx="0" cy="0" r="18" fill="none" stroke="#e74c3c" stroke-width="2"/>
+    <circle cx="0" cy="0" r="10" fill="#e74c3c" opacity="0.3"/>
+    <line x1="0" y1="-18" x2="0" y2="-26" stroke="#e74c3c" stroke-width="2"/>
+    <circle cx="0" cy="-28" r="3" fill="#e74c3c"/>
+    <line x1="18" y1="0" x2="26" y2="0" stroke="#e74c3c" stroke-width="2"/>
+    <circle cx="28" cy="0" r="3" fill="#e74c3c"/>
+    <line x1="-18" y1="0" x2="-26" y2="0" stroke="#e74c3c" stroke-width="2"/>
+    <circle cx="-28" cy="0" r="3" fill="#e74c3c"/>
+    <line x1="-13" y1="-13" x2="-18" y2="-18" stroke="#e74c3c" stroke-width="2"/>
+    <circle cx="-20" cy="-20" r="2.5" fill="#e74c3c"/>
+    <line x1="13" y1="13" x2="18" y2="18" stroke="#e74c3c" stroke-width="2"/>
+    <circle cx="20" cy="20" r="2.5" fill="#e74c3c"/>
+  </g>
+
+  <!-- ============================== -->
+  <!-- BOUTON ONLINE (principal) -->
+  <!-- ============================== -->
+  <g id="bouton-online" filter="url(#ombre-bouton)">
+    <rect id="btn-online-fond" x="400" y="280" width="400" height="80" fill="url(#btn-online-gradient)" rx="15" stroke="#ff6b6b" stroke-width="2"/>
+    <!-- Brillance -->
+    <rect id="btn-online-brillance" x="405" y="285" width="390" height="30" fill="#ffffff" opacity="0.08" rx="12"/>
+    <!-- Icone wifi/online -->
+    <g id="btn-online-icone" transform="translate(460, 320)">
+      <path d="M-15,-12 Q0,-22 15,-12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+      <path d="M-10,-6 Q0,-14 10,-6" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+      <path d="M-5,0 Q0,-6 5,0" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.9"/>
+      <circle cx="0" cy="5" r="3" fill="white"/>
+    </g>
+    <!-- Texte ONLINE en paths -->
+    <g id="btn-online-texte" transform="translate(497,300)" fill="white">
+      <!-- O -->
+      <path d="M0,5 Q0,0 6,0 L18,0 Q24,0 24,5 L24,27 Q24,32 18,32 L6,32 Q0,32 0,27 Z M7,7 L7,25 Q7,26 8,26 L16,26 Q17,26 17,25 L17,7 Q17,6 16,6 L8,6 Q7,6 7,7 Z"/>
+      <!-- N -->
+      <path d="M30,0 L37,0 L53,22 L53,0 L60,0 L60,32 L53,32 L37,10 L37,32 L30,32 Z"/>
+      <!-- L -->
+      <path d="M66,0 L73,0 L73,26 L88,26 L88,32 L66,32 Z"/>
+      <!-- I -->
+      <path d="M93,0 L100,0 L100,32 L93,32 Z"/>
+      <!-- N -->
+      <path d="M106,0 L113,0 L129,22 L129,0 L136,0 L136,32 L129,32 L113,10 L113,32 L106,32 Z"/>
+      <!-- E -->
+      <path d="M142,0 L164,0 L164,6 L149,6 L149,13 L162,13 L162,19 L149,19 L149,26 L164,26 L164,32 L142,32 Z"/>
+    </g>
+    <!-- Sous-texte -->
+    <text id="btn-online-sous-texte" x="600" y="352" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#fad7d3" letter-spacing="2">Rejoindre ou creer une partie</text>
+  </g>
+
+  <!-- ============================== -->
+  <!-- BOUTON HORS LIGNE (secondaire) -->
+  <!-- ============================== -->
+  <g id="bouton-horsline" filter="url(#ombre-douce)">
+    <rect id="btn-horsline-fond" x="430" y="390" width="340" height="60" fill="url(#btn-horsline-gradient)" rx="12" stroke="#7f8c8d" stroke-width="1.5"/>
+    <rect id="btn-horsline-brillance" x="435" y="395" width="330" height="22" fill="#ffffff" opacity="0.05" rx="10"/>
+    <!-- Icone hors ligne -->
+    <g id="btn-horsline-icone" transform="translate(485, 420)">
+      <rect x="-10" y="-8" width="20" height="16" fill="none" stroke="#bdc3c7" stroke-width="2" rx="2"/>
+      <circle cx="0" cy="0" r="3" fill="#bdc3c7"/>
+      <rect x="-2" y="8" width="4" height="4" fill="#bdc3c7"/>
+    </g>
+    <!-- Texte HORS LIGNE en paths -->
+    <g id="btn-horsline-texte" transform="translate(505,405)" fill="#ecf0f1">
+      <!-- H -->
+      <path d="M0,0 L5,0 L5,10 L15,10 L15,0 L20,0 L20,24 L15,24 L15,15 L5,15 L5,24 L0,24 Z"/>
+      <!-- O -->
+      <path d="M25,4 Q25,0 30,0 L38,0 Q43,0 43,4 L43,20 Q43,24 38,24 L30,24 Q25,24 25,20 Z M30,5 L30,19 Q30,20 31,20 L37,20 Q38,20 38,19 L38,5 Q38,4 37,4 L31,4 Q30,4 30,5 Z"/>
+      <!-- R -->
+      <path d="M48,0 L66,0 Q72,0 72,6 L72,10 Q72,15 67,16 L73,24 L67,24 L61,16 L53,16 L53,24 L48,24 Z M53,5 L53,12 L64,12 Q67,12 67,9 L67,8 Q67,5 64,5 Z"/>
+      <!-- S -->
+      <path d="M77,4 Q77,0 82,0 L92,0 Q97,0 97,4 L97,6 L92,6 L92,5 Q92,4 91,4 L83,4 Q82,4 82,5 L82,9 Q82,10 83,10 L91,10 Q97,10 97,14 L97,20 Q97,24 92,24 L82,24 Q77,24 77,20 L77,18 L82,18 L82,19 Q82,20 83,20 L91,20 Q92,20 92,19 L92,15 Q92,14 91,14 L83,14 Q77,14 77,10 Z"/>
+      <!-- espace -->
+      <!-- L -->
+      <path d="M110,0 L115,0 L115,19 L127,19 L127,24 L110,24 Z"/>
+      <!-- I -->
+      <path d="M131,0 L136,0 L136,24 L131,24 Z"/>
+      <!-- G -->
+      <path d="M141,4 Q141,0 146,0 L156,0 Q161,0 161,4 L161,6 L156,6 L156,5 Q156,4 155,4 L147,4 Q146,4 146,5 L146,19 Q146,20 147,20 L155,20 Q156,20 156,19 L156,14 L151,14 L151,10 L161,10 L161,20 Q161,24 156,24 L146,24 Q141,24 141,20 Z"/>
+      <!-- N -->
+      <path d="M166,0 L171,0 L183,18 L183,0 L188,0 L188,24 L183,24 L171,6 L171,24 L166,24 Z"/>
+      <!-- E -->
+      <path d="M193,0 L210,0 L210,5 L198,5 L198,10 L208,10 L208,14 L198,14 L198,19 L210,19 L210,24 L193,24 Z"/>
+    </g>
+    <text id="btn-horsline-sous-texte" x="600" y="443" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#95a5a6" letter-spacing="1">Jouer avec des bots</text>
+  </g>
+
+  <!-- ============================== -->
+  <!-- BOUTON PARAMETRES -->
+  <!-- ============================== -->
+  <g id="bouton-parametres" filter="url(#ombre-douce)">
+    <rect id="btn-param-fond" x="520" y="470" width="160" height="40" fill="transparent" rx="10" stroke="#566573" stroke-width="1.5"/>
+    <!-- Icone engrenage -->
+    <g id="btn-param-icone" transform="translate(555, 490)">
+      <circle cx="0" cy="0" r="6" fill="none" stroke="#95a5a6" stroke-width="2"/>
+      <circle cx="0" cy="0" r="2.5" fill="#95a5a6"/>
+      <line x1="0" y1="-6" x2="0" y2="-10" stroke="#95a5a6" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="0" y1="6" x2="0" y2="10" stroke="#95a5a6" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="-6" y1="0" x2="-10" y2="0" stroke="#95a5a6" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="6" y1="0" x2="10" y2="0" stroke="#95a5a6" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+    <!-- PARAMETRES en paths -->
+    <g id="btn-param-texte" transform="translate(572,481)" fill="#95a5a6">
+      <path d="M0,0 L11,0 Q15,0 15,4 L15,8 Q15,12 11,12 L4,12 L4,18 L0,18 Z M4,3 L4,9 L10,9 Q11,9 11,8 L11,4 Q11,3 10,3 Z"/>
+      <path d="M18,0 L22,0 L30,18 L26,18 L25,14 L15,14 Z M24,11 L20,3 L16,11 Z" transform="translate(0,0)"/>
+      <path d="M31,0 L44,0 Q48,0 48,4 L48,7 Q48,10 45,11 L49,18 L45,18 L41,11 L35,11 L35,18 L31,18 Z M35,3 L35,8 L43,8 Q44,8 44,7 L44,4 Q44,3 43,3 Z"/>
+      <path d="M51,0 L55,0 L62,18 L58,18 L57,14 L49,14 Z M56,11 L53,3 L50,11 Z" transform="translate(0,0)"/>
+    </g>
+  </g>
+
+  <!-- ============================== -->
+  <!-- PANNEAU REGLES DU JEU -->
+  <!-- ============================== -->
+  <g id="panneau-regles" filter="url(#ombre-douce)">
+    <rect id="regles-fond" x="320" y="540" width="560" height="255" fill="url(#panneau-regles-gradient)" rx="12" stroke="#f39c12" stroke-width="1.5" stroke-opacity="0.5"/>
+
+    <!-- Header -->
+    <rect id="regles-header" x="320" y="540" width="560" height="40" fill="#34495e" rx="12"/>
+    <rect x="320" y="568" width="560" height="12" fill="#34495e"/>
+    <!-- Icone livre -->
+    <g transform="translate(360, 560)">
+      <rect x="-8" y="-8" width="16" height="16" fill="none" stroke="#f39c12" stroke-width="1.5" rx="2"/>
+      <line x1="0" y1="-6" x2="0" y2="6" stroke="#f39c12" stroke-width="1"/>
+      <line x1="-5" y1="-3" x2="-2" y2="-3" stroke="#f39c12" stroke-width="1"/>
+      <line x1="-5" y1="0" x2="-2" y2="0" stroke="#f39c12" stroke-width="1"/>
+      <line x1="-5" y1="3" x2="-2" y2="3" stroke="#f39c12" stroke-width="1"/>
+      <line x1="2" y1="-3" x2="5" y2="-3" stroke="#f39c12" stroke-width="1"/>
+      <line x1="2" y1="0" x2="5" y2="0" stroke="#f39c12" stroke-width="1"/>
+    </g>
+    <!-- REGLES DU JEU en paths -->
+    <g id="regles-titre" transform="translate(510,549)" fill="#f39c12">
+      <!-- R -->
+      <path d="M0,0 L12,0 Q16,0 16,4 L16,7 Q16,10 13,11 L17,16 L13,16 L9,11 L4,11 L4,16 L0,16 Z M4,3 L4,8 L11,8 Q12,8 12,7 L12,4 Q12,3 11,3 Z"/>
+      <!-- E -->
+      <path d="M19,0 L32,0 L32,3 L23,3 L23,7 L30,7 L30,10 L23,10 L23,13 L32,13 L32,16 L19,16 Z"/>
+      <!-- G -->
+      <path d="M35,3 Q35,0 39,0 L47,0 Q51,0 51,3 L51,5 L47,5 L47,4 Q47,3 46,3 L40,3 Q39,3 39,4 L39,12 Q39,13 40,13 L46,13 Q47,13 47,12 L47,9 L43,9 L43,7 L51,7 L51,13 Q51,16 47,16 L39,16 Q35,16 35,13 Z"/>
+      <!-- L -->
+      <path d="M54,0 L58,0 L58,13 L67,13 L67,16 L54,16 Z"/>
+      <!-- E -->
+      <path d="M69,0 L82,0 L82,3 L73,3 L73,7 L80,7 L80,10 L73,10 L73,13 L82,13 L82,16 L69,16 Z"/>
+      <!-- S -->
+      <path d="M85,3 Q85,0 89,0 L97,0 Q101,0 101,3 L101,5 L97,5 L97,4 Q97,3 96,3 L90,3 Q89,3 89,4 L89,6 Q89,7 90,7 L96,7 Q101,7 101,10 L101,13 Q101,16 97,16 L89,16 Q85,16 85,13 L85,11 L89,11 L89,12 Q89,13 90,13 L96,13 Q97,13 97,12 L97,10 Q97,9 96,9 L90,9 Q85,9 85,6 Z"/>
+      <!-- espace -->
+      <!-- D -->
+      <path d="M112,0 L122,0 Q126,0 126,4 L126,12 Q126,16 122,16 L112,16 Z M116,3 L116,13 L121,13 Q122,13 122,12 L122,4 Q122,3 121,3 Z"/>
+      <!-- U -->
+      <path d="M129,0 L133,0 L133,12 Q133,13 135,13 Q137,13 137,12 L137,0 L141,0 L141,13 Q141,16 135,16 Q129,16 129,13 Z"/>
+      <!-- espace -->
+      <!-- J -->
+      <path d="M152,0 L156,0 L156,12 Q156,13 155,13 L151,13 Q148,13 148,10 L148,9 L152,9 L152,11 Q152,12 153,12 L153,12 Q153,12 153,12 Z" transform="translate(0,0)"/>
+      <!-- E -->
+      <path d="M159,0 L172,0 L172,3 L163,3 L163,7 L170,7 L170,10 L163,10 L163,13 L172,13 L172,16 L159,16 Z"/>
+      <!-- U -->
+      <path d="M175,0 L179,0 L179,12 Q179,13 181,13 Q183,13 183,12 L183,0 L187,0 L187,13 Q187,16 181,16 Q175,16 175,13 Z"/>
+    </g>
+
+    <!-- Separateur -->
+    <line x1="350" y1="590" x2="850" y2="590" stroke="#f39c12" stroke-width="0.5" opacity="0.3"/>
+
+    <!-- Regles scrollables via foreignObject -->
+    <foreignObject x="330" y="593" width="540" height="195">
+      <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#f39c12 transparent;">
+        <style>
+          .regle-item { display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; }
+          .regle-num { min-width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-family:Arial,sans-serif; font-size:11px; font-weight:bold; margin-top:2px; }
+          .regle-texte h4 { margin:0; font-family:Arial,sans-serif; font-size:12px; color:#ecf0f1; font-weight:bold; }
+          .regle-texte p { margin:2px 0 0 0; font-family:Arial,sans-serif; font-size:10px; color:#95a5a6; }
+        </style>
+        <div class="regle-item">
+          <div class="regle-num" style="background:#e74c3c;">1</div>
+          <div class="regle-texte"><h4>Le Virus se propage</h4><p>Un joueur est infecte et doit contaminer les autres dans le centre commercial.</p></div>
+        </div>
+        <div class="regle-item">
+          <div class="regle-num" style="background:#3498db;">2</div>
+          <div class="regle-texte"><h4>Accomplir les missions</h4><p>Les sains doivent completer leurs taches dans les boutiques pour gagner.</p></div>
+        </div>
+        <div class="regle-item">
+          <div class="regle-num" style="background:#f39c12;">3</div>
+          <div class="regle-texte"><h4>Voter pour eliminer</h4><p>Signalez les suspects ! Votez ensemble pour demasquer le virus.</p></div>
+        </div>
+        <div class="regle-item">
+          <div class="regle-num" style="background:#2ecc71;">4</div>
+          <div class="regle-texte"><h4>Survivre ou infecter</h4><p>Sains : terminez les missions ou trouvez le virus. Virus : infectez tout le monde !</p></div>
+        </div>
+        <div class="regle-item">
+          <div class="regle-num" style="background:#9b59b6;">5</div>
+          <div class="regle-texte"><h4>Devenir un fantome</h4><p>Si vous etes infecte, apres 5 secondes vous devenez un fantome invisible.</p></div>
+        </div>
+        <div class="regle-item">
+          <div class="regle-num" style="background:#3498db;">6</div>
+          <div class="regle-texte"><h4>Le Journaliste enquete</h4><p>Le journaliste peut enqueter sur les joueurs pour decouvrir s'ils sont virus ou non.</p></div>
+        </div>
+        <div class="regle-item">
+          <div class="regle-num" style="background:#8e44ad;">7</div>
+          <div class="regle-texte"><h4>Le Fanatique (neutre)</h4><p>Son but : se faire eliminer ! S'il meurt, la partie se termine et il gagne avec l'espion.</p></div>
+        </div>
+        <div class="regle-item">
+          <div class="regle-num" style="background:#9b59b6;">8</div>
+          <div class="regle-texte"><h4>L'Espion (neutre)</h4><p>Il choisit un camp au debut. S'il choisit virus, il les voit mais ne peut pas etre tue par eux. Il gagne avec son camp. Si le fanatique gagne, l'espion gagne aussi !</p></div>
+        </div>
+      </div>
+    </foreignObject>
+  </g>
+
+  <!-- ============================== -->
+  <!-- VERSION DU JEU -->
+  <!-- ============================== -->
+  <g id="version">
+    <text id="version-texte" x="600" y="790" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="#566573" letter-spacing="1">VIRUS v0.1 - ALPHA</text>
+  </g>
+
+</svg>

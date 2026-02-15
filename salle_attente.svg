@@ -1,0 +1,389 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <defs>
+    <!-- Patterns & Gradients -->
+    <pattern id="carrelage" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+      <rect width="60" height="60" fill="#e8ddd3"/>
+      <rect width="29" height="29" fill="#f0e6dc"/>
+      <rect x="31" y="31" width="29" height="29" fill="#f0e6dc"/>
+      <line x1="0" y1="0" x2="60" y2="0" stroke="#d4c8b8" stroke-width="1"/>
+      <line x1="0" y1="30" x2="60" y2="30" stroke="#d4c8b8" stroke-width="1"/>
+      <line x1="0" y1="0" x2="0" y2="60" stroke="#d4c8b8" stroke-width="1"/>
+      <line x1="30" y1="0" x2="30" y2="60" stroke="#d4c8b8" stroke-width="1"/>
+    </pattern>
+
+    <linearGradient id="gradient-mur" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8b7355"/>
+      <stop offset="100%" stop-color="#6b5740"/>
+    </linearGradient>
+
+    <linearGradient id="gradient-cabine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5c4a3a"/>
+      <stop offset="100%" stop-color="#3e3028"/>
+    </linearGradient>
+
+    <linearGradient id="gradient-rideau-rouge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#c0392b"/>
+      <stop offset="30%" stop-color="#e74c3c"/>
+      <stop offset="50%" stop-color="#c0392b"/>
+      <stop offset="70%" stop-color="#e74c3c"/>
+      <stop offset="100%" stop-color="#c0392b"/>
+    </linearGradient>
+
+    <linearGradient id="gradient-rideau-bleu" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2471a3"/>
+      <stop offset="30%" stop-color="#2e86c1"/>
+      <stop offset="50%" stop-color="#2471a3"/>
+      <stop offset="70%" stop-color="#2e86c1"/>
+      <stop offset="100%" stop-color="#2471a3"/>
+    </linearGradient>
+
+    <linearGradient id="gradient-rideau-vert" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1e8449"/>
+      <stop offset="30%" stop-color="#27ae60"/>
+      <stop offset="50%" stop-color="#1e8449"/>
+      <stop offset="70%" stop-color="#27ae60"/>
+      <stop offset="100%" stop-color="#1e8449"/>
+    </linearGradient>
+
+    <linearGradient id="gradient-rideau-violet" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7d3c98"/>
+      <stop offset="30%" stop-color="#9b59b6"/>
+      <stop offset="50%" stop-color="#7d3c98"/>
+      <stop offset="70%" stop-color="#9b59b6"/>
+      <stop offset="100%" stop-color="#7d3c98"/>
+    </linearGradient>
+
+    <radialGradient id="gradient-fontaine" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#85c1e9"/>
+      <stop offset="70%" stop-color="#5dade2"/>
+      <stop offset="100%" stop-color="#3498db"/>
+    </radialGradient>
+
+    <filter id="ombre-portee">
+      <feDropShadow dx="3" dy="3" stdDeviation="4" flood-color="#00000040"/>
+    </filter>
+
+    <filter id="ombre-legere">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#00000030"/>
+    </filter>
+
+    <filter id="lueur-neon">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- ============================== -->
+  <!-- SOL - Carrelage centre commercial -->
+  <!-- ============================== -->
+  <g id="sol">
+    <rect id="sol-base" width="1200" height="800" fill="url(#carrelage)"/>
+    <!-- Bande decorative au sol -->
+    <rect id="bande-sol-horizontale" x="0" y="390" width="1200" height="20" fill="#c9a96e" opacity="0.3" rx="2"/>
+    <rect id="bande-sol-verticale" x="590" y="0" width="20" height="800" fill="#c9a96e" opacity="0.3" rx="2"/>
+  </g>
+
+  <!-- ============================== -->
+  <!-- MURS -->
+  <!-- ============================== -->
+  <g id="murs">
+    <!-- Mur du haut -->
+    <rect id="mur-haut" x="0" y="0" width="1200" height="45" fill="url(#gradient-mur)" rx="0"/>
+    <rect id="mur-haut-plinthe" x="0" y="40" width="1200" height="8" fill="#a08060"/>
+    <!-- Mur du bas -->
+    <rect id="mur-bas" x="0" y="760" width="1200" height="40" fill="url(#gradient-mur)"/>
+    <rect id="mur-bas-plinthe" x="0" y="755" width="1200" height="8" fill="#a08060"/>
+    <!-- Mur gauche -->
+    <rect id="mur-gauche" x="0" y="0" width="45" height="800" fill="url(#gradient-mur)"/>
+    <rect id="mur-gauche-plinthe" x="40" y="0" width="8" height="800" fill="#a08060"/>
+    <!-- Mur droit (avec ouverture pour entree) -->
+    <rect id="mur-droit-haut" x="1155" y="0" width="45" height="300" fill="url(#gradient-mur)"/>
+    <rect id="mur-droit-bas" x="1155" y="500" width="45" height="300" fill="url(#gradient-mur)"/>
+    <rect id="mur-droit-plinthe-haut" x="1150" y="0" width="8" height="305" fill="#a08060"/>
+    <rect id="mur-droit-plinthe-bas" x="1150" y="495" width="8" height="305" fill="#a08060"/>
+  </g>
+
+  <!-- ============================== -->
+  <!-- ENTREE DU CENTRE COMMERCIAL -->
+  <!-- ============================== -->
+  <g id="entree">
+    <rect id="entree-sol" x="1150" y="300" width="50" height="200" fill="#d5c4a1" rx="3"/>
+    <rect id="entree-porte-haut" x="1155" y="295" width="45" height="12" fill="#566573" rx="2"/>
+    <rect id="entree-porte-bas" x="1155" y="493" width="45" height="12" fill="#566573" rx="2"/>
+    <!-- Fleches d'entree -->
+    <polygon id="fleche-entree-1" points="1175,370 1165,385 1175,385 1175,400 1185,400 1185,385 1195,385" fill="#27ae60" opacity="0.6"/>
+    <polygon id="fleche-entree-2" points="1175,410 1165,425 1175,425 1175,440 1185,440 1185,425 1195,425" fill="#27ae60" opacity="0.4"/>
+    <text id="texte-entree" x="1178" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#27ae60" font-weight="bold">ENTREE</text>
+  </g>
+
+  <!-- ============================== -->
+  <!-- TITRE DU JEU - Enseigne Neon -->
+  <!-- ============================== -->
+  <g id="titre-jeu" filter="url(#lueur-neon)">
+    <rect id="enseigne-fond" x="420" y="55" width="360" height="65" fill="#1a1a2e" rx="10" stroke="#e74c3c" stroke-width="2"/>
+    <text id="titre-virus" x="600" y="100" text-anchor="middle" font-family="'Impact', 'Arial Black', sans-serif" font-size="48" fill="#e74c3c" font-weight="bold" letter-spacing="12">VIRUS</text>
+    <text id="sous-titre" x="600" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#f39c12" letter-spacing="4">SALLE D'ATTENTE</text>
+  </g>
+
+  <!-- ============================== -->
+  <!-- CABINES D'ESSAYAGE (Skin Shop) -->
+  <!-- ============================== -->
+  <g id="cabines-essayage" filter="url(#ombre-portee)">
+    <!-- Panneau "CABINES" -->
+    <rect id="panneau-cabines-fond" x="68" y="55" width="200" height="35" fill="#2c3e50" rx="5"/>
+    <text id="panneau-cabines-texte" x="168" y="78" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#f1c40f" font-weight="bold" letter-spacing="3">CABINES</text>
+    <text id="panneau-cabines-sous-texte" x="168" y="88" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#ecf0f1" letter-spacing="2">CHANGEZ DE SKIN</text>
+
+    <!-- Cabine 1 - Rouge -->
+    <g id="cabine-1">
+      <rect id="cabine-1-structure" x="60" y="95" width="100" height="130" fill="url(#gradient-cabine)" rx="3"/>
+      <rect id="cabine-1-interieur" x="65" y="100" width="90" height="120" fill="#4a3728" rx="2"/>
+      <!-- Miroir -->
+      <rect id="cabine-1-miroir" x="80" y="108" width="60" height="50" fill="#d4e6f1" rx="3" stroke="#8b7355" stroke-width="2"/>
+      <ellipse id="cabine-1-miroir-reflet" cx="100" cy="125" rx="15" ry="20" fill="#eaf2f8" opacity="0.4"/>
+      <!-- Crochet vetements -->
+      <circle id="cabine-1-crochet" cx="130" cy="170" r="4" fill="#a0a0a0" stroke="#707070" stroke-width="1"/>
+      <line id="cabine-1-cintre" x1="122" y1="174" x2="138" y2="174" stroke="#a0a0a0" stroke-width="2"/>
+      <!-- Rideau -->
+      <rect id="cabine-1-rideau" x="65" y="100" width="90" height="120" fill="url(#gradient-rideau-rouge)" rx="2" opacity="0.85"/>
+      <!-- Numero -->
+      <circle id="cabine-1-numero-fond" cx="110" cy="230" r="12" fill="#e74c3c"/>
+      <text id="cabine-1-numero" x="110" y="235" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">1</text>
+      <!-- Indicateur libre/occupe -->
+      <circle id="cabine-1-statut" cx="78" cy="232" r="6" fill="#2ecc71" stroke="#27ae60" stroke-width="1"/>
+      <text id="cabine-1-statut-texte" x="78" y="248" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#2ecc71">LIBRE</text>
+    </g>
+
+    <!-- Cabine 2 - Bleue -->
+    <g id="cabine-2">
+      <rect id="cabine-2-structure" x="175" y="95" width="100" height="130" fill="url(#gradient-cabine)" rx="3"/>
+      <rect id="cabine-2-interieur" x="180" y="100" width="90" height="120" fill="#4a3728" rx="2"/>
+      <rect id="cabine-2-miroir" x="195" y="108" width="60" height="50" fill="#d4e6f1" rx="3" stroke="#8b7355" stroke-width="2"/>
+      <ellipse id="cabine-2-miroir-reflet" cx="215" cy="125" rx="15" ry="20" fill="#eaf2f8" opacity="0.4"/>
+      <circle id="cabine-2-crochet" cx="245" cy="170" r="4" fill="#a0a0a0" stroke="#707070" stroke-width="1"/>
+      <line id="cabine-2-cintre" x1="237" y1="174" x2="253" y2="174" stroke="#a0a0a0" stroke-width="2"/>
+      <rect id="cabine-2-rideau" x="180" y="100" width="90" height="120" fill="url(#gradient-rideau-bleu)" rx="2" opacity="0.85"/>
+      <circle id="cabine-2-numero-fond" cx="225" cy="230" r="12" fill="#2e86c1"/>
+      <text id="cabine-2-numero" x="225" y="235" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">2</text>
+      <circle id="cabine-2-statut" cx="193" cy="232" r="6" fill="#2ecc71" stroke="#27ae60" stroke-width="1"/>
+      <text id="cabine-2-statut-texte" x="193" y="248" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#2ecc71">LIBRE</text>
+    </g>
+
+    <!-- Cabine 3 - Verte -->
+    <g id="cabine-3">
+      <rect id="cabine-3-structure" x="290" y="95" width="100" height="130" fill="url(#gradient-cabine)" rx="3"/>
+      <rect id="cabine-3-interieur" x="295" y="100" width="90" height="120" fill="#4a3728" rx="2"/>
+      <rect id="cabine-3-miroir" x="310" y="108" width="60" height="50" fill="#d4e6f1" rx="3" stroke="#8b7355" stroke-width="2"/>
+      <ellipse id="cabine-3-miroir-reflet" cx="330" cy="125" rx="15" ry="20" fill="#eaf2f8" opacity="0.4"/>
+      <circle id="cabine-3-crochet" cx="360" cy="170" r="4" fill="#a0a0a0" stroke="#707070" stroke-width="1"/>
+      <line id="cabine-3-cintre" x1="352" y1="174" x2="368" y2="174" stroke="#a0a0a0" stroke-width="2"/>
+      <rect id="cabine-3-rideau" x="295" y="100" width="90" height="120" fill="url(#gradient-rideau-vert)" rx="2" opacity="0.85"/>
+      <circle id="cabine-3-numero-fond" cx="340" cy="230" r="12" fill="#27ae60"/>
+      <text id="cabine-3-numero" x="340" y="235" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">3</text>
+      <circle id="cabine-3-statut" cx="308" cy="232" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="1"/>
+      <text id="cabine-3-statut-texte" x="308" y="248" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#e74c3c">OCCUPE</text>
+    </g>
+
+    <!-- Cabine 4 - Violette -->
+    <g id="cabine-4">
+      <rect id="cabine-4-structure" x="405" y="95" width="100" height="130" fill="url(#gradient-cabine)" rx="3"/>
+      <rect id="cabine-4-interieur" x="410" y="100" width="90" height="120" fill="#4a3728" rx="2"/>
+      <rect id="cabine-4-miroir" x="425" y="108" width="60" height="50" fill="#d4e6f1" rx="3" stroke="#8b7355" stroke-width="2"/>
+      <ellipse id="cabine-4-miroir-reflet" cx="445" cy="125" rx="15" ry="20" fill="#eaf2f8" opacity="0.4"/>
+      <circle id="cabine-4-crochet" cx="475" cy="170" r="4" fill="#a0a0a0" stroke="#707070" stroke-width="1"/>
+      <line id="cabine-4-cintre" x1="467" y1="174" x2="483" y2="174" stroke="#a0a0a0" stroke-width="2"/>
+      <rect id="cabine-4-rideau" x="410" y="100" width="90" height="120" fill="url(#gradient-rideau-violet)" rx="2" opacity="0.85"/>
+      <circle id="cabine-4-numero-fond" cx="455" cy="230" r="12" fill="#8e44ad"/>
+      <text id="cabine-4-numero" x="455" y="235" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">4</text>
+      <circle id="cabine-4-statut" cx="423" cy="232" r="6" fill="#2ecc71" stroke="#27ae60" stroke-width="1"/>
+      <text id="cabine-4-statut-texte" x="423" y="248" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#2ecc71">LIBRE</text>
+    </g>
+  </g>
+
+  <!-- ============================== -->
+  <!-- BANCS D'ATTENTE -->
+  <!-- ============================== -->
+  <g id="bancs-attente" filter="url(#ombre-legere)">
+    <!-- Banc 1 - Horizontal haut -->
+    <g id="banc-1">
+      <rect id="banc-1-assise" x="550" y="280" width="180" height="40" fill="#d4a24e" rx="5"/>
+      <rect id="banc-1-detail" x="555" y="285" width="170" height="30" fill="#e0b565" rx="3"/>
+      <!-- Pieds -->
+      <rect id="banc-1-pied-g" x="560" y="318" width="8" height="10" fill="#a07830" rx="1"/>
+      <rect id="banc-1-pied-d" x="712" y="318" width="8" height="10" fill="#a07830" rx="1"/>
+      <!-- Separation assises -->
+      <line x1="595" y1="285" x2="595" y2="315" stroke="#c4922e" stroke-width="2"/>
+      <line x1="640" y1="285" x2="640" y2="315" stroke="#c4922e" stroke-width="2"/>
+      <line x1="685" y1="285" x2="685" y2="315" stroke="#c4922e" stroke-width="2"/>
+    </g>
+
+    <!-- Banc 2 - Horizontal bas -->
+    <g id="banc-2">
+      <rect id="banc-2-assise" x="550" y="470" width="180" height="40" fill="#d4a24e" rx="5"/>
+      <rect id="banc-2-detail" x="555" y="475" width="170" height="30" fill="#e0b565" rx="3"/>
+      <rect id="banc-2-pied-g" x="560" y="508" width="8" height="10" fill="#a07830" rx="1"/>
+      <rect id="banc-2-pied-d" x="712" y="508" width="8" height="10" fill="#a07830" rx="1"/>
+      <line x1="595" y1="475" x2="595" y2="505" stroke="#c4922e" stroke-width="2"/>
+      <line x1="640" y1="475" x2="640" y2="505" stroke="#c4922e" stroke-width="2"/>
+      <line x1="685" y1="475" x2="685" y2="505" stroke="#c4922e" stroke-width="2"/>
+    </g>
+
+    <!-- Banc 3 - Le long du mur gauche -->
+    <g id="banc-3">
+      <rect id="banc-3-assise" x="60" y="420" width="40" height="150" fill="#d4a24e" rx="5"/>
+      <rect id="banc-3-detail" x="65" y="425" width="30" height="140" fill="#e0b565" rx="3"/>
+      <line x1="65" y1="465" x2="95" y2="465" stroke="#c4922e" stroke-width="2"/>
+      <line x1="65" y1="510" x2="95" y2="510" stroke="#c4922e" stroke-width="2"/>
+    </g>
+  </g>
+
+  <!-- ============================== -->
+  <!-- FONTAINE DECORATIVE (centre) -->
+  <!-- ============================== -->
+  <g id="fontaine" filter="url(#ombre-portee)">
+    <ellipse id="fontaine-bassin-ext" cx="640" cy="395" rx="70" ry="55" fill="#7f8c8d" stroke="#616a6b" stroke-width="3"/>
+    <ellipse id="fontaine-bassin-eau" cx="640" cy="393" rx="60" ry="45" fill="url(#gradient-fontaine)"/>
+    <!-- Cercles d'eau -->
+    <ellipse id="fontaine-onde-1" cx="640" cy="393" rx="40" ry="30" fill="none" stroke="#aed6f1" stroke-width="1" opacity="0.6"/>
+    <ellipse id="fontaine-onde-2" cx="640" cy="393" rx="25" ry="18" fill="none" stroke="#aed6f1" stroke-width="1" opacity="0.8"/>
+    <!-- Jet central -->
+    <ellipse id="fontaine-centre" cx="640" cy="390" rx="10" ry="8" fill="#85c1e9"/>
+    <ellipse id="fontaine-jet-base" cx="640" cy="388" rx="5" ry="4" fill="#aed6f1"/>
+    <!-- Gouttes -->
+    <circle id="fontaine-goutte-1" cx="630" cy="378" r="3" fill="#aed6f1" opacity="0.7"/>
+    <circle id="fontaine-goutte-2" cx="645" cy="372" r="2" fill="#aed6f1" opacity="0.5"/>
+    <circle id="fontaine-goutte-3" cx="652" cy="379" r="2.5" fill="#aed6f1" opacity="0.6"/>
+  </g>
+
+  <!-- ============================== -->
+  <!-- PLANTES DECORATIVES -->
+  <!-- ============================== -->
+  <g id="plantes">
+    <!-- Plante 1 - Coin haut droit -->
+    <g id="plante-1">
+      <rect id="plante-1-pot" x="1080" y="80" width="50" height="45" fill="#a0522d" rx="5"/>
+      <rect id="plante-1-pot-bord" x="1075" y="75" width="60" height="12" fill="#8b4513" rx="3"/>
+      <ellipse id="plante-1-terre" cx="1105" cy="82" rx="22" ry="5" fill="#5d3a1a"/>
+      <ellipse id="plante-1-feuille-1" cx="1105" cy="55" rx="20" ry="22" fill="#27ae60"/>
+      <ellipse id="plante-1-feuille-2" cx="1090" cy="60" rx="15" ry="18" fill="#2ecc71"/>
+      <ellipse id="plante-1-feuille-3" cx="1118" cy="62" rx="14" ry="16" fill="#229954"/>
+    </g>
+
+    <!-- Plante 2 - Coin bas gauche -->
+    <g id="plante-2">
+      <rect id="plante-2-pot" x="65" y="680" width="50" height="45" fill="#a0522d" rx="5"/>
+      <rect id="plante-2-pot-bord" x="60" y="675" width="60" height="12" fill="#8b4513" rx="3"/>
+      <ellipse id="plante-2-terre" cx="90" cy="682" rx="22" ry="5" fill="#5d3a1a"/>
+      <ellipse id="plante-2-feuille-1" cx="90" cy="655" rx="20" ry="22" fill="#27ae60"/>
+      <ellipse id="plante-2-feuille-2" cx="75" cy="660" rx="15" ry="18" fill="#2ecc71"/>
+      <ellipse id="plante-2-feuille-3" cx="103" cy="662" rx="14" ry="16" fill="#229954"/>
+    </g>
+
+    <!-- Plante 3 - Pres de l'entree -->
+    <g id="plante-3">
+      <rect id="plante-3-pot" x="1080" y="530" width="50" height="45" fill="#a0522d" rx="5"/>
+      <rect id="plante-3-pot-bord" x="1075" y="525" width="60" height="12" fill="#8b4513" rx="3"/>
+      <ellipse id="plante-3-terre" cx="1105" cy="532" rx="22" ry="5" fill="#5d3a1a"/>
+      <ellipse id="plante-3-feuille-1" cx="1105" cy="505" rx="20" ry="22" fill="#27ae60"/>
+      <ellipse id="plante-3-feuille-2" cx="1090" cy="510" rx="15" ry="18" fill="#2ecc71"/>
+      <ellipse id="plante-3-feuille-3" cx="1118" cy="512" rx="14" ry="16" fill="#229954"/>
+    </g>
+  </g>
+
+  <!-- ============================== -->
+  <!-- DISTRIBUTEUR AUTOMATIQUE -->
+  <!-- ============================== -->
+  <g id="distributeur" filter="url(#ombre-portee)">
+    <rect id="distributeur-corps" x="830" y="55" width="80" height="130" fill="#34495e" rx="5" stroke="#2c3e50" stroke-width="2"/>
+    <rect id="distributeur-vitre" x="840" y="65" width="60" height="80" fill="#2c3e50" rx="3"/>
+    <!-- Canettes/bouteilles -->
+    <rect x="845" y="72" width="12" height="20" fill="#e74c3c" rx="2"/>
+    <rect x="860" y="72" width="12" height="20" fill="#3498db" rx="2"/>
+    <rect x="875" y="72" width="12" height="20" fill="#f39c12" rx="2"/>
+    <rect x="890" y="72" width="12" height="20" fill="#2ecc71" rx="2"/>
+    <rect x="845" y="97" width="12" height="20" fill="#9b59b6" rx="2"/>
+    <rect x="860" y="97" width="12" height="20" fill="#e74c3c" rx="2"/>
+    <rect x="875" y="97" width="12" height="20" fill="#1abc9c" rx="2"/>
+    <rect x="890" y="97" width="12" height="20" fill="#f39c12" rx="2"/>
+    <!-- Fente -->
+    <rect id="distributeur-fente" x="855" y="155" width="30" height="8" fill="#1a252f" rx="2"/>
+    <text id="distributeur-texte" x="870" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#ecf0f1">BOISSONS</text>
+  </g>
+
+  <!-- ============================== -->
+  <!-- PANNEAU D'INFORMATION -->
+  <!-- ============================== -->
+  <g id="panneau-info" filter="url(#ombre-legere)">
+    <rect id="panneau-info-cadre" x="830" y="250" width="160" height="100" fill="#1a1a2e" rx="8" stroke="#f39c12" stroke-width="2"/>
+    <text id="panneau-info-titre" x="910" y="275" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#f39c12" font-weight="bold">JOUEURS</text>
+    <line x1="850" y1="282" x2="970" y2="282" stroke="#f39c12" stroke-width="1" opacity="0.5"/>
+    <!-- Slots joueurs -->
+    <text id="panneau-joueur-1" x="855" y="300" font-family="'Courier New', monospace" font-size="12" fill="#7f8c8d">&#9675; En attente...</text>
+    <text id="panneau-compteur" x="910" y="348" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#e74c3c">0/10</text>
+  </g>
+
+  <!-- ============================== -->
+  <!-- ZONE DE SPAWN / POINT CENTRAL -->
+  <!-- ============================== -->
+  <g id="zone-spawn">
+    <ellipse id="spawn-zone" cx="640" cy="600" rx="90" ry="60" fill="#f39c12" opacity="0.08" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="8,4"/>
+    <text id="spawn-texte" x="640" y="605" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#f39c12" opacity="0.5" letter-spacing="2">ZONE DE SPAWN</text>
+  </g>
+
+
+  <!-- ============================== -->
+  <!-- BOUTON DEMARRER (Host only) -->
+  <!-- ============================== -->
+  <g id="bouton-demarrer" filter="url(#ombre-portee)">
+    <rect id="bouton-fond" x="830" y="620" width="160" height="60" fill="#e74c3c" rx="12" stroke="#c0392b" stroke-width="3"/>
+    <rect id="bouton-brillance" x="835" y="625" width="150" height="25" fill="#ffffff" opacity="0.1" rx="10"/>
+    <text id="bouton-texte" x="910" y="658" text-anchor="middle" font-family="'Arial Black', Arial, sans-serif" font-size="20" fill="white" font-weight="bold" letter-spacing="2">DEMARRER</text>
+    <text id="bouton-sous-texte" x="910" y="672" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#fad7d3">(Host uniquement)</text>
+  </g>
+
+  <!-- ============================== -->
+  <!-- CHAT BOX -->
+  <!-- ============================== -->
+  <g id="chat-box" filter="url(#ombre-legere)">
+    <rect id="chat-fond" x="830" y="410" width="160" height="180" fill="#1a1a2e" rx="8" stroke="#566573" stroke-width="1.5"/>
+    <rect id="chat-header" x="830" y="410" width="160" height="25" fill="#2c3e50" rx="8"/>
+    <rect x="830" y="425" width="160" height="10" fill="#2c3e50"/>
+    <text id="chat-titre" x="910" y="427" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#ecf0f1" font-weight="bold">CHAT</text>
+    <!-- Messages (vide par defaut) -->
+    <!-- Zone de saisie -->
+    <rect id="chat-input" x="838" y="560" width="120" height="22" fill="#2c3e50" rx="4"/>
+    <text id="chat-placeholder" x="848" y="575" font-family="Arial, sans-serif" font-size="9" fill="#7f8c8d">Ecrire ici...</text>
+    <rect id="chat-btn-envoyer" x="962" y="560" width="22" height="22" fill="#3498db" rx="4"/>
+    <text x="973" y="575" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">&#9654;</text>
+  </g>
+
+  <!-- ============================== -->
+  <!-- ECLAIRAGE PLAFOND (cercles) -->
+  <!-- ============================== -->
+  <g id="eclairage" opacity="0.06">
+    <circle id="lumiere-1" cx="300" cy="400" r="180" fill="#f4d03f"/>
+    <circle id="lumiere-2" cx="700" cy="400" r="180" fill="#f4d03f"/>
+    <circle id="lumiere-3" cx="1000" cy="400" r="150" fill="#f4d03f"/>
+  </g>
+
+  <!-- ============================== -->
+  <!-- PANNEAUX DIRECTIONNELS -->
+  <!-- ============================== -->
+  <g id="panneaux-direction">
+    <!-- Fleche vers cabines -->
+    <g id="panneau-vers-cabines">
+      <rect x="250" y="265" width="120" height="28" fill="#2c3e50" rx="4" opacity="0.8"/>
+      <text x="275" y="283" font-family="Arial, sans-serif" font-size="10" fill="#f1c40f">&#9664; CABINES</text>
+    </g>
+
+    <!-- Fleche vers sortie -->
+    <g id="panneau-vers-sortie">
+      <rect x="990" y="385" width="110" height="28" fill="#2c3e50" rx="4" opacity="0.8"/>
+      <text x="1005" y="403" font-family="Arial, sans-serif" font-size="10" fill="#2ecc71">SORTIE &#9654;</text>
+    </g>
+  </g>
+
+</svg>

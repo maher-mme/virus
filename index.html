@@ -4572,6 +4572,46 @@
         font-size: 11px;
       }
 
+      /* Chat reunion mobile */
+      .reunion-bandeau {
+        top: 8px;
+        padding: 6px 14px;
+      }
+      .reunion-bandeau-titre {
+        font-size: 15px;
+        letter-spacing: 1px;
+      }
+      .reunion-bandeau-timer {
+        font-size: 14px;
+      }
+      .reunion-chat {
+        top: 55px;
+        bottom: auto;
+        right: 5px;
+        left: 5px;
+        width: auto;
+        max-height: 35vh;
+      }
+      .reunion-chat-messages {
+        min-height: 60px;
+        max-height: 18vh;
+      }
+      .reunion-chat-header {
+        padding: 4px 10px;
+      }
+      .reunion-chat-header h4 {
+        font-size: 10px;
+      }
+      .reunion-chat-input input {
+        font-size: 13px;
+        padding: 8px 10px;
+      }
+      .reunion-btn-skip {
+        bottom: 10px;
+        padding: 8px 25px;
+        font-size: 14px;
+      }
+
       /* ============================== */
       /* FIN DE PARTIE                  */
       /* ============================== */
@@ -4679,17 +4719,23 @@
     }
 
     .minijeu-fermer {
-      margin-top: 16px;
+      position: absolute;
+      top: -18px;
+      right: -18px;
+      width: 40px;
+      height: 40px;
       background: #e74c3c;
       color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 30px;
-      font-family: 'Impact', 'Arial Black', sans-serif;
-      font-size: 16px;
-      letter-spacing: 2px;
+      border: 3px solid #c0392b;
+      border-radius: 50%;
+      font-size: 22px;
+      line-height: 1;
       cursor: pointer;
       pointer-events: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
     }
     .minijeu-fermer:hover { filter: brightness(1.15); }
 
@@ -6280,7 +6326,6 @@
       <div class="minijeu-overlay" id="minijeu-overlay">
         <div class="minijeu-titre" id="minijeu-titre"></div>
         <div class="minijeu-zone" id="minijeu-zone"></div>
-        <button class="minijeu-fermer" onclick="fermerMiniJeu()">ANNULER</button>
       </div>
 
       <!-- Popup pouvoir journaliste -->
@@ -7097,7 +7142,7 @@
 
     // Reunion en multiplayer
     function ouvrirReunionMultiplayer(meeting) {
-      if (miniJeuOuvert) fermerMiniJeu();
+      if (miniJeuOuvert) pauserMiniJeu();
       reunionEnCours = true;
       jeuActif = false;
       try { var sReunion = new Audio("réunion d'urgence !.mp3"); sReunion.volume = 0.6; sReunion.play(); } catch(e) {}
@@ -7202,6 +7247,8 @@
       killProtection = true;
       setTimeout(function() { killProtection = false; }, 10000);
       gameLoop();
+      // Reprendre le mini-jeu si un etait en pause
+      if (miniJeuPause) reprendreMiniJeu();
     }
 
     function afficherFinPartieMultiplayer(state) {
@@ -10210,7 +10257,7 @@
 
     function ouvrirReunion() {
       if (reunionEnCours) return;
-      if (miniJeuOuvert) fermerMiniJeu();
+      if (miniJeuOuvert) pauserMiniJeu();
       reunionEnCours = true;
       voteChoisi = -1;
       joueurAVote = false;
@@ -10265,7 +10312,7 @@
 
       // Sauvegarder positions et teleporter autour de la fontaine
       var fontCX = 3800, fontCY = 2800;
-      var rayon = 220;
+      var rayon = isMobile ? 110 : 220;
       var nbJoueurs = joueursReunion.length;
 
       // Sauvegarder position joueur
@@ -11311,6 +11358,9 @@
       // Reprendre le jeu
       jeuActif = true;
       gameLoop();
+
+      // Reprendre le mini-jeu si un etait en pause
+      if (miniJeuPause) reprendreMiniJeu();
     }
 
     function ajouterMsgReunion(auteur, message, couleur) {
@@ -11480,6 +11530,10 @@
     var miniJeuMissionIdx = -1; // index de la mission en cours de mini-jeu
     var miniJeuInterval = null; // interval pour animations (slider, rapidclick)
     var miniJeuTimeouts = []; // timeouts actifs pour cleanup
+    var miniJeuPause = false; // true quand le mini-jeu est en pause (reunion)
+    var miniJeuResumeFn = null; // fonction pour relancer les intervals apres pause
+    var miniJeuPauseMissionIdx = -1; // sauvegarde de l'index mission pendant pause
+    var miniJeuPauseType = ''; // sauvegarde du type de mini-jeu pendant pause
 
     function updateMissionHighlight() {
       // Retirer le highlight de toutes les caisses et boutiques
@@ -11533,6 +11587,22 @@
       if (missionEnCours) return;
       if (miniJeuOuvert) return;
 
+      // Reprendre le mini-jeu sauvegarde si c'est la meme mission
+      if (miniJeuPause && miniJeuPauseMissionIdx === missionProche) {
+        missionEnCours = true;
+        reprendreMiniJeu();
+        var btn = document.getElementById('btn-mission');
+        if (btn) btn.style.display = 'none';
+        return;
+      }
+
+      // Si un autre mini-jeu etait en pause, le fermer definitivement
+      if (miniJeuPause) {
+        miniJeuPause = false;
+        miniJeuResumeFn = null;
+        document.getElementById('minijeu-zone').innerHTML = '';
+      }
+
       missionEnCours = true;
       miniJeuMissionIdx = missionProche;
 
@@ -11546,11 +11616,18 @@
 
     function ouvrirMiniJeu(nomMission, type) {
       miniJeuOuvert = true;
+      miniJeuResumeFn = null;
       var overlay = document.getElementById('minijeu-overlay');
       var titre = document.getElementById('minijeu-titre');
       var zone = document.getElementById('minijeu-zone');
       titre.textContent = nomMission;
       zone.innerHTML = '';
+      // Bouton croix pour fermer (sauvegarde la progression)
+      var closeBtn = document.createElement('button');
+      closeBtn.className = 'minijeu-fermer';
+      closeBtn.innerHTML = '&times;';
+      closeBtn.onclick = function(){ pauserMiniJeu(); };
+      zone.appendChild(closeBtn);
       overlay.classList.add('visible');
 
       var mjFunc = window['initMJ_' + type];
@@ -11560,6 +11637,8 @@
 
     function fermerMiniJeu() {
       miniJeuOuvert = false;
+      miniJeuPause = false;
+      miniJeuResumeFn = null;
       if (miniJeuInterval) { clearInterval(miniJeuInterval); miniJeuInterval = null; }
       for (var i = 0; i < miniJeuTimeouts.length; i++) {
         clearTimeout(miniJeuTimeouts[i]);
@@ -11573,6 +11652,35 @@
         missionEnCours = false;
         miniJeuMissionIdx = -1;
       }
+    }
+
+    function pauserMiniJeu() {
+      // Pauser le mini-jeu (garde le DOM intact pour reprendre)
+      if (!miniJeuOuvert) return;
+      miniJeuPause = true;
+      miniJeuPauseMissionIdx = miniJeuMissionIdx;
+      miniJeuOuvert = false;
+      missionEnCours = false;
+      // Stopper les intervals et timeouts (les animations s'arretent)
+      if (miniJeuInterval) { clearInterval(miniJeuInterval); miniJeuInterval = null; }
+      for (var i = 0; i < miniJeuTimeouts.length; i++) clearTimeout(miniJeuTimeouts[i]);
+      miniJeuTimeouts = [];
+      // Cacher l'overlay sans detruire le contenu
+      var overlay = document.getElementById('minijeu-overlay');
+      overlay.classList.remove('visible');
+    }
+
+    function reprendreMiniJeu() {
+      // Reprendre le mini-jeu apres la reunion
+      if (!miniJeuPause) return;
+      miniJeuPause = false;
+      miniJeuOuvert = true;
+      miniJeuMissionIdx = miniJeuPauseMissionIdx;
+      // Re-afficher l'overlay (le DOM est intact)
+      var overlay = document.getElementById('minijeu-overlay');
+      overlay.classList.add('visible');
+      // Relancer les intervals si le mini-jeu en avait
+      if (miniJeuResumeFn) { miniJeuResumeFn(); }
     }
 
     function completerMiniJeu() {
@@ -11859,7 +11967,9 @@
       pourBtn.addEventListener('touchstart', function(e){e.preventDefault();filling=true;},{passive:false});
       pourBtn.addEventListener('touchend', function(){filling=false;checkLevel();});
       zone.appendChild(msg); zone.appendChild(cup); zone.appendChild(pourBtn);
-      miniJeuInterval = setInterval(function(){ if(done)return; if(filling){level=Math.min(100,level+1.5);} fill.style.height=level+'%'; },50);
+      var tickCafe = function(){ if(done)return; if(filling){level=Math.min(100,level+1.5);} fill.style.height=level+'%'; };
+      miniJeuInterval = setInterval(tickCafe,50);
+      miniJeuResumeFn = function(){ miniJeuInterval = setInterval(tickCafe,50); };
       function checkLevel(){ if(done)return; if(level>=targetMin&&level<=targetMax){done=true;msg.textContent='Parfait !';completerMiniJeu();}else if(level>targetMax){msg.textContent='Trop plein ! Recommencez...';level=0;} }
     }
 
@@ -11975,7 +12085,9 @@
         else{tgt.style.background='rgba(231,76,60,0.3)';setTimeout(function(){tgt.style.background='rgba(46,204,113,0.2)';},200);}
       });
       zone.appendChild(msg); zone.appendChild(screen); zone.appendChild(btn);
-      miniJeuInterval = setInterval(function(){if(done)return;pos+=dir*speed;if(pos>=100){pos=100;dir=-1;}if(pos<=0){pos=0;dir=1;}ind.style.left=pos+'%';},16);
+      var tickProj = function(){if(done)return;pos+=dir*speed;if(pos>=100){pos=100;dir=-1;}if(pos<=0){pos=0;dir=1;}ind.style.left=pos+'%';};
+      miniJeuInterval = setInterval(tickProj,16);
+      miniJeuResumeFn = function(){ miniJeuInterval = setInterval(tickProj,16); };
     }
 
     // 13. TABLES : Debarrasser les assiettes sales
@@ -12051,13 +12163,15 @@
       resumeBtn.addEventListener('click', function(){if(!paused||done)return;paused=false;resumeBtn.style.display='none';msg.textContent='Telechargement en cours...';});
       zone.appendChild(msg); zone.appendChild(gauge.el); zone.appendChild(resumeBtn);
       var nextPause = 15+Math.floor(Math.random()*20);
-      miniJeuInterval = setInterval(function(){
+      var tickConsoles = function(){
         if(done||paused)return;
         progress+=0.5;
         gauge.fill.style.width=Math.min(progress,100)+'%'; gauge.txt.textContent=Math.round(progress)+'%';
         if(progress>=nextPause&&pauses<totalPauses){paused=true;pauses++;msg.textContent='\u26A0 Erreur ! Cliquez REPRENDRE ('+pauses+'/'+totalPauses+')';resumeBtn.style.display='block';nextPause=progress+15+Math.floor(Math.random()*20);}
         if(progress>=100){done=true;completerMiniJeu();}
-      },50);
+      };
+      miniJeuInterval = setInterval(tickConsoles,50);
+      miniJeuResumeFn = function(){ miniJeuInterval = setInterval(tickConsoles,50); };
     }
 
     // 17. ANIMAUX : Donner la bonne nourriture
@@ -12097,7 +12211,9 @@
         else{msg.textContent=(temp<targetMin?'Trop froid !':'Trop chaud !')+' Reessayez...';display.style.color='#e74c3c';setTimeout(function(){display.style.color='#f39c12';msg.textContent='Arretez le thermometre entre 170\u00B0C et 190\u00B0C';},500);}
       });
       zone.appendChild(msg); zone.appendChild(display); zone.appendChild(btn);
-      miniJeuInterval = setInterval(function(){if(done)return;temp+=dir*speed;if(temp>=250){temp=250;dir=-1;}if(temp<=0){temp=0;dir=1;}display.textContent=Math.round(temp)+'\u00B0C';if(temp>=targetMin&&temp<=targetMax)display.style.color='#2ecc71';else display.style.color='#f39c12';},30);
+      var tickFours = function(){if(done)return;temp+=dir*speed;if(temp>=250){temp=250;dir=-1;}if(temp<=0){temp=0;dir=1;}display.textContent=Math.round(temp)+'\u00B0C';if(temp>=targetMin&&temp<=targetMax)display.style.color='#2ecc71';else display.style.color='#f39c12';};
+      miniJeuInterval = setInterval(tickFours,30);
+      miniJeuResumeFn = function(){ miniJeuInterval = setInterval(tickFours,30); };
     }
 
     // 19. PLANTES : Arroser 3 plantes au bon niveau
@@ -12123,9 +12239,11 @@
         bars.push(fl); cells.push(wrap); grid.appendChild(wrap);
       }
       zone.appendChild(msg); zone.appendChild(grid);
-      miniJeuInterval = setInterval(function(){
+      var tickPlantes = function(){
         if(filling>=0&&!done[filling]){levels[filling]=Math.min(100,levels[filling]+1.2);bars[filling].style.height=levels[filling]+'%';}
-      },50);
+      };
+      miniJeuInterval = setInterval(tickPlantes,50);
+      miniJeuResumeFn = function(){ miniJeuInterval = setInterval(tickPlantes,50); };
       function checkPlant(idx){
         var t=plants[idx].target;
         if(levels[idx]>=t-8&&levels[idx]<=t+8){done[idx]=true;bars[idx].style.background='#2ecc71';completed++;if(completed>=3)completerMiniJeu();}
@@ -12174,10 +12292,12 @@
         else{msg.textContent='Les deux doivent etre dans le vert !';setTimeout(function(){msg.textContent='Appuyez quand les DEUX aiguilles sont dans le vert';},800);}
       });
       zone.appendChild(msg);zone.appendChild(t1.el);zone.appendChild(t2.el);zone.appendChild(btn);
-      miniJeuInterval=setInterval(function(){if(done)return;
+      var tickCalibrer=function(){if(done)return;
         pos1+=dir1*sp1;if(pos1>=100){pos1=100;dir1=-1;}if(pos1<=0){pos1=0;dir1=1;}t1.needle.style.left=pos1+'%';
         pos2+=dir2*sp2;if(pos2>=100){pos2=100;dir2=-1;}if(pos2<=0){pos2=0;dir2=1;}t2.needle.style.left=pos2+'%';
-      },16);
+      };
+      miniJeuInterval=setInterval(tickCalibrer,16);
+      miniJeuResumeFn=function(){ miniJeuInterval=setInterval(tickCalibrer,16); };
     }
 
     // 22. QUILLES : Relever les quilles tombees
@@ -12216,7 +12336,7 @@
       btn.addEventListener('touchstart',function(e){e.preventDefault();if(!done)inflating=true;},{passive:false});
       btn.addEventListener('touchend',function(){inflating=false;checkBalloon();});
       zone.appendChild(msg); zone.appendChild(balloon); zone.appendChild(dangerBar.el); zone.appendChild(btn);
-      miniJeuInterval=setInterval(function(){
+      var tickBallons=function(){
         if(done)return;
         if(inflating){size+=1.5;var s=40+size*0.8;balloon.style.width=s+'px';balloon.style.height=s+'px';
           dangerBar.fill.style.width=size+'%';dangerBar.txt.textContent=Math.round(size)+'%';
@@ -12224,7 +12344,9 @@
             setTimeout(function(){done=false;size=0;balloon.style.width='40px';balloon.style.height='40px';balloon.textContent='\uD83C\uDF88';dangerBar.fill.style.width='0%';dangerBar.txt.textContent='0%';msg.textContent='Maintenez pour gonfler, relachez avant que ca eclate ! ('+current+'/'+total+')';},1000);
           }
         }
-      },50);
+      };
+      miniJeuInterval=setInterval(tickBallons,50);
+      miniJeuResumeFn=function(){ miniJeuInterval=setInterval(tickBallons,50); };
       function checkBalloon(){
         if(done)return; var t=targets[current];
         if(size>=t-10&&size<=t+5){current++;balloon.textContent='\u2705';

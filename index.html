@@ -3598,6 +3598,61 @@
       border-radius: 50%;
     }
 
+    /* Popup de vote reunion multiplayer */
+    .popup-reunion {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(26,26,46,0.95);
+      border: 2px solid #f39c12;
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      z-index: 225;
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      min-width: 280px;
+    }
+    .popup-reunion-titre {
+      font-family: 'Impact', 'Arial Black', sans-serif;
+      font-size: 22px;
+      color: #f39c12;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .reunion-vote-info {
+      font-size: 16px;
+      color: #aaa;
+    }
+    .reunion-vote-liste {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+    .reunion-vote-btn {
+      background: rgba(44,62,80,0.8);
+      border: 2px solid #3498db;
+      border-radius: 8px;
+      color: #ecf0f1;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .reunion-vote-btn:hover {
+      background: rgba(52,152,219,0.3);
+      border-color: #2ecc71;
+    }
+    .reunion-vote-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     /* Resultat du vote (bandeau) */
     .reunion-resultat-bandeau {
       position: absolute;
@@ -5492,7 +5547,7 @@
         <thead>
           <tr>
             <th data-i18n="game">PARTIE</th>
-            <th data-i18n="players">JOUEURS</th>
+            <th data-i18n="playersHeader">JOUEURS</th>
             <th data-i18n="villains">MECHANTS</th>
             <th></th>
           </tr>
@@ -6390,6 +6445,13 @@
         <button class="reunion-btn-continuer" onclick="fermerReunion()" data-i18n="cont">CONTINUER</button>
       </div>
 
+      <!-- Popup vote reunion (multiplayer) -->
+      <div class="popup-reunion" id="popup-reunion" style="display:none;">
+        <div class="popup-reunion-titre" data-i18n="emergencyMeeting">REUNION D'URGENCE</div>
+        <div class="reunion-vote-info" id="reunion-vote-info">0/0</div>
+        <div class="reunion-vote-liste" id="reunion-vote-liste"></div>
+      </div>
+
       <!-- FIN DE PARTIE -->
       <div class="fin-partie-overlay" id="fin-partie-overlay">
         <div class="fin-partie-titre" id="fin-partie-titre">VICTOIRE DES VIRUS</div>
@@ -7096,7 +7158,7 @@
 
     // Creer un element DOM pour un joueur distant
     function createRemotePlayerElement(p) {
-      var container = document.getElementById('map');
+      var container = document.getElementById('mall-map');
       if (!container) return;
       var div = document.createElement('div');
       div.id = 'remote-' + p.playerId;
@@ -7134,7 +7196,7 @@
     // Mettre a jour les cadavres en multiplayer
     function updateCadavresMultiplayer(cadavres) {
       if (!cadavres) return;
-      var container = document.getElementById('map');
+      var container = document.getElementById('mall-map');
       if (!container) return;
       container.querySelectorAll('.cadavre-mp').forEach(function(el) { el.remove(); });
       cadavres.forEach(function(c) {
@@ -7872,13 +7934,13 @@
         emergencyMeeting: 'REUNION D\'URGENCE',
         fittingRoom: 'CABINE D\'ESSAYAGE',
         friends: 'AMIS',
-        players: 'JOUEURS',
+        playersHeader: 'JOUEURS',
         chat: 'CHAT',
         waitingRoom: 'SALLE D\'ATTENTE',
         newGame: 'NOUVELLE PARTIE',
         waitingGames: 'PARTIES EN ATTENTE',
         skinsAndAccs: 'SKINS & ACCESSOIRES',
-        changeSkin: 'CHANGEZ DE SKIN',
+        changeSkinTitle: 'CHANGEZ DE SKIN',
         chooseSkin: 'Choisis ton skin !',
         gameName: 'NOM DE LA PARTIE',
         maxPlayers: 'NOMBRE MAX DE JOUEURS',
@@ -8127,7 +8189,6 @@
         musicTab: 'MUSIQUE',
         chooseMusic: 'Choisis ta musique !',
         hudControls: 'ZQSD ou Fleches pour se deplacer',
-        inProgress: 'EN COURS...',
         noGamesAvailable: '0 partie disponible',
         gamesAvailable: '{0} partie{1} disponible{2}',
         need10For3VirusTip: 'Il faut au moins 10 joueurs pour 3 virus',
@@ -8344,13 +8405,13 @@
         emergencyMeeting: 'EMERGENCY MEETING',
         fittingRoom: 'FITTING ROOM',
         friends: 'FRIENDS',
-        players: 'PLAYERS',
+        playersHeader: 'PLAYERS',
         chat: 'CHAT',
         waitingRoom: 'WAITING ROOM',
         newGame: 'NEW GAME',
         waitingGames: 'WAITING GAMES',
         skinsAndAccs: 'SKINS & ACCESSORIES',
-        changeSkin: 'CHANGE YOUR SKIN',
+        changeSkinTitle: 'CHANGE YOUR SKIN',
         chooseSkin: 'Choose your skin!',
         gameName: 'GAME NAME',
         maxPlayers: 'MAX PLAYERS',
@@ -8599,7 +8660,6 @@
         musicTab: 'MUSIC',
         chooseMusic: 'Choose your music!',
         hudControls: 'WASD or Arrows to move',
-        inProgress: 'IN PROGRESS...',
         noGamesAvailable: '0 games available',
         gamesAvailable: '{0} game{1} available',
         need10For3VirusTip: 'You need at least 10 players for 3 viruses',
@@ -12466,7 +12526,7 @@
 
     // 22. QUILLES : Relever les quilles tombees
     function initMJ_quilles(zone) {
-      var rows = [1,2,3,4]; var total = 10; var fallen = []; var fixed = 0;
+      var total = 10; var fallen = []; var fixed = 0;
       for(var i=0;i<total;i++) fallen.push(Math.random()<0.6);
       var toFix=0; for(var i=0;i<total;i++) if(fallen[i]) toFix++;
       if(toFix===0){fallen[0]=true;fallen[3]=true;toFix=2;}

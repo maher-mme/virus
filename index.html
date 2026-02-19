@@ -12116,9 +12116,9 @@
         var lbl = document.createElement('div'); lbl.style.cssText='font-size:24px;'; lbl.textContent=plants[i].e;
         var btn = mjBtn('\uD83D\uDCA7', '#3498db', 'white'); btn.style.padding='6px 16px'; btn.style.fontSize='18px';
         btn.addEventListener('mousedown',(function(idx){return function(e){e.preventDefault();if(!done[idx])filling=idx;};})(i));
-        btn.addEventListener('mouseup',(function(idx){return function(){if(filling===idx){filling=-1;checkPlant(idx);};})(i));
+        btn.addEventListener('mouseup',(function(idx){return function(){if(filling===idx){filling=-1;checkPlant(idx);}};})(i));
         btn.addEventListener('touchstart',(function(idx){return function(e){e.preventDefault();if(!done[idx])filling=idx;};})(i),{passive:false});
-        btn.addEventListener('touchend',(function(idx){return function(){if(filling===idx){filling=-1;checkPlant(idx);};})(i));
+        btn.addEventListener('touchend',(function(idx){return function(){if(filling===idx){filling=-1;checkPlant(idx);}};})(i));
         wrap.appendChild(lbl); wrap.appendChild(bar); wrap.appendChild(btn);
         bars.push(fl); cells.push(wrap); grid.appendChild(wrap);
       }

@@ -2330,8 +2330,13 @@
     #config-horsline {
       justify-content: flex-start;
       gap: 0;
-      overflow-y: auto;
-      padding: 30px 0;
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      overscroll-behavior: contain;
+      padding: 30px 0 60px 0;
+      height: 100vh;
+      height: 100dvh;
     }
     .config-hl-formulaire {
       width: clamp(340px, 50vw, 460px);
@@ -4391,6 +4396,9 @@
       /* ============================== */
       /* CONFIG HORS LIGNE              */
       /* ============================== */
+      #config-horsline {
+        padding: 20px 0 80px 0;
+      }
       .config-hl-formulaire {
         width: 90vw;
         margin-top: 10px;

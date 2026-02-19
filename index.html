@@ -4572,44 +4572,59 @@
         font-size: 11px;
       }
 
-      /* Chat reunion mobile */
+      /* Reunion mobile */
       .reunion-bandeau {
-        top: 8px;
-        padding: 6px 14px;
+        top: 50px;
+        padding: 5px 12px;
       }
       .reunion-bandeau-titre {
-        font-size: 15px;
+        font-size: 14px;
         letter-spacing: 1px;
       }
       .reunion-bandeau-timer {
-        font-size: 14px;
+        font-size: 13px;
       }
       .reunion-chat {
-        top: 55px;
-        bottom: auto;
+        top: auto;
+        bottom: 55px;
         right: 5px;
         left: 5px;
         width: auto;
-        max-height: 35vh;
+        max-height: 30vh;
       }
       .reunion-chat-messages {
-        min-height: 60px;
-        max-height: 18vh;
+        min-height: 50px;
+        max-height: 16vh;
+        font-size: 11px;
       }
       .reunion-chat-header {
-        padding: 4px 10px;
+        padding: 3px 8px;
       }
       .reunion-chat-header h4 {
-        font-size: 10px;
+        font-size: 9px;
+      }
+      .reunion-chat-input {
+        padding: 4px;
       }
       .reunion-chat-input input {
-        font-size: 13px;
-        padding: 8px 10px;
+        font-size: 12px;
+        padding: 6px 8px;
+      }
+      .reunion-chat-input button {
+        width: 28px;
+        height: 28px;
       }
       .reunion-btn-skip {
-        bottom: 10px;
-        padding: 8px 25px;
+        bottom: 12px;
+        padding: 8px 24px;
         font-size: 14px;
+        z-index: 225;
+      }
+      .vote-bulle {
+        top: -35px;
+        width: 22px;
+        height: 22px;
+        font-size: 11px;
       }
 
       /* ============================== */
@@ -10342,12 +10357,13 @@
         }
       }
 
-      // Centrer la camera sur la fontaine (decalage vers le haut pour voir les bulles de vote)
+      // Centrer la camera sur la fontaine
       var viewport = document.getElementById('jeu-viewport');
       var vw = viewport.clientWidth;
       var vh = viewport.clientHeight;
+      var camOffsetY = isMobile ? 0 : -40;
       var camX = fontCX - vw / 2;
-      var camY = fontCY - vh / 2 - 40;
+      var camY = fontCY - vh / 2 + camOffsetY;
       if (camX < 0) camX = 0;
       if (camY < 0) camY = 0;
       if (camX > MAP_W - vw) camX = MAP_W - vw;
@@ -10407,7 +10423,7 @@
       document.getElementById('reunion-resultat').style.display = 'none';
       document.getElementById('reunion-chat-messages').innerHTML = '';
 
-      // Masquer boutons de jeu
+      // Masquer boutons de jeu et HUD inutile pendant la reunion
       var btnReunion = document.getElementById('btn-reunion');
       if (btnReunion) btnReunion.style.display = 'none';
       var btnMission = document.getElementById('btn-mission');
@@ -10418,6 +10434,11 @@
       if (btnSignalerR) btnSignalerR.style.display = 'none';
       var cdElR = document.getElementById('kill-countdown');
       if (cdElR) cdElR.style.display = 'none';
+      // Masquer missions et minimap pendant la reunion sur mobile
+      var hudMissions = document.querySelector('.hud-missions');
+      if (hudMissions) hudMissions.style.display = 'none';
+      var minimap = document.querySelector('.minimap');
+      if (minimap) minimap.style.display = 'none';
       if (killCountdownInterval) { clearInterval(killCountdownInterval); killCountdownInterval = null; }
 
       // Cadavres deja supprimes au debut de ouvrirReunion()
@@ -11339,6 +11360,12 @@
         // Les joueurs restent devant la fontaine apres la reunion
         updateJoueur();
       } catch(e) {}
+
+      // Re-afficher missions et minimap
+      var hudMissions = document.querySelector('.hud-missions');
+      if (hudMissions) hudMissions.style.display = '';
+      var minimap = document.querySelector('.minimap');
+      if (minimap) minimap.style.display = '';
 
       // Verifier victoire apres elimination
       reunionEnCours = false;

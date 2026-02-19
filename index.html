@@ -3138,6 +3138,7 @@
       z-index: 300;
       display: none;
       touch-action: none;
+      pointer-events: auto;
     }
     #joystick-base {
       width: 150px;
@@ -4174,6 +4175,432 @@
     .espion-btn-camp:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
     .espion-btn-virus { background: #e74c3c; color: white; }
     .espion-btn-innocent { background: #27ae60; color: white; }
+
+    /* ============================== */
+    /* RESPONSIVE MOBILE              */
+    /* ============================== */
+    @media (max-width: 768px) {
+      /* Salle d'attente : empiler verticalement */
+      #salle-attente {
+        flex-direction: column;
+      }
+      .sa-content {
+        flex-direction: column;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+      .sa-gauche {
+        width: 100%;
+        padding: 10px;
+      }
+      .sa-droite {
+        width: 100%;
+        padding: 10px;
+      }
+      .cabines-grid {
+        justify-content: center;
+      }
+      .cabine {
+        width: clamp(70px, 20vw, 100px);
+      }
+      .cabine-interieur {
+        height: 70px;
+      }
+      .sa-enseigne {
+        padding: 6px 15px;
+      }
+      .sa-enseigne h2 {
+        font-size: 22px;
+        letter-spacing: 5px;
+      }
+      .sa-panneau-joueurs {
+        max-width: 100%;
+      }
+      .sa-chat {
+        max-width: 100%;
+        max-height: 200px;
+      }
+      .sa-droite > div {
+        flex-direction: column;
+      }
+      .sa-droite > div > div {
+        min-width: 0 !important;
+      }
+
+      /* Cacher les decorations qui genent sur mobile */
+      .sa-centre,
+      .sa-entree,
+      .plante,
+      .distributeur,
+      .sa-joueur-avatar {
+        display: none;
+      }
+
+      /* Murs plus fins */
+      .sa-mur-haut, .sa-mur-bas {
+        height: 30px;
+      }
+      .sa-content {
+        height: calc(100% - 60px);
+      }
+
+      /* Bouton demarrer plus accessible */
+      .btn-demarrer {
+        width: 100%;
+        height: 50px;
+      }
+
+      /* Panneau cabines centre */
+      .panneau-cabines {
+        align-self: center;
+      }
+
+      /* ============================== */
+      /* ECRAN CREATION COMPTE          */
+      /* ============================== */
+      .compte-carte {
+        width: 90vw;
+        margin-top: 10px;
+      }
+      .compte-header {
+        padding: 12px;
+      }
+      .compte-body {
+        padding: 20px 15px;
+      }
+      .compte-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 28px;
+      }
+
+      /* ============================== */
+      /* MENU PRINCIPAL                 */
+      /* ============================== */
+      .menu-pseudo-bar {
+        top: 10px;
+        right: 10px;
+        padding: 4px 8px;
+        gap: 6px;
+        font-size: 11px;
+      }
+      .btn-musique {
+        top: 10px;
+        left: 10px;
+        width: 34px;
+        height: 34px;
+        font-size: 16px;
+      }
+      .virus-icons {
+        gap: clamp(40px, 12vw, 100px);
+      }
+      .menu-buttons {
+        gap: 10px;
+        margin-top: 15px;
+      }
+      .btn-online {
+        width: clamp(260px, 75vw, 400px);
+        height: 65px;
+        font-size: clamp(20px, 5vw, 32px);
+      }
+      .btn-horsline,
+      .btn-boutique,
+      .btn-casier {
+        width: clamp(220px, 65vw, 340px);
+        height: 50px;
+        font-size: clamp(14px, 3.5vw, 20px);
+      }
+      .btn-param {
+        width: 140px;
+        height: 36px;
+        font-size: 12px;
+      }
+      .regles-panneau {
+        width: 90vw;
+        margin-top: 15px;
+      }
+      .regles-liste {
+        max-height: 150px;
+      }
+      .version {
+        font-size: 8px;
+        bottom: 5px;
+      }
+
+      /* ============================== */
+      /* CONFIG HORS LIGNE              */
+      /* ============================== */
+      .config-hl-formulaire {
+        width: 90vw;
+        margin-top: 10px;
+      }
+      .config-hl-body {
+        padding: 15px;
+        gap: 14px;
+      }
+      .config-hl-resume {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      /* ============================== */
+      /* BOUTIQUE DE SKINS              */
+      /* ============================== */
+      #boutique-skins {
+        padding-top: 30px;
+        gap: 10px;
+      }
+      .boutique-grille {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        padding: 8px;
+        max-height: 55vh;
+      }
+      .boutique-tabs {
+        width: 90vw;
+      }
+      .skin-carte-img {
+        width: 45px;
+        height: 45px;
+      }
+      .skin-carte-nom {
+        font-size: 11px;
+        letter-spacing: 1px;
+      }
+      .skin-carte-prix {
+        font-size: 11px;
+      }
+      .skin-carte-btn {
+        font-size: 10px;
+        padding: 6px 0;
+      }
+
+      /* ============================== */
+      /* MENU ONLINE                    */
+      /* ============================== */
+      .btn-retour {
+        top: 10px;
+        left: 10px;
+        width: 90px;
+        height: 36px;
+        font-size: 12px;
+      }
+      .online-sous-titre {
+        font-size: 12px;
+        letter-spacing: 3px;
+        margin-bottom: 15px;
+      }
+      .panneau-central {
+        padding: 20px 15px;
+        gap: 15px;
+        width: 90vw;
+        box-sizing: border-box;
+      }
+      .btn-creer,
+      .btn-trouver {
+        width: 100%;
+        height: 90px;
+        padding: 0 15px;
+        gap: 12px;
+      }
+      .btn-creer .btn-icon,
+      .btn-trouver .btn-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+      }
+      .separateur-ou {
+        width: 100%;
+      }
+      .info-bas {
+        max-width: 100%;
+      }
+
+      /* ============================== */
+      /* CREER PARTIE                   */
+      /* ============================== */
+      .cp-formulaire {
+        width: 90vw;
+        margin-top: 10px;
+      }
+      .cp-body {
+        padding: 15px;
+        gap: 14px;
+      }
+      .cp-roles-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* ============================== */
+      /* LISTE DES PARTIES              */
+      /* ============================== */
+      .lp-conteneur {
+        width: 95vw;
+        margin-top: 10px;
+      }
+      .lp-tableau thead th {
+        padding: 8px 6px;
+        font-size: 9px;
+        letter-spacing: 1px;
+      }
+      .lp-tableau tbody td {
+        padding: 8px 6px;
+        font-size: 11px;
+      }
+      .lp-nom-partie {
+        gap: 6px;
+      }
+      .lp-icone-partie {
+        width: 24px;
+        height: 24px;
+        font-size: 11px;
+      }
+      .lp-nom-texte .nom {
+        font-size: 11px;
+      }
+      .lp-barre-joueurs {
+        width: 40px;
+      }
+
+      /* ============================== */
+      /* POPUP PARAMETRES               */
+      /* ============================== */
+      .popup-box {
+        width: 90vw;
+      }
+      .lang-selector {
+        flex-direction: column;
+      }
+
+      /* ============================== */
+      /* HUD EN JEU                     */
+      /* ============================== */
+      .hud-top {
+        top: 8px;
+        padding: 4px 10px;
+        gap: 8px;
+      }
+      .hud-top span {
+        font-size: 10px;
+      }
+      .hud-role {
+        font-size: 9px;
+        padding: 2px 6px;
+      }
+      .hud-missions {
+        top: 45px;
+        left: 8px;
+        padding: 6px 8px;
+        min-width: 140px;
+        max-width: 45vw;
+        font-size: 10px;
+      }
+      .hud-missions h4 {
+        font-size: 9px;
+        margin-bottom: 4px;
+      }
+      .mission-item {
+        font-size: 9px;
+        gap: 5px;
+      }
+      .hud-minimap {
+        bottom: 8px;
+        right: 8px;
+        width: 110px;
+        height: 82px;
+      }
+      .btn-mission {
+        bottom: 30px;
+        padding: 8px 20px;
+        font-size: 14px;
+      }
+      .btn-kill {
+        bottom: 90px;
+        padding: 8px 20px;
+        font-size: 14px;
+      }
+      .btn-enqueter {
+        bottom: 90px;
+        padding: 8px 20px;
+        font-size: 14px;
+      }
+      .btn-signaler {
+        bottom: 150px;
+        padding: 8px 20px;
+        font-size: 14px;
+      }
+      .btn-cameras {
+        bottom: 80px;
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+      .kill-countdown {
+        bottom: 90px;
+        width: 48px;
+        height: 48px;
+        font-size: 22px;
+      }
+
+      /* ============================== */
+      /* CAMERAS SECURITE               */
+      /* ============================== */
+      .cameras-grille {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+      }
+      .cameras-titre {
+        font-size: 16px;
+        letter-spacing: 2px;
+      }
+
+      /* ============================== */
+      /* REUNION / VOTE                 */
+      /* ============================== */
+      .reunion-box {
+        width: 95vw;
+        max-width: 95vw;
+        padding: 15px;
+      }
+      .reunion-titre {
+        font-size: 18px;
+      }
+      .vote-carte {
+        padding: 6px 8px;
+      }
+      .vote-carte-pseudo {
+        font-size: 11px;
+      }
+
+      /* ============================== */
+      /* FIN DE PARTIE                  */
+      /* ============================== */
+      .fin-partie-box {
+        width: 90vw;
+        padding: 20px;
+      }
+
+      /* ============================== */
+      /* CASIER / CABINE POPUP          */
+      /* ============================== */
+      .cabine-popup {
+        min-width: auto;
+        width: 90vw;
+        padding: 15px;
+      }
+      .skin-selector {
+        gap: 8px;
+        max-height: 200px;
+      }
+      .skin-option {
+        width: 60px;
+        height: 70px;
+      }
+      .skin-option img {
+        height: 38px;
+        width: 38px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -4291,8 +4718,7 @@
         <div class="popup-section">
           <label data-i18n="pseudo">PSEUDO</label>
           <div class="pseudo-edit-row">
-            <input type="text" id="input-edit-pseudo" maxlength="20" placeholder="Nouveau pseudo..." data-i18n="phNewPseudo" data-i18n-attr="placeholder">
-            <button class="btn-sauver-pseudo" onclick="sauverPseudo()" data-i18n="save">SAUVER</button>
+            <span style="color:#aaa;font-size:14px;" id="input-edit-pseudo-display"></span>
           </div>
         </div>
         <div class="popup-section">
@@ -5567,38 +5993,63 @@
     // FIREBASE - Configuration
     // ============================
     var firebaseConfig = {
-      apiKey: "A_REMPLACER",
-      authDomain: "A_REMPLACER",
-      projectId: "A_REMPLACER",
-      storageBucket: "A_REMPLACER",
-      messagingSenderId: "A_REMPLACER",
-      appId: "A_REMPLACER"
+      apiKey: "VOTRE_API_KEY",           // Remplacer avec votre config Firebase
+      authDomain: "VOTRE_PROJET.firebaseapp.com",
+      projectId: "VOTRE_PROJET",
+      storageBucket: "VOTRE_PROJET.appspot.com",
+      messagingSenderId: "000000000000",
+      appId: "VOTRE_APP_ID"
     };
     firebase.initializeApp(firebaseConfig);
     var db = firebase.firestore();
-    var auth = firebase.auth();
-    var monUid = null;
+
+    // Identite persistante du joueur (UUID local)
+    var monPlayerId = localStorage.getItem('virus_player_id');
+    if (!monPlayerId) {
+      monPlayerId = 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('virus_player_id', monPlayerId);
+    }
+
     var mesAmis = [];
     var demandesEnAttente = [];
     var panelAmisOuvert = false;
     var tabAmiActif = 'en-ligne';
-    var amisStatuts = {}; // cache statut online des amis
-    var ancienNbDemandes = 0; // pour ne notifier que les nouvelles demandes
-    var invitationsAffichees = {}; // invitations deja affichees (eviter doublons)
+    var amisStatuts = {};
+    var ancienNbDemandes = 0;
+    var invitationsAffichees = {};
+
+    // Listeners Firestore actifs
+    var firebaseUnsubscribers = [];
+    var gameUnsubscribers = [];
+    var remotePlayers = {};
+    var lastPositionSend = 0;
+    var lastSaPositionSend = 0;
+    var myPartyPlayerDocId = null;
+
+    // Heartbeat toutes les 30 secondes
+    setInterval(function() {
+      if (monPlayerId) {
+        db.collection('players').doc(monPlayerId).set({
+          lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+          online: true
+        }, { merge: true }).catch(function() {});
+      }
+    }, 30000);
+
+    // Passer hors ligne quand on ferme la page
+    window.addEventListener('beforeunload', function() {
+      if (monPlayerId) {
+        db.collection('players').doc(monPlayerId).update({ online: false }).catch(function() {});
+      }
+    });
 
     // ============================
     // GESTION DU COMPTE
     // ============================
     function isAdmin() {
-      return localStorage.getItem('virus_admin') === 'true';
+      var pseudo = (getPseudo() || '').toLowerCase();
+      return pseudo === 'obstinate' || pseudo === 'obstinate2.0';
     }
-
-    // Marquer le compte local comme admin (premier lancement)
-    (function() {
-      if (localStorage.getItem('virus_pseudo') && !localStorage.getItem('virus_admin')) {
-        localStorage.setItem('virus_admin', 'true');
-      }
-    })();
 
     // ============================
     // SYSTEME DE SKINS
@@ -5787,77 +6238,60 @@
       var pseudo = document.getElementById('input-pseudo-compte').value.trim();
       if (!pseudo) { alert(t('vChoosePseudo')); return; }
       if (pseudo.length < 2) { alert(t('vPseudoTooShort')); return; }
-      if (pseudoDejaUtilise(pseudo)) {
-        showNotif(t('pseudoTaken'), 'warn');
-        return;
-      }
-      setPseudo(pseudo);
-      localStorage.setItem('virus_admin', 'true');
-      // Skin aleatoire entre garcon et fille
-      var skinAleatoire = Math.random() < 0.5 ? 'garcon' : 'fille';
-      setSkin(skinAleatoire);
-      // Creer le profil Firebase
-      if (monUid) {
-        db.collection('users').doc(monUid).set({
+      // Verifier dans Firebase si le pseudo existe deja
+      db.collection('players').where('pseudo', '==', pseudo).limit(1).get().then(function(snap) {
+        if (!snap.empty) {
+          showNotif(t('pseudoTaken'), 'warn');
+          return;
+        }
+        setPseudo(pseudo);
+        // Skin aleatoire entre garcon et fille
+        var skinAleatoire = Math.random() < 0.5 ? 'garcon' : 'fille';
+        setSkin(skinAleatoire);
+        // Enregistrer sur Firebase
+        db.collection('players').doc(monPlayerId).set({
+          playerId: monPlayerId,
           pseudo: pseudo,
-          skin: skinAleatoire,
+          skin: getSkinFichier(skinAleatoire),
           online: true,
           lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        initAmisListeners();
-        var btnAmis = document.getElementById('btn-amis');
-        if (btnAmis) btnAmis.style.display = 'flex';
-      } else {
-        // Si pas encore auth, relancer l'auth puis creer le profil
-        initFirebaseAuth();
-      }
-      showScreen('menu-principal');
+        }, { merge: true }).then(function() {
+          initAmisListeners();
+          var btnAmis = document.getElementById('btn-amis');
+          if (btnAmis) btnAmis.style.display = 'flex';
+        }).catch(function() {});
+        showScreen('menu-principal');
+      }).catch(function() {
+        showNotif(t('connectionError'), 'error');
+      });
     }
 
     function ouvrirParams() {
       document.getElementById('popup-params').classList.add('visible');
-      document.getElementById('input-edit-pseudo').value = getPseudo();
+      var display = document.getElementById('input-edit-pseudo-display');
+      if (display) display.textContent = getPseudo();
     }
 
     function fermerParams() {
       document.getElementById('popup-params').classList.remove('visible');
     }
 
-    function sauverPseudo() {
-      var nouveau = document.getElementById('input-edit-pseudo').value.trim();
-      var ancien = getPseudo();
-      if (!nouveau) { alert(t('vPseudoEmpty')); return; }
-      if (nouveau.length < 2) { alert(t('vPseudoShort')); return; }
-      if (nouveau.toLowerCase() !== ancien.toLowerCase() && pseudoDejaUtilise(nouveau)) {
-        showNotif(t('pseudoTakenKeep', ancien), 'warn');
-        document.getElementById('input-edit-pseudo').value = ancien;
-        return;
-      }
-      setPseudo(nouveau);
-      fermerParams();
-    }
-
     function supprimerCompte() {
       if (confirm(t('vDeleteAccount'))) {
-        // Nettoyer Firestore si connecte
-        if (monUid) {
-          db.collection('users').doc(monUid).update({ online: false, pseudo: '[supprime]' }).catch(function() {});
-          // Supprimer les demandes d'amis pendantes envoyees
-          db.collection('friendRequests').where('from', '==', monUid).where('status', '==', 'pending').get().then(function(snap) {
-            snap.forEach(function(doc) { doc.ref.delete(); });
-          }).catch(function() {});
-        }
+        // Passer hors ligne sur Firebase
+        db.collection('players').doc(monPlayerId).update({ online: false }).catch(function() {});
         localStorage.removeItem('virus_pseudo');
-        localStorage.removeItem('virus_parties');
         localStorage.removeItem('virus_skin');
         localStorage.removeItem('virus_admin');
         localStorage.removeItem('virusGold');
         localStorage.removeItem('virusSkinsAchetes');
-        localStorage.removeItem('virus_uid');
+        localStorage.removeItem('virus_player_id');
         mesAmis = [];
         demandesEnAttente = [];
         amisStatuts = {};
-        monUid = null;
+        // Generer un nouveau player ID
+        monPlayerId = 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('virus_player_id', monPlayerId);
         showScreen('ecran-compte');
       }
     }
@@ -5881,60 +6315,58 @@
     })();
 
     // ============================
-    // FIREBASE - Auth anonyme
+    // FIREBASE - Initialisation joueur
     // ============================
     function initFirebaseAuth() {
-      auth.signInAnonymously().then(function(result) {
-        monUid = result.user.uid;
-        localStorage.setItem('virus_uid', monUid);
-        // Marquer en ligne dans Firestore
-        var pseudo = getPseudo();
-        if (pseudo) {
-          db.collection('users').doc(monUid).set({
-            pseudo: pseudo,
-            skin: getSkin(),
-            online: true,
-            lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-          }, { merge: true });
-          // Demarrer les listeners amis
+      var pseudo = getPseudo();
+      if (pseudo) {
+        db.collection('players').doc(monPlayerId).set({
+          playerId: monPlayerId,
+          pseudo: pseudo,
+          skin: getSkinFichier(getSkin()),
+          online: true,
+          lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true }).then(function() {
           initAmisListeners();
-        }
-        // Afficher le bouton amis
-        var btnAmis = document.getElementById('btn-amis');
-        if (btnAmis && getPseudo()) btnAmis.style.display = 'flex';
-      }).catch(function(err) {
-        // Firebase auth erreur silencieuse
-      });
+          var btnAmis = document.getElementById('btn-amis');
+          if (btnAmis) btnAmis.style.display = 'flex';
+        }).catch(function() {});
+      }
     }
 
-    // Auth au chargement (avec petit delai pour laisser Firebase charger)
+    // Initialiser au chargement
     setTimeout(initFirebaseAuth, 500);
 
-    // Marquer hors ligne quand on ferme la page
-    window.addEventListener('beforeunload', function() {
-      if (monUid) {
-        db.collection('users').doc(monUid).update({
-          online: false,
-          lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      }
-    });
-
     // ============================
-    // GESTION DES PARTIES (localStorage)
+    // GESTION DES PARTIES (Firebase)
     // ============================
     const COULEURS_PARTIES = ['#e74c3c', '#f39c12', '#3498db', '#2ecc71', '#9b59b6', '#1abc9c', '#e67e22', '#2c3e50'];
     var estHost = false;
     var partieActuelleId = null;
+    var firebaseParties = [];
+    var firebasePartyPlayers = [];
+
+    // Listener temps reel sur la liste des parties
+    db.collection('parties').orderBy('createdAt', 'desc').onSnapshot(function(snapshot) {
+      firebaseParties = [];
+      snapshot.forEach(function(doc) {
+        var data = doc.data();
+        data._id = doc.id;
+        data.enCours = (data.phase !== 'lobby');
+        firebaseParties.push(data);
+      });
+      var ecranListe = document.getElementById('liste-parties');
+      if (ecranListe && ecranListe.classList.contains('active')) {
+        rafraichirListeParties();
+      }
+    });
 
     function getParties() {
-      try {
-        return JSON.parse(localStorage.getItem('virus_parties') || '[]');
-      } catch(e) { return []; }
+      return firebaseParties;
     }
 
-    function sauvegarderParties(parties) {
-      localStorage.setItem('virus_parties', JSON.stringify(parties));
+    function sauvegarderParties() {
+      // Plus necessaire avec Firebase (les donnees sont sur le cloud)
     }
 
     // Notification salle d'attente (bas gauche)
@@ -5975,41 +6407,507 @@
     }
 
     function quitterPartie() {
-      // Jouer le son quitter et notification pour les joueurs restants dans la salle
-      var pseudoLeave = getPseudo() || 'Joueur';
       jouerSonSalle('quitter.mp3');
-      ajouterNotifSalle(t('playerLeft', pseudoLeave), 'leave');
-
       if (partieActuelleId) {
-        var parties = getParties();
-        var partie = null;
-        for (var i = 0; i < parties.length; i++) {
-          if (parties[i].id === partieActuelleId) { partie = parties[i]; break; }
+        // Supprimer le joueur de la partie
+        if (myPartyPlayerDocId) {
+          db.collection('partyPlayers').doc(myPartyPlayerDocId).delete().catch(function() {});
+          myPartyPlayerDocId = null;
         }
-
-        if (partie) {
-          // Retirer le joueur de la liste
-          if (partie.listeJoueurs) {
-            partie.listeJoueurs = partie.listeJoueurs.filter(function(j) { return j !== pseudoLeave; });
-            partie.joueurs = partie.listeJoueurs.length;
+        // Mettre a jour le compteur et la liste de joueurs
+        var pseudo = getPseudo();
+        db.collection('parties').doc(partieActuelleId).update({
+          joueurs: firebase.firestore.FieldValue.increment(-1),
+          listeJoueurs: firebase.firestore.FieldValue.arrayRemove(pseudo)
+        }).catch(function() {});
+        // Transferer host si necessaire
+        db.collection('partyPlayers').where('partyId', '==', partieActuelleId).limit(1).get().then(function(snap) {
+          if (!snap.empty) {
+            var newHost = snap.docs[0];
+            newHost.ref.update({ isHost: true });
+            db.collection('parties').doc(partieActuelleId).update({ hostPlayerId: newHost.data().playerId, hostPseudo: newHost.data().pseudo });
+          } else {
+            // Plus personne -> supprimer la partie
+            db.collection('parties').doc(partieActuelleId).delete().catch(function() {});
           }
-
-          // Si plus personne, supprimer la partie
-          if (!partie.listeJoueurs || partie.listeJoueurs.length === 0) {
-            parties = parties.filter(function(p) { return p.id !== partieActuelleId; });
-          } else if (partie.host === pseudoLeave) {
-            // Le host quitte : choisir un nouveau host aleatoirement
-            var nouveauHost = partie.listeJoueurs[Math.floor(Math.random() * partie.listeJoueurs.length)];
-            partie.host = nouveauHost;
-            ajouterNotifSalle(t('newHost', nouveauHost), 'join');
-          }
-
-          sauvegarderParties(parties);
-        }
+        }).catch(function() {});
+        unsubscribeFromParty();
         partieActuelleId = null;
       }
       estHost = false;
       showScreen('menu-online');
+    }
+
+    // S'abonner aux mises a jour d'une partie (joueurs, chat)
+    function subscribeToParty(partyId) {
+      unsubscribeFromParty();
+      // Joueurs de la partie (temps reel)
+      firebaseUnsubscribers.push(
+        db.collection('partyPlayers').where('partyId', '==', partyId).onSnapshot(function(snapshot) {
+          var oldCount = firebasePartyPlayers.length;
+          firebasePartyPlayers = [];
+          snapshot.forEach(function(doc) {
+            var data = doc.data();
+            data._docId = doc.id;
+            firebasePartyPlayers.push(data);
+          });
+          updateSalleAttenteUI(firebasePartyPlayers);
+
+          if (oldCount > 0 && firebasePartyPlayers.length > oldCount) {
+            jouerSonSalle('join.mp3');
+            var newPlayer = firebasePartyPlayers[firebasePartyPlayers.length - 1];
+            if (newPlayer && newPlayer.playerId !== monPlayerId) {
+              ajouterNotifSalle(t('playerJoined', newPlayer.pseudo), 'join');
+            }
+          } else if (oldCount > 0 && firebasePartyPlayers.length < oldCount) {
+            jouerSonSalle('quitter.mp3');
+          }
+        })
+      );
+      // Chat lobby
+      firebaseUnsubscribers.push(
+        db.collection('chatMessages').where('partyId', '==', partyId).where('context', '==', 'lobby').orderBy('timestamp').onSnapshot(function(snapshot) {
+          var messages = [];
+          snapshot.forEach(function(doc) { messages.push(doc.data()); });
+          updateChatUI(messages, 'lobby');
+        })
+      );
+    }
+
+    function unsubscribeFromParty() {
+      firebaseUnsubscribers.forEach(function(unsub) { if (unsub) unsub(); });
+      firebaseUnsubscribers = [];
+      gameUnsubscribers.forEach(function(unsub) { if (unsub) unsub(); });
+      gameUnsubscribers = [];
+      firebasePartyPlayers = [];
+      remotePlayers = {};
+    }
+
+    // S'abonner a l'etat du jeu en temps reel (positions, kills, reunions)
+    function subscribeToGameState(partyId) {
+      // Etat de la partie (phase, etc.)
+      gameUnsubscribers.push(
+        db.collection('parties').doc(partyId).onSnapshot(function(doc) {
+          if (!doc.exists) return;
+          var state = doc.data();
+          state._id = doc.id;
+          handleGameStateUpdate(state);
+        })
+      );
+      // Positions des joueurs (partyPlayers)
+      gameUnsubscribers.push(
+        db.collection('partyPlayers').where('partyId', '==', partyId).onSnapshot(function(snapshot) {
+          var players = [];
+          snapshot.forEach(function(d) {
+            var data = d.data();
+            data._docId = d.id;
+            players.push(data);
+          });
+          handlePositionUpdate(players);
+        })
+      );
+      // Cadavres
+      gameUnsubscribers.push(
+        db.collection('cadavres').where('partyId', '==', partyId).onSnapshot(function(snapshot) {
+          var cadavres = [];
+          snapshot.forEach(function(d) {
+            var data = d.data();
+            data._id = d.id;
+            cadavres.push(data);
+          });
+          if (lastGamePhase === 'playing') updateCadavresMultiplayer(cadavres);
+        })
+      );
+      // Chat reunion
+      gameUnsubscribers.push(
+        db.collection('chatMessages').where('partyId', '==', partyId).where('context', '==', 'meeting').orderBy('timestamp').onSnapshot(function(snapshot) {
+          var messages = [];
+          snapshot.forEach(function(doc) { messages.push(doc.data()); });
+          if (reunionEnCours) updateChatUI(messages, 'meeting');
+        })
+      );
+      // Reunions actives
+      gameUnsubscribers.push(
+        db.collection('meetings').where('partyId', '==', partyId).where('active', '==', true).onSnapshot(function(snapshot) {
+          if (!snapshot.empty) {
+            var meeting = snapshot.docs[0].data();
+            meeting._id = snapshot.docs[0].id;
+            if (!reunionEnCours) {
+              ouvrirReunionMultiplayer(meeting);
+            }
+            // Mettre a jour le compteur de votes
+            db.collection('votes').where('meetingId', '==', meeting._id).get().then(function(voteSnap) {
+              var voteInfo = document.getElementById('reunion-vote-info');
+              var aliveCount = firebasePartyPlayers.filter(function(p) { return p.alive; }).length;
+              if (voteInfo) voteInfo.textContent = voteSnap.size + '/' + aliveCount;
+            });
+          }
+        })
+      );
+    }
+
+    // Gestion des mises a jour de l'etat du jeu
+    var lastGamePhase = null;
+    function handleGameStateUpdate(state) {
+      // Phase a change
+      if (state.phase !== lastGamePhase) {
+        if (state.phase === 'playing' && lastGamePhase === 'lobby') {
+          lancerJeuMultiplayer(state);
+        } else if (state.phase === 'meeting' && !reunionEnCours) {
+          // Reunion geree par le listener meetings
+        } else if (state.phase === 'playing' && reunionEnCours) {
+          fermerReunionMultiplayer(state);
+        } else if (state.phase === 'finished') {
+          afficherFinPartieMultiplayer(state);
+        }
+        lastGamePhase = state.phase;
+      }
+    }
+
+    // Lancer le jeu en mode multiplayer
+    function lancerJeuMultiplayer(state) {
+      // Trouver mon role depuis les partyPlayers
+      var myPlayer = firebasePartyPlayers.find(function(p) { return p.playerId === monPlayerId; });
+      monRole = (myPlayer && myPlayer.role) || 'innocent';
+      modeHorsLigne = false;
+      showScreen('jeu');
+      jeuActif = true;
+      joueurX = 3800;
+      joueurY = 3050;
+      joueursElimines = [];
+      killProtection = true;
+      setTimeout(function() { killProtection = false; }, 10000);
+      reunionCooldown = true;
+      setTimeout(function() { reunionCooldown = false; }, 15000);
+      voteTermine = false;
+      voteChoisi = false;
+      joueurAVote = false;
+
+      // Afficher le role
+      if (monRole === 'virus') {
+        var allies = firebasePartyPlayers.filter(function(p) { return p.role === 'virus' && p.playerId !== monPlayerId; }).map(function(p) { return p.pseudo; });
+        showNotif(t('youAreVirus', allies.join(', ') || 'aucun'), 'warn');
+      } else if (monRole === 'journaliste') {
+        showNotif(t('youAreJournalist'), 'info');
+      } else if (monRole === 'fanatique') {
+        showNotif(t('youAreFanatic'), 'warn');
+      } else if (monRole === 'espion') {
+        showNotif(t('youAreSpy'), 'info');
+        var overlay = document.getElementById('espion-choix-overlay');
+        if (overlay) overlay.style.display = 'flex';
+      } else {
+        showNotif(t('youAreInnocent'), 'info');
+      }
+
+      // Initialiser les missions
+      initMissions();
+
+      // Souscrire a l'etat du jeu
+      subscribeToGameState(partieActuelleId);
+      lastGamePhase = 'playing';
+      gameLoop();
+    }
+
+    // Gestion des positions distantes
+    function handlePositionUpdate(players) {
+      var now = Date.now();
+      players.forEach(function(p) {
+        if (p.playerId === monPlayerId) return;
+        if (!remotePlayers[p.playerId]) {
+          remotePlayers[p.playerId] = {
+            x: p.x, y: p.y, prevX: p.x, prevY: p.y,
+            targetX: p.x, targetY: p.y,
+            direction: p.direction, lastUpdate: now,
+            alive: p.alive, pseudo: p.pseudo, skin: p.skin
+          };
+          createRemotePlayerElement(p);
+        } else {
+          var rp = remotePlayers[p.playerId];
+          rp.prevX = rp.x;
+          rp.prevY = rp.y;
+          rp.targetX = p.x;
+          rp.targetY = p.y;
+          rp.direction = p.direction;
+          rp.lastUpdate = now;
+          rp.alive = p.alive;
+        }
+      });
+    }
+
+    // Creer un element DOM pour un joueur distant
+    function createRemotePlayerElement(p) {
+      var container = document.getElementById('map');
+      if (!container) return;
+      var div = document.createElement('div');
+      div.id = 'remote-' + p.playerId;
+      div.className = 'bot';
+      div.style.position = 'absolute';
+      div.style.left = p.x + 'px';
+      div.style.top = p.y + 'px';
+      div.innerHTML = '<div class="bot-pseudo">' + p.pseudo.replace(/</g, '&lt;') + '</div>' +
+        '<img src="' + (p.skin || 'skin/skin gratuit/skin de base (garçon).svg') +
+        '" class="bot-skin" style="width:60px;height:60px;">';
+      container.appendChild(div);
+    }
+
+    // Mettre a jour les joueurs distants (interpolation)
+    function updateRemotePlayers() {
+      var now = Date.now();
+      for (var pid in remotePlayers) {
+        var rp = remotePlayers[pid];
+        var elapsed = now - rp.lastUpdate;
+        var t = Math.min(elapsed / 200, 1);
+        rp.x = rp.prevX + (rp.targetX - rp.prevX) * t;
+        rp.y = rp.prevY + (rp.targetY - rp.prevY) * t;
+
+        var el = document.getElementById('remote-' + pid);
+        if (el) {
+          el.style.left = rp.x + 'px';
+          el.style.top = rp.y + 'px';
+          var img = el.querySelector('img');
+          if (img) img.style.transform = 'scaleX(' + rp.direction + ')';
+          if (!rp.alive) el.style.opacity = '0.3';
+        }
+      }
+    }
+
+    // Mettre a jour les cadavres en multiplayer
+    function updateCadavresMultiplayer(cadavres) {
+      if (!cadavres) return;
+      var container = document.getElementById('map');
+      if (!container) return;
+      container.querySelectorAll('.cadavre-mp').forEach(function(el) { el.remove(); });
+      cadavres.forEach(function(c) {
+        var div = document.createElement('div');
+        div.className = 'cadavre-mp';
+        div.style.position = 'absolute';
+        div.style.left = c.x + 'px';
+        div.style.top = c.y + 'px';
+        div.style.opacity = '0.5';
+        div.innerHTML = '<img src="' + (c.victimSkin || 'skin/skin gratuit/skin de base (garçon).svg') +
+          '" style="width:60px;height:60px;filter:grayscale(100%);transform:rotate(90deg);">';
+        div.onclick = function() {
+          if (!c.reported) {
+            db.collection('cadavres').doc(c._id).update({ reported: true }).then(function() {
+              // Signaler le cadavre -> declencher reunion
+              db.collection('meetings').add({
+                partyId: partieActuelleId,
+                initiatorPlayerId: monPlayerId,
+                reason: 'report',
+                active: true,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+              db.collection('parties').doc(partieActuelleId).update({ phase: 'meeting' });
+            }).catch(function() {});
+          }
+        };
+        container.appendChild(div);
+      });
+    }
+
+    // Reunion en multiplayer
+    function ouvrirReunionMultiplayer(meeting) {
+      reunionEnCours = true;
+      jeuActif = false;
+      try { var sReunion = new Audio("réunion d'urgence !.mp3"); sReunion.volume = 0.6; sReunion.play(); } catch(e) {}
+      var popup = document.getElementById('popup-reunion');
+      if (popup) popup.style.display = 'flex';
+      // Afficher les joueurs vivants dans la liste de vote
+      var voteList = document.getElementById('reunion-vote-liste');
+      if (voteList) {
+        voteList.innerHTML = '';
+        firebasePartyPlayers.forEach(function(j) {
+          if (!j.alive || j.playerId === monPlayerId) return;
+          var btn = document.createElement('button');
+          btn.className = 'reunion-vote-btn';
+          btn.textContent = j.pseudo;
+          btn.onclick = function() {
+            db.collection('votes').add({
+              meetingId: meeting._id,
+              partyId: partieActuelleId,
+              voterPlayerId: monPlayerId,
+              targetPlayerId: j.playerId,
+              isSkip: false
+            }).catch(function() {});
+            try { var sVote = new Audio('I VOTED.mp3'); sVote.volume = 0.5; sVote.play(); } catch(e) {}
+            voteList.querySelectorAll('.reunion-vote-btn').forEach(function(b) { b.disabled = true; });
+            // Host verifie si tous ont vote
+            if (estHost) checkVotesComplete(meeting._id);
+          };
+          voteList.appendChild(btn);
+        });
+      }
+    }
+
+    // Host verifie si tous les joueurs vivants ont vote
+    function checkVotesComplete(meetingId) {
+      setTimeout(function() {
+        var aliveCount = firebasePartyPlayers.filter(function(p) { return p.alive; }).length;
+        db.collection('votes').where('meetingId', '==', meetingId).get().then(function(snap) {
+          if (snap.size >= aliveCount) {
+            concludeVote(meetingId);
+          }
+        });
+      }, 1000);
+    }
+
+    // Host conclut le vote
+    function concludeVote(meetingId) {
+      db.collection('votes').where('meetingId', '==', meetingId).get().then(function(snap) {
+        var voteCounts = {};
+        var skipCount = 0;
+        snap.forEach(function(doc) {
+          var v = doc.data();
+          if (v.isSkip) { skipCount++; }
+          else { voteCounts[v.targetPlayerId] = (voteCounts[v.targetPlayerId] || 0) + 1; }
+        });
+        // Trouver le plus vote
+        var maxVotes = skipCount;
+        var eliminated = null;
+        for (var pid in voteCounts) {
+          if (voteCounts[pid] > maxVotes) {
+            maxVotes = voteCounts[pid];
+            eliminated = pid;
+          }
+        }
+        // Eliminer le joueur vote
+        if (eliminated) {
+          firebasePartyPlayers.forEach(function(p) {
+            if (p.playerId === eliminated && p._docId) {
+              db.collection('partyPlayers').doc(p._docId).update({ alive: false });
+            }
+          });
+        }
+        // Fermer la reunion
+        db.collection('meetings').doc(meetingId).update({ active: false });
+        db.collection('parties').doc(partieActuelleId).update({ phase: 'playing' });
+        // Verifier fin de partie
+        checkEndGame();
+      });
+    }
+
+    // Verifier si la partie est terminee
+    function checkEndGame() {
+      if (!estHost) return;
+      setTimeout(function() {
+        var virusAlive = firebasePartyPlayers.filter(function(p) { return p.alive && p.role === 'virus'; }).length;
+        var innocentsAlive = firebasePartyPlayers.filter(function(p) { return p.alive && p.role !== 'virus'; }).length;
+        if (virusAlive === 0 || virusAlive >= innocentsAlive) {
+          db.collection('parties').doc(partieActuelleId).update({
+            phase: 'finished',
+            winner: virusAlive === 0 ? 'innocents' : 'virus'
+          });
+        }
+      }, 500);
+    }
+
+    function fermerReunionMultiplayer(state) {
+      reunionEnCours = false;
+      jeuActif = true;
+      var popup = document.getElementById('popup-reunion');
+      if (popup) popup.style.display = 'none';
+      reunionCooldown = true;
+      setTimeout(function() { reunionCooldown = false; }, 15000);
+      killProtection = true;
+      setTimeout(function() { killProtection = false; }, 10000);
+      gameLoop();
+    }
+
+    function afficherFinPartieMultiplayer(state) {
+      jeuActif = false;
+      reunionEnCours = false;
+      var popup = document.getElementById('popup-reunion');
+      if (popup) popup.style.display = 'none';
+      if (state.winner === 'innocents') {
+        showNotif(t('innocentsWin'), 'info');
+      } else {
+        showNotif(t('virusWin'), 'warn');
+      }
+      setTimeout(function() {
+        unsubscribeFromParty();
+        partieActuelleId = null;
+        lastGamePhase = null;
+        showScreen('menu-online');
+      }, 5000);
+    }
+
+    // Mettre a jour l'UI de la salle d'attente
+    function updateSalleAttenteUI(players) {
+      if (!players) return;
+      var currentParty = firebaseParties.find(function(p) { return p._id === partieActuelleId; });
+      var maxJ = currentParty ? currentParty.maxJoueurs : 10;
+
+      // Compteur
+      var compteur = document.querySelector('.compteur');
+      if (compteur) compteur.textContent = players.length + '/' + maxJ;
+
+      // Liste joueurs
+      var liste = document.querySelector('.sa-joueurs-liste');
+      if (liste) {
+        var html = '';
+        players.forEach(function(p) {
+          var hostLabel = p.isHost ? ' (Host)' : '';
+          html += '<div class="sa-joueur-item connecte">&#9679; ' +
+            p.pseudo.replace(/</g, '&lt;') + hostLabel + '</div>';
+        });
+        for (var i = players.length; i < maxJ; i++) {
+          html += '<div class="sa-joueur-item attente">&#9675; ' + t('waiting') + '</div>';
+        }
+        liste.innerHTML = html;
+      }
+
+      // Verifier si on est host
+      var me = players.find(function(p) { return p.playerId === monPlayerId; });
+      estHost = me ? me.isHost : false;
+      updateSalleAttente();
+
+      // Afficher les avatars des autres joueurs dans la salle
+      renderWaitingRoomPlayers(players);
+    }
+
+    // Afficher les avatars des autres joueurs dans la salle d'attente
+    function renderWaitingRoomPlayers(players) {
+      var container = document.querySelector('.sa-content');
+      if (!container) return;
+      // Supprimer les anciens avatars distants
+      container.querySelectorAll('.sa-remote-avatar').forEach(function(el) { el.remove(); });
+      players.forEach(function(p) {
+        if (p.playerId === monPlayerId) return;
+        var div = document.createElement('div');
+        div.className = 'sa-joueur-avatar sa-remote-avatar';
+        div.style.position = 'absolute';
+        div.style.left = (p.saX || 50) + '%';
+        div.style.top = (p.saY || 70) + '%';
+        div.style.transform = 'translate(-50%, -50%)';
+        div.style.textAlign = 'center';
+        div.style.zIndex = '5';
+        div.innerHTML = '<div style="font-size:10px;color:#fff;margin-bottom:2px;">' +
+          p.pseudo.replace(/</g, '&lt;') + '</div>' +
+          '<img src="' + (p.skin || 'skin/skin gratuit/skin de base (garçon).svg') +
+          '" style="width:48px;height:48px;" alt="skin">';
+        container.appendChild(div);
+      });
+    }
+
+    // Mettre a jour le chat depuis Firebase
+    function updateChatUI(messages, context) {
+      var chatId = context === 'lobby' ? 'chat-messages' : 'reunion-messages';
+      var chatDiv = document.getElementById(chatId);
+      if (!chatDiv) return;
+      chatDiv.innerHTML = '';
+      if (!messages) return;
+      messages.forEach(function(msg) {
+        var div = document.createElement('div');
+        div.className = 'chat-message' + (msg.isSystem ? ' system' : '');
+        div.innerHTML = '<strong>' + msg.pseudo.replace(/</g, '&lt;') + ':</strong> ' +
+          msg.message.replace(/</g, '&lt;');
+        chatDiv.appendChild(div);
+      });
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+      // Son chat
+      if (messages.length > 0) {
+        try { var sChat = new Audio(Math.random() < 0.5 ? 'chat1.mp3' : 'chat2.mp3'); sChat.volume = 0.4; sChat.play(); } catch(e) {}
+      }
     }
 
     function mettreAJourOptionsVirus() {
@@ -6105,86 +7003,77 @@
         if (cpEspion) { showNotif(t('notEnoughSpy'), 'warn'); return; }
       }
 
-      const partie = {
-        id: Date.now(),
-        nom: nom,
-        host: pseudo,
-        joueurs: 1,
-        maxJoueurs: maxJoueurs,
-        mechants: mechants,
-        journaliste: cpJournaliste,
-        fanatique: cpFanatique,
-        espion: cpEspion,
-        langue: cpLang,
-        couleur: COULEURS_PARTIES[Math.floor(Math.random() * COULEURS_PARTIES.length)],
-        enCours: false,
-        listeJoueurs: [pseudo]
-      };
-
-      const parties = getParties();
-      parties.push(partie);
-      sauvegarderParties(parties);
-
-      // Vider le formulaire
-      document.getElementById('cp-nom').value = '';
-
-      // Le createur est le host
-      estHost = true;
-      partieActuelleId = partie.id;
-
-      // Aller dans la salle d'attente
-      showScreen('salle-attente');
-
-      // Mettre a jour le compteur et le nom du host dans la salle
-      document.querySelector('.compteur').textContent = '1/' + maxJoueurs;
-      var adminClass = isAdmin() ? ' pseudo-admin-text' : '';
-      document.querySelector('.sa-joueurs-liste').innerHTML =
-        '<div class="sa-joueur-item connecte">&#9679; <span class="' + adminClass + '">' + pseudo.replace(/</g, '&lt;') + '</span> (Host)</div>' +
-        '<div class="sa-joueur-item attente">&#9675; ' + t('waiting') + '</div>';
-
-      updateSalleAttente();
+      // Enregistrer le joueur sur Firebase
+      var skin = getSkinFichier(getSkin());
+      db.collection('players').doc(monPlayerId).set({
+        playerId: monPlayerId, pseudo: pseudo, skin: skin,
+        online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true }).then(function() {
+        // Creer la partie
+        return db.collection('parties').add({
+          nom: nom, hostPlayerId: monPlayerId, hostPseudo: pseudo,
+          maxJoueurs: maxJoueurs, mechants: mechants,
+          journaliste: cpJournaliste, fanatique: cpFanatique, espion: cpEspion,
+          langue: cpLang, couleur: COULEURS_PARTIES[Math.floor(Math.random() * COULEURS_PARTIES.length)],
+          phase: 'lobby', joueurs: 1, listeJoueurs: [pseudo],
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }).then(function(docRef) {
+        var partyId = docRef.id;
+        // Ajouter le joueur host
+        return db.collection('partyPlayers').add({
+          partyId: partyId, playerId: monPlayerId, pseudo: pseudo, skin: skin,
+          isHost: true, role: '', alive: true, x: 0, y: 0, direction: 1, saX: 50, saY: 70
+        }).then(function(ppDoc) {
+          myPartyPlayerDocId = ppDoc.id;
+          document.getElementById('cp-nom').value = '';
+          estHost = true;
+          partieActuelleId = partyId;
+          showScreen('salle-attente');
+          subscribeToParty(partyId);
+          updateSalleAttente();
+        });
+      }).catch(function(err) {
+        showNotif('Erreur de connexion', 'warn');
+      });
     }
 
     function rejoindrePartie(partieId) {
-      const parties = getParties();
-      const partie = parties.find(p => p.id === partieId);
-      if (!partie) return;
-      if (partie.enCours) {
-        showNotif(t('gameAlreadyStarted'), 'warn');
-        return;
-      }
-      if (partie.joueurs >= partie.maxJoueurs) {
-        showNotif(t('gameFull'), 'warn');
-        return;
-      }
-
-      // On rejoint, on n'est PAS le host
-      estHost = false;
-      partieActuelleId = partieId;
-
-      // Ajouter le joueur a la liste de la partie
-      var pseudoJoin = getPseudo() || 'Joueur';
-      if (!partie.listeJoueurs) partie.listeJoueurs = [];
-      if (partie.listeJoueurs.indexOf(pseudoJoin) < 0) partie.listeJoueurs.push(pseudoJoin);
-      partie.joueurs = partie.listeJoueurs.length;
-      sauvegarderParties(parties);
-
-      // Jouer le son join et notification pour les joueurs dans la salle
-      jouerSonSalle('join.mp3');
-      ajouterNotifSalle(t('playerJoined', pseudoJoin), 'join');
-
-      // Aller dans la salle d'attente
-      showScreen('salle-attente');
-      document.querySelector('.compteur').textContent = partie.joueurs + '/' + partie.maxJoueurs;
-      var hostAdminClass = isAdmin() ? ' pseudo-admin-text' : '';
-      var monPseudo = getPseudo() || 'Vous';
-      var monAdminClass = isAdmin() ? ' pseudo-admin-text' : '';
-      document.querySelector('.sa-joueurs-liste').innerHTML =
-        '<div class="sa-joueur-item connecte">&#9679; <span class="' + hostAdminClass + '">' + partie.host.replace(/</g, '&lt;') + '</span> (Host)</div>' +
-        '<div class="sa-joueur-item connecte">&#9679; <span class="' + monAdminClass + '">' + monPseudo.replace(/</g, '&lt;') + '</span></div>' +
-        '<div class="sa-joueur-item attente">&#9675; ' + t('waiting') + '</div>';
-
-      updateSalleAttente();
+      var pseudo = getPseudo() || 'Joueur';
+      var skin = getSkinFichier(getSkin());
+      // Verifier que la partie est disponible
+      db.collection('parties').doc(partieId).get().then(function(doc) {
+        if (!doc.exists) { showNotif('Partie introuvable', 'warn'); return; }
+        var party = doc.data();
+        if (party.phase !== 'lobby') { showNotif(t('gameAlreadyStarted'), 'warn'); return; }
+        if (party.joueurs >= party.maxJoueurs) { showNotif(t('gameFull'), 'warn'); return; }
+        // Enregistrer le joueur
+        return db.collection('players').doc(monPlayerId).set({
+          playerId: monPlayerId, pseudo: pseudo, skin: skin,
+          online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true }).then(function() {
+          // Ajouter a la partie
+          return db.collection('partyPlayers').add({
+            partyId: partieId, playerId: monPlayerId, pseudo: pseudo, skin: skin,
+            isHost: false, role: '', alive: true, x: 0, y: 0, direction: 1, saX: 50, saY: 70
+          });
+        }).then(function(ppDoc) {
+          myPartyPlayerDocId = ppDoc.id;
+          // Mettre a jour le compteur
+          return db.collection('parties').doc(partieId).update({
+            joueurs: firebase.firestore.FieldValue.increment(1),
+            listeJoueurs: firebase.firestore.FieldValue.arrayUnion(pseudo)
+          });
+        }).then(function() {
+          estHost = false;
+          partieActuelleId = partieId;
+          showScreen('salle-attente');
+          subscribeToParty(partieId);
+          updateSalleAttente();
+        });
+      }).catch(function(err) {
+        showNotif('Erreur de connexion', 'warn');
+      });
     }
 
     function rafraichirListeParties() {
@@ -6209,9 +7098,13 @@
         var couleurBarre = pourcent < 50 ? '#2ecc71' : pourcent < 80 ? '#f39c12' : '#e74c3c';
 
         var estPlein = p.joueurs >= p.maxJoueurs;
+        var partyIdStr = p._id; // Firebase doc ID
+        var hostPseudo = p.listeJoueurs && p.listeJoueurs.length > 0 ? p.listeJoueurs[0] : '?';
         var tr = document.createElement('tr');
         if (!p.enCours && !estPlein) {
-          tr.onclick = function() { rejoindrePartie(p.id); };
+          (function(pid) {
+            tr.onclick = function() { rejoindrePartie(pid); };
+          })(partyIdStr);
           tr.style.cursor = 'pointer';
         } else {
           tr.style.opacity = '0.6';
@@ -6223,7 +7116,7 @@
               '<div class="lp-icone-partie" style="border:2px solid ' + p.couleur + '">&#128367;</div>' +
               '<div class="lp-nom-texte">' +
                 '<span class="nom">' + p.nom.replace(/</g, '&lt;') + '</span>' +
-                '<span class="host">Host: ' + p.host.replace(/</g, '&lt;') + '</span>' +
+                '<span class="host">Host: ' + hostPseudo.replace(/</g, '&lt;') + '</span>' +
               '</div>' +
             '</div>' +
           '</td>' +
@@ -6246,8 +7139,17 @@
               ? '<button class="btn-rejoindre" style="opacity:0.4;cursor:not-allowed;" disabled>' + t('inProgress') + '</button>'
               : estPlein
                 ? '<button class="btn-rejoindre" style="opacity:0.4;cursor:not-allowed;background:#e74c3c;" disabled>' + t('gameFull') + '</button>'
-                : '<button class="btn-rejoindre" onclick="event.stopPropagation(); rejoindrePartie(' + p.id + ')">' + t('joinBtn') + '</button>') +
+                : '<button class="btn-rejoindre" data-partyid="' + partyIdStr + '">' + t('joinBtn') + '</button>') +
           '</td>';
+
+        // Attacher le click handler au bouton rejoindre
+        var btnRejoindre = tr.querySelector('.btn-rejoindre[data-partyid]');
+        if (btnRejoindre) {
+          (function(pid) {
+            btnRejoindre.onclick = function(e) { e.stopPropagation(); rejoindrePartie(pid); };
+          })(partyIdStr);
+        }
+
         tbody.appendChild(tr);
       });
     }
@@ -6418,19 +7320,32 @@
       const msg = input.value.trim();
       if (!msg) return;
       var msgFiltre = filtrerMessage(msg);
-
-      const container = document.getElementById('chat-messages');
-      const div = document.createElement('div');
-      div.className = 'chat-msg';
-      var monPseudo = getPseudo() || 'Vous';
-      var pseudoClass = isAdmin() ? 'pseudo pseudo-admin-text' : 'pseudo';
-      var pseudoStyle = isAdmin() ? '' : ' style="color:#e74c3c"';
-      div.innerHTML = '<span class="' + pseudoClass + '"' + pseudoStyle + '>[' + monPseudo.replace(/</g, '&lt;') + ']:</span> <span class="texte">' + msgFiltre.replace(/</g, '&lt;') + '</span>';
-      container.appendChild(div);
-      container.scrollTop = container.scrollHeight;
       input.value = '';
-      // Son de chat aleatoire
-      try { var sChat = new Audio(Math.random() < 0.5 ? 'chat1.mp3' : 'chat2.mp3'); sChat.volume = 0.4; sChat.play(); } catch(e) {}
+
+      if (partieActuelleId && !modeHorsLigne) {
+        // Mode en ligne : envoyer via Firebase
+        db.collection('chatMessages').add({
+          partyId: partieActuelleId,
+          playerId: monPlayerId,
+          pseudo: getPseudo() || 'Joueur',
+          message: msgFiltre,
+          context: reunionEnCours ? 'meeting' : 'lobby',
+          isSystem: false,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(function() {});
+      } else {
+        // Mode hors ligne : affichage local
+        const container = document.getElementById('chat-messages');
+        const div = document.createElement('div');
+        div.className = 'chat-msg';
+        var monPseudo = getPseudo() || 'Vous';
+        var pseudoClass = isAdmin() ? 'pseudo pseudo-admin-text' : 'pseudo';
+        var pseudoStyle = isAdmin() ? '' : ' style="color:#e74c3c"';
+        div.innerHTML = '<span class="' + pseudoClass + '"' + pseudoStyle + '>[' + monPseudo.replace(/</g, '&lt;') + ']:</span> <span class="texte">' + msgFiltre.replace(/</g, '&lt;') + '</span>';
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+        try { var sChat = new Audio(Math.random() < 0.5 ? 'chat1.mp3' : 'chat2.mp3'); sChat.volume = 0.4; sChat.play(); } catch(e) {}
+      }
     }
 
     // ============================
@@ -6649,7 +7564,7 @@
         vPseudoTooShort: 'Pseudo trop court (2 caracteres minimum) !',
         vPseudoEmpty: 'Le pseudo ne peut pas etre vide !',
         vPseudoShort: 'Pseudo trop court !',
-        vDeleteAccount: 'Supprimer ton compte ? Ton pseudo, tes parties, ton or et tes skins seront effaces.',
+        vDeleteAccount: 'Supprimer ton compte ? Ton pseudo, tes parties, ton or et tes skins seront effaces!',
         vGiveGameName: 'Donne un nom a ta partie !',
 
         // Placeholders
@@ -7397,9 +8312,10 @@
       var grille = document.getElementById('boutique-grille');
       if (!grille) return;
       grille.innerHTML = '';
+      // Recharger le gold depuis localStorage au cas ou
+      playerGold = parseInt(localStorage.getItem('virusGold')) || 0;
       var achetes = getSkinsAchetes();
       var currentSkin = getSkin();
-      // Maj gold display boutique
       var goldEl = document.getElementById('boutique-gold-display');
       if (goldEl) goldEl.textContent = playerGold;
 
@@ -7489,6 +8405,8 @@
       var grille = document.getElementById('boutique-grille-musique');
       if (!grille) return;
       grille.innerHTML = '';
+      // Recharger le gold depuis localStorage au cas ou
+      playerGold = parseInt(localStorage.getItem('virusGold')) || 0;
       var achetees = getMusiquesAchetees();
       var currentMusique = getMusiqueId();
       var goldEl = document.getElementById('boutique-gold-display');
@@ -7718,53 +8636,51 @@
       keys[e.key] = false;
     });
 
-    // Joystick mobile
-    var joystickDX = 0, joystickDY = 0;
-    var joystickActif = false;
+    // Deplacement mobile : toucher pour se deplacer vers le doigt
+    var touchActif = false;
+    var touchTargetX = 0, touchTargetY = 0;
 
     if (isMobile) {
-      var jBase = document.getElementById('joystick-base');
-      if (jBase) {
-        jBase.addEventListener('touchstart', function(e) {
+      var touchViewport = document.getElementById('jeu-viewport');
+      if (touchViewport) {
+        touchViewport.addEventListener('touchstart', function(e) {
+          if (camerasOuvertes || reunionEnCours) return;
           e.preventDefault();
-          joystickActif = true;
-          handleJoystickMove(e);
+          touchActif = true;
+          updateTouchTarget(e);
         }, { passive: false });
-        jBase.addEventListener('touchmove', function(e) {
+        touchViewport.addEventListener('touchmove', function(e) {
+          if (!touchActif) return;
           e.preventDefault();
-          if (joystickActif) handleJoystickMove(e);
+          updateTouchTarget(e);
         }, { passive: false });
-        jBase.addEventListener('touchend', function(e) {
-          e.preventDefault();
-          joystickActif = false;
-          joystickDX = 0;
-          joystickDY = 0;
-          var stick = document.getElementById('joystick-stick');
-          if (stick) { stick.style.left = '50%'; stick.style.top = '50%'; }
+        touchViewport.addEventListener('touchend', function(e) {
+          touchActif = false;
+        }, { passive: false });
+        touchViewport.addEventListener('touchcancel', function(e) {
+          touchActif = false;
         }, { passive: false });
       }
     }
 
-    function handleJoystickMove(e) {
+    function updateTouchTarget(e) {
       var touch = e.touches[0];
-      var base = document.getElementById('joystick-base');
-      var stick = document.getElementById('joystick-stick');
-      if (!base || !stick) return;
-      var rect = base.getBoundingClientRect();
-      var centerX = rect.left + rect.width / 2;
-      var centerY = rect.top + rect.height / 2;
-      var deltaX = touch.clientX - centerX;
-      var deltaY = touch.clientY - centerY;
-      var dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-      var maxDist = rect.width / 2 - 30;
-      if (dist > maxDist) {
-        deltaX = deltaX / dist * maxDist;
-        deltaY = deltaY / dist * maxDist;
-      }
-      stick.style.left = (50 + deltaX / rect.width * 100) + '%';
-      stick.style.top = (50 + deltaY / rect.height * 100) + '%';
-      joystickDX = deltaX / maxDist;
-      joystickDY = deltaY / maxDist;
+      if (!touch) return;
+      var vp = document.getElementById('jeu-viewport');
+      if (!vp) return;
+      var rect = vp.getBoundingClientRect();
+      var vw = vp.clientWidth;
+      var vh = vp.clientHeight;
+      // Calculer l'offset camera (meme formule que updateJoueur)
+      var camX = joueurX - vw / 2 + 14;
+      var camY = joueurY - vh / 2 + 14;
+      if (camX < 0) camX = 0;
+      if (camY < 0) camY = 0;
+      if (camX > MAP_W - vw) camX = MAP_W - vw;
+      if (camY > MAP_H - vh) camY = MAP_H - vh;
+      // Convertir coordonnees ecran en coordonnees map
+      touchTargetX = (touch.clientX - rect.left) + camX;
+      touchTargetY = (touch.clientY - rect.top) + camY;
     }
 
     // Demarrer la musique au premier clic (autoplay bloque par les navigateurs)
@@ -8173,8 +9089,10 @@
       var nbVirus = parseInt(document.getElementById('hl-nb-virus').value);
       var nbBots = nbTotal - 1; // total - joueur
 
-      // Regles : max virus = moitie des joueurs - 1 (minimum 1, maximum 3)
-      var maxVirus = Math.min(3, Math.max(1, Math.floor((nbTotal - 1) / 2)));
+      // Regles : 1 virus par defaut, 2 virus a partir de 7 joueurs, 3 virus a partir de 10
+      var maxVirus = 1;
+      if (nbTotal >= 10) maxVirus = 3;
+      else if (nbTotal >= 7) maxVirus = 2;
 
       var sliderVirus = document.getElementById('hl-nb-virus');
       sliderVirus.max = maxVirus;
@@ -8357,7 +9275,6 @@
 
       showScreen('jeu');
       jeuActif = true;
-      if (isMobile) { var jC = document.getElementById('joystick-container'); if (jC) jC.style.display = 'block'; }
 
       // Reset position
       joueurX = 3800;
@@ -8534,49 +9451,49 @@
     }
 
     function lancerJeu() {
-      // Regles de demarrage
-      if (partieActuelleId) {
-        var parties = getParties();
-        for (var i = 0; i < parties.length; i++) {
-          if (parties[i].id === partieActuelleId) {
-            var p = parties[i];
-            var nbJoueurs = p.joueurs || 1;
+      // Mode en ligne : demarrer la partie (host assigne les roles)
+      if (partieActuelleId && !modeHorsLigne) {
+        if (!estHost) { showNotif('Seul le host peut demarrer', 'warn'); return; }
+        if (firebasePartyPlayers.length < 4) { showNotif(t('need4Players'), 'warn'); return; }
 
-            // Minimum 4 joueurs
-            if (nbJoueurs < 4) {
-              showNotif(t('need4Players'), 'warn');
-              return;
-            }
+        // Assigner les roles cote client (host)
+        var partyData = firebaseParties.find(function(p) { return p._id === partieActuelleId; });
+        var nbVirus = partyData ? partyData.mechants : 1;
+        var hasJournaliste = partyData ? partyData.journaliste : false;
+        var hasFanatique = partyData ? partyData.fanatique : false;
+        var hasEspion = partyData ? partyData.espion : false;
 
-            // Adapter le nombre de virus au nombre de joueurs
-            var mechants = p.mechants || 1;
-            var mechantsOriginal = mechants;
-            if (nbJoueurs <= 6) {
-              mechants = 1;
-            } else if (nbJoueurs <= 9) {
-              mechants = Math.min(mechants, 2);
-            }
-            if (mechants !== mechantsOriginal) {
-              showNotif(t('virusAdjusted', mechants, mechantsOriginal), 'info');
-              p.mechants = mechants;
-              sauvegarderParties(parties);
-            }
-            break;
+        var roles = [];
+        for (var v = 0; v < nbVirus; v++) roles.push('virus');
+        if (hasJournaliste) roles.push('journaliste');
+        if (hasFanatique) roles.push('fanatique');
+        if (hasEspion) roles.push('espion');
+        while (roles.length < firebasePartyPlayers.length) roles.push('innocent');
+
+        // Melanger les roles
+        for (var i = roles.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var tmp = roles[i]; roles[i] = roles[j]; roles[j] = tmp;
+        }
+
+        // Assigner a chaque joueur
+        var batch = db.batch();
+        firebasePartyPlayers.forEach(function(p, idx) {
+          if (p._docId) {
+            batch.update(db.collection('partyPlayers').doc(p._docId), {
+              role: roles[idx], alive: true, x: 3800, y: 3050
+            });
           }
-        }
+        });
+        batch.update(db.collection('parties').doc(partieActuelleId), { phase: 'playing' });
+        batch.commit().catch(function() { showNotif('Erreur de connexion', 'warn'); });
+        return;
       }
 
-      // Marquer la partie comme en cours (plus personne ne peut rejoindre)
-      if (partieActuelleId) {
-        var partiesEC = getParties();
-        for (var ec = 0; ec < partiesEC.length; ec++) {
-          if (partiesEC[ec].id === partieActuelleId) { partiesEC[ec].enCours = true; sauvegarderParties(partiesEC); break; }
-        }
-      }
+      // Mode hors ligne : demarrage local (inchange)
 
       showScreen('jeu');
       jeuActif = true;
-      if (isMobile) { var jC = document.getElementById('joystick-container'); if (jC) jC.style.display = 'block'; }
       // Reset UI reunion au demarrage
       var skipBtn = document.getElementById('reunion-btn-skip');
       if (skipBtn) skipBtn.classList.remove('visible');
@@ -8766,6 +9683,22 @@
         showNotif(t('waitBeforeMeeting'), 'warn');
         return;
       }
+
+      // Mode multiplayer : creer une reunion sur Firebase
+      if (partieActuelleId && !modeHorsLigne) {
+        db.collection('meetings').add({
+          partyId: partieActuelleId,
+          initiatorPlayerId: monPlayerId,
+          reason: 'emergency',
+          active: true,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(function() {
+          db.collection('parties').doc(partieActuelleId).update({ phase: 'meeting' });
+        }).catch(function() {});
+        return;
+      }
+
+      // Mode hors ligne : logique locale
       showNotif(t('emergencyMeetingNotif'), 'warn');
       reunionCreateur = pseudo;
       if (camerasOuvertes) fermerCameras();
@@ -8894,8 +9827,8 @@
       // Son reunion d'urgence
       try { var sReunion = new Audio("réunion d'urgence !.mp3"); sReunion.volume = 0.6; sReunion.play(); } catch(e) {}
 
-      // Cacher le joystick pendant la reunion
-      var jC = document.getElementById('joystick-container'); if (jC) jC.style.display = 'none';
+      // Stopper le deplacement tactile pendant la reunion
+      touchActif = false;
       // Fermer les cameras si elles sont ouvertes
       if (camerasOuvertes) fermerCameras();
 
@@ -9703,17 +10636,17 @@
         }
 
         // Chercher un bot innocent proche
-        for (var t = 0; t < bots.length; t++) {
-          if (t === v) continue;
-          if (bots[t].role === 'virus') continue;
-          if (bots[t].role === 'espion' && bots[t].espionCamp === 'virus') continue; // ne pas tuer l'espion allie
-          if (joueursElimines.indexOf(bots[t].pseudo) >= 0) continue;
-          var dx2 = virusBot.x - bots[t].x;
-          var dy2 = virusBot.y - bots[t].y;
+        for (var bt = 0; bt < bots.length; bt++) {
+          if (bt === v) continue;
+          if (bots[bt].role === 'virus') continue;
+          if (bots[bt].role === 'espion' && bots[bt].espionCamp === 'virus') continue; // ne pas tuer l'espion allie
+          if (joueursElimines.indexOf(bots[bt].pseudo) >= 0) continue;
+          var dx2 = virusBot.x - bots[bt].x;
+          var dy2 = virusBot.y - bots[bt].y;
           var dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
           if (dist2 < KILL_DISTANCE) {
             botKillCooldowns[virusBot.id] = true;
-            var victimePseudo = bots[t].pseudo;
+            var victimePseudo = bots[bt].pseudo;
             var selfReport = Math.random() < 0.10;
             var virusPseudoSR = virusBot.pseudo;
             (function(bp, botId, doSelfReport, virusNom) {
@@ -9817,7 +10750,7 @@
 
     function afficherFinPartie(gagnant) {
       jeuActif = false;
-      var jC = document.getElementById('joystick-container'); if (jC) jC.style.display = 'none';
+      touchActif = false;
       if (camerasOuvertes) fermerCameras();
       if (simulationMissionsTimer) { clearInterval(simulationMissionsTimer); simulationMissionsTimer = null; }
       var overlay = document.getElementById('fin-partie-overlay');
@@ -9877,7 +10810,7 @@
         if ((gagnant === 'innocents' || gagnant === 'missions') && (monRole === 'innocent' || monRole === 'journaliste' || (monRole === 'espion' && espionCamp === 'innocent'))) joueurAGagne = true;
       }
       if (joueurAGagne) {
-        var recompense = modeHorsLigne ? 10 : 50;
+        var recompense = 50;
         gagnerGold(recompense);
         html += '<div class="fin-partie-gold">+' + recompense + ' GOLDS !</div>';
       }
@@ -9983,7 +10916,6 @@
 
       // Reprendre le jeu
       jeuActif = true;
-      if (isMobile) { var jC = document.getElementById('joystick-container'); if (jC) jC.style.display = 'block'; }
       gameLoop();
     }
 
@@ -10040,16 +10972,29 @@
     // SYSTEME DE MISSIONS
     // ============================
     var POOL_MISSIONS = [
-      { nom: 'Acheter un livre', boutiqueNom: 'LIBRAIRIE', rect: {x:60, y:1000, w:500, h:350}, caisseX: 335, caisseY: 1322 },
+      { nom: 'Ranger les livres', boutiqueNom: 'LIBRAIRIE', rect: {x:60, y:1000, w:500, h:350}, caisseX: 335, caisseY: 1322 },
       { nom: 'Recuperer un colis', boutiqueNom: 'KIOSQUE A JOURNAUX', rect: {x:2500, y:1200, w:600, h:350}, caisseX: 2790, caisseY: 1472 },
       { nom: 'Verifier les cameras', boutiqueNom: 'POSTE DE SECURITE', rect: {x:2800, y:60, w:450, h:300}, caisseX: 3075, caisseY: 322 },
-      { nom: 'Acheter a manger', boutiqueNom: 'SUPERMARCHE GEANT', rect: {x:60, y:3200, w:700, h:500}, caisseX: 705, caisseY: 3657 },
+      { nom: 'Reapprovisionner les rayons', boutiqueNom: 'SUPERMARCHE GEANT', rect: {x:60, y:3200, w:700, h:500}, caisseX: 705, caisseY: 3657 },
       { nom: 'Reparer l\'escalator', boutiqueNom: 'SALLE D\'ARCADE', rect: {x:2500, y:3800, w:600, h:400}, caisseX: 3025, caisseY: 4122 },
       { nom: 'Reparer les toilettes', boutiqueNom: 'TOILETTES NORD', rect: {x:3350, y:60, w:350, h:250}, caisseX: 3525, caisseY: 277 },
       { nom: 'Faire des pompes', boutiqueNom: 'SALLE DE SPORT', rect: {x:60, y:1450, w:500, h:400}, caisseX: 355, caisseY: 1817 },
-      { nom: 'Acheter un bijou', boutiqueNom: 'BIJOUTERIE', rect: {x:7440, y:60, w:500, h:400}, caisseX: 7745, caisseY: 422 },
-      { nom: 'Acheter un parfum', boutiqueNom: 'PARFUMERIE', rect: {x:7440, y:4250, w:500, h:350}, caisseX: 7725, caisseY: 4572 },
-      { nom: 'Prendre un cafe', boutiqueNom: 'CAFE DU CENTRE', rect: {x:3800, y:60, w:450, h:300}, caisseX: 3840, caisseY: 132 }
+      { nom: 'Nettoyer les vitrines', boutiqueNom: 'BIJOUTERIE', rect: {x:7440, y:60, w:500, h:400}, caisseX: 7745, caisseY: 422 },
+      { nom: 'Tester les echantillons', boutiqueNom: 'PARFUMERIE', rect: {x:7440, y:4250, w:500, h:350}, caisseX: 7725, caisseY: 4572 },
+      { nom: 'Prendre un cafe', boutiqueNom: 'CAFE DU CENTRE', rect: {x:3800, y:60, w:450, h:300}, caisseX: 3840, caisseY: 132 },
+      { nom: 'Reallumer la box internet', boutiqueNom: 'TECH & ELECTRONIQUE', rect: {x:7440, y:550, w:500, h:350}, caisseX: 7725, caisseY: 872 },
+      { nom: 'Verifier la projection', boutiqueNom: 'CINEMA MULTIPLEX', rect: {x:7440, y:1000, w:500, h:450}, caisseX: 7900, caisseY: 1417 },
+      { nom: 'Nettoyer les tables', boutiqueNom: 'RESTAURANT', rect: {x:7440, y:1550, w:500, h:350}, caisseX: 7755, caisseY: 1872 },
+      { nom: 'Trier les medicaments', boutiqueNom: 'PHARMACIE', rect: {x:60, y:550, w:500, h:350}, caisseX: 385, caisseY: 867 },
+      { nom: 'Ranger les vetements', boutiqueNom: 'BOUTIQUE MODE', rect: {x:60, y:60, w:500, h:400}, caisseX: 335, caisseY: 422 },
+      { nom: 'Mettre a jour les consoles', boutiqueNom: 'MAGASIN DE JEUX VIDEO', rect: {x:60, y:3800, w:500, h:350}, caisseX: 345, caisseY: 4122 },
+      { nom: 'Nourrir les animaux', boutiqueNom: 'ANIMALERIE', rect: {x:60, y:2100, w:500, h:400}, caisseX: 355, caisseY: 2467 },
+      { nom: 'Verifier les fours', boutiqueNom: 'PATISSERIE', rect: {x:60, y:2600, w:500, h:400}, caisseX: 395, caisseY: 2967 },
+      { nom: 'Arroser les plantes', boutiqueNom: 'BIO & NATURE', rect: {x:7440, y:2100, w:500, h:400}, caisseX: 7745, caisseY: 2467 },
+      { nom: 'Preparer les infusions', boutiqueNom: 'SALON DE THE', rect: {x:7440, y:2600, w:500, h:400}, caisseX: 7810, caisseY: 2633 },
+      { nom: 'Calibrer les machines', boutiqueNom: 'OPTICIEN', rect: {x:4500, y:1200, w:600, h:350}, caisseX: 4790, caisseY: 1472 },
+      { nom: 'Realigner les quilles', boutiqueNom: 'BOWLING', rect: {x:4500, y:3800, w:600, h:400}, caisseX: 5025, caisseY: 4122 },
+      { nom: 'Gonfler les ballons', boutiqueNom: 'ARTICLES DE SPORT', rect: {x:7440, y:3800, w:500, h:350}, caisseX: 7725, caisseY: 4122 }
     ];
     var mesMissions = [];
 
@@ -10404,14 +11349,19 @@
           dx += vitesse;
           if (cachedSkinImg) cachedSkinImg.style.transform = 'scaleX(1)';
         }
-        // Joystick mobile
-        if (joystickActif) {
-          dx += joystickDX * vitesse;
-          dy += joystickDY * vitesse;
-          if (joystickDX < -0.3) {
-            if (cachedSkinImg) cachedSkinImg.style.transform = 'scaleX(-1)';
-          } else if (joystickDX > 0.3) {
-            if (cachedSkinImg) cachedSkinImg.style.transform = 'scaleX(1)';
+        // Deplacement mobile : vers le doigt
+        if (touchActif) {
+          var tdx = touchTargetX - joueurX;
+          var tdy = touchTargetY - joueurY;
+          var tdist = Math.sqrt(tdx * tdx + tdy * tdy);
+          if (tdist > 8) {
+            dx += (tdx / tdist) * vitesse;
+            dy += (tdy / tdist) * vitesse;
+            if (tdx < -0.5) {
+              if (cachedSkinImg) cachedSkinImg.style.transform = 'scaleX(-1)';
+            } else if (tdx > 0.5) {
+              if (cachedSkinImg) cachedSkinImg.style.transform = 'scaleX(1)';
+            }
           }
         }
       }
@@ -10443,6 +11393,19 @@
 
       if (moved) {
         updateJoueur();
+        // Envoyer position via Firebase en mode multijoueur (throttle 200ms)
+        if (partieActuelleId && !modeHorsLigne && myPartyPlayerDocId && Date.now() - lastPositionSend > 200) {
+          lastPositionSend = Date.now();
+          var dir = cachedSkinImg && cachedSkinImg.style.transform === 'scaleX(-1)' ? -1 : 1;
+          db.collection('partyPlayers').doc(myPartyPlayerDocId).update({
+            x: joueurX, y: joueurY, direction: dir
+          }).catch(function() {});
+        }
+      }
+
+      // Mettre a jour les joueurs distants en mode multiplayer
+      if (!modeHorsLigne && partieActuelleId) {
+        updateRemotePlayers();
       }
 
       // Proximite fontaine -> bouton reunion
@@ -10583,7 +11546,7 @@
     function quitterJeu() {
       jeuActif = false;
       keys = {};
-      var jC = document.getElementById('joystick-container'); if (jC) jC.style.display = 'none';
+      touchActif = false;
       if (camerasOuvertes) fermerCameras();
       // Retirer le visuel fantome du joueur
       var joueurEl = document.getElementById('joueur');
@@ -10666,14 +11629,18 @@
       if (saJoueurY < 10) saJoueurY = 10;
       if (saJoueurY > 85) saJoueurY = 85;
 
-      if (moved) updateSallePosition();
+      if (moved) {
+        updateSallePosition();
+        // Envoyer la position via Firebase (throttle 200ms)
+        if (partieActuelleId && !modeHorsLigne && myPartyPlayerDocId && Date.now() - lastSaPositionSend > 200) {
+          lastSaPositionSend = Date.now();
+          db.collection('partyPlayers').doc(myPartyPlayerDocId).update({
+            saX: saJoueurX, saY: saJoueurY
+          }).catch(function() {});
+        }
+      }
       salleAnimFrame = requestAnimationFrame(salleLoop);
     }
-
-    // Au chargement : vider toutes les parties (personne n'est connecte)
-    (function() {
-      sauvegarderParties([]);
-    })();
 
     // ============================
     // SYSTEME D'AMIS - Fonctions
@@ -10787,169 +11754,154 @@
       var input = document.getElementById('input-recherche-ami');
       var pseudo = input.value.trim();
       if (!pseudo) { showNotif(t('enterPseudo'), 'warn'); return; }
-      if (!monUid) { showNotif(t('connecting'), 'warn'); return; }
       if (pseudo === getPseudo()) {
         showNotif(t('cantAddSelf'), 'warn');
         return;
       }
-      // Verifier si deja ami
       var dejaAmi = mesAmis.some(function(a) { return a.pseudo === pseudo; });
       if (dejaAmi) {
         showNotif(t('alreadyFriend'), 'warn');
         return;
       }
-      // Chercher le joueur dans Firestore
-      db.collection('users').where('pseudo', '==', pseudo).get().then(function(snapshot) {
-        if (snapshot.empty) {
-          showNotif(t('pseudoNotFound'), 'error');
-          return;
-        }
-        var targetDoc = snapshot.docs[0];
-        var targetUid = targetDoc.id;
-        if (targetUid === monUid) {
-          showNotif(t('cantAddSelf'), 'warn');
-          return;
-        }
-        // Verifier si demande deja envoyee
-        db.collection('friendRequests')
-          .where('from', '==', monUid)
-          .where('to', '==', targetUid)
-          .where('status', '==', 'pending')
-          .get().then(function(existing) {
-            if (!existing.empty) {
-              showNotif(t('requestAlreadySent'), 'warn');
-              return;
-            }
+      // Chercher le joueur cible par pseudo
+      db.collection('players').where('pseudo', '==', pseudo).limit(1).get().then(function(snap) {
+        if (snap.empty) { showNotif(t('pseudoNotFound'), 'error'); return; }
+        var target = snap.docs[0].data();
+        if (target.playerId === monPlayerId) { showNotif(t('cantAddSelf'), 'warn'); return; }
+        // Verifier si deja amis
+        return db.collection('friends').where('playerId', '==', monPlayerId).where('friendPlayerId', '==', target.playerId).limit(1).get().then(function(friendSnap) {
+          if (!friendSnap.empty) { showNotif(t('alreadyFriend'), 'warn'); return; }
+          // Verifier si demande deja envoyee
+          return db.collection('friendRequests').where('fromPlayerId', '==', monPlayerId).where('toPlayerId', '==', target.playerId).limit(1).get().then(function(reqSnap) {
+            if (!reqSnap.empty) { showNotif(t('requestAlreadySent'), 'warn'); return; }
             // Envoyer la demande
-            db.collection('friendRequests').add({
-              from: monUid,
+            return db.collection('friendRequests').add({
+              fromPlayerId: monPlayerId,
               fromPseudo: getPseudo(),
-              to: targetUid,
+              toPlayerId: target.playerId,
               toPseudo: pseudo,
-              status: 'pending',
-              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              status: 'pending'
             }).then(function() {
               showNotif(t('requestSentTo', pseudo), 'info');
               input.value = '';
             });
           });
-      }).catch(function(err) {
-        // Erreur recherche ami silencieuse
+        });
+      }).catch(function() {
         showNotif(t('connectionError'), 'error');
       });
     }
 
-    function accepterDemande(requestId, fromUid, fromPseudo) {
-      if (!monUid) return;
-      var monPseudo = getPseudo();
-      // Mettre a jour la demande
-      db.collection('friendRequests').doc(requestId).update({ status: 'accepted' });
-      // Ajouter dans les deux listes d'amis
-      db.collection('friends').doc(monUid).collection('list').doc(fromUid).set({
-        pseudo: fromPseudo,
-        addedAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      db.collection('friends').doc(fromUid).collection('list').doc(monUid).set({
-        pseudo: monPseudo,
-        addedAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      showNotif(t('nowYourFriend', fromPseudo), 'info');
+    function accepterDemande(requestId, fromPlayerId, fromPseudo) {
+      db.collection('friendRequests').doc(requestId).update({ status: 'accepted' }).then(function() {
+        // Creer la relation bidirectionnelle
+        var myPseudo = getPseudo();
+        db.collection('friends').add({ playerId: monPlayerId, friendPlayerId: fromPlayerId, friendPseudo: fromPseudo });
+        db.collection('friends').add({ playerId: fromPlayerId, friendPlayerId: monPlayerId, friendPseudo: myPseudo });
+        showNotif(t('nowYourFriend', fromPseudo), 'info');
+      }).catch(function() {});
     }
 
     function refuserDemande(requestId) {
-      db.collection('friendRequests').doc(requestId).delete();
-      showNotif(t('requestRefused'), 'warn');
+      db.collection('friendRequests').doc(requestId).delete().then(function() {
+        showNotif(t('requestRefused'), 'warn');
+      }).catch(function() {});
     }
 
     function chargerStatutAmis() {
-      mesAmis.forEach(function(ami) {
-        db.collection('users').doc(ami.uid).get().then(function(doc) {
-          if (doc.exists) {
-            amisStatuts[ami.uid] = doc.data();
-          }
-          if (panelAmisOuvert && tabAmiActif !== 'demandes') {
-            afficherAmis();
-          }
-        });
-      });
+      if (panelAmisOuvert && tabAmiActif !== 'demandes') {
+        afficherAmis();
+      }
     }
 
     // ============================
-    // SYSTEME D'AMIS - Listeners Firestore
+    // SYSTEME D'AMIS - Listeners Firebase
     // ============================
 
-    function initAmisListeners() {
-      if (!monUid) return;
+    var amisUnsubscribers = [];
 
-      // Listener demandes d'amis entrantes
-      db.collection('friendRequests')
-        .where('to', '==', monUid)
-        .where('status', '==', 'pending')
-        .onSnapshot(function(snapshot) {
+    function initAmisListeners() {
+      // Nettoyer les anciens listeners
+      amisUnsubscribers.forEach(function(unsub) { if (unsub) unsub(); });
+      amisUnsubscribers = [];
+
+      // Demandes d'amis entrantes
+      amisUnsubscribers.push(
+        db.collection('friendRequests').where('toPlayerId', '==', monPlayerId).where('status', '==', 'pending').onSnapshot(function(snapshot) {
           demandesEnAttente = [];
           snapshot.forEach(function(doc) {
-            demandesEnAttente.push({ id: doc.id, from: doc.data().from, fromPseudo: doc.data().fromPseudo, to: doc.data().to, toPseudo: doc.data().toPseudo, status: doc.data().status });
+            var r = doc.data();
+            demandesEnAttente.push({ id: doc.id, from: r.fromPlayerId, fromPseudo: r.fromPseudo, to: r.toPlayerId, toPseudo: r.toPseudo, status: r.status });
           });
           updateBadgeAmis();
           if (panelAmisOuvert && tabAmiActif === 'demandes') afficherDemandes();
-          // Notif seulement si le nombre de demandes a AUGMENTE (nouvelle demande)
           if (demandesEnAttente.length > ancienNbDemandes && !panelAmisOuvert) {
             var derniere = demandesEnAttente[demandesEnAttente.length - 1];
             showNotif(t('friendRequestFrom', derniere.fromPseudo), 'info');
           }
           ancienNbDemandes = demandesEnAttente.length;
-        });
+        })
+      );
 
-      // Listener liste d'amis
-      db.collection('friends').doc(monUid).collection('list')
-        .onSnapshot(function(snapshot) {
+      // Liste d'amis
+      amisUnsubscribers.push(
+        db.collection('friends').where('playerId', '==', monPlayerId).onSnapshot(function(snapshot) {
           mesAmis = [];
+          var friendIds = [];
           snapshot.forEach(function(doc) {
-            mesAmis.push({ uid: doc.id, pseudo: doc.data().pseudo });
+            var f = doc.data();
+            mesAmis.push({ uid: f.friendPlayerId, pseudo: f.friendPseudo, online: false });
+            friendIds.push(f.friendPlayerId);
           });
-          chargerStatutAmis();
-        });
+          // Charger les statuts en ligne
+          friendIds.forEach(function(fid) {
+            db.collection('players').doc(fid).get().then(function(pDoc) {
+              if (pDoc.exists) {
+                var pData = pDoc.data();
+                var ami = mesAmis.find(function(a) { return a.uid === fid; });
+                if (ami) ami.online = pData.online || false;
+                amisStatuts[fid] = { online: pData.online || false, pseudo: pData.pseudo };
+              }
+              if (panelAmisOuvert && tabAmiActif !== 'demandes') afficherAmis();
+            });
+          });
+          if (friendIds.length === 0 && panelAmisOuvert && tabAmiActif !== 'demandes') afficherAmis();
+        })
+      );
 
-      // Listener invitations de partie (seulement les nouvelles)
-      db.collection('gameInvites')
-        .where('to', '==', monUid)
-        .where('status', '==', 'pending')
-        .onSnapshot(function(snapshot) {
-          snapshot.docChanges().forEach(function(change) {
-            if (change.type === 'added' && !invitationsAffichees[change.doc.id]) {
-              invitationsAffichees[change.doc.id] = true;
-              var data = change.doc.data();
-              afficherInvitation(change.doc.id, data.fromPseudo, data.partyId);
+      // Invitations de partie
+      amisUnsubscribers.push(
+        db.collection('gameInvites').where('toPlayerId', '==', monPlayerId).where('status', '==', 'pending').onSnapshot(function(snapshot) {
+          snapshot.forEach(function(doc) {
+            var inv = doc.data();
+            if (!invitationsAffichees[doc.id]) {
+              invitationsAffichees[doc.id] = true;
+              afficherInvitation(doc.id, inv.fromPseudo, inv.partyId);
             }
           });
-        });
+        })
+      );
     }
-
-    // Rafraichir les statuts toutes les 30 secondes
-    setInterval(function() {
-      if (mesAmis.length > 0) chargerStatutAmis();
-    }, 30000);
 
     // ============================
     // SYSTEME D'INVITATION EN PARTIE
     // ============================
     var invitationActuelle = null;
 
-    function inviterAmi(amiUid, amiPseudo) {
-      if (!monUid || !partieActuelleId) {
+    function inviterAmi(amiPlayerId, amiPseudo) {
+      if (!partieActuelleId) {
         showNotif(t('mustBeInGame'), 'warn');
         return;
       }
       db.collection('gameInvites').add({
-        from: monUid,
+        fromPlayerId: monPlayerId,
         fromPseudo: getPseudo(),
-        to: amiUid,
+        toPlayerId: amiPlayerId,
         partyId: partieActuelleId,
-        status: 'pending',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        status: 'pending'
       }).then(function() {
         showNotif(t('inviteSentTo', amiPseudo), 'info');
-      });
+      }).catch(function() {});
     }
 
     function afficherInvitation(inviteId, fromPseudo, partyId) {
@@ -10964,18 +11916,16 @@
 
     function accepterInvitation() {
       if (!invitationActuelle) return;
-      db.collection('gameInvites').doc(invitationActuelle.id).update({ status: 'accepted' });
-      // Rejoindre la partie
-      if (invitationActuelle.partyId) {
+      db.collection('gameInvites').doc(invitationActuelle.id).update({ status: 'accepted' }).then(function() {
         rejoindrePartie(invitationActuelle.partyId);
-      }
+      }).catch(function() {});
       document.getElementById('popup-invitation').style.display = 'none';
       invitationActuelle = null;
     }
 
     function refuserInvitation() {
       if (!invitationActuelle) return;
-      db.collection('gameInvites').doc(invitationActuelle.id).update({ status: 'declined' });
+      db.collection('gameInvites').doc(invitationActuelle.id).update({ status: 'declined' }).catch(function() {});
       document.getElementById('popup-invitation').style.display = 'none';
       invitationActuelle = null;
     }

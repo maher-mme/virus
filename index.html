@@ -3865,6 +3865,9 @@
     .notif-toast.warn {
       background: rgba(243,156,18,0.95);
     }
+    .notif-toast.success {
+      background: rgba(46,204,113,0.95);
+    }
     .notif-toast.fade-out {
       animation: notifFade 0.4s ease forwards;
     }
@@ -7102,13 +7105,17 @@
       reunionCooldown = true;
       setTimeout(function() { reunionCooldown = false; }, 15000);
       voteTermine = false;
-      voteChoisi = false;
+      voteChoisi = -1;
       joueurAVote = false;
 
       // Afficher le role
       if (monRole === 'virus') {
         var allies = firebasePartyPlayers.filter(function(p) { return p.role === 'virus' && p.playerId !== monPlayerId; }).map(function(p) { return p.pseudo; });
-        showNotif(t('youAreVirus', allies.join(', ') || 'aucun'), 'warn');
+        if (allies.length > 0) {
+          showNotif(t('youAreVirusAllies', allies.join(', ')), 'warn');
+        } else {
+          showNotif(t('youAreOnlyVirus'), 'warn');
+        }
       } else if (monRole === 'journaliste') {
         showNotif(t('youAreJournalist'), 'info');
       } else if (monRole === 'fanatique') {
@@ -7345,9 +7352,9 @@
       var popup = document.getElementById('popup-reunion');
       if (popup) popup.style.display = 'none';
       if (state.winner === 'innocents') {
-        showNotif(t('innocentsWin'), 'info');
+        showNotif(t('innocentsVictory'), 'info');
       } else {
-        showNotif(t('virusWin'), 'warn');
+        showNotif(t('virusVictory'), 'warn');
       }
       setTimeout(function() {
         unsubscribeFromParty();
@@ -7417,7 +7424,7 @@
 
     // Mettre a jour le chat depuis Firebase
     function updateChatUI(messages, context) {
-      var chatId = context === 'lobby' ? 'chat-messages' : 'reunion-messages';
+      var chatId = context === 'lobby' ? 'chat-messages' : 'reunion-chat-messages';
       var chatDiv = document.getElementById(chatId);
       if (!chatDiv) return;
       chatDiv.innerHTML = '';
@@ -7717,7 +7724,7 @@
       var container = document.getElementById('notif-container');
       if (!container) return;
       var toast = document.createElement('div');
-      toast.className = 'notif-toast' + (type === 'info' ? ' info' : type === 'warn' ? ' warn' : '');
+      toast.className = 'notif-toast' + (type === 'info' ? ' info' : type === 'warn' ? ' warn' : type === 'success' ? ' success' : '');
       toast.textContent = message;
       container.appendChild(toast);
       setTimeout(function() {

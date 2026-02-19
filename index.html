@@ -9105,6 +9105,20 @@
       if (touchViewport) {
         touchViewport.addEventListener('touchstart', function(e) {
           if (camerasOuvertes || reunionEnCours) return;
+          // Verifier si un bouton du HUD est sous le doigt
+          var touch = e.touches[0];
+          if (touch) {
+            var hud = document.querySelector('.jeu-hud');
+            if (hud) {
+              hud.style.pointerEvents = 'auto';
+              var elSous = document.elementFromPoint(touch.clientX, touch.clientY);
+              hud.style.pointerEvents = 'none';
+              if (elSous && elSous.closest && elSous.closest('button')) {
+                elSous.closest('button').click();
+                return;
+              }
+            }
+          }
           e.preventDefault();
           touchActif = true;
           updateTouchTarget(e);

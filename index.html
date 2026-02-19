@@ -7498,7 +7498,7 @@
           updateSalleAttente();
         });
       }).catch(function(err) {
-        showNotif('Erreur de connexion', 'warn');
+        showNotif(t('mjConnError'), 'warn');
       });
     }
 
@@ -7507,7 +7507,7 @@
       var skin = getSkinFichier(getSkin());
       // Verifier que la partie est disponible
       db.collection('parties').doc(partieId).get().then(function(doc) {
-        if (!doc.exists) { showNotif('Partie introuvable', 'warn'); return; }
+        if (!doc.exists) { showNotif(t('mjPartyNotFound'), 'warn'); return; }
         var party = doc.data();
         if (party.phase !== 'lobby') { showNotif(t('gameAlreadyStarted'), 'warn'); return; }
         if (party.joueurs >= party.maxJoueurs) { showNotif(t('gameFull'), 'warn'); return; }
@@ -7536,7 +7536,7 @@
           updateSalleAttente();
         });
       }).catch(function(err) {
-        showNotif('Erreur de connexion', 'warn');
+        showNotif(t('mjConnError'), 'warn');
       });
     }
 
@@ -8229,7 +8229,65 @@
           'courage les amis',
           'Ne vous trompez pas',
           'Lets go !'
-        ]
+        ],
+        // Mini-jeux
+        mjDone: 'TERMINE !',
+        mjSwapBooks: 'Cliquez 2 livres pour les echanger',
+        mjMemorize: 'Memorisez le numero de suivi...',
+        mjEnterCode: 'Entrez le numero de suivi',
+        mjWrongCode: 'Incorrect ! On vous le remontre...',
+        mjEnterNum: 'Entrez le numero',
+        mjFindCamera: 'Trouvez la camera avec alerte ! ({0}/{1})',
+        mjPlaceProduct: 'Placez chaque produit sur le bon rayon',
+        mjGears: 'Tournez les engrenages pour qu\'ils s\'enchainent',
+        mjFixLeaks: 'Cliquez sur les fuites pour les reparer ! ({0}/{1})',
+        mjAlternate: 'Alternez \u2B06 et \u2B07 ! ({0}/{1})',
+        mjUp: '\u2B06 HAUT',
+        mjDown: '\u2B07 BAS',
+        mjCleanSpots: 'Cliquez sur les taches pour nettoyer ! ({0}/{1})',
+        mjFindPairs: 'Trouvez les 3 paires de parfums !',
+        mjPourRelease: 'Maintenez pour verser, relachez dans la zone verte !',
+        mjPour: '\u2615 VERSER',
+        mjPerfect: 'Parfait !',
+        mjTooMuch: 'Trop plein ! Recommencez...',
+        mjFocus: 'Appuyez sur FOCUS quand l\'image est nette ! ({0}/{1})',
+        mjFocusBtn: '\uD83C\uDFA5 FOCUS',
+        mjClearPlates: 'Debarrassez les assiettes ! ({0}/{1})',
+        mjSortPills: 'Triez chaque pilule dans le bon bac',
+        mjHangClothes: 'Rangez chaque vetement sur le bon cintre',
+        mjDownloading: 'Telechargement en cours...',
+        mjResumeBtn: '\u25B6 REPRENDRE',
+        mjDownloadError: '\u26A0 Erreur ! Cliquez REPRENDRE ({0}/{1})',
+        mjFeedAnimal: 'Donnez la bonne nourriture a chaque animal',
+        mjStopThermo: 'Arretez le thermometre entre 170\u00B0C et 190\u00B0C',
+        mjStopBtn: '\uD83C\uDF21\uFE0F ARRETER',
+        mjTempPerfect: 'Temperature parfaite !',
+        mjTooCold: 'Trop froid !',
+        mjTooHot: 'Trop chaud !',
+        mjRetry: ' Reessayez...',
+        mjWaterPlants: 'Maintenez pour arroser chaque plante dans la zone verte',
+        mjNotEnough: 'Pas assez !',
+        mjTooMuchWater: 'Trop d\'eau !',
+        mjRetryPlant: ' Recommencez cette plante',
+        mjTeaOrder: 'Cliquez les etapes dans le bon ordre',
+        mjTeaOrderHint: 'Ordre : 1\u2192 Bouillir  2\u2192 The  3\u2192 Infuser  4\u2192 Servir',
+        mjWrongOrder: 'Mauvais ordre ! Recommencez l\'etape {0}',
+        mjAlignBoth: 'Appuyez quand les DEUX aiguilles sont dans le vert',
+        mjValidateBtn: '\uD83D\uDC41\uFE0F VALIDER',
+        mjBothGreen: 'Les deux doivent etre dans le vert !',
+        mjFixPins: 'Relevez les quilles tombees ! ({0}/{1})',
+        mjInflate: 'Maintenez pour gonfler, relachez avant que ca eclate ! ({0}/{1})',
+        mjInflateBtn: '\uD83C\uDF88 GONFLER',
+        mjPopped: 'Eclate ! Recommencez...',
+        mjKeepInflating: 'Maintenez pour gonfler ! ({0}/{1})',
+        mjNotInflated: 'Pas assez gonfle ! Continuez...',
+        mjHangerRed: 'Rouge',
+        mjHangerBlue: 'Bleu',
+        mjHangerGreen: 'Vert',
+        mjHangerOrange: 'Orange',
+        mjConnError: 'Erreur de connexion',
+        mjPartyNotFound: 'Partie introuvable',
+        mjHostOnly: 'Seul le host peut demarrer'
       },
 
       en: {
@@ -8643,7 +8701,65 @@
           'come on guys',
           'Don\'t mess up',
           'Lets go!'
-        ]
+        ],
+        // Mini-games
+        mjDone: 'DONE!',
+        mjSwapBooks: 'Click 2 books to swap them',
+        mjMemorize: 'Memorize the tracking number...',
+        mjEnterCode: 'Enter the tracking number',
+        mjWrongCode: 'Wrong! Showing it again...',
+        mjEnterNum: 'Enter the number',
+        mjFindCamera: 'Find the alert camera! ({0}/{1})',
+        mjPlaceProduct: 'Place each product on the right shelf',
+        mjGears: 'Turn the gears to make them interlock',
+        mjFixLeaks: 'Click on leaks to fix them! ({0}/{1})',
+        mjAlternate: 'Alternate \u2B06 and \u2B07! ({0}/{1})',
+        mjUp: '\u2B06 UP',
+        mjDown: '\u2B07 DOWN',
+        mjCleanSpots: 'Click on spots to clean! ({0}/{1})',
+        mjFindPairs: 'Find the 3 perfume pairs!',
+        mjPourRelease: 'Hold to pour, release in the green zone!',
+        mjPour: '\u2615 POUR',
+        mjPerfect: 'Perfect!',
+        mjTooMuch: 'Too full! Try again...',
+        mjFocus: 'Press FOCUS when the image is sharp! ({0}/{1})',
+        mjFocusBtn: '\uD83C\uDFA5 FOCUS',
+        mjClearPlates: 'Clear the plates! ({0}/{1})',
+        mjSortPills: 'Sort each pill into the right bin',
+        mjHangClothes: 'Hang each piece on the right hanger',
+        mjDownloading: 'Downloading...',
+        mjResumeBtn: '\u25B6 RESUME',
+        mjDownloadError: '\u26A0 Error! Click RESUME ({0}/{1})',
+        mjFeedAnimal: 'Give the right food to each animal',
+        mjStopThermo: 'Stop the thermometer between 170\u00B0C and 190\u00B0C',
+        mjStopBtn: '\uD83C\uDF21\uFE0F STOP',
+        mjTempPerfect: 'Perfect temperature!',
+        mjTooCold: 'Too cold!',
+        mjTooHot: 'Too hot!',
+        mjRetry: ' Try again...',
+        mjWaterPlants: 'Hold to water each plant in the green zone',
+        mjNotEnough: 'Not enough!',
+        mjTooMuchWater: 'Too much water!',
+        mjRetryPlant: ' Try this plant again',
+        mjTeaOrder: 'Click the steps in the right order',
+        mjTeaOrderHint: 'Order: 1\u2192 Boil  2\u2192 Tea  3\u2192 Steep  4\u2192 Serve',
+        mjWrongOrder: 'Wrong order! Redo step {0}',
+        mjAlignBoth: 'Press when BOTH needles are in the green',
+        mjValidateBtn: '\uD83D\uDC41\uFE0F VALIDATE',
+        mjBothGreen: 'Both must be in the green!',
+        mjFixPins: 'Stand up the fallen pins! ({0}/{1})',
+        mjInflate: 'Hold to inflate, release before it pops! ({0}/{1})',
+        mjInflateBtn: '\uD83C\uDF88 INFLATE',
+        mjPopped: 'Popped! Try again...',
+        mjKeepInflating: 'Hold to inflate! ({0}/{1})',
+        mjNotInflated: 'Not inflated enough! Keep going...',
+        mjHangerRed: 'Red',
+        mjHangerBlue: 'Blue',
+        mjHangerGreen: 'Green',
+        mjHangerOrange: 'Orange',
+        mjConnError: 'Connection error',
+        mjPartyNotFound: 'Game not found',
+        mjHostOnly: 'Only the host can start'
       }
     };
 
@@ -9931,7 +10047,7 @@
     function lancerJeu() {
       // Mode en ligne : demarrer la partie (host assigne les roles)
       if (partieActuelleId && !modeHorsLigne) {
-        if (!estHost) { showNotif('Seul le host peut demarrer', 'warn'); return; }
+        if (!estHost) { showNotif(t('mjHostOnly'), 'warn'); return; }
         if (firebasePartyPlayers.length < 4) { showNotif(t('need4Players'), 'warn'); return; }
 
         // Assigner les roles cote client (host)
@@ -9964,7 +10080,7 @@
           }
         });
         batch.update(db.collection('parties').doc(partieActuelleId), { phase: 'playing' });
-        batch.commit().catch(function() { showNotif('Erreur de connexion', 'warn'); });
+        batch.commit().catch(function() { showNotif(t('mjConnError'), 'warn'); });
         return;
       }
 
@@ -11618,9 +11734,11 @@
       }
       var minimapInner = document.querySelector('.minimap-inner');
       if (!minimapInner) return;
-      // Ratio map (8000x6000) -> minimap (160x120)
-      var rx = 160 / 8000;
-      var ry = 120 / 6000;
+      var mmEl = document.querySelector('.hud-minimap');
+      var mmW = mmEl ? mmEl.clientWidth : 160;
+      var mmH = mmEl ? mmEl.clientHeight : 120;
+      var rx = mmW / MAP_W;
+      var ry = mmH / MAP_H;
       for (var i = 0; i < mesMissions.length; i++) {
         if (mesMissions[i].faite) continue;
         var cx = mesMissions[i].caisseX * rx;
@@ -11738,7 +11856,7 @@
       var zone = document.getElementById('minijeu-zone');
       var successDiv = document.createElement('div');
       successDiv.className = 'minijeu-success';
-      successDiv.textContent = 'TERMINE !';
+      successDiv.textContent = t('mjDone');
       zone.appendChild(successDiv);
 
       if (miniJeuInterval) { clearInterval(miniJeuInterval); miniJeuInterval = null; }
@@ -11822,7 +11940,7 @@
       var nums = mjShuffle([1,2,3,4,5]);
       var selected = -1;
       var grid = mjGrid(5);
-      var msg = mjMsg('Cliquez 2 livres pour les echanger');
+      var msg = mjMsg(t('mjSwapBooks'));
       var cells = [];
       for (var i=0;i<5;i++) {
         var c = mjCell(nums[i], 24);
@@ -11854,20 +11972,20 @@
       var input = ''; var showing = true;
       var display = document.createElement('div'); display.style.cssText='background:#0a0a1a;border:2px solid #2c3e50;border-radius:8px;padding:14px 20px;font-family:Courier New,monospace;font-size:28px;letter-spacing:8px;color:#2ecc71;text-align:center;margin-bottom:12px;text-shadow:0 0 10px rgba(46,204,113,0.5);';
       display.textContent = '\uD83D\uDCE6 ' + code;
-      var msg = mjMsg('Memorisez le numero de suivi...');
+      var msg = mjMsg(t('mjMemorize'));
       var pad = document.createElement('div'); pad.style.cssText='display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:280px;display:none;';
       for (var n=0;n<=9;n++) { var b=document.createElement('button'); b.className='digicode-btn'; b.textContent=n; b.addEventListener('click',(function(d){return function(){doInput(d);};})(n)); pad.appendChild(b); }
       zone.appendChild(display); zone.appendChild(msg); zone.appendChild(pad);
-      var t1=setTimeout(function(){ showing=false; display.textContent='\uD83D\uDCE6 _ _ _ _ _ _'; msg.textContent='Entrez le numero de suivi'; pad.style.display='grid'; },3000); miniJeuTimeouts.push(t1);
+      var t1=setTimeout(function(){ showing=false; display.textContent='\uD83D\uDCE6 _ _ _ _ _ _'; msg.textContent=t('mjEnterCode'); pad.style.display='grid'; },3000); miniJeuTimeouts.push(t1);
       function doInput(d) { if(showing)return; input+=d; var s='\uD83D\uDCE6 '; for(var i=0;i<6;i++) s+=(i<input.length)?input[i]:'_'; display.textContent=s;
-        if(input.length>=6){if(input===code){display.style.color='#2ecc71';completerMiniJeu();}else{display.style.color='#e74c3c';msg.textContent='Incorrect ! On vous le remontre...';input='';pad.style.display='none';var t2=setTimeout(function(){display.style.color='#2ecc71';display.textContent='\uD83D\uDCE6 '+code;showing=true;var t3=setTimeout(function(){showing=false;display.textContent='\uD83D\uDCE6 _ _ _ _ _ _';msg.textContent='Entrez le numero';pad.style.display='grid';},3000);miniJeuTimeouts.push(t3);},800);miniJeuTimeouts.push(t2);}}
+        if(input.length>=6){if(input===code){display.style.color='#2ecc71';completerMiniJeu();}else{display.style.color='#e74c3c';msg.textContent=t('mjWrongCode');input='';pad.style.display='none';var t2=setTimeout(function(){display.style.color='#2ecc71';display.textContent='\uD83D\uDCE6 '+code;showing=true;var t3=setTimeout(function(){showing=false;display.textContent='\uD83D\uDCE6 _ _ _ _ _ _';msg.textContent=t('mjEnterNum');pad.style.display='grid';},3000);miniJeuTimeouts.push(t3);},800);miniJeuTimeouts.push(t2);}}
       }
     }
 
     // 3. CAMERAS : Trouver l'ecran qui clignote
     function initMJ_cameras(zone) {
       var found = 0; var target = 3;
-      var msg = mjMsg('Trouvez la camera avec alerte ! ('+found+'/'+target+')');
+      var msg = mjMsg(t('mjFindCamera',found,target));
       var grid = mjGrid(3);
       var cams = [];
       for (var i=0;i<6;i++) { var c = mjCell('\uD83D\uDCF9', 22); c.style.minHeight='60px'; cams.push(c); grid.appendChild(c); }
@@ -11879,7 +11997,7 @@
         cams[idx].style.borderColor='#e74c3c'; cams[idx].style.background='rgba(231,76,60,0.15)';
         cams[idx].textContent='\uD83D\uDCF9 \u26A0\uFE0F';
         cams[idx].onclick = function() {
-          found++; msg.textContent='Trouvez la camera avec alerte ! ('+found+'/'+target+')';
+          found++; msg.textContent=t('mjFindCamera',found,target);
           cams[idx].style.background='rgba(46,204,113,0.2)'; cams[idx].style.borderColor='#2ecc71'; cams[idx].textContent='\u2705';
           if (found>=target) { completerMiniJeu(); } else { var tt=setTimeout(function(){ for(var j=0;j<6;j++){cams[j].textContent='\uD83D\uDCF9';} setAlert(); },600); miniJeuTimeouts.push(tt); }
         };
@@ -11891,7 +12009,7 @@
       var items = mjShuffle([{e:'\uD83C\uDF4E',n:'Fruits'},{e:'\uD83E\uDD5B',n:'Lait'},{e:'\uD83C\uDF5E',n:'Pain'},{e:'\uD83E\uDDC0',n:'Fromage'}]);
       var targets = [{e:'\uD83C\uDF4E',n:'Fruits'},{e:'\uD83E\uDD5B',n:'Lait'},{e:'\uD83C\uDF5E',n:'Pain'},{e:'\uD83E\uDDC0',n:'Fromage'}];
       var selectedItem = -1; var placed = 0;
-      var msg = mjMsg('Placez chaque produit sur le bon rayon');
+      var msg = mjMsg(t('mjPlaceProduct'));
       var topRow = mjGrid(4); var botRow = mjGrid(4);
       var itemCells = []; var targetCells = [];
       for (var i=0;i<4;i++) {
@@ -11907,7 +12025,7 @@
     function initMJ_escalator(zone) {
       var gears = [0,0,0,0]; // 0=pas bon, 1=bon sens
       var target = [1,0,1,0]; // alternance
-      var msg = mjMsg('Tournez les engrenages pour qu\'ils s\'enchainent');
+      var msg = mjMsg(t('mjGears'));
       var grid = mjGrid(4);
       var cells = [];
       for (var i=0;i<4;i++) {
@@ -11928,7 +12046,7 @@
     // 6. TOILETTES : Fermer les fuites (cliquer quand elles apparaissent)
     function initMJ_toilettes(zone) {
       var fixed = 0; var total = 5;
-      var msg = mjMsg('Cliquez sur les fuites pour les reparer ! ('+fixed+'/'+total+')');
+      var msg = mjMsg(t('mjFixLeaks',fixed,total));
       var grid = mjGrid(3);
       var pipes = [];
       for (var i=0;i<6;i++) { var c = mjCell('\uD83D\uDEB0', 28); c.style.minHeight='60px'; pipes.push(c); grid.appendChild(c); }
@@ -11938,7 +12056,7 @@
         if(fixed>=total)return;
         var idx=Math.floor(Math.random()*6);
         pipes[idx].textContent='\uD83D\uDCA7'; pipes[idx].style.borderColor='#3498db'; pipes[idx].style.background='rgba(52,152,219,0.15)';
-        pipes[idx].onclick=function(){ fixed++; msg.textContent='Cliquez sur les fuites pour les reparer ! ('+fixed+'/'+total+')'; pipes[idx].textContent='\u2705'; pipes[idx].style.borderColor='#2ecc71'; pipes[idx].style.background='#1a252f'; pipes[idx].onclick=null;
+        pipes[idx].onclick=function(){ fixed++; msg.textContent=t('mjFixLeaks',fixed,total); pipes[idx].textContent='\u2705'; pipes[idx].style.borderColor='#2ecc71'; pipes[idx].style.background='#1a252f'; pipes[idx].onclick=null;
           if(fixed>=total){completerMiniJeu();}else{var tt=setTimeout(spawnLeak,400);miniJeuTimeouts.push(tt);}
         };
       }
@@ -11947,8 +12065,8 @@
     // 7. POMPES : Alterner haut/bas
     function initMJ_pompes(zone) {
       var count = 0; var total = 16; var expectUp = true;
-      var msg = mjMsg('Alternez \u2B06 et \u2B07 ! ('+count+'/'+total+')');
-      var btnUp = mjBtn('\u2B06 HAUT', '#2ecc71', 'white'); var btnDown = mjBtn('\u2B07 BAS', '#e74c3c', 'white');
+      var msg = mjMsg(t('mjAlternate',count,total));
+      var btnUp = mjBtn(t('mjUp'), '#2ecc71', 'white'); var btnDown = mjBtn(t('mjDown'), '#e74c3c', 'white');
       btnUp.style.width='120px'; btnUp.style.height='80px'; btnUp.style.fontSize='20px';
       btnDown.style.width='120px'; btnDown.style.height='80px'; btnDown.style.fontSize='20px';
       var gauge = mjGauge(80);
@@ -11959,20 +12077,20 @@
       var row = document.createElement('div'); row.style.cssText='display:flex;gap:16px;justify-content:center;margin-top:10px;';
       row.appendChild(btnUp); row.appendChild(btnDown);
       zone.appendChild(msg); zone.appendChild(gauge.el); zone.appendChild(row);
-      function update(){ var pct=Math.round(count/total*100); gauge.fill.style.width=pct+'%'; gauge.txt.textContent=pct+'%'; msg.textContent='Alternez \u2B06 et \u2B07 ! ('+count+'/'+total+')'; btnUp.style.opacity=expectUp?'1':'0.4'; btnDown.style.opacity=expectUp?'0.4':'1'; if(count>=total)completerMiniJeu(); }
+      function update(){ var pct=Math.round(count/total*100); gauge.fill.style.width=pct+'%'; gauge.txt.textContent=pct+'%'; msg.textContent=t('mjAlternate',count,total); btnUp.style.opacity=expectUp?'1':'0.4'; btnDown.style.opacity=expectUp?'0.4':'1'; if(count>=total)completerMiniJeu(); }
       update();
     }
 
     // 8. VITRINES : Nettoyer les taches sur les vitrines
     function initMJ_vitrines(zone) {
       var cleaned = 0; var total = 8;
-      var msg = mjMsg('Cliquez sur les taches pour nettoyer ! ('+cleaned+'/'+total+')');
+      var msg = mjMsg(t('mjCleanSpots',cleaned,total));
       var grid = mjGrid(4);
       for (var i=0;i<total;i++) {
         var c = mjCell('\uD83D\uDCA9', 24); c.style.background='rgba(139,115,85,0.2)';
         c.addEventListener('click', (function(el){return function(){
           if(el.dataset.done)return; el.dataset.done='1'; el.textContent='\u2728'; el.style.background='rgba(46,204,113,0.1)'; el.style.borderColor='#2ecc71';
-          cleaned++; msg.textContent='Cliquez sur les taches pour nettoyer ! ('+cleaned+'/'+total+')'; if(cleaned>=total)completerMiniJeu();
+          cleaned++; msg.textContent=t('mjCleanSpots',cleaned,total); if(cleaned>=total)completerMiniJeu();
         };})(c));
         grid.appendChild(c);
       }
@@ -11983,7 +12101,7 @@
     function initMJ_echantillons(zone) {
       var parfums = ['\uD83C\uDF39','\uD83C\uDF3B','\uD83C\uDF3A','\uD83C\uDF37','\uD83C\uDF38','\uD83C\uDF3C'];
       var pairs = mjShuffle([0,0,1,1,2,2]); var revealed = []; var first = -1; var found = 0;
-      var msg = mjMsg('Trouvez les 3 paires de parfums !');
+      var msg = mjMsg(t('mjFindPairs'));
       var grid = mjGrid(3);
       var cells = [];
       for (var i=0;i<6;i++) {
@@ -12007,12 +12125,12 @@
     // 10. CAFE : Remplir la tasse au bon niveau (maintenir et relacher)
     function initMJ_cafe(zone) {
       var level = 0; var targetMin = 65; var targetMax = 80; var filling = false; var done = false;
-      var msg = mjMsg('Maintenez pour verser, relachez dans la zone verte !');
+      var msg = mjMsg(t('mjPourRelease'));
       var cup = document.createElement('div'); cup.style.cssText='width:80px;height:140px;border:3px solid #8b6914;border-top:none;border-radius:0 0 12px 12px;position:relative;overflow:hidden;background:#1a1a2e;margin:10px auto;';
       var fill = document.createElement('div'); fill.style.cssText='position:absolute;bottom:0;width:100%;height:0%;background:linear-gradient(180deg,#6b4226,#8b5e34);transition:height 0.05s;';
       var greenZone = document.createElement('div'); greenZone.style.cssText='position:absolute;bottom:'+targetMin+'%;width:100%;height:'+(targetMax-targetMin)+'%;background:rgba(46,204,113,0.25);border-top:2px solid #2ecc71;border-bottom:2px solid #2ecc71;';
       cup.appendChild(greenZone); cup.appendChild(fill);
-      var pourBtn = mjBtn('\u2615 VERSER', '#8b5e34', 'white'); pourBtn.style.width='100%';
+      var pourBtn = mjBtn(t('mjPour'), '#8b5e34', 'white'); pourBtn.style.width='100%';
       pourBtn.addEventListener('mousedown', function(e){e.preventDefault();filling=true;});
       pourBtn.addEventListener('mouseup', function(){filling=false;checkLevel();});
       pourBtn.addEventListener('touchstart', function(e){e.preventDefault();filling=true;},{passive:false});
@@ -12021,7 +12139,7 @@
       var tickCafe = function(){ if(done)return; if(filling){level=Math.min(100,level+1.5);} fill.style.height=level+'%'; };
       miniJeuInterval = setInterval(tickCafe,50);
       miniJeuResumeFn = function(){ miniJeuInterval = setInterval(tickCafe,50); };
-      function checkLevel(){ if(done)return; if(level>=targetMin&&level<=targetMax){done=true;msg.textContent='Parfait !';completerMiniJeu();}else if(level>targetMax){msg.textContent='Trop plein ! Recommencez...';level=0;} }
+      function checkLevel(){ if(done)return; if(level>=targetMin&&level<=targetMax){done=true;msg.textContent=t('mjPerfect');completerMiniJeu();}else if(level>targetMax){msg.textContent=t('mjTooMuch');level=0;} }
     }
 
     // 11. BOX INTERNET : Connecter les fils colores
@@ -12124,15 +12242,15 @@
     function initMJ_projection(zone) {
       var pos = 0; var dir = 1; var speed = 1.0; var hits = 0; var total = 2; var done = false;
       var targetMin = 40; var targetMax = 58;
-      var msg = mjMsg('Appuyez sur FOCUS quand l\'image est nette ! ('+hits+'/'+total+')');
+      var msg = mjMsg(t('mjFocus',hits,total));
       var screen = document.createElement('div'); screen.style.cssText='width:90%;height:60px;background:#0a0a1a;border:2px solid #2c3e50;border-radius:6px;position:relative;overflow:hidden;margin:8px auto;';
       var tgt = document.createElement('div'); tgt.style.cssText='position:absolute;top:0;height:100%;width:18%;background:rgba(46,204,113,0.2);border-left:2px solid #2ecc71;border-right:2px solid #2ecc71;left:'+targetMin+'%;';
       var ind = document.createElement('div'); ind.style.cssText='position:absolute;top:2px;bottom:2px;width:6px;background:#f39c12;border-radius:3px;left:0;';
       screen.appendChild(tgt); screen.appendChild(ind);
-      var btn = mjBtn('\uD83C\uDFA5 FOCUS', '#3498db', 'white'); btn.style.width='100%';
+      var btn = mjBtn(t('mjFocusBtn'), '#3498db', 'white'); btn.style.width='100%';
       btn.addEventListener('click', function(){
         if(done)return;
-        if(pos>=targetMin&&pos<=targetMax){hits++;msg.textContent='Appuyez sur FOCUS quand l\'image est nette ! ('+hits+'/'+total+')';speed+=0.4;targetMin=20+Math.floor(Math.random()*55);targetMax=targetMin+18;tgt.style.left=targetMin+'%';if(hits>=total){done=true;completerMiniJeu();}}
+        if(pos>=targetMin&&pos<=targetMax){hits++;msg.textContent=t('mjFocus',hits,total);speed+=0.4;targetMin=20+Math.floor(Math.random()*55);targetMax=targetMin+18;tgt.style.left=targetMin+'%';if(hits>=total){done=true;completerMiniJeu();}}
         else{tgt.style.background='rgba(231,76,60,0.3)';setTimeout(function(){tgt.style.background='rgba(46,204,113,0.2)';},200);}
       });
       zone.appendChild(msg); zone.appendChild(screen); zone.appendChild(btn);
@@ -12145,13 +12263,13 @@
     function initMJ_tables(zone) {
       var cleaned = 0; var total = 6;
       var emojis = ['\uD83C\uDF7D\uFE0F','\uD83E\uDD62','\uD83C\uDF54','\uD83C\uDF5D','\uD83E\uDD57','\uD83C\uDF5B'];
-      var msg = mjMsg('Debarrassez les assiettes ! ('+cleaned+'/'+total+')');
+      var msg = mjMsg(t('mjClearPlates',cleaned,total));
       var grid = mjGrid(3);
       for (var i=0;i<total;i++) {
         var c = mjCell(emojis[i], 28); c.style.background='rgba(139,69,19,0.15)';
         c.addEventListener('click', (function(el){return function(){
           if(el.dataset.done)return; el.dataset.done='1'; el.textContent='\u2728'; el.style.background='rgba(46,204,113,0.1)'; el.style.borderColor='#2ecc71';
-          cleaned++; msg.textContent='Debarrassez les assiettes ! ('+cleaned+'/'+total+')'; if(cleaned>=total)completerMiniJeu();
+          cleaned++; msg.textContent=t('mjClearPlates',cleaned,total); if(cleaned>=total)completerMiniJeu();
         };})(c));
         grid.appendChild(c);
       }
@@ -12162,7 +12280,7 @@
     function initMJ_medicaments(zone) {
       var colors = ['#e74c3c','#3498db','#2ecc71']; var names = ['Rouge','Bleu','Vert'];
       var pills = mjShuffle([0,0,1,1,2,2]); var sorted = 0; var selectedPill = -1;
-      var msg = mjMsg('Triez chaque pilule dans le bon bac');
+      var msg = mjMsg(t('mjSortPills'));
       var pillRow = mjGrid(6); var pillCells = [];
       for (var i=0;i<6;i++) {
         var c = mjCell('\uD83D\uDC8A', 22); c.style.color=colors[pills[i]]; c.style.textShadow='0 0 8px '+colors[pills[i]];
@@ -12185,9 +12303,9 @@
     // 15. VETEMENTS : Accrocher les vetements par couleur
     function initMJ_vetements(zone) {
       var items = mjShuffle([{e:'\uD83D\uDC55',c:'#e74c3c'},{e:'\uD83D\uDC57',c:'#3498db'},{e:'\uD83E\uDDE5',c:'#2ecc71'},{e:'\uD83E\uDD7E',c:'#f39c12'}]);
-      var hangers = [{e:'\uD83E\uDDE3',c:'#e74c3c',n:'Rouge'},{e:'\uD83E\uDDE3',c:'#3498db',n:'Bleu'},{e:'\uD83E\uDDE3',c:'#2ecc71',n:'Vert'},{e:'\uD83E\uDDE3',c:'#f39c12',n:'Orange'}];
+      var hangers = [{e:'\uD83E\uDDE3',c:'#e74c3c',n:t('mjHangerRed')},{e:'\uD83E\uDDE3',c:'#3498db',n:t('mjHangerBlue')},{e:'\uD83E\uDDE3',c:'#2ecc71',n:t('mjHangerGreen')},{e:'\uD83E\uDDE3',c:'#f39c12',n:t('mjHangerOrange')}];
       var sel = -1; var placed = 0;
-      var msg = mjMsg('Rangez chaque vetement sur le bon cintre');
+      var msg = mjMsg(t('mjHangClothes'));
       var topRow = mjGrid(4); var botRow = mjGrid(4);
       var itemCells = []; var hangerCells = [];
       for (var i=0;i<4;i++) {
@@ -12208,17 +12326,17 @@
     // 16. CONSOLES : Telecharger la mise a jour (cliquer quand ca pause)
     function initMJ_consoles(zone) {
       var progress = 0; var paused = false; var pauses = 0; var totalPauses = 3; var done = false;
-      var msg = mjMsg('Telechargement en cours...');
+      var msg = mjMsg(t('mjDownloading'));
       var gauge = mjGauge(90);
-      var resumeBtn = mjBtn('\u25B6 REPRENDRE', '#2ecc71', 'white'); resumeBtn.style.display='none'; resumeBtn.style.width='100%';
-      resumeBtn.addEventListener('click', function(){if(!paused||done)return;paused=false;resumeBtn.style.display='none';msg.textContent='Telechargement en cours...';});
+      var resumeBtn = mjBtn(t('mjResumeBtn'), '#2ecc71', 'white'); resumeBtn.style.display='none'; resumeBtn.style.width='100%';
+      resumeBtn.addEventListener('click', function(){if(!paused||done)return;paused=false;resumeBtn.style.display='none';msg.textContent=t('mjDownloading');});
       zone.appendChild(msg); zone.appendChild(gauge.el); zone.appendChild(resumeBtn);
       var nextPause = 15+Math.floor(Math.random()*20);
       var tickConsoles = function(){
         if(done||paused)return;
         progress+=0.5;
         gauge.fill.style.width=Math.min(progress,100)+'%'; gauge.txt.textContent=Math.round(progress)+'%';
-        if(progress>=nextPause&&pauses<totalPauses){paused=true;pauses++;msg.textContent='\u26A0 Erreur ! Cliquez REPRENDRE ('+pauses+'/'+totalPauses+')';resumeBtn.style.display='block';nextPause=progress+15+Math.floor(Math.random()*20);}
+        if(progress>=nextPause&&pauses<totalPauses){paused=true;pauses++;msg.textContent=t('mjDownloadError',pauses,totalPauses);resumeBtn.style.display='block';nextPause=progress+15+Math.floor(Math.random()*20);}
         if(progress>=100){done=true;completerMiniJeu();}
       };
       miniJeuInterval = setInterval(tickConsoles,50);
@@ -12230,7 +12348,7 @@
       var animals = [{e:'\uD83D\uDC31',n:'Chat',food:'\uD83D\uDC1F'},{e:'\uD83D\uDC36',n:'Chien',food:'\uD83E\uDD69'},{e:'\uD83D\uDC30',n:'Lapin',food:'\uD83E\uDD55'}];
       var foods = mjShuffle(['\uD83D\uDC1F','\uD83E\uDD69','\uD83E\uDD55']);
       var selFood = -1; var fed = 0;
-      var msg = mjMsg('Donnez la bonne nourriture a chaque animal');
+      var msg = mjMsg(t('mjFeedAnimal'));
       var animalRow = mjGrid(3); var foodRow = mjGrid(3);
       var aCells = []; var fCells = [];
       for (var i=0;i<3;i++) {
@@ -12252,14 +12370,14 @@
     function initMJ_fours(zone) {
       var temp = 0; var dir = 1; var speed = 0.8; var done = false;
       var targetMin = 170; var targetMax = 190;
-      var msg = mjMsg('Arretez le thermometre entre 170\u00B0C et 190\u00B0C');
+      var msg = mjMsg(t('mjStopThermo'));
       var display = document.createElement('div'); display.style.cssText='font-family:Courier New,monospace;font-size:42px;color:#f39c12;text-align:center;margin:10px;text-shadow:0 0 10px rgba(243,156,18,0.5);';
       display.textContent='0\u00B0C';
-      var btn = mjBtn('\uD83C\uDF21\uFE0F ARRETER', '#e74c3c', 'white'); btn.style.width='100%';
+      var btn = mjBtn(t('mjStopBtn'), '#e74c3c', 'white'); btn.style.width='100%';
       btn.addEventListener('click', function(){
         if(done)return;
-        if(temp>=targetMin&&temp<=targetMax){done=true;display.style.color='#2ecc71';msg.textContent='Temperature parfaite !';completerMiniJeu();}
-        else{msg.textContent=(temp<targetMin?'Trop froid !':'Trop chaud !')+' Reessayez...';display.style.color='#e74c3c';setTimeout(function(){display.style.color='#f39c12';msg.textContent='Arretez le thermometre entre 170\u00B0C et 190\u00B0C';},500);}
+        if(temp>=targetMin&&temp<=targetMax){done=true;display.style.color='#2ecc71';msg.textContent=t('mjTempPerfect');completerMiniJeu();}
+        else{msg.textContent=(temp<targetMin?t('mjTooCold'):t('mjTooHot'))+t('mjRetry');display.style.color='#e74c3c';setTimeout(function(){display.style.color='#f39c12';msg.textContent=t('mjStopThermo');},500);}
       });
       zone.appendChild(msg); zone.appendChild(display); zone.appendChild(btn);
       var tickFours = function(){if(done)return;temp+=dir*speed;if(temp>=250){temp=250;dir=-1;}if(temp<=0){temp=0;dir=1;}display.textContent=Math.round(temp)+'\u00B0C';if(temp>=targetMin&&temp<=targetMax)display.style.color='#2ecc71';else display.style.color='#f39c12';};
@@ -12271,7 +12389,7 @@
     function initMJ_plantes(zone) {
       var plants = [{e:'\uD83C\uDF31',target:60},{e:'\uD83C\uDF3F',target:70},{e:'\uD83C\uDF35',target:40}];
       var levels = [0,0,0]; var done = [false,false,false]; var filling = -1; var completed = 0;
-      var msg = mjMsg('Maintenez pour arroser chaque plante dans la zone verte');
+      var msg = mjMsg(t('mjWaterPlants'));
       var grid = mjGrid(3);
       var bars = []; var cells = [];
       for (var i=0;i<3;i++) {
@@ -12296,9 +12414,9 @@
       miniJeuInterval = setInterval(tickPlantes,50);
       miniJeuResumeFn = function(){ miniJeuInterval = setInterval(tickPlantes,50); };
       function checkPlant(idx){
-        var t=plants[idx].target;
-        if(levels[idx]>=t-8&&levels[idx]<=t+8){done[idx]=true;bars[idx].style.background='#2ecc71';completed++;if(completed>=3)completerMiniJeu();}
-        else{msg.textContent=(levels[idx]<t-8?'Pas assez !':'Trop d\'eau !')+' Recommencez cette plante';levels[idx]=0;bars[idx].style.height='0%';}
+        var tgt=plants[idx].target;
+        if(levels[idx]>=tgt-8&&levels[idx]<=tgt+8){done[idx]=true;bars[idx].style.background='#2ecc71';completed++;if(completed>=3)completerMiniJeu();}
+        else{msg.textContent=(levels[idx]<tgt-8?t('mjNotEnough'):t('mjTooMuchWater'))+t('mjRetryPlant');levels[idx]=0;bars[idx].style.height='0%';}
       }
     }
 
@@ -12306,9 +12424,9 @@
     function initMJ_infusions(zone) {
       var steps = ['\uD83D\uDD25 Faire bouillir','\uD83C\uDF75 Mettre le the','\u23F3 Laisser infuser','\uD83E\uDD64 Servir'];
       var shuffled = mjShuffle(steps.slice()); var current = 0;
-      var msg = mjMsg('Cliquez les etapes dans le bon ordre');
+      var msg = mjMsg(t('mjTeaOrder'));
       var orderDisplay = document.createElement('div'); orderDisplay.style.cssText='color:#f39c12;font-size:12px;text-align:center;margin-bottom:8px;letter-spacing:1px;';
-      orderDisplay.textContent='Ordre : 1\u2192 Bouillir  2\u2192 The  3\u2192 Infuser  4\u2192 Servir';
+      orderDisplay.textContent=t('mjTeaOrderHint');
       var grid = mjGrid(2);
       var cells = [];
       for (var i=0;i<4;i++) {
@@ -12316,7 +12434,7 @@
         c.addEventListener('click',(function(idx){return function(){
           if(cells[idx].dataset.done)return;
           if(shuffled[idx]===steps[current]){cells[idx].dataset.done='1';cells[idx].style.borderColor='#2ecc71';cells[idx].style.opacity='0.5';current++;if(current>=4)completerMiniJeu();}
-          else{cells[idx].style.borderColor='#e74c3c';setTimeout(function(){cells[idx].style.borderColor='#34495e';},400);msg.textContent='Mauvais ordre ! Recommencez l\'etape '+(current+1);}
+          else{cells[idx].style.borderColor='#e74c3c';setTimeout(function(){cells[idx].style.borderColor='#34495e';},400);msg.textContent=t('mjWrongOrder',current+1);}
         };})(i));
         cells.push(c); grid.appendChild(c);
       }
@@ -12327,7 +12445,7 @@
     function initMJ_calibrer(zone) {
       var pos1=0,pos2=100,dir1=1,dir2=-1,sp1=0.9,sp2=1.3,done=false;
       var tgt=42,tgtW=16;
-      var msg = mjMsg('Appuyez quand les DEUX aiguilles sont dans le vert');
+      var msg = mjMsg(t('mjAlignBoth'));
       var mkTrack=function(){
         var t=document.createElement('div');t.style.cssText='width:90%;height:30px;background:#1a1a2e;border:2px solid #2c3e50;border-radius:4px;position:relative;overflow:hidden;margin:6px auto;';
         var g=document.createElement('div');g.style.cssText='position:absolute;top:0;height:100%;width:'+tgtW+'%;background:rgba(46,204,113,0.2);border-left:2px solid #2ecc71;border-right:2px solid #2ecc71;left:'+tgt+'%;';
@@ -12335,12 +12453,12 @@
         t.appendChild(g);t.appendChild(n);return{el:t,needle:n};
       };
       var t1=mkTrack(),t2=mkTrack();
-      var btn=mjBtn('\uD83D\uDC41\uFE0F VALIDER','#f39c12','#000');btn.style.width='100%';
+      var btn=mjBtn(t('mjValidateBtn'),'#f39c12','#000');btn.style.width='100%';
       btn.addEventListener('click',function(){
         if(done)return;
         var ok1=pos1>=tgt&&pos1<=tgt+tgtW,ok2=pos2>=tgt&&pos2<=tgt+tgtW;
         if(ok1&&ok2){done=true;completerMiniJeu();}
-        else{msg.textContent='Les deux doivent etre dans le vert !';setTimeout(function(){msg.textContent='Appuyez quand les DEUX aiguilles sont dans le vert';},800);}
+        else{msg.textContent=t('mjBothGreen');setTimeout(function(){msg.textContent=t('mjAlignBoth');},800);}
       });
       zone.appendChild(msg);zone.appendChild(t1.el);zone.appendChild(t2.el);zone.appendChild(btn);
       var tickCalibrer=function(){if(done)return;
@@ -12357,7 +12475,7 @@
       for(var i=0;i<total;i++) fallen.push(Math.random()<0.6);
       var toFix=0; for(var i=0;i<total;i++) if(fallen[i]) toFix++;
       if(toFix===0){fallen[0]=true;fallen[3]=true;toFix=2;}
-      var msg = mjMsg('Relevez les quilles tombees ! ('+fixed+'/'+toFix+')');
+      var msg = mjMsg(t('mjFixPins',fixed,toFix));
       var container = document.createElement('div'); container.style.cssText='display:flex;flex-direction:column;align-items:center;gap:6px;';
       var idx = 0; var cells = [];
       for(var r=0;r<4;r++){
@@ -12365,7 +12483,7 @@
         for(var c=0;c<=r;c++){
           var pin = mjCell(fallen[idx]?'\u274C':'\uD83C\uDFB3', 22); pin.style.width='44px'; pin.style.height='44px'; pin.style.padding='4px';
           if(fallen[idx]){pin.style.background='rgba(231,76,60,0.15)';pin.style.borderColor='#e74c3c';
-            pin.addEventListener('click',(function(pidx,el){return function(){if(el.dataset.done)return;el.dataset.done='1';fallen[pidx]=false;el.textContent='\uD83C\uDFB3';el.style.background='#1a252f';el.style.borderColor='#2ecc71';fixed++;msg.textContent='Relevez les quilles tombees ! ('+fixed+'/'+toFix+')';if(fixed>=toFix)completerMiniJeu();};})(idx,pin));
+            pin.addEventListener('click',(function(pidx,el){return function(){if(el.dataset.done)return;el.dataset.done='1';fallen[pidx]=false;el.textContent='\uD83C\uDFB3';el.style.background='#1a252f';el.style.borderColor='#2ecc71';fixed++;msg.textContent=t('mjFixPins',fixed,toFix);if(fixed>=toFix)completerMiniJeu();};})(idx,pin));
           }
           cells.push(pin); row.appendChild(pin); idx++;
         }
@@ -12377,11 +12495,11 @@
     // 23. BALLONS : Gonfler sans eclater
     function initMJ_ballons(zone) {
       var current = 0; var total = 3; var size = 0; var targets = [60,70,80]; var inflating = false; var done = false;
-      var msg = mjMsg('Maintenez pour gonfler, relachez avant que ca eclate ! ('+current+'/'+total+')');
+      var msg = mjMsg(t('mjInflate',current,total));
       var balloon = document.createElement('div'); balloon.style.cssText='width:40px;height:40px;background:radial-gradient(circle,#e74c3c,#c0392b);border-radius:50%;margin:10px auto;transition:width 0.05s,height 0.05s;display:flex;align-items:center;justify-content:center;font-size:20px;';
       balloon.textContent='\uD83C\uDF88';
       var dangerBar = mjGauge(70);
-      var btn = mjBtn('\uD83C\uDF88 GONFLER', '#e74c3c', 'white'); btn.style.width='100%';
+      var btn = mjBtn(t('mjInflateBtn'), '#e74c3c', 'white'); btn.style.width='100%';
       btn.addEventListener('mousedown',function(e){e.preventDefault();if(!done)inflating=true;});
       btn.addEventListener('mouseup',function(){inflating=false;checkBalloon();});
       btn.addEventListener('touchstart',function(e){e.preventDefault();if(!done)inflating=true;},{passive:false});
@@ -12391,19 +12509,19 @@
         if(done)return;
         if(inflating){size+=1.5;var s=40+size*0.8;balloon.style.width=s+'px';balloon.style.height=s+'px';
           dangerBar.fill.style.width=size+'%';dangerBar.txt.textContent=Math.round(size)+'%';
-          if(size>=100){inflating=false;done=true;balloon.textContent='\uD83D\uDCA5';msg.textContent='Eclate ! Recommencez...';
-            setTimeout(function(){done=false;size=0;balloon.style.width='40px';balloon.style.height='40px';balloon.textContent='\uD83C\uDF88';dangerBar.fill.style.width='0%';dangerBar.txt.textContent='0%';msg.textContent='Maintenez pour gonfler, relachez avant que ca eclate ! ('+current+'/'+total+')';},1000);
+          if(size>=100){inflating=false;done=true;balloon.textContent='\uD83D\uDCA5';msg.textContent=t('mjPopped');
+            setTimeout(function(){done=false;size=0;balloon.style.width='40px';balloon.style.height='40px';balloon.textContent='\uD83C\uDF88';dangerBar.fill.style.width='0%';dangerBar.txt.textContent='0%';msg.textContent=t('mjInflate',current,total);},1000);
           }
         }
       };
       miniJeuInterval=setInterval(tickBallons,50);
       miniJeuResumeFn=function(){ miniJeuInterval=setInterval(tickBallons,50); };
       function checkBalloon(){
-        if(done)return; var t=targets[current];
-        if(size>=t-10&&size<=t+5){current++;balloon.textContent='\u2705';
+        if(done)return; var tgt=targets[current];
+        if(size>=tgt-10&&size<=tgt+5){current++;balloon.textContent='\u2705';
           if(current>=total){done=true;completerMiniJeu();}
-          else{setTimeout(function(){size=0;balloon.style.width='40px';balloon.style.height='40px';balloon.textContent='\uD83C\uDF88';dangerBar.fill.style.width='0%';dangerBar.txt.textContent='0%';msg.textContent='Maintenez pour gonfler ! ('+current+'/'+total+')';},600);}
-        }else if(size<t-10){msg.textContent='Pas assez gonfle ! Continuez...';}
+          else{setTimeout(function(){size=0;balloon.style.width='40px';balloon.style.height='40px';balloon.textContent='\uD83C\uDF88';dangerBar.fill.style.width='0%';dangerBar.txt.textContent='0%';msg.textContent=t('mjKeepInflating',current,total);},600);}
+        }else if(size<tgt-10){msg.textContent=t('mjNotInflated');}
       }
     }
 
@@ -12611,9 +12729,7 @@
       var distFontaine = Math.sqrt((joueurX - fontCX) * (joueurX - fontCX) + (joueurY - fontCY) * (joueurY - fontCY));
       var btnReunion = document.getElementById('btn-reunion');
       if (btnReunion) {
-        var reunionVisible = distFontaine < 200 && !killProtection && !reunionCooldown;
-        btnReunion.style.display = reunionVisible ? 'block' : 'none';
-        if (distFontaine < 300 && !window._debugFontLog) { window._debugFontLog = true; console.log('[DEBUG] Fontaine dist=' + Math.round(distFontaine) + ' visible=' + reunionVisible + ' killProt=' + killProtection + ' cooldown=' + reunionCooldown + ' btnDisplay=' + btnReunion.style.display); }
+        btnReunion.style.display = (distFontaine < 200 && !killProtection && !reunionCooldown) ? 'block' : 'none';
       }
 
       // Proximite mission -> bouton faire la tache (distance a la caisse)
@@ -12737,8 +12853,11 @@
       // Minimap
       var miniPt = document.getElementById('minimap-point');
       if (miniPt) {
-        miniPt.style.left = (joueurX / MAP_W * 157) + 'px';
-        miniPt.style.top = (joueurY / MAP_H * 117) + 'px';
+        var mmEl = document.querySelector('.hud-minimap');
+        var mmW = mmEl ? mmEl.clientWidth : 160;
+        var mmH = mmEl ? mmEl.clientHeight : 120;
+        miniPt.style.left = (joueurX / MAP_W * (mmW - 3)) + 'px';
+        miniPt.style.top = (joueurY / MAP_H * (mmH - 3)) + 'px';
       }
     }
 

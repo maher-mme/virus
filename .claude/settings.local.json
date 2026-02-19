@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(dir \"c:\\\\Users\\\\Essaf\\\\OneDrive\\\\Bureau\\\\Projets personnel\\\\virus\"\" | findstr /i \"mp3 \")",
-      "Bash(git --version:*)",
-      "Bash(powershell:*)"
-    ]
-  }
-}

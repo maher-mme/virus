@@ -4510,14 +4510,18 @@
         width: 110px;
         height: 82px;
       }
+      .hud-controles {
+        display: none;
+      }
       .btn-reunion {
-        bottom: 30px;
-        padding: 8px 18px;
-        font-size: 13px;
+        bottom: 25px;
+        padding: 10px 22px;
+        font-size: 15px;
         letter-spacing: 1px;
+        z-index: 210;
       }
       .btn-mission {
-        bottom: 30px;
+        bottom: 25px;
         padding: 8px 20px;
         font-size: 14px;
       }
@@ -12607,7 +12611,9 @@
       var distFontaine = Math.sqrt((joueurX - fontCX) * (joueurX - fontCX) + (joueurY - fontCY) * (joueurY - fontCY));
       var btnReunion = document.getElementById('btn-reunion');
       if (btnReunion) {
-        btnReunion.style.display = (distFontaine < 150 && !killProtection && !reunionCooldown) ? 'block' : 'none';
+        var reunionVisible = distFontaine < 200 && !killProtection && !reunionCooldown;
+        btnReunion.style.display = reunionVisible ? 'block' : 'none';
+        if (distFontaine < 300 && !window._debugFontLog) { window._debugFontLog = true; console.log('[DEBUG] Fontaine dist=' + Math.round(distFontaine) + ' visible=' + reunionVisible + ' killProt=' + killProtection + ' cooldown=' + reunionCooldown + ' btnDisplay=' + btnReunion.style.display); }
       }
 
       // Proximite mission -> bouton faire la tache (distance a la caisse)

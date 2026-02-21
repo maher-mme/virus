@@ -942,6 +942,9 @@
     }
     .chat-msg .pseudo { font-weight: bold; }
     .chat-msg .texte { color: #bdc3c7; white-space: pre-wrap; }
+    .chat-msg-ghost { opacity: 0.6; font-style: italic; }
+    .chat-msg-ghost .texte { color: #95a5a6; }
+    .ghost-tag { background: rgba(149,165,166,0.3); color: #bdc3c7; font-size: 9px; padding: 1px 5px; border-radius: 3px; margin-right: 4px; text-transform: uppercase; letter-spacing: 1px; }
     .sa-chat-input {
       display: flex;
       padding: 6px;
@@ -8234,6 +8237,7 @@
         youDiedGhost: 'Tu es mort ! Tu es maintenant un fantome.',
         foundBodyOf: '{0} a trouve le cadavre de {1} !',
         ghostsCantTalk: 'Les fantomes ne peuvent pas parler !',
+        ghostTag: 'FANTOME',
         missionDone: 'Mission accomplie : {0}',
         allMissionsComplete: 'Toutes les missions sont completes !',
         youFinishedMissions: 'Tu as fini toutes tes missions !',
@@ -8705,6 +8709,7 @@
         youDiedGhost: 'You died! You are now a ghost.',
         foundBodyOf: '{0} found the body of {1}!',
         ghostsCantTalk: 'Ghosts cannot speak!',
+        ghostTag: 'GHOST',
         missionDone: 'Mission accomplished: {0}',
         allMissionsComplete: 'All missions are complete!',
         youFinishedMissions: 'You finished all your missions!',
@@ -11870,29 +11875,56 @@
       if (miniJeuPause) reprendreMiniJeu();
     }
 
-    function ajouterMsgReunion(auteur, message, couleur) {
+    function ajouterMsgReunion(auteur, message, couleur, isGhost) {
       var container = document.getElementById('reunion-chat-messages');
       if (!container) return;
+      var monPseudo = getPseudo() || t('player');
+      var jeSuisFantome = joueursElimines.indexOf(monPseudo) >= 0;
+      // Message fantome visible uniquement par les autres fantomes
+      if (isGhost && !jeSuisFantome) return;
       var div = document.createElement('div');
-      div.className = 'chat-msg';
-      div.innerHTML = '<span class="pseudo" style="color:' + (couleur || '#e74c3c') + '">[' + auteur.replace(/</g, '&lt;') + ']:</span> <span class="texte">' + message.replace(/</g, '&lt;') + '</span>';
+      div.className = 'chat-msg' + (isGhost ? ' chat-msg-ghost' : '');
+      if (isGhost) {
+        div.innerHTML = '<span class="ghost-tag">' + t('ghostTag') + '</span> <span class="pseudo" style="color:' + (couleur || '#7f8c8d') + '">[' + auteur.replace(/</g, '&lt;') + ']:</span> <span class="texte">' + message.replace(/</g, '&lt;') + '</span>';
+      } else {
+        div.innerHTML = '<span class="pseudo" style="color:' + (couleur || '#e74c3c') + '">[' + auteur.replace(/</g, '&lt;') + ']:</span> <span class="texte">' + message.replace(/</g, '&lt;') + '</span>';
+      }
       container.appendChild(div);
       container.scrollTop = container.scrollHeight;
       // Son de chat aleatoire
       try { var sChat = new Audio(Math.random() < 0.5 ? 'chat1.mp3' : 'chat2.mp3'); sChat.volume = 0.4; sChat.play(); } catch(e) {}
     }
 
+    var phrasesFantomes = [
+      'Je sais qui c\'est...', 'Si seulement je pouvais parler aux vivants...',
+      'C\'est lui le virus !!', 'RIP moi...', 'Je vous observe...',
+      'Votez pour lui !!!', 'Personne m\'entend...', 'La verite va eclater...',
+      'J\'aurais du me mefier...', 'C\'est injuste...', 'Fantome life...',
+      'Ils se trompent de cible...', 'Non non non pas lui !'
+    ];
+
     function envoyerMsgReunion() {
       var input = document.getElementById('reunion-chat-input');
       var msg = input.value.trim();
       if (!msg) return;
       var pseudo = getPseudo() || t('player');
-      if (joueursElimines.indexOf(pseudo) >= 0) {
-        showNotif(t('ghostsCantTalk'), 'warn');
+      var suisFantome = joueursElimines.indexOf(pseudo) >= 0;
+      var msgFiltre = filtrerMessage(msg);
+      if (suisFantome) {
+        // Les fantomes peuvent parler, mais seuls les autres fantomes voient
+        ajouterMsgReunion(pseudo, msgFiltre, '#7f8c8d', true);
         input.value = '';
+        // Bots fantomes reagissent
+        if (modeHorsLigne && botsMorts.length > 0 && Math.random() < 0.4) {
+          var botFantome = botsMorts[Math.floor(Math.random() * botsMorts.length)];
+          setTimeout(function() {
+            if (reunionEnCours) {
+              ajouterMsgReunion(botFantome.pseudo, phrasesFantomes[Math.floor(Math.random() * phrasesFantomes.length)], '#7f8c8d', true);
+            }
+          }, 1000 + Math.floor(Math.random() * 3000));
+        }
         return;
       }
-      var msgFiltre = filtrerMessage(msg);
       ajouterMsgReunion(pseudo, msgFiltre, isAdmin() ? '#f39c12' : '#e74c3c');
       input.value = '';
 

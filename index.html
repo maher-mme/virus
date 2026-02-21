@@ -11290,7 +11290,7 @@
     // SYSTEME DE KILL (VIRUS)
     // ============================
     var killCooldown = false; // cooldown de 15 secondes apres un kill
-    var killCibleIndex = -1; // index du bot le plus proche pour kill
+    var killCiblePseudo = null; // pseudo du bot le plus proche pour kill
     var KILL_DISTANCE = 80; // distance pour pouvoir tuer
     var KILL_COOLDOWN_MS = 15000; // 15 secondes de cooldown
 
@@ -11315,11 +11315,11 @@
     function detecterCibleKill() {
       var pseudo = getPseudo() || t('player');
       if (bots.length === 0 || monRole !== 'virus' || killCooldown || reunionEnCours || joueursElimines.indexOf(pseudo) >= 0) {
-        killCibleIndex = -1;
+        killCiblePseudo = null;
         return;
       }
       var minDist = Infinity;
-      killCibleIndex = -1;
+      killCiblePseudo = null;
       for (var i = 0; i < bots.length; i++) {
         if (joueursElimines.indexOf(bots[i].pseudo) >= 0) continue;
         if (bots[i].role === 'virus') continue; // ne pas tuer un autre virus
@@ -11329,25 +11329,25 @@
         var dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < KILL_DISTANCE && dist < minDist) {
           minDist = dist;
-          killCibleIndex = i;
+          killCiblePseudo = bots[i].pseudo;
         }
       }
     }
 
     // POUVOIR JOURNALISTE - enquete par proximite
     var ENQUETE_DISTANCE = 100;
-    var enqueteCibleIndex = -1;
+    var enqueteCiblePseudo = null;
     var botsEnquetes = []; // pseudos deja enquetes
     var enquetesRestantes = 1; // nombre d'enquetes restantes (= nombre de virus)
 
     function detecterCibleEnquete() {
       var pseudo = getPseudo() || t('player');
       if (bots.length === 0 || monRole !== 'journaliste' || reunionEnCours || joueursElimines.indexOf(pseudo) >= 0 || enquetesRestantes <= 0) {
-        enqueteCibleIndex = -1;
+        enqueteCiblePseudo = null;
         return;
       }
       var minDist = Infinity;
-      enqueteCibleIndex = -1;
+      enqueteCiblePseudo = null;
       for (var i = 0; i < bots.length; i++) {
         if (joueursElimines.indexOf(bots[i].pseudo) >= 0) continue;
         if (botsEnquetes.indexOf(bots[i].pseudo) >= 0) continue;
@@ -11356,14 +11356,18 @@
         var dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < ENQUETE_DISTANCE && dist < minDist) {
           minDist = dist;
-          enqueteCibleIndex = i;
+          enqueteCiblePseudo = bots[i].pseudo;
         }
       }
     }
 
     function enqueterCible() {
-      if (enqueteCibleIndex < 0 || enquetesRestantes <= 0) return;
-      var bot = bots[enqueteCibleIndex];
+      if (!enqueteCiblePseudo || enquetesRestantes <= 0) return;
+      var bot = null;
+      for (var ei = 0; ei < bots.length; ei++) {
+        if (bots[ei].pseudo === enqueteCiblePseudo) { bot = bots[ei]; break; }
+      }
+      if (!bot || joueursElimines.indexOf(enqueteCiblePseudo) >= 0) return;
       botsEnquetes.push(bot.pseudo);
       enquetesRestantes--;
       var roleText = bot.role.toUpperCase();
@@ -11372,7 +11376,7 @@
       // Changer la couleur du pseudo du bot pour indiquer qu'il a ete enquete
       var pseudoEl = bot.element ? bot.element.querySelector('.joueur-pseudo') : null;
       if (pseudoEl) pseudoEl.style.color = couleur;
-      enqueteCibleIndex = -1;
+      enqueteCiblePseudo = null;
       // Notifier si plus d'enquetes
       if (enquetesRestantes <= 0) {
         showNotif(t('allInvestigationsUsed'), 'warn');
@@ -11436,12 +11440,16 @@
     }
 
     function tuerVictime() {
-      if (killCibleIndex < 0 || killCooldown || killProtection) return;
-      var victime = bots[killCibleIndex];
-      if (!victime) return;
+      if (!killCiblePseudo || killCooldown || killProtection) return;
+      var pseudoVictime = killCiblePseudo;
+      // Verifier que la victime existe encore et est vivante
+      var victime = null;
+      for (var vi = 0; vi < bots.length; vi++) {
+        if (bots[vi].pseudo === pseudoVictime) { victime = bots[vi]; break; }
+      }
+      if (!victime || joueursElimines.indexOf(pseudoVictime) >= 0) return;
 
       killCooldown = true;
-      var pseudoVictime = victime.pseudo;
 
       showNotif(t('youInfected', pseudoVictime), 'warn');
 
@@ -13168,7 +13176,7 @@
         detecterCibleKill();
         var btnKill = document.getElementById('btn-kill');
         if (btnKill) {
-          btnKill.style.display = (killCibleIndex >= 0 && !killCooldown && !killProtection) ? 'block' : 'none';
+          btnKill.style.display = (killCiblePseudo && !killCooldown && !killProtection) ? 'block' : 'none';
         }
       }
 
@@ -13186,7 +13194,7 @@
         detecterCibleEnquete();
         var btnEnqueter = document.getElementById('btn-enqueter');
         if (btnEnqueter) {
-          btnEnqueter.style.display = (enqueteCibleIndex >= 0) ? 'block' : 'none';
+          btnEnqueter.style.display = (enqueteCiblePseudo) ? 'block' : 'none';
         }
       }
 

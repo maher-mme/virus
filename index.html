@@ -497,8 +497,24 @@
     /* MENU ONLINE                    */
     /* ============================== */
     #menu-online {
-      justify-content: center;
+      justify-content: flex-start;
       gap: 0;
+      overflow: hidden;
+      padding: 0;
+    }
+    .online-scroll {
+      width: 100%;
+      flex: 1 1 0;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      overscroll-behavior: contain;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 0 40px 0;
     }
 
     .btn-retour {
@@ -1351,8 +1367,23 @@
     /* FORMULAIRE CREATION PARTIE     */
     /* ============================== */
     #creer-partie {
-      justify-content: center;
+      justify-content: flex-start;
       gap: 0;
+      overflow: hidden;
+      padding: 0;
+    }
+    .cp-scroll {
+      width: 100%;
+      flex: 1 1 0;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      overscroll-behavior: contain;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 0 40px 0;
     }
 
     .cp-formulaire {
@@ -4528,45 +4559,130 @@
         letter-spacing: 3px;
         margin-bottom: 15px;
       }
+      /* MENU ONLINE */
+      #menu-online .online-titre {
+        font-size: 28px;
+        letter-spacing: 4px;
+      }
+      #menu-online .online-sous-titre {
+        font-size: 11px;
+        letter-spacing: 3px;
+        margin-bottom: 10px;
+      }
+      .online-scroll {
+        padding: 15px 0 20px 0;
+        justify-content: flex-start;
+      }
       .panneau-central {
-        padding: 20px 15px;
-        gap: 15px;
+        padding: 12px 12px;
+        gap: 10px;
         width: 90vw;
         box-sizing: border-box;
       }
       .btn-creer,
       .btn-trouver {
         width: 100%;
-        height: 90px;
-        padding: 0 15px;
-        gap: 12px;
+        height: 70px;
+        padding: 0 12px;
+        gap: 10px;
       }
       .btn-creer .btn-icon,
       .btn-trouver .btn-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 22px;
+        width: 34px;
+        height: 34px;
+        font-size: 18px;
+      }
+      .btn-creer .btn-label,
+      .btn-trouver .btn-label {
+        font-size: 13px;
+      }
+      .btn-creer .btn-sub,
+      .btn-trouver .btn-sub {
+        font-size: 10px;
       }
       .separateur-ou {
         width: 100%;
       }
+      .separateur-ou .ou-cercle {
+        font-size: 11px;
+        width: 30px;
+        height: 30px;
+      }
       .info-bas {
         max-width: 100%;
+        font-size: 10px;
+        padding: 0 15px;
       }
 
       /* ============================== */
       /* CREER PARTIE                   */
       /* ============================== */
+      #creer-partie .online-titre {
+        font-size: 28px;
+        letter-spacing: 4px;
+      }
+      #creer-partie .online-sous-titre {
+        font-size: 11px;
+        letter-spacing: 3px;
+        margin-bottom: 5px;
+      }
+      .cp-scroll {
+        padding: 10px 0 30px 0;
+      }
       .cp-formulaire {
         width: 90vw;
-        margin-top: 10px;
+        margin-top: 5px;
+      }
+      .cp-header {
+        padding: 8px 15px;
+      }
+      .cp-header h3 {
+        font-size: 12px;
       }
       .cp-body {
-        padding: 15px;
-        gap: 14px;
+        padding: 10px 12px;
+        gap: 8px;
+      }
+      .cp-champ {
+        gap: 3px;
+      }
+      .cp-champ label {
+        font-size: 10px;
+      }
+      .cp-champ input, .cp-champ select {
+        padding: 7px 10px;
+        font-size: 13px;
       }
       .cp-roles-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+      .cp-role-item {
+        padding: 6px 8px;
+      }
+      .cp-role-item label {
+        font-size: 10px;
+        margin-bottom: 3px;
+      }
+      .cp-toggle {
+        width: 36px;
+        height: 20px;
+      }
+      .cp-toggle::after {
+        width: 14px;
+        height: 14px;
+        top: 3px;
+        left: 3px;
+      }
+      .cp-toggle.active::after {
+        transform: translateX(16px);
+      }
+      .cp-toggle-label {
+        font-size: 10px;
+      }
+      .btn-valider-creer {
+        height: 38px;
+        font-size: 14px;
       }
 
       /* ============================== */
@@ -5498,6 +5614,7 @@
   <!-- ECRAN 2 : MENU ONLINE         -->
   <!-- ============================== -->
   <div id="menu-online" class="screen bg-mall">
+    <div class="online-scroll">
     <button class="btn-retour" onclick="showScreen('menu-principal')" data-i18n="back">&#9664; RETOUR</button>
 
     <h1 class="online-titre">VIRUS</h1>
@@ -5532,12 +5649,14 @@
     </div>
 
     <span class="version">VIRUS v0.1 - ALPHA</span>
+    </div>
   </div>
 
   <!-- ============================== -->
   <!-- ECRAN 5 : CREER UNE PARTIE    -->
   <!-- ============================== -->
   <div id="creer-partie" class="screen bg-mall">
+    <div class="cp-scroll">
     <button class="btn-retour" onclick="showScreen('menu-online')" data-i18n="back">&#9664; RETOUR</button>
 
     <h1 class="online-titre">VIRUS</h1>
@@ -5610,6 +5729,7 @@
     </div>
 
     <span class="version">VIRUS v0.1 - ALPHA</span>
+    </div>
   </div>
 
   <!-- ============================== -->

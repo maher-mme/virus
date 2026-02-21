@@ -9938,6 +9938,77 @@
           bot.element.style.top = bot.y + 'px';
         }
       }
+
+      // Deplacer les fantomes (botsMorts)
+      for (var gi = 0; gi < botsMorts.length; gi++) {
+        var ghost = botsMorts[gi];
+        if (!ghost.element) continue;
+
+        // Initialiser cible si pas encore fait
+        if (!ghost.cibleX && !ghost.cibleY) {
+          var gw = BOT_WAYPOINTS[Math.floor(Math.random() * BOT_WAYPOINTS.length)];
+          ghost.cibleX = gw.x + Math.random() * 100 - 50;
+          ghost.cibleY = gw.y + Math.random() * 100 - 50;
+          ghost.timer = 200 + Math.floor(Math.random() * 300);
+          ghost.blockedTimer = 0;
+          ghost.etat = 'deplacement';
+          ghost.pauseTimer = 0;
+        }
+
+        // Pause
+        if (ghost.etat === 'pause') {
+          ghost.pauseTimer--;
+          if (ghost.pauseTimer <= 0) {
+            ghost.etat = 'deplacement';
+            var gw = BOT_WAYPOINTS[Math.floor(Math.random() * BOT_WAYPOINTS.length)];
+            ghost.cibleX = gw.x + Math.random() * 100 - 50;
+            ghost.cibleY = gw.y + Math.random() * 100 - 50;
+            ghost.timer = 200 + Math.floor(Math.random() * 300);
+          }
+          continue;
+        }
+
+        ghost.timer--;
+        var gdx = ghost.cibleX - ghost.x;
+        var gdy = ghost.cibleY - ghost.y;
+        var gDist = Math.sqrt(gdx * gdx + gdy * gdy);
+
+        // Arrivee ou timer expire : nouvelle cible
+        if (ghost.timer <= 0 || gDist < 30) {
+          if (gDist < 30 && Math.random() < 0.3) {
+            ghost.etat = 'pause';
+            ghost.pauseTimer = 90 + Math.floor(Math.random() * 150);
+            continue;
+          }
+          var gw = BOT_WAYPOINTS[Math.floor(Math.random() * BOT_WAYPOINTS.length)];
+          ghost.cibleX = gw.x + Math.random() * 100 - 50;
+          ghost.cibleY = gw.y + Math.random() * 100 - 50;
+          ghost.timer = 200 + Math.floor(Math.random() * 300);
+          ghost.blockedTimer = 0;
+        }
+
+        // Deplacement (les fantomes ignorent les collisions)
+        if (gDist > 2) {
+          var gSpeed = BOT_VITESSE * 0.7;
+          var gmx = (gdx / gDist) * gSpeed;
+          var gmy = (gdy / gDist) * gSpeed;
+          ghost.x += gmx;
+          ghost.y += gmy;
+
+          // Limites map
+          if (ghost.x < 25) ghost.x = 25;
+          if (ghost.x > MAP_W - 40) ghost.x = MAP_W - 40;
+          if (ghost.y < 25) ghost.y = 25;
+          if (ghost.y > MAP_H - 40) ghost.y = MAP_H - 40;
+
+          // Flip sprite
+          var gImg = ghost.element.querySelector('img');
+          if (gImg) gImg.style.transform = gmx < 0 ? 'scaleX(-1)' : 'scaleX(1)';
+        }
+
+        ghost.element.style.left = ghost.x + 'px';
+        ghost.element.style.top = ghost.y + 'px';
+      }
     }
 
     // ============================

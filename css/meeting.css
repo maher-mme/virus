@@ -1,0 +1,272 @@
+/* ============================== */
+/* SYSTEME DE REUNION (EN JEU)    */
+/* ============================== */
+
+/* Bandeau titre + timer en haut */
+.reunion-bandeau {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(26,26,46,0.95);
+  border: 2px solid #f39c12;
+  border-radius: 12px;
+  padding: 10px 30px;
+  text-align: center;
+  z-index: 220;
+  pointer-events: auto;
+  display: none;
+}
+.reunion-bandeau.visible { display: block; }
+.reunion-bandeau-titre {
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: 22px;
+  color: #f39c12;
+  letter-spacing: 3px;
+}
+.reunion-bandeau-timer {
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: 18px;
+  color: #e74c3c;
+  letter-spacing: 2px;
+}
+
+/* Chat reunion (panneau a droite) */
+.reunion-chat {
+  position: absolute;
+  top: 60px;
+  right: 15px;
+  width: 330px;
+  max-height: 55vh;
+  background: rgba(26,26,46,0.95);
+  border: 1.5px solid #566573;
+  border-radius: 12px;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 220;
+  pointer-events: auto;
+}
+.reunion-chat.visible { display: flex; }
+.reunion-chat-header {
+  background: #2c3e50;
+  padding: 8px 15px;
+  text-align: center;
+}
+.reunion-chat-header h4 {
+  color: #ecf0f1;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+.reunion-chat-messages {
+  flex: 1;
+  padding: 8px 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 180px;
+  max-height: 380px;
+}
+.reunion-chat-input {
+  display: flex;
+  padding: 8px;
+  gap: 4px;
+  border-top: 1px solid #34495e;
+}
+.reunion-chat-input input {
+  flex: 1;
+  background: #2c3e50;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  color: #ecf0f1;
+  font-size: 11px;
+  font-family: Arial, sans-serif;
+  outline: none;
+}
+.reunion-chat-input button {
+  width: 30px;
+  height: 30px;
+  background: #3498db;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* Bouton SKIP en bas */
+.reunion-btn-skip {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 40px;
+  background: linear-gradient(180deg, #566573, #34495e);
+  color: #ecf0f1;
+  border: 2px solid #7f8c8d;
+  border-radius: 12px;
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  z-index: 220;
+  pointer-events: auto;
+  display: none;
+}
+.reunion-btn-skip.visible { display: block; }
+.reunion-btn-skip:hover { filter: brightness(1.2); }
+
+/* Bulle de vote au-dessus des joueurs */
+.vote-bulle {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  z-index: 102;
+  box-shadow: 0 2px 8px rgba(231,76,60,0.5);
+}
+.vote-bulle.has-votes { display: flex; }
+
+/* Surbrillance joueur cliquable pendant reunion */
+.reunion-cliquable {
+  pointer-events: auto !important;
+  cursor: pointer;
+}
+.reunion-cliquable:hover img {
+  filter: brightness(1.3) drop-shadow(0 0 8px #f39c12);
+}
+.reunion-vote-selection {
+  outline: 3px solid #e74c3c;
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
+/* Popup de vote reunion multiplayer */
+.popup-reunion {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(26,26,46,0.95);
+  border: 2px solid #f39c12;
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  z-index: 225;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-width: 280px;
+}
+.popup-reunion-titre {
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: 22px;
+  color: #f39c12;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.reunion-vote-info {
+  font-size: 16px;
+  color: #aaa;
+}
+.reunion-vote-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+.reunion-vote-btn {
+  background: rgba(44,62,80,0.8);
+  border: 2px solid #3498db;
+  border-radius: 8px;
+  color: #ecf0f1;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.reunion-vote-btn:hover {
+  background: rgba(52,152,219,0.3);
+  border-color: #2ecc71;
+}
+.reunion-vote-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Resultat du vote (bandeau) */
+.reunion-resultat-bandeau {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(26,26,46,0.95);
+  border: 2px solid #f39c12;
+  border-radius: 16px;
+  padding: 30px 50px;
+  text-align: center;
+  z-index: 230;
+  pointer-events: auto;
+  display: none;
+}
+.reunion-resultat-bandeau.visible { display: block; }
+.reunion-resultat-texte {
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: 22px;
+  color: #ecf0f1;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+.reunion-resultat-role {
+  font-size: 16px;
+  letter-spacing: 1px;
+  padding: 6px 18px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-bottom: 15px;
+}
+.reunion-btn-continuer {
+  padding: 10px 30px;
+  background: linear-gradient(180deg, #f39c12, #e67e22);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: 16px;
+  letter-spacing: 2px;
+  cursor: pointer;
+}
+.reunion-btn-continuer:hover { filter: brightness(1.1); }
+
+/* Badge createur de reunion */
+.reunion-createur-badge {
+  position: absolute;
+  top: -38px;
+  left: -15px;
+  transform: none;
+  font-size: 12px;
+  filter: drop-shadow(0 0 4px rgba(231, 76, 60, 0.8));
+  pointer-events: none;
+  z-index: 100;
+  animation: badge-createur-pulse 1.5s ease-in-out infinite;
+}
+@keyframes badge-createur-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+

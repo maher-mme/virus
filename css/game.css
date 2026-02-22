@@ -1,0 +1,771 @@
+/* ============================== */
+/* CENTRE COMMERCIAL (JEU)        */
+/* ============================== */
+#jeu {
+  display: none;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #1a1a2e;
+  overflow: hidden;
+}
+#jeu.active { display: block; }
+
+.jeu-viewport {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.mall-map {
+  width: 8000px;
+  height: 6000px;
+  position: absolute;
+  background: #c9c1b3;
+}
+
+/* Sol du centre commercial - carrelage realiste */
+.mall-sol {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background:
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px),
+    repeating-conic-gradient(#e6ddd0 0% 25%, #ded5c7 0% 50%) 0 0 / 60px 60px;
+  background-size: 60px 60px, 60px 60px, 60px 60px;
+}
+
+/* Corridors */
+.corridor {
+  position: absolute;
+  background:
+    repeating-conic-gradient(#f0e8dc 0% 25%, #e6ded0 0% 50%) 0 0 / 40px 40px;
+}
+.corridor-h {
+  height: 140px;
+}
+.corridor-v {
+  width: 160px;
+}
+
+/* Murs exterieurs */
+.mall-mur-ext {
+  position: absolute;
+  background: linear-gradient(180deg, #3d3027, #4a3c2e, #554636);
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.3);
+}
+.mall-mur-ext-h {
+  width: 100%;
+  height: 20px;
+}
+.mall-mur-ext-v {
+  height: 100%;
+  width: 20px;
+  background: linear-gradient(90deg, #3d3027, #4a3c2e, #554636);
+}
+
+/* Boutiques */
+.boutique {
+  position: absolute;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 3px solid #5c4a3a;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.boutique-interieur {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 40%, rgba(0,0,0,0.1) 100%);
+}
+.boutique-icone {
+  font-size: 32px;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+.boutique-nom {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.7), 0 0 10px rgba(0,0,0,0.3);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.boutique-porte {
+  position: absolute;
+  width: 36px;
+  height: 8px;
+  background: linear-gradient(90deg, #7a6345, #a08968, #7a6345);
+  border: 1px solid #6b5740;
+  box-shadow: 0 0 6px rgba(160,137,104,0.4);
+}
+
+/* Objets interieurs des boutiques */
+.obj-comptoir {
+  position: absolute; background: linear-gradient(180deg, #6d4c41, #5d4037, #4e342e); border: 2px solid #3e2723; border-radius: 3px;
+  width: 120px; height: 20px; z-index: 2;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.obj-etagere {
+  position: absolute; background: linear-gradient(180deg, #a1887f, #8d6e63); border: 1px solid #6d4c41; border-radius: 2px;
+  width: 80px; height: 15px; z-index: 2;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.obj-table {
+  position: absolute; background: radial-gradient(circle at 35% 35%, #bcaaa4, #a1887f, #8d6e63); border: 2px solid #795548; border-radius: 50%;
+  width: 40px; height: 40px; z-index: 2;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+}
+.obj-table-rect {
+  position: absolute; background: linear-gradient(135deg, #bcaaa4, #a1887f); border: 2px solid #795548; border-radius: 4px;
+  width: 60px; height: 35px; z-index: 2;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.obj-chaise {
+  position: absolute; background: radial-gradient(circle at 40% 40%, #8d6e63, #6d4c41); border: 1px solid #4e342e; border-radius: 50%;
+  width: 14px; height: 14px; z-index: 2;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.obj-caisse {
+  position: absolute; background: linear-gradient(135deg, #455a64, #37474f); border: 2px solid #263238; border-radius: 3px;
+  width: 30px; height: 25px; z-index: 3;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.obj-caisse::after {
+  content: ''; position: absolute; top: 3px; left: 50%; transform: translateX(-50%);
+  width: 14px; height: 4px; background: #4caf50; border-radius: 1px;
+  box-shadow: 0 0 4px rgba(76,175,80,0.5);
+}
+.obj-vitrine {
+  position: absolute; background: linear-gradient(135deg, rgba(179,229,252,0.4), rgba(129,212,250,0.25)); border: 2px solid #78909c; border-radius: 4px;
+  width: 60px; height: 30px; z-index: 2;
+  box-shadow: inset 0 0 8px rgba(255,255,255,0.2), 0 1px 4px rgba(0,0,0,0.15);
+}
+.obj-ecran {
+  position: absolute; background: linear-gradient(135deg, #0d1b4a, #1a237e, #283593); border: 3px solid #1a1a2e; border-radius: 3px;
+  width: 50px; height: 30px; z-index: 2;
+  box-shadow: 0 0 12px rgba(33,150,243,0.4), 0 0 4px rgba(33,150,243,0.2);
+  animation: ecranFlicker 4s ease-in-out infinite alternate;
+}
+@keyframes ecranFlicker {
+  0%, 90% { box-shadow: 0 0 12px rgba(33,150,243,0.4), 0 0 4px rgba(33,150,243,0.2); }
+  95% { box-shadow: 0 0 6px rgba(33,150,243,0.2); }
+  100% { box-shadow: 0 0 15px rgba(33,150,243,0.5), 0 0 6px rgba(33,150,243,0.3); }
+}
+.obj-portant {
+  position: absolute; background: linear-gradient(90deg, #b0b0b0, #d0d0d0, #b0b0b0); border: 1px solid #9e9e9e; border-radius: 2px;
+  width: 60px; height: 10px; z-index: 2;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.obj-portant::before {
+  content: ''; position: absolute; top: -10px; left: 3px; right: 3px; height: 8px;
+  background: repeating-linear-gradient(90deg, #e91e63 0px, #e91e63 8px, #2196f3 8px, #2196f3 16px, #ffc107 16px, #ffc107 24px, #4caf50 24px, #4caf50 32px);
+  border-radius: 2px; opacity: 0.75;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+.obj-miroir {
+  position: absolute; background: linear-gradient(180deg, #e8f5fe, #bbdefb, #90caf9, #bbdefb); border: 2px solid #78909c;
+  width: 8px; height: 30px; z-index: 2;
+  box-shadow: 0 0 10px rgba(144,202,249,0.5), inset 0 0 4px rgba(255,255,255,0.6);
+}
+.obj-rayon {
+  position: absolute; background: linear-gradient(180deg, #f5f0eb, #efebe9); border: 2px solid #bcaaa4; border-radius: 2px;
+  width: 150px; height: 25px; z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+.obj-rayon::after {
+  content: ''; position: absolute; top: 3px; left: 5px; right: 5px; bottom: 3px;
+  background: repeating-linear-gradient(90deg, #8bc34a 0px, #8bc34a 12px, #ff9800 12px, #ff9800 24px, #2196f3 24px, #2196f3 36px, #e91e63 36px, #e91e63 48px);
+  border-radius: 1px; opacity: 0.55;
+}
+.obj-machine {
+  position: absolute; background: linear-gradient(180deg, #4a4a4a, #424242, #333); border: 2px solid #212121; border-radius: 4px;
+  width: 35px; height: 45px; z-index: 2;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.35);
+}
+.obj-machine::after {
+  content: ''; position: absolute; top: 4px; left: 4px; right: 4px; height: 18px;
+  background: linear-gradient(135deg, #0d47a1, #1565c0); border-radius: 2px;
+  box-shadow: 0 0 8px rgba(33,150,243,0.6);
+}
+.obj-canape {
+  position: absolute; background: linear-gradient(180deg, #7986cb, #5c6bc0, #5c6bc0); border: 2px solid #3949ab; border-radius: 6px;
+  width: 70px; height: 25px; z-index: 2;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+}
+.obj-lavabo {
+  position: absolute; background: radial-gradient(circle at 40% 30%, #fff, #eceff1, #cfd8dc); border: 2px solid #90a4ae; border-radius: 50% 50% 4px 4px;
+  width: 25px; height: 20px; z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.obj-cabine {
+  position: absolute; background: rgba(96,125,139,0.45); border: 2px solid #546e7a; border-radius: 3px;
+  width: 40px; height: 50px; z-index: 2;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.15);
+}
+.obj-plante-int {
+  position: absolute; width: 20px; height: 20px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #81c784, #66bb6a, #388e3c); border: 1px solid #2e7d32; z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.obj-piste {
+  position: absolute; background: linear-gradient(90deg, #efebe9, #f5f0eb, #efebe9); border: 2px solid #d7ccc8; border-radius: 3px;
+  width: 30px; height: 200px; z-index: 2;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.08);
+}
+.obj-piste::after {
+  content: ''; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);
+  width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ef5350, #e53935); border: 2px solid #c62828;
+  box-shadow: 0 0 4px rgba(229,57,53,0.4);
+}
+
+/* Couleurs des boutiques */
+.b-mode { background: linear-gradient(135deg, #f06292, #e91e63, #c2185b, #ad1457); }
+.b-pharma { background: linear-gradient(135deg, #66bb6a, #4caf50, #388e3c, #2e7d32); }
+.b-resto { background: linear-gradient(135deg, #ffb74d, #ff9800, #f57c00, #e65100); }
+.b-bijoux { background: linear-gradient(135deg, #ffd54f, #ffc107, #ffa000, #ff8f00); }
+.b-techno { background: linear-gradient(135deg, #42a5f5, #2196f3, #1976d2, #1565c0); }
+.b-livre { background: linear-gradient(135deg, #8d6e63, #795548, #5d4037, #4e342e); }
+.b-super { background: linear-gradient(135deg, #aed581, #8bc34a, #689f38, #558b2f); }
+.b-sport { background: linear-gradient(135deg, #ff8a65, #ff5722, #e64a19, #d84315); }
+.b-cinema { background: linear-gradient(135deg, #ba68c8, #9c27b0, #7b1fa2, #6a1b9a); }
+.b-wc { background: linear-gradient(135deg, #78909c, #607d8b, #455a64, #37474f); }
+.b-secu { background: linear-gradient(135deg, #ef5350, #f44336, #d32f2f, #c62828); }
+.b-food { background: linear-gradient(135deg, #ff6e40, #e65100, #bf360c, #a33000); }
+
+/* Fontaine centrale */
+.mall-fontaine {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 40% 40%, #b3e5fc, #81d4fa, #4fc3f7, #29b6f6, #0288d1);
+  border: 8px solid #78909c;
+  box-shadow: 0 0 30px rgba(79,195,247,0.4), 0 0 60px rgba(79,195,247,0.15), inset 0 0 20px rgba(255,255,255,0.2);
+  animation: fontaineRipple 3s ease-in-out infinite;
+}
+@keyframes fontaineRipple {
+  0%, 100% { box-shadow: 0 0 30px rgba(79,195,247,0.4), 0 0 60px rgba(79,195,247,0.15), inset 0 0 20px rgba(255,255,255,0.2); }
+  50% { box-shadow: 0 0 40px rgba(79,195,247,0.5), 0 0 80px rgba(79,195,247,0.2), inset 0 0 25px rgba(255,255,255,0.3); }
+}
+.mall-fontaine::before {
+  content: '';
+  position: absolute;
+  top: 15%; left: 15%;
+  width: 70%; height: 70%;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  animation: fontaineWave 2s linear infinite;
+}
+@keyframes fontaineWave {
+  0% { transform: scale(0.6); opacity: 0.8; }
+  100% { transform: scale(1.1); opacity: 0; }
+}
+.mall-fontaine::after {
+  content: '';
+  position: absolute;
+  top: 30%; left: 30%;
+  width: 40%; height: 40%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, rgba(255,255,255,0.6), rgba(179,229,252,0.4), transparent);
+}
+.fontaine-label {
+  position: absolute;
+  bottom: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: #546e7a;
+  letter-spacing: 3px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-weight: bold;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Bancs */
+.banc {
+  position: absolute;
+  width: 50px;
+  height: 16px;
+  background: linear-gradient(180deg, #a1887f, #8d6e63, #795548);
+  border-radius: 4px;
+  border: 1px solid #5d4037;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+}
+.banc::before {
+  content: '';
+  position: absolute;
+  top: 2px; left: 3px; right: 3px; height: 2px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 1px;
+}
+
+/* Plantes decoratives */
+.mall-plante {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #81c784, #66bb6a, #43a047, #2e7d32);
+  border: 3px solid #6d4c41;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3), inset 0 -3px 6px rgba(0,0,0,0.15);
+}
+.mall-plante::after {
+  content: '';
+  position: absolute;
+  top: 4px; left: 5px;
+  width: 8px; height: 6px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 50%;
+}
+
+/* Escalators */
+.escalator {
+  position: absolute;
+  width: 70px;
+  height: 30px;
+  background: linear-gradient(180deg, #90a4ae, #78909c, #607d8b);
+  border: 2px solid #455a64;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+.escalator::before {
+  content: '';
+  position: absolute;
+  top: 3px; left: 6px; right: 6px; bottom: 3px;
+  background: repeating-linear-gradient(90deg, rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 3px, transparent 3px, transparent 6px);
+  border-radius: 2px;
+}
+.escalator span {
+  font-size: 8px;
+  color: white;
+  letter-spacing: 1px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  z-index: 1;
+}
+
+/* Bouches d'aeration (events) */
+.vent {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #455a64, #37474f, #263238);
+  border: 2px solid #1a2327;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.3);
+}
+.vent::before {
+  content: '';
+  width: 20px;
+  height: 3px;
+  background: #1a2327;
+  box-shadow: 0 6px 0 #1a2327, 0 12px 0 #1a2327;
+  border-radius: 1px;
+}
+
+/* Allees principales */
+.mall-allee-h {
+  position: absolute;
+  height: 200px;
+  background:
+    linear-gradient(rgba(0,0,0,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.015) 1px, transparent 1px),
+    rgba(255,248,225,0.06);
+  background-size: 60px 60px, 60px 60px, 100% 100%;
+  border-top: 2px solid rgba(139,119,101,0.15);
+  border-bottom: 2px solid rgba(139,119,101,0.15);
+}
+.mall-allee-v {
+  position: absolute;
+  width: 200px;
+  background:
+    linear-gradient(rgba(0,0,0,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.015) 1px, transparent 1px),
+    rgba(255,248,225,0.06);
+  background-size: 60px 60px, 60px 60px, 100% 100%;
+  border-left: 2px solid rgba(139,119,101,0.15);
+  border-right: 2px solid rgba(139,119,101,0.15);
+}
+
+/* Distributeurs automatiques */
+.mall-distributeur {
+  position: absolute;
+  width: 28px;
+  height: 42px;
+  border-radius: 4px;
+  border: 2px solid #263238;
+  background: linear-gradient(180deg, #546e7a, #455a64, #37474f);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+.mall-distributeur::before {
+  content: '';
+  position: absolute;
+  top: 4px; left: 4px; right: 4px; height: 14px;
+  background: linear-gradient(135deg, #1565c0, #0d47a1);
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(21,101,192,0.4);
+}
+.mall-distributeur::after {
+  content: '';
+  width: 12px;
+  height: 6px;
+  background: #1a1a1a;
+  border-radius: 0 0 3px 3px;
+  margin-bottom: 4px;
+}
+
+/* Poubelles */
+.mall-poubelle {
+  position: absolute;
+  width: 18px;
+  height: 22px;
+  background: linear-gradient(180deg, #546e7a, #455a64, #37474f);
+  border: 1px solid #263238;
+  border-radius: 2px 2px 5px 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+}
+.mall-poubelle::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -2px;
+  right: -2px;
+  height: 6px;
+  background: linear-gradient(180deg, #78909c, #607d8b);
+  border-radius: 3px 3px 0 0;
+  border: 1px solid #455a64;
+}
+
+/* Panneaux publicitaires lumineux */
+.mall-pub {
+  position: absolute;
+  width: 100px;
+  height: 60px;
+  border-radius: 5px;
+  border: 3px solid #37474f;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 9px;
+  color: #e0f7fa;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-align: center;
+  text-shadow: 0 0 8px rgba(0,229,255,0.6);
+  animation: pubGlow 3s ease-in-out infinite alternate;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+}
+@keyframes pubGlow {
+  from { box-shadow: 0 0 8px rgba(0,229,255,0.15), 0 3px 10px rgba(0,0,0,0.3); }
+  to { box-shadow: 0 0 25px rgba(0,229,255,0.3), 0 3px 10px rgba(0,0,0,0.3); }
+}
+
+/* Tapis d'entree */
+.mall-tapis {
+  position: absolute;
+  background:
+    repeating-linear-gradient(90deg, #b71c1c 0px, #b71c1c 20px, #c62828 20px, #c62828 40px),
+    linear-gradient(180deg, rgba(255,255,255,0.08), transparent, rgba(0,0,0,0.1));
+  background-blend-mode: normal;
+  border: 3px solid #7f0000;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* Fleches directionnelles au sol */
+.mall-fleche {
+  position: absolute;
+  font-size: 28px;
+  color: rgba(255,193,7,0.25);
+  font-family: Arial, sans-serif;
+  pointer-events: none;
+  text-shadow: 0 0 6px rgba(255,193,7,0.1);
+}
+
+/* Bouton reunion */
+.btn-reunion {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #f39c12, #e67e22);
+  color: white;
+  border: 3px solid #d35400;
+  border-radius: 14px;
+  padding: 12px 28px;
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  cursor: pointer;
+  pointer-events: auto;
+  display: none;
+  box-shadow: 0 4px 15px rgba(243,156,18,0.4);
+  transition: all 0.2s;
+  z-index: 210;
+}
+.btn-reunion:hover {
+  transform: translateX(-50%) scale(1.05);
+  box-shadow: 0 6px 25px rgba(243,156,18,0.6);
+}
+
+/* Joueur */
+.joueur-perso {
+  position: absolute;
+  z-index: 100;
+  transition: left 0.08s linear, top 0.08s linear;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.joueur-perso img {
+  height: 46px;
+  width: auto;
+  pointer-events: none;
+}
+.bot-perso {
+  pointer-events: none;
+  transition: left 0.15s linear, top 0.15s linear;
+}
+
+/* Pseudo au-dessus du joueur */
+.joueur-pseudo {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  color: white;
+  text-shadow: 0 0 4px #000, 0 0 4px #000, 1px 1px 2px #000;
+  pointer-events: none;
+  z-index: 101;
+}
+
+/* Admin arc-en-ciel */
+@keyframes rainbow {
+  0% { color: #ff0000; }
+  14% { color: #ff7f00; }
+  28% { color: #ffff00; }
+  42% { color: #00ff00; }
+  57% { color: #0000ff; }
+  71% { color: #4b0082; }
+  85% { color: #9400d3; }
+  100% { color: #ff0000; }
+}
+.pseudo-admin {
+  animation: rainbow 2s linear infinite;
+  text-shadow: 0 0 6px rgba(255,255,255,0.5), 0 0 4px #000, 1px 1px 2px #000;
+}
+.pseudo-admin-text {
+  animation: rainbow 2s linear infinite;
+}
+
+/* Joueur dans la salle d'attente */
+.sa-joueur-avatar {
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: left 0.08s linear, top 0.08s linear;
+}
+.sa-joueur-avatar .sa-avatar-pseudo {
+  font-size: 10px;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  color: white;
+  text-shadow: 0 0 4px #000, 0 0 4px #000;
+  margin-bottom: 4px;
+  white-space: nowrap;
+}
+.sa-joueur-avatar .sa-avatar-skin {
+  display: flex;
+  justify-content: center;
+}
+.sa-joueur-avatar .sa-avatar-skin img {
+  height: 60px;
+  width: auto;
+}
+
+/* ============================== */
+/* ECRAN FIN DE PARTIE            */
+/* ============================== */
+.fin-partie-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.85);
+  z-index: 600;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  padding: 40px 20px;
+}
+.fin-partie-overlay.visible {
+  display: flex;
+}
+.fin-partie-titre {
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: clamp(40px, 8vw, 80px);
+  letter-spacing: 6px;
+  text-shadow: 0 0 30px currentColor, 0 0 60px currentColor;
+  animation: finPartiePulse 1.5s ease-in-out infinite;
+}
+@keyframes finPartiePulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.85; }
+}
+.fin-partie-titre.virus { color: #e74c3c; }
+.fin-partie-titre.innocents { color: #2ecc71; }
+.fin-partie-titre.fanatique { color: #8e44ad; }
+.fin-partie-titre.espion { color: #9b59b6; }
+.fin-partie-sous-titre {
+  font-family: Arial, sans-serif;
+  font-size: clamp(14px, 2.5vw, 22px);
+  color: #bdc3c7;
+  text-align: center;
+  max-width: 500px;
+  line-height: 1.5;
+}
+.fin-partie-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 10px;
+}
+.fin-partie-joueur {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: rgba(26,26,46,0.8);
+  border-radius: 10px;
+  padding: 10px 14px;
+  border: 1.5px solid #34495e;
+}
+.fin-partie-joueur img {
+  height: 40px;
+  width: auto;
+}
+.fin-partie-joueur .fp-pseudo {
+  font-size: 11px;
+  color: #ecf0f1;
+  font-family: Arial, sans-serif;
+}
+.fin-partie-joueur .fp-role {
+  font-size: 10px;
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.fp-role-virus { background: #e74c3c; color: white; }
+.fp-role-innocent { background: #27ae60; color: white; }
+.fp-role-journaliste { background: #3498db; color: white; }
+.fp-role-fanatique { background: #8e44ad; color: white; }
+.fp-role-espion { background: #9b59b6; color: white; }
+.fin-partie-btn {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 14px 40px;
+  background: linear-gradient(180deg, #576574, #4a5568);
+  color: white;
+  border: 2px solid #7f8c8d;
+  border-radius: 12px;
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: 20px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  pointer-events: auto;
+  z-index: 610;
+}
+.fin-partie-btn:hover {
+  filter: brightness(1.15);
+  transform: translateY(-2px);
+}
+
+.hud-btn-quitter {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  padding: 6px 14px;
+  background: rgba(231,76,60,0.8);
+  border: 1px solid #e74c3c;
+  border-radius: 6px;
+  color: white;
+  font-size: 11px;
+  font-family: Arial, sans-serif;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* Panneau de boutique */
+.panneau-boutique {
+  position: absolute;
+  background: linear-gradient(180deg, #34495e, #2c3e50);
+  border-radius: 5px;
+  padding: 4px 10px;
+  z-index: 50;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3), 0 0 8px rgba(241,196,15,0.15);
+  border: 1px solid #3d566e;
+}
+.panneau-boutique span {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 8px;
+  color: #f1c40f;
+  letter-spacing: 1.5px;
+  font-weight: bold;
+  text-shadow: 0 0 6px rgba(241,196,15,0.4);
+}
+
+/* Entrees du mall */
+.mall-entree {
+  position: absolute;
+  background: linear-gradient(135deg, #c8e6c9, #a5d6a7, #81c784);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px rgba(76,175,80,0.3);
+}
+.mall-entree span {
+  font-size: 8px;
+  color: #1b5e20;
+  font-weight: bold;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 4px rgba(255,255,255,0.3);
+}
+

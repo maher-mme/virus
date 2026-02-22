@@ -1,0 +1,673 @@
+/* ============================== */
+/* RESPONSIVE MOBILE              */
+/* ============================== */
+@media (max-width: 768px) {
+  /* Salle d'attente : empiler verticalement */
+  #salle-attente {
+    flex-direction: column;
+  }
+  .sa-content {
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .sa-gauche {
+    width: 100%;
+    padding: 10px;
+  }
+  .sa-droite {
+    width: 100%;
+    padding: 10px;
+  }
+  .cabines-grid {
+    justify-content: center;
+  }
+  .cabine {
+    width: clamp(70px, 20vw, 100px);
+  }
+  .cabine-interieur {
+    height: 70px;
+  }
+  .sa-enseigne {
+    padding: 6px 15px;
+  }
+  .sa-enseigne h2 {
+    font-size: 22px;
+    letter-spacing: 5px;
+  }
+  .sa-panneau-joueurs {
+    max-width: 100%;
+  }
+  .sa-chat {
+    max-width: 100%;
+    max-height: 200px;
+  }
+  .sa-droite > div {
+    flex-direction: column;
+  }
+  .sa-droite > div > div {
+    min-width: 0 !important;
+  }
+
+  /* Cacher les decorations qui genent sur mobile */
+  .sa-centre,
+  .sa-entree,
+  .plante,
+  .distributeur,
+  .sa-joueur-avatar {
+    display: none;
+  }
+
+  /* Murs plus fins */
+  .sa-mur-haut, .sa-mur-bas {
+    height: 30px;
+  }
+  .sa-content {
+    height: calc(100% - 60px);
+  }
+
+  /* Bouton demarrer plus accessible */
+  .btn-demarrer {
+    width: 100%;
+    height: 50px;
+  }
+
+  /* Panneau cabines centre */
+  .panneau-cabines {
+    align-self: center;
+  }
+
+  /* ============================== */
+  /* ECRAN CREATION COMPTE          */
+  /* ============================== */
+  .compte-carte {
+    width: 90vw;
+    margin-top: 10px;
+  }
+  .compte-header {
+    padding: 12px;
+  }
+  .compte-body {
+    padding: 20px 15px;
+  }
+  .compte-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+  }
+
+  /* ============================== */
+  /* MENU PRINCIPAL                 */
+  /* ============================== */
+  .menu-pseudo-bar {
+    top: 10px;
+    right: 10px;
+    padding: 4px 8px;
+    gap: 6px;
+    font-size: 11px;
+  }
+  .btn-musique {
+    top: 10px;
+    left: 10px;
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+  }
+  .virus-icons {
+    gap: clamp(40px, 12vw, 100px);
+  }
+  .menu-buttons {
+    gap: 10px;
+    margin-top: 15px;
+  }
+  .btn-online {
+    width: clamp(260px, 75vw, 400px);
+    height: 65px;
+    font-size: clamp(20px, 5vw, 32px);
+  }
+  .btn-horsline,
+  .btn-boutique,
+  .btn-casier {
+    width: clamp(220px, 65vw, 340px);
+    height: 50px;
+    font-size: clamp(14px, 3.5vw, 20px);
+  }
+  .btn-param {
+    width: 140px;
+    height: 36px;
+    font-size: 12px;
+  }
+  .regles-panneau {
+    width: 90vw;
+    margin-top: 15px;
+  }
+  .regles-liste {
+    max-height: 150px;
+  }
+  .version {
+    font-size: 8px;
+    bottom: 5px;
+  }
+
+  /* ============================== */
+  /* CONFIG HORS LIGNE              */
+  /* ============================== */
+  #config-horsline .online-titre {
+    font-size: 28px;
+    letter-spacing: 4px;
+    margin-top: 5px;
+  }
+  #config-horsline .online-sous-titre {
+    font-size: 11px;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+  .config-hl-scroll {
+    padding: 10px 0 30px 0;
+  }
+  .config-hl-formulaire {
+    width: 90vw;
+    margin-top: 5px;
+  }
+  .config-hl-header {
+    padding: 8px 15px;
+  }
+  .config-hl-header h3 {
+    font-size: 12px;
+  }
+  .config-hl-body {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  .config-hl-champ {
+    gap: 4px;
+  }
+  .config-hl-champ label {
+    font-size: 10px;
+  }
+  .config-hl-slider-row {
+    gap: 8px;
+  }
+  .config-hl-slider-row input[type="range"] {
+    height: 6px;
+  }
+  .config-hl-valeur {
+    min-width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+  .config-hl-toggle {
+    width: 40px;
+    height: 22px;
+  }
+  .config-hl-toggle::after {
+    width: 16px;
+    height: 16px;
+    top: 3px;
+    left: 3px;
+  }
+  .config-hl-toggle.active::after {
+    transform: translateX(18px);
+  }
+  .config-hl-toggle-label {
+    font-size: 11px;
+  }
+  .config-hl-resume {
+    padding: 8px 10px;
+    gap: 4px;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+  .config-hl-resume-item {
+    font-size: 10px;
+  }
+  .config-hl-resume-item span {
+    font-size: 13px;
+  }
+  .btn-lancer-hl {
+    height: 40px;
+    font-size: 15px;
+  }
+
+  /* ============================== */
+  /* BOUTIQUE DE SKINS              */
+  /* ============================== */
+  #boutique-skins {
+    padding-top: 30px;
+    gap: 10px;
+  }
+  .boutique-grille {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 8px;
+    max-height: 55vh;
+  }
+  .boutique-tabs {
+    width: 90vw;
+  }
+  .skin-carte-img {
+    width: 45px;
+    height: 45px;
+  }
+  .skin-carte-nom {
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+  .skin-carte-prix {
+    font-size: 11px;
+  }
+  .skin-carte-btn {
+    font-size: 10px;
+    padding: 6px 0;
+  }
+
+  /* ============================== */
+  /* MENU ONLINE                    */
+  /* ============================== */
+  .btn-retour {
+    top: 10px;
+    left: 10px;
+    width: 90px;
+    height: 36px;
+    font-size: 12px;
+  }
+  .online-sous-titre {
+    font-size: 12px;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+  }
+  /* MENU ONLINE */
+  #menu-online .online-titre {
+    font-size: 28px;
+    letter-spacing: 4px;
+  }
+  #menu-online .online-sous-titre {
+    font-size: 11px;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+  }
+  .online-scroll {
+    padding: 15px 0 20px 0;
+    justify-content: flex-start;
+  }
+  .panneau-central {
+    padding: 12px 12px;
+    gap: 10px;
+    width: 90vw;
+    box-sizing: border-box;
+  }
+  .btn-creer,
+  .btn-trouver {
+    width: 100%;
+    height: 70px;
+    padding: 0 12px;
+    gap: 10px;
+  }
+  .btn-creer .btn-icon,
+  .btn-trouver .btn-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 18px;
+  }
+  .btn-creer .btn-label,
+  .btn-trouver .btn-label {
+    font-size: 13px;
+  }
+  .btn-creer .btn-sub,
+  .btn-trouver .btn-sub {
+    font-size: 10px;
+  }
+  .separateur-ou {
+    width: 100%;
+  }
+  .separateur-ou .ou-cercle {
+    font-size: 11px;
+    width: 30px;
+    height: 30px;
+  }
+  .info-bas {
+    max-width: 100%;
+    font-size: 10px;
+    padding: 0 15px;
+  }
+
+  /* ============================== */
+  /* CREER PARTIE                   */
+  /* ============================== */
+  #creer-partie .online-titre {
+    font-size: 28px;
+    letter-spacing: 4px;
+  }
+  #creer-partie .online-sous-titre {
+    font-size: 11px;
+    letter-spacing: 3px;
+    margin-bottom: 5px;
+  }
+  .cp-scroll {
+    padding: 10px 0 30px 0;
+  }
+  .cp-formulaire {
+    width: 90vw;
+    margin-top: 5px;
+  }
+  .cp-header {
+    padding: 8px 15px;
+  }
+  .cp-header h3 {
+    font-size: 12px;
+  }
+  .cp-body {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  .cp-champ {
+    gap: 3px;
+  }
+  .cp-champ label {
+    font-size: 10px;
+  }
+  .cp-champ input, .cp-champ select {
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+  .cp-roles-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .cp-role-item {
+    padding: 6px 8px;
+  }
+  .cp-role-item label {
+    font-size: 10px;
+    margin-bottom: 3px;
+  }
+  .cp-toggle {
+    width: 36px;
+    height: 20px;
+  }
+  .cp-toggle::after {
+    width: 14px;
+    height: 14px;
+    top: 3px;
+    left: 3px;
+  }
+  .cp-toggle.active::after {
+    transform: translateX(16px);
+  }
+  .cp-toggle-label {
+    font-size: 10px;
+  }
+  .btn-valider-creer {
+    height: 38px;
+    font-size: 14px;
+  }
+
+  /* ============================== */
+  /* LISTE DES PARTIES              */
+  /* ============================== */
+  .lp-conteneur {
+    width: 95vw;
+    margin-top: 10px;
+  }
+  .lp-tableau thead th {
+    padding: 8px 6px;
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+  .lp-tableau tbody td {
+    padding: 8px 6px;
+    font-size: 11px;
+  }
+  .lp-nom-partie {
+    gap: 6px;
+  }
+  .lp-icone-partie {
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
+  .lp-nom-texte .nom {
+    font-size: 11px;
+  }
+  .lp-barre-joueurs {
+    width: 40px;
+  }
+
+  /* ============================== */
+  /* POPUP PARAMETRES               */
+  /* ============================== */
+  .popup-box {
+    width: 90vw;
+  }
+  .lang-selector {
+    flex-direction: column;
+  }
+
+  /* ============================== */
+  /* HUD EN JEU                     */
+  /* ============================== */
+  .hud-top {
+    top: 8px;
+    padding: 4px 10px;
+    gap: 8px;
+  }
+  .hud-top span {
+    font-size: 10px;
+  }
+  .hud-role {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+  .hud-missions {
+    top: 45px;
+    left: 8px;
+    padding: 6px 8px;
+    min-width: 140px;
+    max-width: 45vw;
+    font-size: 10px;
+  }
+  .hud-missions h4 {
+    font-size: 9px;
+    margin-bottom: 4px;
+  }
+  .mission-item {
+    font-size: 9px;
+    gap: 5px;
+  }
+  .hud-minimap {
+    bottom: 8px;
+    right: 8px;
+    width: 110px;
+    height: 82px;
+  }
+  .hud-controles {
+    display: none;
+  }
+  .btn-reunion {
+    bottom: 25px;
+    padding: 10px 22px;
+    font-size: 15px;
+    letter-spacing: 1px;
+    z-index: 210;
+  }
+  .btn-mission {
+    bottom: 25px;
+    padding: 8px 20px;
+    font-size: 14px;
+  }
+  .btn-kill {
+    bottom: 90px;
+    padding: 8px 20px;
+    font-size: 14px;
+  }
+  .btn-enqueter {
+    bottom: 90px;
+    padding: 8px 20px;
+    font-size: 14px;
+  }
+  .btn-signaler {
+    bottom: 150px;
+    padding: 8px 20px;
+    font-size: 14px;
+  }
+  .btn-cameras {
+    bottom: 80px;
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+  .kill-countdown {
+    bottom: 90px;
+    width: 48px;
+    height: 48px;
+    font-size: 22px;
+  }
+
+  /* ============================== */
+  /* CAMERAS SECURITE               */
+  /* ============================== */
+  .cameras-grille {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+  }
+  .cameras-titre {
+    font-size: 16px;
+    letter-spacing: 2px;
+  }
+
+  /* ============================== */
+  /* REUNION / VOTE                 */
+  /* ============================== */
+  .reunion-box {
+    width: 95vw;
+    max-width: 95vw;
+    padding: 15px;
+  }
+  .reunion-titre {
+    font-size: 18px;
+  }
+  .vote-carte {
+    padding: 6px 8px;
+  }
+  .vote-carte-pseudo {
+    font-size: 11px;
+  }
+
+  /* Reunion mobile */
+  .reunion-bandeau {
+    top: 50px;
+    padding: 5px 12px;
+  }
+  .reunion-bandeau-titre {
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+  .reunion-bandeau-timer {
+    font-size: 13px;
+  }
+  .reunion-chat {
+    top: auto;
+    bottom: 55px;
+    right: 5px;
+    left: 5px;
+    width: auto;
+    max-height: 30vh;
+  }
+  .reunion-chat-messages {
+    min-height: 50px;
+    max-height: 16vh;
+    font-size: 11px;
+  }
+  .reunion-chat-header {
+    padding: 3px 8px;
+  }
+  .reunion-chat-header h4 {
+    font-size: 9px;
+  }
+  .reunion-chat-input {
+    padding: 4px;
+  }
+  .reunion-chat-input input {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+  .reunion-chat-input button {
+    width: 28px;
+    height: 28px;
+  }
+  .reunion-btn-skip {
+    bottom: 12px;
+    padding: 8px 24px;
+    font-size: 14px;
+    z-index: 225;
+  }
+  .vote-bulle {
+    top: -35px;
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+  }
+
+  /* ============================== */
+  /* FIN DE PARTIE                  */
+  /* ============================== */
+  .fin-partie-box {
+    width: 90vw;
+    padding: 20px;
+  }
+
+  /* ============================== */
+  /* CASIER / CABINE POPUP          */
+  /* ============================== */
+  .cabine-popup {
+    min-width: auto;
+    width: 90vw;
+    padding: 15px;
+  }
+  .skin-selector {
+    gap: 8px;
+    max-height: 200px;
+  }
+  .skin-option {
+    width: 60px;
+    height: 70px;
+  }
+  .skin-option img {
+    height: 38px;
+    width: 38px;
+  }
+
+  /* ============================== */
+  /* MINI-JEUX RESPONSIVE           */
+  /* ============================== */
+  .minijeu-zone {
+    padding: 16px;
+    max-width: 95vw;
+    min-height: 250px;
+  }
+  .minijeu-titre {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  .simon-btn {
+    width: 70px;
+    height: 70px;
+  }
+  .wire-endpoint {
+    width: 40px;
+    height: 34px;
+  }
+  .digicode-display {
+    font-size: 28px;
+    letter-spacing: 8px;
+  }
+  .digicode-btn {
+    padding: 10px;
+    font-size: 18px;
+  }
+  .rapidclick-btn {
+    width: 100px;
+    height: 100px;
+    font-size: 14px;
+  }
+}

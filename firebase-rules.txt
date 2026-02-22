@@ -1,0 +1,54 @@
+// Regles Firestore recommandees pour VIRUS
+// A copier dans Firebase Console > Firestore > Rules
+//
+// NOTE: Ces regles sont permissives car l'authentification est basee
+// sur localStorage (pas Firebase Auth). Pour renforcer la securite,
+// migrer vers Firebase Auth et utiliser request.auth.uid.
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Players : lecture publique, ecriture libre (pas de Firebase Auth)
+    match /players/{playerId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Parties : lecture publique, creation/modification libre
+    match /parties/{partyId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // PartyPlayers : lecture publique, ecriture libre
+    match /partyPlayers/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Chat : lecture et ecriture libres
+    match /partyChat/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // GameState : lecture et ecriture libres
+    match /gameState/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Friends : lecture et ecriture libres
+    match /friendRequests/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Invitations : lecture et ecriture libres
+    match /invitations/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}

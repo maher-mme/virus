@@ -1,0 +1,55 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+@font-face {
+  font-family: 'GameFont';
+  src: local('Impact'), local('Arial Black');
+}
+
+body {
+  background: #0f0f1a;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  user-select: none;
+}
+/* Permettre la saisie sur mobile */
+input, textarea { user-select: text; -webkit-user-select: text; }
+
+/* ============================== */
+/* ECRANS                         */
+/* ============================== */
+.screen {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  transition: opacity 0.4s ease;
+}
+.screen.active {
+  display: flex;
+}
+
+/* ============================== */
+/* FOND COMMUN                    */
+/* ============================== */
+.bg-mall {
+  background:
+    repeating-conic-gradient(#18223a 0% 25%, #141b2d 0% 50%) 0 0 / 60px 60px,
+    linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background-blend-mode: overlay;
+}
+
+/* ============================== */
+/* TRANSITIONS                    */
+/* ============================== */
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+

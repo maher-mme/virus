@@ -8505,6 +8505,20 @@
           'Ne vous trompez pas',
           'Lets go !'
         ],
+        botResponse: [
+          'Ouais t\'as raison...', 'Je suis pas d\'accord', 'Hmm possible...',
+          'Carrement !', 'Tu dis ca mais t\'as fait quoi toi ?', 'Ok ok...',
+          'C\'est vrai ca !', 'N\'importe quoi...', 'Mouais bof',
+          'Exactement ce que je pensais', 'Ah bon ? T\'es sur ?'
+        ],
+        botGhostChat: [
+          'Je sais qui c\'est...', 'Si seulement je pouvais parler aux vivants...',
+          'C\'est lui le virus !!', 'RIP moi...', 'Je vous observe...',
+          'Votez pour lui !!!', 'Personne m\'entend...', 'La verite va eclater...',
+          'J\'aurais du me mefier...', 'C\'est injuste...', 'Fantome life...',
+          'Ils se trompent de cible...', 'Non non non pas lui !',
+          'c\'est ca la mort ?'
+        ],
         // Mini-jeux
         mjDone: 'TERMINE !',
         mjSwapBooks: 'Cliquez 2 livres pour les echanger',
@@ -8976,6 +8990,20 @@
           'come on guys',
           'Don\'t mess up',
           'Lets go!'
+        ],
+        botResponse: [
+          'Yeah you\'re right...', 'I disagree', 'Hmm maybe...',
+          'Totally!', 'You say that but what did YOU do?', 'Ok ok...',
+          'That\'s true!', 'Nonsense...', 'Meh whatever',
+          'Exactly what I was thinking', 'Really? You sure?'
+        ],
+        botGhostChat: [
+          'I know who it is...', 'If only I could talk to the living...',
+          'It\'s him the virus!!', 'RIP me...', 'I\'m watching you all...',
+          'Vote for him!!!', 'Nobody can hear me...', 'The truth will come out...',
+          'I should have been more careful...', 'This is unfair...', 'Ghost life...',
+          'They\'re targeting the wrong one...', 'No no no not him!',
+          'Is this what death is?'
         ],
         // Mini-games
         mjDone: 'DONE!',
@@ -11904,14 +11932,7 @@
       try { var sChat = new Audio(Math.random() < 0.5 ? 'chat1.mp3' : 'chat2.mp3'); sChat.volume = 0.4; sChat.play(); } catch(e) {}
     }
 
-    var phrasesFantomes = [
-      'Je sais qui c\'est...', 'Si seulement je pouvais parler aux vivants...',
-      'C\'est lui le virus !!', 'RIP moi...', 'Je vous observe...',
-      'Votez pour lui !!!', 'Personne m\'entend...', 'La verite va eclater...',
-      'J\'aurais du me mefier...', 'C\'est injuste...', 'Fantome life...',
-      'Ils se trompent de cible...', 'Non non non pas lui !',
-      'c\'est ça la mort ?',
-    ];
+    var phrasesFantomes = t('botGhostChat');
 
     function envoyerMsgReunion() {
       var input = document.getElementById('reunion-chat-input');
@@ -11940,12 +11961,7 @@
 
       // Bots reagissent au message du joueur
       if (modeHorsLigne && Math.random() < 0.5) {
-        var phrasesReponse = [
-          'Ouais t\'as raison...', 'Je suis pas d\'accord', 'Hmm possible...',
-          'Carrement !', 'Tu dis ca mais t\'as fait quoi toi ?', 'Ok ok...',
-          'C\'est vrai ca !', 'N\'importe quoi...', 'Mouais bof',
-          'Exactement ce que je pensais', 'Ah bon ? T\'es sur ?'
-        ];
+        var phrasesReponse = t('botResponse');
         var botsVivants = [];
         for (var br = 0; br < bots.length; br++) {
           if (joueursElimines.indexOf(bots[br].pseudo) < 0) botsVivants.push(bots[br]);

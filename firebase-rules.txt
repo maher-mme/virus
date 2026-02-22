@@ -27,14 +27,26 @@ service cloud.firestore {
       allow write: if true;
     }
 
-    // Chat : lecture et ecriture libres
-    match /partyChat/{docId} {
+    // Chat messages (lobby + meeting)
+    match /chatMessages/{docId} {
       allow read: if true;
       allow write: if true;
     }
 
-    // GameState : lecture et ecriture libres
-    match /gameState/{docId} {
+    // Cadavres (corps des joueurs elimines)
+    match /cadavres/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Meetings (reunions d'urgence)
+    match /meetings/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Votes (votes pendant les reunions)
+    match /votes/{docId} {
       allow read: if true;
       allow write: if true;
     }

@@ -99,23 +99,33 @@ function quitterPartie() {
   showScreen('menu-online');
 }
 
+// Fonction commune pour etre ejecte de la partie (kick, suppression, etc.)
+function ejecterDeLaPartie(raison) {
+  showNotif(raison || t('partyDeleted') || 'La partie a ete supprimee', 'warn');
+  unsubscribeFromParty();
+  partieActuelleId = null;
+  myPartyPlayerDocId = null;
+  estHost = false;
+  jeuActif = false;
+  reunionEnCours = false;
+  showScreen('menu-online');
+}
+
 // S'abonner aux mises a jour d'une partie (joueurs, chat)
 function subscribeToParty(partyId) {
   unsubscribeFromParty();
+
   // Detecter suppression de la partie
   firebaseUnsubscribers.push(
     db.collection('parties').doc(partyId).onSnapshot(function(doc) {
       if (!doc.exists && partieActuelleId === partyId) {
-        showNotif(t('partyDeleted') || 'La partie a ete supprimee', 'warn');
-        unsubscribeFromParty();
-        partieActuelleId = null;
-        estHost = false;
-        jeuActif = false;
-        reunionEnCours = false;
-        showScreen('menu-online');
+        ejecterDeLaPartie(t('partyDeleted'));
       }
+    }, function(err) {
+      console.error('Erreur listener partie:', err);
     })
   );
+
   // Joueurs de la partie (temps reel)
   firebaseUnsubscribers.push(
     db.collection('partyPlayers').where('partyId', '==', partyId).onSnapshot(function(snapshot) {
@@ -126,6 +136,19 @@ function subscribeToParty(partyId) {
         data._docId = doc.id;
         firebasePartyPlayers.push(data);
       });
+
+      // Verifier si MOI je suis encore dans la liste (sinon j'ai ete kick)
+      if (partieActuelleId === partyId && myPartyPlayerDocId) {
+        var meTrouve = false;
+        for (var i = 0; i < firebasePartyPlayers.length; i++) {
+          if (firebasePartyPlayers[i].playerId === monPlayerId) { meTrouve = true; break; }
+        }
+        if (!meTrouve && oldCount > 0) {
+          ejecterDeLaPartie(t('partyDeleted'));
+          return;
+        }
+      }
+
       updateSalleAttenteUI(firebasePartyPlayers);
 
       if (oldCount > 0 && firebasePartyPlayers.length > oldCount) {
@@ -137,9 +160,12 @@ function subscribeToParty(partyId) {
       } else if (oldCount > 0 && firebasePartyPlayers.length < oldCount) {
         jouerSonSalle('Audio/quitter.mp3');
       }
+    }, function(err) {
+      console.error('Erreur listener joueurs:', err);
     })
   );
-  // Chat lobby (un seul where pour eviter les index composites)
+
+  // Chat (un seul where sur partyId, filtre lobby/meeting en JS)
   firebaseUnsubscribers.push(
     db.collection('chatMessages').where('partyId', '==', partyId).onSnapshot(function(snapshot) {
       var lobbyMsgs = [];
@@ -164,7 +190,7 @@ function subscribeToParty(partyId) {
         updateChatUI(meetingMsgs, 'meeting');
       }
     }, function(err) {
-      console.error('Erreur chat:', err);
+      console.error('Erreur listener chat:', err);
     })
   );
 }
@@ -185,19 +211,15 @@ function subscribeToGameState(partyId) {
     db.collection('parties').doc(partyId).onSnapshot(function(doc) {
       if (!doc.exists) {
         if (partieActuelleId === partyId) {
-          showNotif(t('partyDeleted') || 'La partie a ete supprimee', 'warn');
-          unsubscribeFromParty();
-          partieActuelleId = null;
-          estHost = false;
-          jeuActif = false;
-          reunionEnCours = false;
-          showScreen('menu-online');
+          ejecterDeLaPartie(t('partyDeleted'));
         }
         return;
       }
       var state = doc.data();
       state._id = doc.id;
       handleGameStateUpdate(state);
+    }, function(err) {
+      console.error('Erreur listener etat jeu:', err);
     })
   );
   // Positions des joueurs (partyPlayers)

@@ -180,13 +180,18 @@ function initAmisListeners() {
   // Nettoyer les anciens listeners
   amisUnsubscribers.forEach(function(unsub) { if (unsub) unsub(); });
   amisUnsubscribers = [];
+  if (window._amisStatutUnsubs) {
+    window._amisStatutUnsubs.forEach(function(u) { if (u) u(); });
+    window._amisStatutUnsubs = [];
+  }
 
-  // Demandes d'amis entrantes
+  // Demandes d'amis entrantes (un seul where, filtre status en JS)
   amisUnsubscribers.push(
-    db.collection('friendRequests').where('toPlayerId', '==', monPlayerId).where('status', '==', 'pending').onSnapshot(function(snapshot) {
+    db.collection('friendRequests').where('toPlayerId', '==', monPlayerId).onSnapshot(function(snapshot) {
       demandesEnAttente = [];
       snapshot.forEach(function(doc) {
         var r = doc.data();
+        if (r.status !== 'pending') return;
         demandesEnAttente.push({ id: doc.id, from: r.fromPlayerId, fromPseudo: r.fromPseudo, to: r.toPlayerId, toPseudo: r.toPseudo, status: r.status });
       });
       updateBadgeAmis();
@@ -196,6 +201,8 @@ function initAmisListeners() {
         showNotif(t('friendRequestFrom', derniere.fromPseudo), 'info');
       }
       ancienNbDemandes = demandesEnAttente.length;
+    }, function(err) {
+      console.error('Erreur listener demandes amis:', err);
     })
   );
 
@@ -209,9 +216,14 @@ function initAmisListeners() {
         mesAmis.push({ uid: f.friendPlayerId, pseudo: f.friendPseudo, online: false });
         friendIds.push(f.friendPlayerId);
       });
-      // Charger les statuts en ligne
+      // Nettoyer les anciens listeners de statut
+      if (window._amisStatutUnsubs) {
+        window._amisStatutUnsubs.forEach(function(u) { if (u) u(); });
+      }
+      window._amisStatutUnsubs = [];
+      // Ecouter le statut en ligne de chaque ami en temps reel
       friendIds.forEach(function(fid) {
-        db.collection('players').doc(fid).get().then(function(pDoc) {
+        var unsub = db.collection('players').doc(fid).onSnapshot(function(pDoc) {
           if (pDoc.exists) {
             var pData = pDoc.data();
             var ami = mesAmis.find(function(a) { return a.uid === fid; });
@@ -220,21 +232,25 @@ function initAmisListeners() {
           }
           if (panelAmisOuvert && tabAmiActif !== 'demandes') afficherAmis();
         });
+        window._amisStatutUnsubs.push(unsub);
       });
       if (friendIds.length === 0 && panelAmisOuvert && tabAmiActif !== 'demandes') afficherAmis();
     })
   );
 
-  // Invitations de partie
+  // Invitations de partie (un seul where, filtre status en JS)
   amisUnsubscribers.push(
-    db.collection('gameInvites').where('toPlayerId', '==', monPlayerId).where('status', '==', 'pending').onSnapshot(function(snapshot) {
+    db.collection('gameInvites').where('toPlayerId', '==', monPlayerId).onSnapshot(function(snapshot) {
       snapshot.forEach(function(doc) {
         var inv = doc.data();
+        if (inv.status !== 'pending') return;
         if (!invitationsAffichees[doc.id]) {
           invitationsAffichees[doc.id] = true;
           afficherInvitation(doc.id, inv.fromPseudo, inv.partyId);
         }
       });
+    }, function(err) {
+      console.error('Erreur listener invitations:', err);
     })
   );
 }

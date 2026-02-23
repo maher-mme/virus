@@ -13,17 +13,21 @@
     flex-shrink: 0;
   }
   .sa-content {
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: column !important;
     flex: 1 1 0 !important;
     height: 0 !important;
+    max-height: none !important;
     min-height: 0 !important;
-    overflow-y: auto;
-    overflow-x: hidden;
+    width: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
     overscroll-behavior: contain;
     padding: 6px;
     gap: 6px;
+    position: relative;
   }
 
   /* Cacher les decorations qui genent sur mobile */
@@ -37,10 +41,10 @@
 
   /* Cabines : une seule ligne compacte */
   .sa-gauche {
-    width: 100%;
-    padding: 0;
+    width: 100% !important;
+    padding: 0 !important;
     gap: 4px;
-    flex-direction: row;
+    flex-direction: row !important;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
@@ -88,8 +92,8 @@
 
   /* Zone droite : tout compact */
   .sa-droite {
-    width: 100%;
-    padding: 0;
+    width: 100% !important;
+    padding: 0 !important;
     gap: 4px;
   }
   .sa-enseigne {

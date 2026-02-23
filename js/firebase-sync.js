@@ -717,7 +717,8 @@ function creerPartie() {
     // Ajouter le joueur host
     return db.collection('partyPlayers').add({
       partyId: partyId, playerId: monPlayerId, pseudo: pseudo, skin: skin,
-      isHost: true, role: '', alive: true, x: 0, y: 0, direction: 1, saX: 50, saY: 70
+      isHost: true, role: '', alive: true, x: 0, y: 0, direction: 1, saX: 50, saY: 70,
+      lastActive: firebase.firestore.FieldValue.serverTimestamp()
     }).then(function(ppDoc) {
       myPartyPlayerDocId = ppDoc.id;
       document.getElementById('cp-nom').value = '';
@@ -749,7 +750,8 @@ function rejoindrePartie(partieId) {
       // Ajouter a la partie
       return db.collection('partyPlayers').add({
         partyId: partieId, playerId: monPlayerId, pseudo: pseudo, skin: skin,
-        isHost: false, role: '', alive: true, x: 0, y: 0, direction: 1, saX: 50, saY: 70
+        isHost: false, role: '', alive: true, x: 0, y: 0, direction: 1, saX: 50, saY: 70,
+        lastActive: firebase.firestore.FieldValue.serverTimestamp()
       });
     }).then(function(ppDoc) {
       myPartyPlayerDocId = ppDoc.id;

@@ -14,6 +14,7 @@
   .sa-content {
     flex-direction: column;
     flex: 1 1 0;
+    height: auto !important;
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
@@ -133,12 +134,16 @@
     height: 24px;
     font-size: 10px;
   }
-  .sa-droite > div {
+  .sa-droite-content {
     flex-direction: column;
-    gap: 6px !important;
+    gap: 6px;
   }
-  .sa-droite > div > div {
-    min-width: 0 !important;
+  .sa-droite-col {
+    min-width: 0;
+    gap: 6px;
+  }
+  .sa-droite-chat-col {
+    min-width: 0;
   }
 
   /* Cacher les decorations qui genent sur mobile */

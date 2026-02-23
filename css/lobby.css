@@ -163,6 +163,25 @@
   padding: 15px;
 }
 
+/* Layout droite */
+.sa-droite-content {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.sa-droite-col {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sa-droite-chat-col {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+}
+
 /* Enseigne VIRUS */
 .sa-enseigne {
   background: #1a1a2e;

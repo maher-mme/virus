@@ -139,17 +139,32 @@ function subscribeToParty(partyId) {
       }
     })
   );
-  // Chat lobby (sans orderBy pour eviter l'index composite)
+  // Chat lobby (un seul where pour eviter les index composites)
   firebaseUnsubscribers.push(
-    db.collection('chatMessages').where('partyId', '==', partyId).where('context', '==', 'lobby').onSnapshot(function(snapshot) {
-      var messages = [];
-      snapshot.forEach(function(doc) { messages.push(doc.data()); });
-      messages.sort(function(a, b) {
+    db.collection('chatMessages').where('partyId', '==', partyId).onSnapshot(function(snapshot) {
+      var lobbyMsgs = [];
+      var meetingMsgs = [];
+      snapshot.forEach(function(doc) {
+        var data = doc.data();
+        if (data.context === 'lobby') lobbyMsgs.push(data);
+        else if (data.context === 'meeting') meetingMsgs.push(data);
+      });
+      lobbyMsgs.sort(function(a, b) {
         var ta = a.timestamp ? a.timestamp.toMillis() : 0;
         var tb = b.timestamp ? b.timestamp.toMillis() : 0;
         return ta - tb;
       });
-      updateChatUI(messages, 'lobby');
+      updateChatUI(lobbyMsgs, 'lobby');
+      if (reunionEnCours && meetingMsgs.length > 0) {
+        meetingMsgs.sort(function(a, b) {
+          var ta = a.timestamp ? a.timestamp.toMillis() : 0;
+          var tb = b.timestamp ? b.timestamp.toMillis() : 0;
+          return ta - tb;
+        });
+        updateChatUI(meetingMsgs, 'meeting');
+      }
+    }, function(err) {
+      console.error('Erreur chat:', err);
     })
   );
 }
@@ -209,19 +224,7 @@ function subscribeToGameState(partyId) {
       if (lastGamePhase === 'playing') updateCadavresMultiplayer(cadavres);
     })
   );
-  // Chat reunion (sans orderBy pour eviter l'index composite)
-  gameUnsubscribers.push(
-    db.collection('chatMessages').where('partyId', '==', partyId).where('context', '==', 'meeting').onSnapshot(function(snapshot) {
-      var messages = [];
-      snapshot.forEach(function(doc) { messages.push(doc.data()); });
-      messages.sort(function(a, b) {
-        var ta = a.timestamp ? a.timestamp.toMillis() : 0;
-        var tb = b.timestamp ? b.timestamp.toMillis() : 0;
-        return ta - tb;
-      });
-      if (reunionEnCours) updateChatUI(messages, 'meeting');
-    })
-  );
+  // Chat reunion gere par le listener unique dans subscribeToParty
   // Reunions actives
   gameUnsubscribers.push(
     db.collection('meetings').where('partyId', '==', partyId).where('active', '==', true).onSnapshot(function(snapshot) {
@@ -732,6 +735,7 @@ function creerPartie() {
     }).then(function(ppDoc) {
       myPartyPlayerDocId = ppDoc.id;
       document.getElementById('cp-nom').value = '';
+      modeHorsLigne = false;
       estHost = true;
       partieActuelleId = partyId;
       showScreen('salle-attente');
@@ -771,6 +775,7 @@ function rejoindrePartie(partieId) {
         listeJoueurs: firebase.firestore.FieldValue.arrayUnion(pseudo)
       });
     }).then(function() {
+      modeHorsLigne = false;
       estHost = false;
       partieActuelleId = partieId;
       showScreen('salle-attente');

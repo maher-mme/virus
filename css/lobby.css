@@ -708,6 +708,25 @@
   background: rgba(52,152,219,0.1);
 }
 
+.btn-admin-purge {
+  padding: 8px 20px;
+  background: transparent;
+  color: #e74c3c;
+  border: 1.5px solid #e74c3c;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-admin-purge:hover {
+  background: rgba(231,76,60,0.1);
+}
+
 /* ============================== */
 /* FORMULAIRE CREATION PARTIE     */
 /* ============================== */

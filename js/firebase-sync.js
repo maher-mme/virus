@@ -745,7 +745,47 @@ function rejoindrePartie(partieId) {
   });
 }
 
+// Nettoyer les parties fantomes (0 joueurs ou host absent)
+function nettoyerPartiesFantomes() {
+  var parties = getParties();
+  parties.forEach(function(p) {
+    if (p.joueurs <= 0 || !p.listeJoueurs || p.listeJoueurs.length === 0) {
+      db.collection('parties').doc(p._id).delete().catch(function() {});
+      // Supprimer aussi les partyPlayers orphelins
+      db.collection('partyPlayers').where('partyId', '==', p._id).get().then(function(snap) {
+        snap.forEach(function(doc) { doc.ref.delete(); });
+      }).catch(function() {});
+    }
+  });
+}
+
+// Purger TOUTES les parties (admin)
+function purgerToutesLesParties() {
+  db.collection('parties').get().then(function(snap) {
+    snap.forEach(function(doc) { doc.ref.delete(); });
+  });
+  db.collection('partyPlayers').get().then(function(snap) {
+    snap.forEach(function(doc) { doc.ref.delete(); });
+  });
+  db.collection('chatMessages').get().then(function(snap) {
+    snap.forEach(function(doc) { doc.ref.delete(); });
+  });
+  db.collection('cadavres').get().then(function(snap) {
+    snap.forEach(function(doc) { doc.ref.delete(); });
+  });
+  db.collection('meetings').get().then(function(snap) {
+    snap.forEach(function(doc) { doc.ref.delete(); });
+  });
+  db.collection('votes').get().then(function(snap) {
+    snap.forEach(function(doc) { doc.ref.delete(); });
+  });
+  showNotif('Toutes les parties ont ete supprimees', 'success');
+}
+
 function rafraichirListeParties() {
+  // Auto-nettoyage des parties fantomes
+  nettoyerPartiesFantomes();
+
   const parties = getParties();
   const tbody = document.getElementById('lp-tbody');
   const vide = document.getElementById('lp-vide');

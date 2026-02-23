@@ -77,6 +77,9 @@ function showScreen(id) {
   // Rafraichir la liste quand on arrive sur l'ecran
   if (id === 'liste-parties') {
     rafraichirListeParties();
+    // Bouton purge admin
+    var btnPurge = document.getElementById('btn-purge-parties');
+    if (btnPurge) btnPurge.style.display = isAdmin() ? 'flex' : 'none';
   }
 
   // Generer la boutique quand on l'ouvre

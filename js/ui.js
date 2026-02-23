@@ -127,5 +127,20 @@ function updateSalleAvatar() {
   appliquerSkinPartout();
 }
 
+// Toggle chat mobile (salle d'attente / reunion)
+function toggleChat(context) {
+  var chat, btn;
+  if (context === 'sa') {
+    chat = document.querySelector('#salle-attente .sa-chat');
+    btn = document.getElementById('sa-chat-toggle');
+  } else {
+    chat = document.getElementById('reunion-chat');
+    btn = document.getElementById('reunion-chat-toggle');
+  }
+  if (!chat || !btn) return;
+  chat.classList.toggle('chat-visible');
+  btn.classList.toggle('active');
+}
+
 // (Cabines gerees par ouvrirCabine/fermerCabine plus haut)
 

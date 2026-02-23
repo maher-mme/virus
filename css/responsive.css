@@ -102,6 +102,21 @@
   .sa-chat {
     max-width: 100%;
     max-height: 150px;
+    display: none;
+  }
+  .sa-chat.chat-visible {
+    display: flex;
+  }
+  /* Bouton toggle chat visible sur mobile */
+  .chat-toggle-btn {
+    display: flex;
+  }
+  /* Chat reunion cache par defaut sur mobile */
+  .reunion-chat {
+    display: none !important;
+  }
+  .reunion-chat.chat-visible {
+    display: flex !important;
   }
   .sa-chat-header {
     padding: 3px 10px;

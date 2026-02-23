@@ -102,6 +102,20 @@ function quitterPartie() {
 // S'abonner aux mises a jour d'une partie (joueurs, chat)
 function subscribeToParty(partyId) {
   unsubscribeFromParty();
+  // Detecter suppression de la partie
+  firebaseUnsubscribers.push(
+    db.collection('parties').doc(partyId).onSnapshot(function(doc) {
+      if (!doc.exists && partieActuelleId === partyId) {
+        showNotif(t('partyDeleted') || 'La partie a ete supprimee', 'warn');
+        unsubscribeFromParty();
+        partieActuelleId = null;
+        estHost = false;
+        jeuActif = false;
+        reunionEnCours = false;
+        showScreen('menu-online');
+      }
+    })
+  );
   // Joueurs de la partie (temps reel)
   firebaseUnsubscribers.push(
     db.collection('partyPlayers').where('partyId', '==', partyId).onSnapshot(function(snapshot) {
@@ -149,7 +163,18 @@ function subscribeToGameState(partyId) {
   // Etat de la partie (phase, etc.)
   gameUnsubscribers.push(
     db.collection('parties').doc(partyId).onSnapshot(function(doc) {
-      if (!doc.exists) return;
+      if (!doc.exists) {
+        if (partieActuelleId === partyId) {
+          showNotif(t('partyDeleted') || 'La partie a ete supprimee', 'warn');
+          unsubscribeFromParty();
+          partieActuelleId = null;
+          estHost = false;
+          jeuActif = false;
+          reunionEnCours = false;
+          showScreen('menu-online');
+        }
+        return;
+      }
       var state = doc.data();
       state._id = doc.id;
       handleGameStateUpdate(state);

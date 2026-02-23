@@ -139,11 +139,16 @@ function subscribeToParty(partyId) {
       }
     })
   );
-  // Chat lobby
+  // Chat lobby (sans orderBy pour eviter l'index composite)
   firebaseUnsubscribers.push(
-    db.collection('chatMessages').where('partyId', '==', partyId).where('context', '==', 'lobby').orderBy('timestamp').onSnapshot(function(snapshot) {
+    db.collection('chatMessages').where('partyId', '==', partyId).where('context', '==', 'lobby').onSnapshot(function(snapshot) {
       var messages = [];
       snapshot.forEach(function(doc) { messages.push(doc.data()); });
+      messages.sort(function(a, b) {
+        var ta = a.timestamp ? a.timestamp.toMillis() : 0;
+        var tb = b.timestamp ? b.timestamp.toMillis() : 0;
+        return ta - tb;
+      });
       updateChatUI(messages, 'lobby');
     })
   );
@@ -204,11 +209,16 @@ function subscribeToGameState(partyId) {
       if (lastGamePhase === 'playing') updateCadavresMultiplayer(cadavres);
     })
   );
-  // Chat reunion
+  // Chat reunion (sans orderBy pour eviter l'index composite)
   gameUnsubscribers.push(
-    db.collection('chatMessages').where('partyId', '==', partyId).where('context', '==', 'meeting').orderBy('timestamp').onSnapshot(function(snapshot) {
+    db.collection('chatMessages').where('partyId', '==', partyId).where('context', '==', 'meeting').onSnapshot(function(snapshot) {
       var messages = [];
       snapshot.forEach(function(doc) { messages.push(doc.data()); });
+      messages.sort(function(a, b) {
+        var ta = a.timestamp ? a.timestamp.toMillis() : 0;
+        var tb = b.timestamp ? b.timestamp.toMillis() : 0;
+        return ta - tb;
+      });
       if (reunionEnCours) updateChatUI(messages, 'meeting');
     })
   );

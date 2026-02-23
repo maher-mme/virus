@@ -759,6 +759,26 @@ function nettoyerPartiesFantomes() {
   });
 }
 
+// Supprimer UNE partie (admin)
+function supprimerPartie(partyId) {
+  db.collection('parties').doc(partyId).delete().catch(function() {});
+  db.collection('partyPlayers').where('partyId', '==', partyId).get().then(function(snap) {
+    snap.forEach(function(doc) { doc.ref.delete(); });
+  }).catch(function() {});
+  db.collection('chatMessages').where('partyId', '==', partyId).get().then(function(snap) {
+    snap.forEach(function(doc) { doc.ref.delete(); });
+  }).catch(function() {});
+  db.collection('cadavres').where('partyId', '==', partyId).get().then(function(snap) {
+    snap.forEach(function(doc) { doc.ref.delete(); });
+  }).catch(function() {});
+  db.collection('meetings').where('partyId', '==', partyId).get().then(function(snap) {
+    snap.forEach(function(doc) { doc.ref.delete(); });
+  }).catch(function() {});
+  db.collection('votes').where('partyId', '==', partyId).get().then(function(snap) {
+    snap.forEach(function(doc) { doc.ref.delete(); });
+  }).catch(function() {});
+}
+
 // Purger TOUTES les parties (admin)
 function purgerToutesLesParties() {
   db.collection('parties').get().then(function(snap) {
@@ -819,9 +839,12 @@ function rafraichirListeParties() {
       tr.style.opacity = '0.6';
       tr.style.cursor = 'not-allowed';
     }
+    var adminDeleteBtn = isAdmin() ? '<button class="btn-admin-delete" data-deleteid="' + partyIdStr + '" title="Supprimer cette partie">&#10005;</button>' : '';
+
     tr.innerHTML =
       '<td>' +
         '<div class="lp-nom-partie">' +
+          adminDeleteBtn +
           '<div class="lp-icone-partie" style="border:2px solid ' + p.couleur + '">&#128367;</div>' +
           '<div class="lp-nom-texte">' +
             '<span class="nom">' + p.nom.replace(/</g, '&lt;') + '</span>' +
@@ -856,6 +879,14 @@ function rafraichirListeParties() {
     if (btnRejoindre) {
       (function(pid) {
         btnRejoindre.onclick = function(e) { e.stopPropagation(); rejoindrePartie(pid); };
+      })(partyIdStr);
+    }
+
+    // Bouton supprimer admin
+    var btnDelete = tr.querySelector('.btn-admin-delete[data-deleteid]');
+    if (btnDelete) {
+      (function(pid) {
+        btnDelete.onclick = function(e) { e.stopPropagation(); supprimerPartie(pid); };
       })(partyIdStr);
     }
 

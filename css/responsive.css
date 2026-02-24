@@ -8,10 +8,21 @@
 
   /* ============================== */
   /* SALLE D'ATTENTE MOBILE         */
-  /* Layout desktop + camera zoom   */
+  /* Layout desktop taille fixe +   */
+  /* camera qui suit le joueur      */
   /* ============================== */
   #salle-attente {
     overflow: hidden;
+    position: relative;
+  }
+  .sa-mur-haut, .sa-mur-bas {
+    display: none;
+  }
+  .sa-content {
+    position: absolute !important;
+    width: 1000px !important;
+    height: 650px !important;
+    flex: none !important;
   }
   /* Chat toggle plein ecran sur mobile */
   .sa-chat {

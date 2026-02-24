@@ -101,11 +101,13 @@ function showScreen(id) {
     salleLoop();
   } else {
     salleActif = false;
-    // Reset le zoom camera de la salle d'attente
+    // Reset la camera de la salle d'attente
     var saContent = document.querySelector('#salle-attente .sa-content');
     if (saContent) {
       saContent.style.transform = '';
       saContent.style.transformOrigin = '';
+      saContent.style.left = '';
+      saContent.style.top = '';
     }
   }
 

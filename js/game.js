@@ -958,17 +958,29 @@ function salleLoop() {
     }
   }
 
-  // Camera mobile : zoom + suivi du joueur (comme le centre commercial en jeu)
+  // Camera mobile : deplace sa-content pour centrer le joueur (comme le jeu)
   if (isMobile) {
     var saContent = document.querySelector('#salle-attente .sa-content');
-    if (saContent) {
-      var SA_ZOOM = 1.3;
-      var halfView = 50 / SA_ZOOM;
-      // Limiter la camera pour ne pas montrer hors de la zone
-      var camX = Math.max(halfView, Math.min(100 - halfView, saJoueurX));
-      var camY = Math.max(halfView, Math.min(100 - halfView, saJoueurY));
-      saContent.style.transformOrigin = camX + '% ' + camY + '%';
-      saContent.style.transform = 'scale(' + SA_ZOOM + ')';
+    var saContainer = document.getElementById('salle-attente');
+    if (saContent && saContainer) {
+      var SA_W = 1000;
+      var SA_H = 650;
+      // Position du joueur en pixels
+      var px = saJoueurX / 100 * SA_W;
+      var py = saJoueurY / 100 * SA_H;
+      // Taille du viewport
+      var vw = saContainer.clientWidth;
+      var vh = saContainer.clientHeight;
+      // Centrer la camera sur le joueur
+      var camX = px - vw / 2;
+      var camY = py - vh / 2;
+      // Limiter aux bords
+      if (camX < 0) camX = 0;
+      if (camY < 0) camY = 0;
+      if (camX > SA_W - vw) camX = SA_W - vw;
+      if (camY > SA_H - vh) camY = SA_H - vh;
+      saContent.style.left = -camX + 'px';
+      saContent.style.top = -camY + 'px';
     }
   }
 

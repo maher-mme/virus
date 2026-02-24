@@ -222,16 +222,23 @@ function subscribeToGameState(partyId) {
       console.error('Erreur listener etat jeu:', err);
     })
   );
-  // Positions des joueurs (partyPlayers)
+  // Positions des joueurs (partyPlayers) - utiliser docChanges pour ne traiter que les modifies
   gameUnsubscribers.push(
     db.collection('partyPlayers').where('partyId', '==', partyId).onSnapshot(function(snapshot) {
-      var players = [];
-      snapshot.forEach(function(d) {
-        var data = d.data();
-        data._docId = d.id;
-        players.push(data);
+      snapshot.docChanges().forEach(function(change) {
+        if (change.type === 'added' || change.type === 'modified') {
+          var data = change.doc.data();
+          data._docId = change.doc.id;
+          handleSinglePlayerUpdate(data);
+        } else if (change.type === 'removed') {
+          var removedData = change.doc.data();
+          if (removedData.playerId && remotePlayers[removedData.playerId]) {
+            var el = document.getElementById('remote-' + removedData.playerId);
+            if (el) el.remove();
+            delete remotePlayers[removedData.playerId];
+          }
+        }
       });
-      handlePositionUpdate(players);
     })
   );
   // Cadavres
@@ -333,38 +340,40 @@ function lancerJeuMultiplayer(state) {
   gameLoop();
 }
 
-// Gestion des positions distantes (avec tracking velocite)
-function handlePositionUpdate(players) {
+// Gestion d'un joueur distant individuel (velocite + lissage)
+function handleSinglePlayerUpdate(p) {
+  if (p.playerId === monPlayerId) return;
   var now = Date.now();
-  players.forEach(function(p) {
-    if (p.playerId === monPlayerId) return;
-    if (!remotePlayers[p.playerId]) {
-      remotePlayers[p.playerId] = {
-        x: p.x, y: p.y,
-        targetX: p.x, targetY: p.y,
-        velocityX: 0, velocityY: 0,
-        direction: p.direction, lastUpdate: now,
-        alive: p.alive, pseudo: p.pseudo, skin: p.skin
-      };
-      createRemotePlayerElement(p);
-    } else {
-      var rp = remotePlayers[p.playerId];
+  if (!remotePlayers[p.playerId]) {
+    remotePlayers[p.playerId] = {
+      x: p.x, y: p.y,
+      targetX: p.x, targetY: p.y,
+      velocityX: 0, velocityY: 0,
+      direction: p.direction, lastUpdate: now,
+      alive: p.alive, pseudo: p.pseudo, skin: p.skin
+    };
+    createRemotePlayerElement(p);
+  } else {
+    var rp = remotePlayers[p.playerId];
+    // Ignorer si la position n'a pas change (evite d'ecraser la velocite)
+    var movedX = Math.abs(p.x - rp.targetX);
+    var movedY = Math.abs(p.y - rp.targetY);
+    if (movedX > 0.1 || movedY > 0.1) {
       var dt = (now - rp.lastUpdate) / 1000;
-      // Calculer la velocite a partir du deplacement recu
-      if (dt > 0 && dt < 2) {
-        rp.velocityX = (p.x - rp.targetX) / dt;
-        rp.velocityY = (p.y - rp.targetY) / dt;
-      } else {
-        rp.velocityX = 0;
-        rp.velocityY = 0;
+      if (dt > 0.01 && dt < 2) {
+        // Lisser la velocite (blend 70% nouvelle, 30% ancienne)
+        var newVx = (p.x - rp.targetX) / dt;
+        var newVy = (p.y - rp.targetY) / dt;
+        rp.velocityX = rp.velocityX * 0.3 + newVx * 0.7;
+        rp.velocityY = rp.velocityY * 0.3 + newVy * 0.7;
       }
       rp.targetX = p.x;
       rp.targetY = p.y;
-      rp.direction = p.direction;
       rp.lastUpdate = now;
-      rp.alive = p.alive;
     }
-  });
+    rp.direction = p.direction;
+    rp.alive = p.alive;
+  }
 }
 
 // Creer un element DOM pour un joueur distant
@@ -402,8 +411,8 @@ function updateRemotePlayers() {
     var predictedX = rp.targetX + rp.velocityX * predictAhead;
     var predictedY = rp.targetY + rp.velocityY * predictAhead;
 
-    // Lerp frame-rate independent (lerpSpeed 12 = reactif et fluide)
-    var lerpSpeed = 12;
+    // Lerp frame-rate independent (lerpSpeed 20 = tres reactif)
+    var lerpSpeed = 20;
     var factor = 1 - Math.exp(-lerpSpeed * dt);
 
     var dx = predictedX - rp.x;
@@ -416,10 +425,11 @@ function updateRemotePlayers() {
       rp.y = predictedY;
     }
 
-    // Si pas de mise a jour depuis 2s, arreter la velocite
-    if (timeSinceUpdate > 2) {
-      rp.velocityX = 0;
-      rp.velocityY = 0;
+    // Reduire la velocite progressivement si pas de mise a jour recente
+    if (timeSinceUpdate > 0.3) {
+      var decay = Math.max(0, 1 - (timeSinceUpdate - 0.3) * 2);
+      rp.velocityX *= decay;
+      rp.velocityY *= decay;
     }
 
     var el = document.getElementById('remote-' + pid);

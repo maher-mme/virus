@@ -925,16 +925,18 @@ function salleLoop() {
   if (keys['q'] || keys['Q'] || keys['ArrowLeft']) { saJoueurX -= SA_VITESSE; moved = true; saDirection = -1; }
   if (keys['d'] || keys['D'] || keys['ArrowRight']) { saJoueurX += SA_VITESSE; moved = true; saDirection = 1; }
 
-  // Tactile mobile : se diriger vers le doigt
+  // Tactile mobile : suivre le doigt directement
   if (saTouchActif) {
     var dx = saTouchTargetX - saJoueurX;
     var dy = saTouchTargetY - saJoueurY;
     var dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist > 1) {
-      saJoueurX += (dx / dist) * SA_VITESSE;
-      saJoueurY += (dy / dist) * SA_VITESSE;
-      if (dx < 0) saDirection = -1;
-      if (dx > 0) saDirection = 1;
+    if (dist > 0.5) {
+      // Vitesse proportionnelle a la distance (rapide si loin, lent si proche)
+      var vitesse = Math.min(dist * 0.15, 3);
+      saJoueurX += (dx / dist) * vitesse;
+      saJoueurY += (dy / dist) * vitesse;
+      if (dx < -0.5) saDirection = -1;
+      if (dx > 0.5) saDirection = 1;
       moved = true;
     }
   }

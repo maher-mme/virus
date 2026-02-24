@@ -11,17 +11,21 @@
   /* Vue de dessus comme le mall     */
   /* ============================== */
   #salle-attente {
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
     overflow: hidden;
+    align-items: stretch !important;
   }
   .sa-mur-haut, .sa-mur-bas {
     height: 8px;
     flex-shrink: 0;
+    width: 100%;
   }
   .sa-content {
     position: relative !important;
     width: 100% !important;
-    height: 100% !important;
-    flex: 1 !important;
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
     overflow: hidden !important;
     padding: 0 !important;
   }

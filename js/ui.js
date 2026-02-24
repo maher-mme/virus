@@ -74,6 +74,9 @@ function showScreen(id) {
   // Gerer la musique du menu
   gererMusiqueMenu(id);
 
+  // Zoom automatique pour petits ecrans
+  autoScale();
+
   // Rafraichir la liste quand on arrive sur l'ecran
   if (id === 'liste-parties') {
     rafraichirListeParties();
@@ -130,7 +133,7 @@ function updateSalleAvatar() {
   appliquerSkinPartout();
 }
 
-// Toggle chat mobile (salle d'attente / reunion)
+// Toggle chat mobile (salle d'attente / reunion) - plein ecran
 function toggleChat(context) {
   var chat, btn;
   if (context === 'sa') {
@@ -141,21 +144,78 @@ function toggleChat(context) {
     btn = document.getElementById('reunion-chat-toggle');
   }
   if (!chat || !btn) return;
-  // Utiliser style.display directement (evite les conflits CSS !important)
   var isVisible = chat.style.display === 'flex';
-  chat.style.display = isVisible ? 'none' : 'flex';
-  if (!isVisible) {
+  if (isVisible) {
+    // Fermer le chat
+    chat.style.display = 'none';
+    chat.style.position = '';
+    chat.style.top = '';
+    chat.style.bottom = '';
+    chat.style.left = '';
+    chat.style.right = '';
+    chat.style.zIndex = '';
+    chat.style.maxHeight = '';
+    chat.style.height = '';
+    chat.style.borderRadius = '';
+    chat.style.boxShadow = '';
+    btn.style.top = '';
+    btn.style.bottom = '';
+    btn.style.right = '';
+    btn.style.left = '';
+    btn.style.position = '';
+    btn.style.zIndex = '';
+  } else {
+    // Ouvrir le chat en plein ecran
+    chat.style.display = 'flex';
     chat.style.position = 'fixed';
-    chat.style.bottom = '80px';
-    chat.style.left = '10px';
-    chat.style.right = '10px';
-    chat.style.zIndex = '300';
-    chat.style.maxHeight = '200px';
-    chat.style.borderRadius = '10px';
-    chat.style.boxShadow = '0 4px 20px rgba(0,0,0,0.7)';
+    chat.style.top = '50px';
+    chat.style.bottom = '0';
+    chat.style.left = '0';
+    chat.style.right = '0';
+    chat.style.zIndex = '400';
+    chat.style.maxHeight = 'none';
+    chat.style.height = 'auto';
+    chat.style.borderRadius = '12px 12px 0 0';
+    chat.style.boxShadow = '0 -4px 30px rgba(0,0,0,0.8)';
+    // Bouton en haut pour fermer
+    btn.style.position = 'fixed';
+    btn.style.top = '10px';
+    btn.style.right = '10px';
+    btn.style.bottom = 'auto';
+    btn.style.left = 'auto';
+    btn.style.zIndex = '410';
   }
   btn.classList.toggle('active');
 }
 
-// (Cabines gerees par ouvrirCabine/fermerCabine plus haut)
+// ============================
+// ZOOM AUTOMATIQUE (petits ecrans)
+// ============================
+var DESIGN_WIDTH = 1024;
+
+function autoScale() {
+  var activeScreen = document.querySelector('.screen.active');
+  // Ne pas scaler l'ecran de jeu ni la salle d'attente (layouts custom)
+  if (activeScreen && (activeScreen.id === 'jeu' || activeScreen.id === 'salle-attente')) {
+    document.body.style.transform = '';
+    document.body.style.width = '';
+    document.body.style.height = '';
+    return;
+  }
+  var vw = window.innerWidth;
+  var vh = window.innerHeight;
+  if (vw < DESIGN_WIDTH) {
+    var scale = vw / DESIGN_WIDTH;
+    document.body.style.transform = 'scale(' + scale + ')';
+    document.body.style.transformOrigin = 'top left';
+    document.body.style.width = (100 / scale) + 'vw';
+    document.body.style.height = (100 / scale) + 'vh';
+  } else {
+    document.body.style.transform = '';
+    document.body.style.width = '';
+    document.body.style.height = '';
+  }
+}
+
+window.addEventListener('resize', autoScale);
 

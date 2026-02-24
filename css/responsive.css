@@ -1,7 +1,10 @@
 /* ============================== */
 /* RESPONSIVE MOBILE              */
+/* Auto-zoom gere les ecrans      */
+/* sauf #jeu et #salle-attente    */
 /* ============================== */
 @media (max-width: 768px) {
+
   /* ============================== */
   /* SALLE D'ATTENTE MOBILE         */
   /* Vue de dessus comme le mall     */
@@ -13,7 +16,6 @@
     height: 8px;
     flex-shrink: 0;
   }
-  /* La zone principale = aire de jeu plein ecran */
   .sa-content {
     position: relative !important;
     width: 100% !important;
@@ -22,20 +24,15 @@
     overflow: hidden !important;
     padding: 0 !important;
   }
-
-  /* Decorations visibles mais plus petites */
   .sa-entree { display: none; }
   .plante { transform: scale(0.6); }
   .distributeur { transform: scale(0.6); }
-
-  /* Avatar sur mobile */
   .sa-joueur-avatar .sa-avatar-skin img {
     height: 40px;
   }
   .sa-joueur-avatar .sa-avatar-pseudo {
     font-size: 7px;
   }
-
   /* Cabines : overlay en haut a gauche */
   .sa-gauche {
     position: fixed !important;
@@ -79,7 +76,6 @@
     width: 5px;
     height: 5px;
   }
-
   /* UI droite : overlay compact en haut a droite */
   .sa-droite {
     position: fixed !important;
@@ -128,8 +124,6 @@
     padding: 0;
     line-height: 1.3;
   }
-
-  /* Boutons en bas */
   .btn-demarrer {
     width: 100%;
     height: 32px;
@@ -149,12 +143,10 @@
   #msg-attente-host span {
     font-size: 8px !important;
   }
-
-  /* Chat cache sur mobile (toggle avec bouton) */
+  /* Chat cache sur mobile (toggle plein ecran) */
   .sa-chat {
     display: none;
   }
-  /* Bouton toggle chat : salle d'attente toujours visible, reunion seulement pendant reunion */
   .chat-toggle-btn {
     display: none;
   }
@@ -167,387 +159,6 @@
   .reunion-chat,
   .reunion-chat.visible {
     display: none !important;
-  }
-  .sa-chat-header {
-    padding: 2px 8px;
-  }
-  .sa-chat-header h4 {
-    font-size: 8px;
-  }
-  .sa-chat-input input {
-    padding: 3px 6px;
-    font-size: 10px;
-  }
-  .sa-chat-input button {
-    width: 22px;
-    height: 22px;
-    font-size: 9px;
-  }
-
-  /* ============================== */
-  /* ECRAN CREATION COMPTE          */
-  /* ============================== */
-  .compte-carte {
-    width: 90vw;
-    margin-top: 10px;
-  }
-  .compte-header {
-    padding: 12px;
-  }
-  .compte-body {
-    padding: 20px 15px;
-  }
-  .compte-avatar {
-    width: 60px;
-    height: 60px;
-    font-size: 28px;
-  }
-
-  /* ============================== */
-  /* MENU PRINCIPAL                 */
-  /* ============================== */
-  .menu-pseudo-bar {
-    top: 10px;
-    right: 10px;
-    padding: 4px 8px;
-    gap: 6px;
-    font-size: 11px;
-  }
-  .btn-musique {
-    top: 10px;
-    left: 10px;
-    width: 34px;
-    height: 34px;
-    font-size: 16px;
-  }
-  .virus-icons {
-    gap: clamp(40px, 12vw, 100px);
-  }
-  .menu-buttons {
-    gap: 10px;
-    margin-top: 15px;
-  }
-  .btn-online {
-    width: clamp(260px, 75vw, 400px);
-    height: 65px;
-    font-size: clamp(20px, 5vw, 32px);
-  }
-  .btn-horsline,
-  .btn-boutique,
-  .btn-casier {
-    width: clamp(220px, 65vw, 340px);
-    height: 50px;
-    font-size: clamp(14px, 3.5vw, 20px);
-  }
-  .btn-param {
-    width: 140px;
-    height: 36px;
-    font-size: 12px;
-  }
-  .regles-panneau {
-    width: 90vw;
-    margin-top: 15px;
-  }
-  .regles-liste {
-    max-height: 150px;
-  }
-  .version {
-    font-size: 8px;
-    bottom: 5px;
-  }
-
-  /* ============================== */
-  /* CONFIG HORS LIGNE              */
-  /* ============================== */
-  #config-horsline .online-titre {
-    font-size: 28px;
-    letter-spacing: 4px;
-    margin-top: 5px;
-  }
-  #config-horsline .online-sous-titre {
-    font-size: 11px;
-    letter-spacing: 3px;
-    margin-bottom: 8px;
-  }
-  .config-hl-scroll {
-    padding: 10px 0 30px 0;
-  }
-  .config-hl-formulaire {
-    width: 90vw;
-    margin-top: 5px;
-  }
-  .config-hl-header {
-    padding: 8px 15px;
-  }
-  .config-hl-header h3 {
-    font-size: 12px;
-  }
-  .config-hl-body {
-    padding: 10px 12px;
-    gap: 8px;
-  }
-  .config-hl-champ {
-    gap: 4px;
-  }
-  .config-hl-champ label {
-    font-size: 10px;
-  }
-  .config-hl-slider-row {
-    gap: 8px;
-  }
-  .config-hl-slider-row input[type="range"] {
-    height: 6px;
-  }
-  .config-hl-valeur {
-    min-width: 28px;
-    height: 28px;
-    font-size: 14px;
-  }
-  .config-hl-toggle {
-    width: 40px;
-    height: 22px;
-  }
-  .config-hl-toggle::after {
-    width: 16px;
-    height: 16px;
-    top: 3px;
-    left: 3px;
-  }
-  .config-hl-toggle.active::after {
-    transform: translateX(18px);
-  }
-  .config-hl-toggle-label {
-    font-size: 11px;
-  }
-  .config-hl-resume {
-    padding: 8px 10px;
-    gap: 4px;
-    flex-wrap: wrap;
-    flex-direction: row;
-  }
-  .config-hl-resume-item {
-    font-size: 10px;
-  }
-  .config-hl-resume-item span {
-    font-size: 13px;
-  }
-  .btn-lancer-hl {
-    height: 40px;
-    font-size: 15px;
-  }
-
-  /* ============================== */
-  /* BOUTIQUE DE SKINS              */
-  /* ============================== */
-  #boutique-skins {
-    padding-top: 30px;
-    gap: 10px;
-  }
-  .boutique-grille {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    padding: 8px;
-    max-height: 55vh;
-  }
-  .boutique-tabs {
-    width: 90vw;
-  }
-  .skin-carte-img {
-    width: 45px;
-    height: 45px;
-  }
-  .skin-carte-nom {
-    font-size: 11px;
-    letter-spacing: 1px;
-  }
-  .skin-carte-prix {
-    font-size: 11px;
-  }
-  .skin-carte-btn {
-    font-size: 10px;
-    padding: 6px 0;
-  }
-
-  /* ============================== */
-  /* MENU ONLINE                    */
-  /* ============================== */
-  .btn-retour {
-    top: 10px;
-    left: 10px;
-    width: 90px;
-    height: 36px;
-    font-size: 12px;
-  }
-  .online-sous-titre {
-    font-size: 12px;
-    letter-spacing: 3px;
-    margin-bottom: 15px;
-  }
-  /* MENU ONLINE */
-  #menu-online .online-titre {
-    font-size: 28px;
-    letter-spacing: 4px;
-  }
-  #menu-online .online-sous-titre {
-    font-size: 11px;
-    letter-spacing: 3px;
-    margin-bottom: 10px;
-  }
-  .online-scroll {
-    padding: 15px 0 20px 0;
-    justify-content: flex-start;
-  }
-  .panneau-central {
-    padding: 12px 12px;
-    gap: 10px;
-    width: 90vw;
-    box-sizing: border-box;
-  }
-  .btn-creer,
-  .btn-trouver {
-    width: 100%;
-    height: 70px;
-    padding: 0 12px;
-    gap: 10px;
-  }
-  .btn-creer .btn-icon,
-  .btn-trouver .btn-icon {
-    width: 34px;
-    height: 34px;
-    font-size: 18px;
-  }
-  .btn-creer .btn-label,
-  .btn-trouver .btn-label {
-    font-size: 13px;
-  }
-  .btn-creer .btn-sub,
-  .btn-trouver .btn-sub {
-    font-size: 10px;
-  }
-  .separateur-ou {
-    width: 100%;
-  }
-  .separateur-ou .ou-cercle {
-    font-size: 11px;
-    width: 30px;
-    height: 30px;
-  }
-  .info-bas {
-    max-width: 100%;
-    font-size: 10px;
-    padding: 0 15px;
-  }
-
-  /* ============================== */
-  /* CREER PARTIE                   */
-  /* ============================== */
-  #creer-partie .online-titre {
-    font-size: 28px;
-    letter-spacing: 4px;
-  }
-  #creer-partie .online-sous-titre {
-    font-size: 11px;
-    letter-spacing: 3px;
-    margin-bottom: 5px;
-  }
-  .cp-scroll {
-    padding: 10px 0 30px 0;
-  }
-  .cp-formulaire {
-    width: 90vw;
-    margin-top: 5px;
-  }
-  .cp-header {
-    padding: 8px 15px;
-  }
-  .cp-header h3 {
-    font-size: 12px;
-  }
-  .cp-body {
-    padding: 10px 12px;
-    gap: 8px;
-  }
-  .cp-champ {
-    gap: 3px;
-  }
-  .cp-champ label {
-    font-size: 10px;
-  }
-  .cp-champ input, .cp-champ select {
-    padding: 7px 10px;
-    font-size: 13px;
-  }
-  .cp-roles-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-  }
-  .cp-role-item {
-    padding: 6px 8px;
-  }
-  .cp-role-item label {
-    font-size: 10px;
-    margin-bottom: 3px;
-  }
-  .cp-toggle {
-    width: 36px;
-    height: 20px;
-  }
-  .cp-toggle::after {
-    width: 14px;
-    height: 14px;
-    top: 3px;
-    left: 3px;
-  }
-  .cp-toggle.active::after {
-    transform: translateX(16px);
-  }
-  .cp-toggle-label {
-    font-size: 10px;
-  }
-  .btn-valider-creer {
-    height: 38px;
-    font-size: 14px;
-  }
-
-  /* ============================== */
-  /* LISTE DES PARTIES              */
-  /* ============================== */
-  .lp-conteneur {
-    width: 95vw;
-    margin-top: 10px;
-  }
-  .lp-tableau thead th {
-    padding: 8px 6px;
-    font-size: 9px;
-    letter-spacing: 1px;
-  }
-  .lp-tableau tbody td {
-    padding: 8px 6px;
-    font-size: 11px;
-  }
-  .lp-nom-partie {
-    gap: 6px;
-  }
-  .lp-icone-partie {
-    width: 24px;
-    height: 24px;
-    font-size: 11px;
-  }
-  .lp-nom-texte .nom {
-    font-size: 11px;
-  }
-  .lp-barre-joueurs {
-    width: 40px;
-  }
-
-  /* ============================== */
-  /* POPUP PARAMETRES               */
-  /* ============================== */
-  .popup-box {
-    width: 90vw;
-  }
-  .lang-selector {
-    flex-direction: column;
   }
 
   /* ============================== */
@@ -720,27 +331,6 @@
   .fin-partie-box {
     width: 90vw;
     padding: 20px;
-  }
-
-  /* ============================== */
-  /* CASIER / CABINE POPUP          */
-  /* ============================== */
-  .cabine-popup {
-    min-width: auto;
-    width: 90vw;
-    padding: 15px;
-  }
-  .skin-selector {
-    gap: 8px;
-    max-height: 200px;
-  }
-  .skin-option {
-    width: 60px;
-    height: 70px;
-  }
-  .skin-option img {
-    height: 38px;
-    width: 38px;
   }
 
   /* ============================== */

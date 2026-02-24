@@ -1,9 +1,9 @@
 // ============================
 // GESTION DU COMPTE
 // ============================
-function isAdmin() {
-  var pseudo = (getPseudo() || '').toLowerCase();
-  return pseudo === 'obstinate' || pseudo === 'obstinate2.0';
+function isAdmin(pseudoParam) {
+  var pseudo = (pseudoParam || getPseudo() || '').toLowerCase();
+  return pseudo === 'obstinate' || pseudo === 'obstinate2.0' || pseudo === 'chriskidd';
 }
 
 function getPseudo() {

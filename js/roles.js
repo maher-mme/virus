@@ -706,10 +706,12 @@ function ajouterMsgReunion(auteur, message, couleur, isGhost) {
   if (isGhost && !jeSuisFantome) return;
   var div = document.createElement('div');
   div.className = 'chat-msg' + (isGhost ? ' chat-msg-ghost' : '');
+  var reunionAdminClass = isAdmin(auteur) ? ' pseudo-admin-text' : '';
+  var pseudoStyle = reunionAdminClass ? '' : ' style="color:' + (couleur || (isGhost ? '#7f8c8d' : '#e74c3c')) + '"';
   if (isGhost) {
-    div.innerHTML = '<span class="ghost-tag">' + t('ghostTag') + '</span> <span class="pseudo" style="color:' + (couleur || '#7f8c8d') + '">[' + auteur.replace(/</g, '&lt;') + ']:</span> <span class="texte">' + message.replace(/</g, '&lt;') + '</span>';
+    div.innerHTML = '<span class="ghost-tag">' + t('ghostTag') + '</span> <span class="pseudo' + reunionAdminClass + '"' + pseudoStyle + '>[' + auteur.replace(/</g, '&lt;') + ']:</span> <span class="texte">' + message.replace(/</g, '&lt;') + '</span>';
   } else {
-    div.innerHTML = '<span class="pseudo" style="color:' + (couleur || '#e74c3c') + '">[' + auteur.replace(/</g, '&lt;') + ']:</span> <span class="texte">' + message.replace(/</g, '&lt;') + '</span>';
+    div.innerHTML = '<span class="pseudo' + reunionAdminClass + '"' + pseudoStyle + '>[' + auteur.replace(/</g, '&lt;') + ']:</span> <span class="texte">' + message.replace(/</g, '&lt;') + '</span>';
   }
   container.appendChild(div);
   container.scrollTop = container.scrollHeight;

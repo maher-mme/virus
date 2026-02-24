@@ -386,7 +386,8 @@ function createRemotePlayerElement(p) {
   div.style.position = 'absolute';
   div.style.left = p.x + 'px';
   div.style.top = p.y + 'px';
-  div.innerHTML = '<div class="bot-pseudo">' + p.pseudo.replace(/</g, '&lt;') + '</div>' +
+  var adminClass = isAdmin(p.pseudo) ? ' pseudo-admin' : '';
+  div.innerHTML = '<div class="bot-pseudo' + adminClass + '">' + p.pseudo.replace(/</g, '&lt;') + '</div>' +
     '<img src="' + (p.skin || 'skin/gratuit/skin-de-base-garcon.svg') +
     '" class="bot-skin" style="width:60px;height:60px;">';
   container.appendChild(div);
@@ -496,6 +497,7 @@ function ouvrirReunionMultiplayer(meeting) {
       if (!j.alive || j.playerId === monPlayerId) return;
       var btn = document.createElement('button');
       btn.className = 'reunion-vote-btn';
+      if (isAdmin(j.pseudo)) btn.classList.add('pseudo-admin-text');
       btn.textContent = j.pseudo;
       btn.onclick = function() {
         db.collection('votes').add({
@@ -631,8 +633,9 @@ function updateSalleAttenteUI(players) {
     var html = '';
     players.forEach(function(p) {
       var hostLabel = p.isHost ? ' (Host)' : '';
-      html += '<div class="sa-joueur-item connecte">&#9679; ' +
-        p.pseudo.replace(/</g, '&lt;') + hostLabel + '</div>';
+      var listAdminClass = isAdmin(p.pseudo) ? ' pseudo-admin-text' : '';
+      html += '<div class="sa-joueur-item connecte">&#9679; <span class="' + listAdminClass.trim() + '">' +
+        p.pseudo.replace(/</g, '&lt;') + '</span>' + hostLabel + '</div>';
     });
     for (var i = players.length; i < maxJ; i++) {
       html += '<div class="sa-joueur-item attente">&#9675; ' + t('waiting') + '</div>';
@@ -665,7 +668,8 @@ function renderWaitingRoomPlayers(players) {
     div.style.transform = 'translate(-50%, -50%)';
     div.style.textAlign = 'center';
     div.style.zIndex = '5';
-    div.innerHTML = '<div style="font-size:10px;color:#fff;margin-bottom:2px;">' +
+    var saAdminClass = isAdmin(p.pseudo) ? ' pseudo-admin-text' : '';
+    div.innerHTML = '<div class="' + saAdminClass.trim() + '" style="font-size:10px;color:#fff;margin-bottom:2px;">' +
       p.pseudo.replace(/</g, '&lt;') + '</div>' +
       '<img src="' + (p.skin || 'skin/gratuit/skin-de-base-garcon.svg') +
       '" style="width:48px;height:48px;" alt="skin">';
@@ -683,7 +687,8 @@ function updateChatUI(messages, context) {
   messages.forEach(function(msg) {
     var div = document.createElement('div');
     div.className = 'chat-message' + (msg.isSystem ? ' system' : '');
-    div.innerHTML = '<strong>' + msg.pseudo.replace(/</g, '&lt;') + ':</strong> ' +
+    var chatAdminClass = isAdmin(msg.pseudo) ? ' pseudo-admin-text' : '';
+    div.innerHTML = '<strong class="' + chatAdminClass.trim() + '">' + msg.pseudo.replace(/</g, '&lt;') + ':</strong> ' +
       msg.message.replace(/</g, '&lt;');
     chatDiv.appendChild(div);
   });

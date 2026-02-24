@@ -985,7 +985,7 @@ if (isMobile) {
     salleEl.addEventListener('touchstart', function(e) {
       if (!salleActif) return;
       // Ne pas intercepter les clics sur les boutons/chat/panneaux
-      var el = e.target.closest('button, input, .sa-chat, .sa-panneau-joueurs, .sa-droite, .sa-gauche, .panel-amis, #btn-amis');
+      var el = e.target.closest('button, input, .sa-chat, .sa-panneau-joueurs, .panel-amis, #btn-amis');
       if (el) return;
       e.preventDefault();
       saTouchActif = true;

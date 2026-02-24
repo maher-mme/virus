@@ -151,6 +151,8 @@ function toggleChat(context) {
   }
   if (!chat || !btn) return;
   var isVisible = chat.style.display === 'flex';
+  // Rendre le parent visible (sa-droite-chat-col est display:none sur mobile)
+  var chatCol = chat.closest('.sa-droite-chat-col');
   if (isVisible) {
     // Fermer le chat
     chat.style.display = 'none';
@@ -170,7 +172,10 @@ function toggleChat(context) {
     btn.style.left = '';
     btn.style.position = '';
     btn.style.zIndex = '';
+    if (chatCol) chatCol.style.display = '';
   } else {
+    // Rendre le parent visible pour pouvoir afficher le chat
+    if (chatCol) chatCol.style.display = 'block';
     // Ouvrir le chat en plein ecran
     chat.style.display = 'flex';
     chat.style.position = 'fixed';
@@ -183,12 +188,12 @@ function toggleChat(context) {
     chat.style.height = 'auto';
     chat.style.borderRadius = '12px 12px 0 0';
     chat.style.boxShadow = '0 -4px 30px rgba(0,0,0,0.8)';
-    // Bouton en haut pour fermer
+    // Bouton en haut a GAUCHE pour fermer (droite = bouton amis)
     btn.style.position = 'fixed';
     btn.style.top = '10px';
-    btn.style.right = '10px';
+    btn.style.left = '10px';
+    btn.style.right = 'auto';
     btn.style.bottom = 'auto';
-    btn.style.left = 'auto';
     btn.style.zIndex = '410';
   }
   btn.classList.toggle('active');

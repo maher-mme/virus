@@ -154,6 +154,9 @@ function ouvrirReunion() {
   // Afficher HUD reunion
   document.getElementById('reunion-bandeau').classList.add('visible');
   document.getElementById('reunion-chat').classList.add('visible');
+  // Afficher le bouton toggle chat sur mobile
+  var reunionToggle = document.getElementById('reunion-chat-toggle');
+  if (reunionToggle) reunionToggle.classList.add('visible');
   // Masquer le skip si le joueur est fantome
   if (!joueurEstFantome) {
     document.getElementById('reunion-btn-skip').classList.add('visible');

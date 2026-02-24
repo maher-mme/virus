@@ -438,6 +438,9 @@ function ouvrirReunionMultiplayer(meeting) {
   try { var sReunion = new Audio("Audio/reunion-urgence.mp3"); sReunion.volume = 0.6; sReunion.play(); } catch(e) {}
   var popup = document.getElementById('popup-reunion');
   if (popup) popup.style.display = 'flex';
+  // Afficher le bouton toggle chat sur mobile
+  var reunionToggle = document.getElementById('reunion-chat-toggle');
+  if (reunionToggle) reunionToggle.classList.add('visible');
   // Afficher les joueurs vivants dans la liste de vote
   var voteList = document.getElementById('reunion-vote-liste');
   if (voteList) {
@@ -532,6 +535,11 @@ function fermerReunionMultiplayer(state) {
   jeuActif = true;
   var popup = document.getElementById('popup-reunion');
   if (popup) popup.style.display = 'none';
+  // Cacher le chat et le toggle reunion sur mobile
+  var elChatM = document.getElementById('reunion-chat');
+  if (elChatM) { elChatM.classList.remove('visible'); elChatM.classList.remove('chat-visible'); }
+  var elToggleM = document.getElementById('reunion-chat-toggle');
+  if (elToggleM) { elToggleM.classList.remove('visible'); elToggleM.classList.remove('active'); }
   reunionCooldown = true;
   setTimeout(function() { reunionCooldown = false; }, 15000);
   killProtection = true;

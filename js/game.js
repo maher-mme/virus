@@ -962,7 +962,7 @@ function salleLoop() {
   if (isMobile) {
     var saContent = document.querySelector('#salle-attente .sa-content');
     if (saContent) {
-      var SA_ZOOM = 2;
+      var SA_ZOOM = 1.5;
       var halfView = 50 / SA_ZOOM;
       // Limiter la camera pour ne pas montrer hors de la zone
       var camX = Math.max(halfView, Math.min(100 - halfView, saJoueurX));

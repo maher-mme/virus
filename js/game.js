@@ -931,8 +931,8 @@ function salleLoop() {
     var dy = saTouchTargetY - saJoueurY;
     var dist = Math.sqrt(dx * dx + dy * dy);
     if (dist > 0.5) {
-      // Vitesse proportionnelle a la distance (rapide si loin, lent si proche)
-      var vitesse = Math.min(dist * 0.15, 3);
+      // Vitesse proportionnelle a la distance, capee a la meme vitesse que le clavier
+      var vitesse = Math.min(dist * 0.1, SA_VITESSE);
       saJoueurX += (dx / dist) * vitesse;
       saJoueurY += (dy / dist) * vitesse;
       if (dx < -0.5) saDirection = -1;

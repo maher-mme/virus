@@ -203,8 +203,10 @@ function autoScale() {
     return;
   }
   var vw = window.innerWidth;
-  var vh = window.innerHeight;
-  if (vw < DESIGN_WIDTH) {
+  // Zoom uniquement pour les fenetres moyennes (768-1024px)
+  // Ex: split-screen sur ordinateur, tablette
+  // Sur mobile (<768px), le CSS responsive gere le layout
+  if (vw >= 768 && vw < DESIGN_WIDTH) {
     var scale = vw / DESIGN_WIDTH;
     document.body.style.transform = 'scale(' + scale + ')';
     document.body.style.transformOrigin = 'top left';

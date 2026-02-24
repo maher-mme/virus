@@ -944,8 +944,8 @@ function salleLoop() {
   // Limites
   if (saJoueurX < 2) saJoueurX = 2;
   if (saJoueurX > 95) saJoueurX = 95;
-  if (saJoueurY < 10) saJoueurY = 10;
-  if (saJoueurY > 85) saJoueurY = 85;
+  if (saJoueurY < 5) saJoueurY = 5;
+  if (saJoueurY > 92) saJoueurY = 92;
 
   if (moved) {
     updateSallePosition();
@@ -953,7 +953,7 @@ function salleLoop() {
     if (partieActuelleId && !modeHorsLigne && myPartyPlayerDocId && Date.now() - lastSaPositionSend > 200) {
       lastSaPositionSend = Date.now();
       db.collection('partyPlayers').doc(myPartyPlayerDocId).update({
-        saX: saJoueurX, saY: saJoueurY
+        saX: saJoueurX, saY: saJoueurY, saDirection: saDirection
       }).catch(function() {});
     }
   }
@@ -1030,8 +1030,8 @@ function updateSaTouchTarget(e) {
   // Limites
   if (saTouchTargetX < 2) saTouchTargetX = 2;
   if (saTouchTargetX > 95) saTouchTargetX = 95;
-  if (saTouchTargetY < 10) saTouchTargetY = 10;
-  if (saTouchTargetY > 85) saTouchTargetY = 85;
+  if (saTouchTargetY < 5) saTouchTargetY = 5;
+  if (saTouchTargetY > 92) saTouchTargetY = 92;
 }
 
 // Son SELECT sur les boutons de menu

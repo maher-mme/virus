@@ -149,13 +149,19 @@ function envoyerDemandeAmi() {
 }
 
 function accepterDemande(requestId, fromPlayerId, fromPseudo) {
-  db.collection('friendRequests').doc(requestId).update({ status: 'accepted' }).then(function() {
-    // Creer la relation bidirectionnelle
-    var myPseudo = getPseudo();
-    db.collection('friends').add({ playerId: monPlayerId, friendPlayerId: fromPlayerId, friendPseudo: fromPseudo });
-    db.collection('friends').add({ playerId: fromPlayerId, friendPlayerId: monPlayerId, friendPseudo: myPseudo });
+  // Batch write pour garantir l'atomicite
+  var batch = db.batch();
+  batch.update(db.collection('friendRequests').doc(requestId), { status: 'accepted' });
+  var ref1 = db.collection('friends').doc();
+  var ref2 = db.collection('friends').doc();
+  var myPseudo = getPseudo();
+  batch.set(ref1, { playerId: monPlayerId, friendPlayerId: fromPlayerId, friendPseudo: fromPseudo });
+  batch.set(ref2, { playerId: fromPlayerId, friendPlayerId: monPlayerId, friendPseudo: myPseudo });
+  batch.commit().then(function() {
     showNotif(t('nowYourFriend', fromPseudo), 'info');
-  }).catch(function() {});
+  }).catch(function() {
+    showNotif(t('connectionError'), 'error');
+  });
 }
 
 function refuserDemande(requestId) {
@@ -235,6 +241,8 @@ function initAmisListeners() {
         window._amisStatutUnsubs.push(unsub);
       });
       if (friendIds.length === 0 && panelAmisOuvert && tabAmiActif !== 'demandes') afficherAmis();
+    }, function(err) {
+      console.error('Erreur listener amis:', err);
     })
   );
 

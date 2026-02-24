@@ -201,6 +201,11 @@ function unsubscribeFromParty() {
   gameUnsubscribers.forEach(function(unsub) { if (unsub) unsub(); });
   gameUnsubscribers = [];
   firebasePartyPlayers = [];
+  // Nettoyer les elements DOM des joueurs distants
+  for (var pid in remotePlayers) {
+    var el = document.getElementById('remote-' + pid);
+    if (el) el.remove();
+  }
   remotePlayers = {};
 }
 
@@ -239,6 +244,8 @@ function subscribeToGameState(partyId) {
           }
         }
       });
+    }, function(err) {
+      console.error('Erreur listener positions:', err);
     })
   );
   // Cadavres
@@ -460,17 +467,20 @@ function updateCadavresMultiplayer(cadavres) {
     div.innerHTML = '<img src="' + (c.victimSkin || 'skin/gratuit/skin-de-base-garcon.svg') +
       '" style="width:60px;height:60px;filter:grayscale(100%);transform:rotate(90deg);">';
     div.onclick = function() {
-      if (!c.reported) {
-        db.collection('cadavres').doc(c._id).update({ reported: true }).then(function() {
-          // Signaler le cadavre -> declencher reunion
-          db.collection('meetings').add({
-            partyId: partieActuelleId,
-            initiatorPlayerId: monPlayerId,
-            reason: 'report',
-            active: true,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      if (!c.reported && !reunionEnCours) {
+        // Verifier en temps reel que le cadavre n'a pas deja ete signale
+        db.collection('cadavres').doc(c._id).get().then(function(doc) {
+          if (!doc.exists || doc.data().reported) return;
+          return db.collection('cadavres').doc(c._id).update({ reported: true }).then(function() {
+            db.collection('meetings').add({
+              partyId: partieActuelleId,
+              initiatorPlayerId: monPlayerId,
+              reason: 'report',
+              active: true,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            db.collection('parties').doc(partieActuelleId).update({ phase: 'meeting' });
           });
-          db.collection('parties').doc(partieActuelleId).update({ phase: 'meeting' });
         }).catch(function() {});
       }
     };
@@ -531,6 +541,7 @@ function checkVotesComplete(meetingId) {
 
 // Host conclut le vote
 function concludeVote(meetingId) {
+  if (!partieActuelleId || !meetingId) return;
   db.collection('votes').where('meetingId', '==', meetingId).get().then(function(snap) {
     var voteCounts = {};
     var skipCount = 0;
@@ -669,10 +680,11 @@ function renderWaitingRoomPlayers(players) {
     div.style.textAlign = 'center';
     div.style.zIndex = '5';
     var saAdminClass = isAdmin(p.pseudo) ? ' pseudo-admin-text' : '';
+    var saDir = p.saDirection === -1 ? 'scaleX(-1)' : 'scaleX(1)';
     div.innerHTML = '<div class="' + saAdminClass.trim() + '" style="font-size:10px;color:#fff;margin-bottom:2px;">' +
       p.pseudo.replace(/</g, '&lt;') + '</div>' +
       '<img src="' + (p.skin || 'skin/gratuit/skin-de-base-garcon.svg') +
-      '" style="width:48px;height:48px;" alt="skin">';
+      '" style="width:48px;height:48px;transform:' + saDir + ';" alt="skin">';
     container.appendChild(div);
   });
 }
@@ -812,7 +824,7 @@ function creerPartie() {
     // Ajouter le joueur host
     return db.collection('partyPlayers').add({
       partyId: partyId, playerId: monPlayerId, pseudo: pseudo, skin: skin,
-      isHost: true, role: '', alive: true, x: 0, y: 0, direction: 1, saX: 50, saY: 70,
+      isHost: true, role: '', alive: true, x: 0, y: 0, direction: 1, saX: 50, saY: 70, saDirection: 1,
       lastActive: firebase.firestore.FieldValue.serverTimestamp()
     }).then(function(ppDoc) {
       myPartyPlayerDocId = ppDoc.id;
@@ -846,7 +858,7 @@ function rejoindrePartie(partieId) {
       // Ajouter a la partie
       return db.collection('partyPlayers').add({
         partyId: partieId, playerId: monPlayerId, pseudo: pseudo, skin: skin,
-        isHost: false, role: '', alive: true, x: 0, y: 0, direction: 1, saX: 50, saY: 70,
+        isHost: false, role: '', alive: true, x: 0, y: 0, direction: 1, saX: 50, saY: 70, saDirection: 1,
         lastActive: firebase.firestore.FieldValue.serverTimestamp()
       });
     }).then(function(ppDoc) {

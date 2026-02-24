@@ -51,14 +51,20 @@ service cloud.firestore {
       allow write: if true;
     }
 
-    // Friends : lecture et ecriture libres
+    // Friend requests
     match /friendRequests/{docId} {
       allow read: if true;
       allow write: if true;
     }
 
-    // Invitations : lecture et ecriture libres
-    match /invitations/{docId} {
+    // Friends (relations bidirectionnelles)
+    match /friends/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Invitations de partie
+    match /gameInvites/{docId} {
       allow read: if true;
       allow write: if true;
     }

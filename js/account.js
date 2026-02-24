@@ -100,6 +100,15 @@ function supprimerCompte() {
     mesAmis = [];
     demandesEnAttente = [];
     amisStatuts = {};
+    // Nettoyer les listeners amis
+    if (typeof amisUnsubscribers !== 'undefined') {
+      amisUnsubscribers.forEach(function(u) { if (u) u(); });
+      amisUnsubscribers = [];
+    }
+    if (window._amisStatutUnsubs) {
+      window._amisStatutUnsubs.forEach(function(u) { if (u) u(); });
+      window._amisStatutUnsubs = [];
+    }
     // Generer un nouveau player ID
     monPlayerId = 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('virus_player_id', monPlayerId);

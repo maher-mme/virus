@@ -160,11 +160,21 @@
   .chat-toggle-btn {
     display: flex;
   }
-  .reunion-chat {
+  .reunion-chat,
+  .reunion-chat.visible {
     display: none !important;
   }
   .reunion-chat.chat-visible {
     display: flex !important;
+    position: fixed !important;
+    bottom: 80px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    max-height: 200px;
+    z-index: 300;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.7);
   }
   .sa-chat-header {
     padding: 2px 8px;

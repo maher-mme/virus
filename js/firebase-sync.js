@@ -333,23 +333,31 @@ function lancerJeuMultiplayer(state) {
   gameLoop();
 }
 
-// Gestion des positions distantes
+// Gestion des positions distantes (avec tracking velocite)
 function handlePositionUpdate(players) {
   var now = Date.now();
   players.forEach(function(p) {
     if (p.playerId === monPlayerId) return;
     if (!remotePlayers[p.playerId]) {
       remotePlayers[p.playerId] = {
-        x: p.x, y: p.y, prevX: p.x, prevY: p.y,
+        x: p.x, y: p.y,
         targetX: p.x, targetY: p.y,
+        velocityX: 0, velocityY: 0,
         direction: p.direction, lastUpdate: now,
         alive: p.alive, pseudo: p.pseudo, skin: p.skin
       };
       createRemotePlayerElement(p);
     } else {
       var rp = remotePlayers[p.playerId];
-      rp.prevX = rp.x;
-      rp.prevY = rp.y;
+      var dt = (now - rp.lastUpdate) / 1000;
+      // Calculer la velocite a partir du deplacement recu
+      if (dt > 0 && dt < 2) {
+        rp.velocityX = (p.x - rp.targetX) / dt;
+        rp.velocityY = (p.y - rp.targetY) / dt;
+      } else {
+        rp.velocityX = 0;
+        rp.velocityY = 0;
+      }
       rp.targetX = p.x;
       rp.targetY = p.y;
       rp.direction = p.direction;
@@ -375,20 +383,43 @@ function createRemotePlayerElement(p) {
   container.appendChild(div);
 }
 
-// Mettre a jour les joueurs distants (interpolation lissee)
+// Mettre a jour les joueurs distants (prediction + lerp frame-rate independent)
+var _lastRemoteTime = 0;
 function updateRemotePlayers() {
+  var now = Date.now();
+  var dt = _lastRemoteTime ? (now - _lastRemoteTime) / 1000 : 0.016;
+  _lastRemoteTime = now;
+  // Limiter dt pour eviter les sauts apres pause/onglet inactif
+  if (dt > 0.1) dt = 0.016;
+
   for (var pid in remotePlayers) {
     var rp = remotePlayers[pid];
-    // Lissage continu : l'avatar rattrape la cible progressivement
-    var lerpFactor = 0.15; // Plus c'est haut, plus c'est reactif
-    var dx = rp.targetX - rp.x;
-    var dy = rp.targetY - rp.y;
-    if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
-      rp.x += dx * lerpFactor;
-      rp.y += dy * lerpFactor;
+    var timeSinceUpdate = (now - rp.lastUpdate) / 1000;
+
+    // Predire la position future basee sur la velocite
+    // Limiter la prediction a 150ms pour eviter l'overshoot
+    var predictAhead = Math.min(timeSinceUpdate, 0.15);
+    var predictedX = rp.targetX + rp.velocityX * predictAhead;
+    var predictedY = rp.targetY + rp.velocityY * predictAhead;
+
+    // Lerp frame-rate independent (lerpSpeed 12 = reactif et fluide)
+    var lerpSpeed = 12;
+    var factor = 1 - Math.exp(-lerpSpeed * dt);
+
+    var dx = predictedX - rp.x;
+    var dy = predictedY - rp.y;
+    if (Math.abs(dx) > 0.3 || Math.abs(dy) > 0.3) {
+      rp.x += dx * factor;
+      rp.y += dy * factor;
     } else {
-      rp.x = rp.targetX;
-      rp.y = rp.targetY;
+      rp.x = predictedX;
+      rp.y = predictedY;
+    }
+
+    // Si pas de mise a jour depuis 2s, arreter la velocite
+    if (timeSinceUpdate > 2) {
+      rp.velocityX = 0;
+      rp.velocityY = 0;
     }
 
     var el = document.getElementById('remote-' + pid);

@@ -375,15 +375,21 @@ function createRemotePlayerElement(p) {
   container.appendChild(div);
 }
 
-// Mettre a jour les joueurs distants (interpolation)
+// Mettre a jour les joueurs distants (interpolation lissee)
 function updateRemotePlayers() {
-  var now = Date.now();
   for (var pid in remotePlayers) {
     var rp = remotePlayers[pid];
-    var elapsed = now - rp.lastUpdate;
-    var t = Math.min(elapsed / 200, 1);
-    rp.x = rp.prevX + (rp.targetX - rp.prevX) * t;
-    rp.y = rp.prevY + (rp.targetY - rp.prevY) * t;
+    // Lissage continu : l'avatar rattrape la cible progressivement
+    var lerpFactor = 0.15; // Plus c'est haut, plus c'est reactif
+    var dx = rp.targetX - rp.x;
+    var dy = rp.targetY - rp.y;
+    if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
+      rp.x += dx * lerpFactor;
+      rp.y += dy * lerpFactor;
+    } else {
+      rp.x = rp.targetX;
+      rp.y = rp.targetY;
+    }
 
     var el = document.getElementById('remote-' + pid);
     if (el) {

@@ -693,8 +693,8 @@ function gameLoop() {
 
   if (moved) {
     updateJoueur();
-    // Envoyer position via Firebase en mode multijoueur (throttle 200ms)
-    if (partieActuelleId && !modeHorsLigne && myPartyPlayerDocId && Date.now() - lastPositionSend > 200) {
+    // Envoyer position via Firebase en mode multijoueur (throttle 100ms)
+    if (partieActuelleId && !modeHorsLigne && myPartyPlayerDocId && Date.now() - lastPositionSend > 100) {
       lastPositionSend = Date.now();
       var dir = cachedSkinImg && cachedSkinImg.style.transform === 'scaleX(-1)' ? -1 : 1;
       db.collection('partyPlayers').doc(myPartyPlayerDocId).update({

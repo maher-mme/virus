@@ -615,7 +615,7 @@ function retourMenuFinPartie() {
   document.getElementById('reunion-btn-skip').classList.remove('visible');
   document.getElementById('reunion-bandeau').classList.remove('visible');
   var elChatClean = document.getElementById('reunion-chat');
-  if (elChatClean) { elChatClean.classList.remove('visible'); elChatClean.classList.remove('chat-visible'); }
+  if (elChatClean) { elChatClean.classList.remove('visible'); elChatClean.classList.remove('chat-visible'); elChatClean.style.display = ''; }
   var elToggleClean = document.getElementById('reunion-chat-toggle');
   if (elToggleClean) { elToggleClean.classList.remove('visible'); elToggleClean.classList.remove('active'); }
   document.getElementById('reunion-resultat').classList.remove('visible');
@@ -639,7 +639,7 @@ function fermerReunion() {
     var elBandeau = document.getElementById('reunion-bandeau');
     if (elBandeau) elBandeau.classList.remove('visible');
     var elChat = document.getElementById('reunion-chat');
-    if (elChat) { elChat.classList.remove('visible'); elChat.classList.remove('chat-visible'); }
+    if (elChat) { elChat.classList.remove('visible'); elChat.classList.remove('chat-visible'); elChat.style.display = ''; }
     var elReunionToggle = document.getElementById('reunion-chat-toggle');
     if (elReunionToggle) { elReunionToggle.classList.remove('visible'); elReunionToggle.classList.remove('active'); }
     var elSkip = document.getElementById('reunion-btn-skip');

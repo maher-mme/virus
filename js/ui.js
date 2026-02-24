@@ -141,7 +141,19 @@ function toggleChat(context) {
     btn = document.getElementById('reunion-chat-toggle');
   }
   if (!chat || !btn) return;
-  chat.classList.toggle('chat-visible');
+  // Utiliser style.display directement (evite les conflits CSS !important)
+  var isVisible = chat.style.display === 'flex';
+  chat.style.display = isVisible ? 'none' : 'flex';
+  if (!isVisible) {
+    chat.style.position = 'fixed';
+    chat.style.bottom = '80px';
+    chat.style.left = '10px';
+    chat.style.right = '10px';
+    chat.style.zIndex = '300';
+    chat.style.maxHeight = '200px';
+    chat.style.borderRadius = '10px';
+    chat.style.boxShadow = '0 4px 20px rgba(0,0,0,0.7)';
+  }
   btn.classList.toggle('active');
 }
 

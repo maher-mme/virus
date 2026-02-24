@@ -537,7 +537,7 @@ function fermerReunionMultiplayer(state) {
   if (popup) popup.style.display = 'none';
   // Cacher le chat et le toggle reunion sur mobile
   var elChatM = document.getElementById('reunion-chat');
-  if (elChatM) { elChatM.classList.remove('visible'); elChatM.classList.remove('chat-visible'); }
+  if (elChatM) { elChatM.classList.remove('visible'); elChatM.classList.remove('chat-visible'); elChatM.style.display = ''; }
   var elToggleM = document.getElementById('reunion-chat-toggle');
   if (elToggleM) { elToggleM.classList.remove('visible'); elToggleM.classList.remove('active'); }
   reunionCooldown = true;

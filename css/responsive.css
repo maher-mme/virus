@@ -144,12 +144,18 @@
 
   /* Chat cache sur mobile (toggle avec bouton) */
   .sa-chat {
-    max-width: 100%;
-    max-height: 120px;
     display: none;
   }
   .sa-chat.chat-visible {
     display: flex;
+    position: fixed !important;
+    bottom: 80px;
+    left: 10px;
+    right: 10px;
+    max-height: 200px;
+    z-index: 300;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.7);
   }
   .chat-toggle-btn {
     display: flex;

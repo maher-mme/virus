@@ -2,42 +2,33 @@
 /* RESPONSIVE MOBILE              */
 /* ============================== */
 @media (max-width: 768px) {
-  /* Salle d'attente : empiler verticalement + scroll */
+  /* ============================== */
+  /* SALLE D'ATTENTE MOBILE         */
+  /* Vue de dessus comme le mall     */
+  /* ============================== */
   #salle-attente {
-    flex-direction: column;
     overflow: hidden;
-    align-items: stretch;
   }
   .sa-mur-haut, .sa-mur-bas {
-    height: 12px;
+    height: 8px;
     flex-shrink: 0;
   }
+  /* La zone principale = aire de jeu plein ecran */
   .sa-content {
-    display: flex !important;
-    flex-direction: column !important;
-    flex: 1 1 0 !important;
-    height: 0 !important;
-    max-height: none !important;
-    min-height: 0 !important;
+    position: relative !important;
     width: 100% !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-    overscroll-behavior: contain;
-    padding: 6px;
-    gap: 6px;
-    position: relative;
+    height: 100% !important;
+    flex: 1 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
   }
 
-  /* Cacher les decorations qui genent sur mobile */
-  .sa-centre,
-  .sa-entree,
-  .plante,
-  .distributeur {
-    display: none;
-  }
-  /* Avatar plus petit sur mobile */
+  /* Decorations visibles mais plus petites */
+  .sa-entree { display: none; }
+  .plante { transform: scale(0.6); }
+  .distributeur { transform: scale(0.6); }
+
+  /* Avatar sur mobile */
   .sa-joueur-avatar .sa-avatar-skin img {
     height: 40px;
   }
@@ -45,73 +36,64 @@
     font-size: 7px;
   }
 
-  /* Cabines : une seule ligne compacte */
+  /* Cabines : overlay en haut a gauche */
   .sa-gauche {
-    width: 100% !important;
+    position: fixed !important;
+    top: 16px;
+    left: 8px;
+    width: auto !important;
     padding: 0 !important;
-    gap: 4px;
+    gap: 2px;
     flex-direction: row !important;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
+    flex-wrap: nowrap;
+    z-index: 100;
+    pointer-events: auto;
   }
   .panneau-cabines {
-    padding: 3px 10px;
-    width: 100%;
-    text-align: center;
-  }
-  .panneau-cabines h3 {
-    font-size: 10px;
-    letter-spacing: 1px;
-  }
-  .panneau-cabines span {
-    font-size: 6px;
+    display: none;
   }
   .cabines-grid {
-    justify-content: center;
-    gap: 4px;
+    gap: 3px;
   }
   .cabine {
-    width: 50px;
+    width: 40px;
   }
   .cabine-interieur {
-    height: 35px;
+    height: 28px;
     margin: 2px;
   }
   .cabine-miroir {
-    height: 18px;
-    margin: 2px auto 0;
+    height: 14px;
+    margin: 1px auto 0;
   }
   .cabine-footer {
-    padding: 2px;
-    gap: 3px;
+    padding: 1px;
+    gap: 2px;
   }
   .cabine-num {
-    width: 14px;
-    height: 14px;
-    font-size: 8px;
+    width: 12px;
+    height: 12px;
+    font-size: 7px;
   }
   .cabine-statut {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
 
-  /* Zone droite : tout compact */
+  /* UI droite : overlay compact en haut a droite */
   .sa-droite {
-    width: 100% !important;
+    position: fixed !important;
+    top: 12px;
+    right: 8px;
+    width: auto !important;
+    max-width: 160px;
     padding: 0 !important;
     gap: 4px;
+    z-index: 100;
+    pointer-events: auto;
   }
   .sa-enseigne {
-    padding: 3px 10px;
-  }
-  .sa-enseigne h2 {
-    font-size: 16px;
-    letter-spacing: 3px;
-  }
-  .sa-enseigne span {
-    font-size: 6px;
-    letter-spacing: 2px;
+    display: none;
   }
   .sa-droite-content {
     flex-direction: column;
@@ -122,40 +104,55 @@
     gap: 4px;
   }
   .sa-droite-chat-col {
-    min-width: 0;
+    display: none;
   }
   .sa-panneau-joueurs {
-    max-width: 100%;
+    max-width: 160px;
+    background: rgba(26,26,46,0.9);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
   }
   .sa-panneau-joueurs-header {
     padding: 3px 8px;
   }
   .sa-panneau-joueurs-header h4 {
-    font-size: 10px;
+    font-size: 9px;
   }
   .sa-joueurs-liste {
-    padding: 3px 6px;
+    padding: 2px 6px;
+    max-height: 80px;
+    overflow-y: auto;
   }
   .sa-joueur-item {
-    font-size: 9px;
+    font-size: 8px;
     padding: 0;
-    line-height: 1.4;
+    line-height: 1.3;
+  }
+
+  /* Boutons en bas */
+  .btn-demarrer {
+    width: 100%;
+    height: 32px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+  .btn-demarrer .btn-sub {
+    font-size: 6px;
+  }
+  .btn-retour {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+  #msg-attente-host {
+    max-width: 160px;
+  }
+  #msg-attente-host span {
+    font-size: 8px !important;
   }
 
   /* Chat cache sur mobile (toggle avec bouton) */
   .sa-chat {
     display: none;
-  }
-  .sa-chat.chat-visible {
-    display: flex;
-    position: fixed !important;
-    bottom: 80px;
-    left: 10px;
-    right: 10px;
-    max-height: 200px;
-    z-index: 300;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.7);
   }
   /* Bouton toggle chat : salle d'attente toujours visible, reunion seulement pendant reunion */
   .chat-toggle-btn {
@@ -171,18 +168,6 @@
   .reunion-chat.visible {
     display: none !important;
   }
-  .reunion-chat.chat-visible {
-    display: flex !important;
-    position: fixed !important;
-    bottom: 80px;
-    left: 10px;
-    right: 10px;
-    width: auto;
-    max-height: 200px;
-    z-index: 300;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.7);
-  }
   .sa-chat-header {
     padding: 2px 8px;
   }
@@ -197,21 +182,6 @@
     width: 22px;
     height: 22px;
     font-size: 9px;
-  }
-
-  /* Bouton demarrer compact */
-  .btn-demarrer {
-    width: 100%;
-    height: 36px;
-    font-size: 14px;
-    border-radius: 8px;
-  }
-  .btn-demarrer .btn-sub {
-    font-size: 7px;
-  }
-  .btn-retour {
-    font-size: 11px;
-    padding: 5px 10px;
   }
 
   /* ============================== */

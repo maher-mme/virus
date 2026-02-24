@@ -957,6 +957,21 @@ function salleLoop() {
       }).catch(function() {});
     }
   }
+
+  // Camera mobile : zoom + suivi du joueur (comme le centre commercial en jeu)
+  if (isMobile) {
+    var saContent = document.querySelector('#salle-attente .sa-content');
+    if (saContent) {
+      var SA_ZOOM = 2;
+      var halfView = 50 / SA_ZOOM;
+      // Limiter la camera pour ne pas montrer hors de la zone
+      var camX = Math.max(halfView, Math.min(100 - halfView, saJoueurX));
+      var camY = Math.max(halfView, Math.min(100 - halfView, saJoueurY));
+      saContent.style.transformOrigin = camX + '% ' + camY + '%';
+      saContent.style.transform = 'scale(' + SA_ZOOM + ')';
+    }
+  }
+
   salleAnimFrame = requestAnimationFrame(salleLoop);
 }
 
@@ -993,10 +1008,11 @@ if (isMobile) {
 function updateSaTouchTarget(e) {
   var touch = e.touches[0];
   if (!touch) return;
-  var salleEl = document.getElementById('salle-attente');
-  if (!salleEl) return;
-  var rect = salleEl.getBoundingClientRect();
-  // Convertir en pourcentage
+  // Utiliser sa-content pour que getBoundingClientRect gere le zoom (transform)
+  var content = document.querySelector('#salle-attente .sa-content');
+  if (!content) return;
+  var rect = content.getBoundingClientRect();
+  // Convertir en pourcentage (rect tient compte du scale automatiquement)
   saTouchTargetX = ((touch.clientX - rect.left) / rect.width) * 100;
   saTouchTargetY = ((touch.clientY - rect.top) / rect.height) * 100;
   // Limites

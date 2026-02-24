@@ -919,10 +919,25 @@ function salleLoop() {
   if (!salleActif) { salleAnimFrame = null; return; }
 
   var moved = false;
+  // Clavier
   if (keys['z'] || keys['Z'] || keys['ArrowUp']) { saJoueurY -= SA_VITESSE; moved = true; }
   if (keys['s'] || keys['S'] || keys['ArrowDown']) { saJoueurY += SA_VITESSE; moved = true; }
   if (keys['q'] || keys['Q'] || keys['ArrowLeft']) { saJoueurX -= SA_VITESSE; moved = true; saDirection = -1; }
   if (keys['d'] || keys['D'] || keys['ArrowRight']) { saJoueurX += SA_VITESSE; moved = true; saDirection = 1; }
+
+  // Tactile mobile : se diriger vers le doigt
+  if (saTouchActif) {
+    var dx = saTouchTargetX - saJoueurX;
+    var dy = saTouchTargetY - saJoueurY;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist > 1) {
+      saJoueurX += (dx / dist) * SA_VITESSE;
+      saJoueurY += (dy / dist) * SA_VITESSE;
+      if (dx < 0) saDirection = -1;
+      if (dx > 0) saDirection = 1;
+      moved = true;
+    }
+  }
 
   // Limites
   if (saJoueurX < 2) saJoueurX = 2;
@@ -941,6 +956,52 @@ function salleLoop() {
     }
   }
   salleAnimFrame = requestAnimationFrame(salleLoop);
+}
+
+// Deplacement tactile dans la salle d'attente (mobile)
+var saTouchActif = false;
+var saTouchTargetX = 50, saTouchTargetY = 70;
+
+if (isMobile) {
+  var salleEl = document.getElementById('salle-attente');
+  if (salleEl) {
+    salleEl.addEventListener('touchstart', function(e) {
+      if (!salleActif) return;
+      // Ne pas intercepter les clics sur les boutons/chat/panneaux
+      var el = e.target.closest('button, input, .sa-chat, .sa-panneau-joueurs, .sa-droite, .sa-gauche, .panel-amis, #btn-amis');
+      if (el) return;
+      e.preventDefault();
+      saTouchActif = true;
+      updateSaTouchTarget(e);
+    }, { passive: false });
+    salleEl.addEventListener('touchmove', function(e) {
+      if (!saTouchActif) return;
+      e.preventDefault();
+      updateSaTouchTarget(e);
+    }, { passive: false });
+    salleEl.addEventListener('touchend', function() {
+      saTouchActif = false;
+    }, { passive: false });
+    salleEl.addEventListener('touchcancel', function() {
+      saTouchActif = false;
+    }, { passive: false });
+  }
+}
+
+function updateSaTouchTarget(e) {
+  var touch = e.touches[0];
+  if (!touch) return;
+  var salleEl = document.getElementById('salle-attente');
+  if (!salleEl) return;
+  var rect = salleEl.getBoundingClientRect();
+  // Convertir en pourcentage
+  saTouchTargetX = ((touch.clientX - rect.left) / rect.width) * 100;
+  saTouchTargetY = ((touch.clientY - rect.top) / rect.height) * 100;
+  // Limites
+  if (saTouchTargetX < 2) saTouchTargetX = 2;
+  if (saTouchTargetX > 95) saTouchTargetX = 95;
+  if (saTouchTargetY < 10) saTouchTargetY = 10;
+  if (saTouchTargetY > 85) saTouchTargetY = 85;
 }
 
 // Son SELECT sur les boutons de menu

@@ -34,9 +34,15 @@
   .sa-centre,
   .sa-entree,
   .plante,
-  .distributeur,
-  .sa-joueur-avatar {
+  .distributeur {
     display: none;
+  }
+  /* Avatar plus petit sur mobile */
+  .sa-joueur-avatar .sa-avatar-skin img {
+    height: 40px;
+  }
+  .sa-joueur-avatar .sa-avatar-pseudo {
+    font-size: 7px;
   }
 
   /* Cabines : une seule ligne compacte */

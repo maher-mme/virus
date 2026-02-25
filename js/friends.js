@@ -114,6 +114,7 @@ function envoyerDemandeAmi() {
     showNotif(t('cantAddSelf'), 'warn');
     return;
   }
+  // Verifier localement si deja ami
   var dejaAmi = mesAmis.some(function(a) { return a.pseudo === pseudo; });
   if (dejaAmi) {
     showNotif(t('alreadyFriend'), 'warn');
@@ -124,33 +125,16 @@ function envoyerDemandeAmi() {
     if (snap.empty) { showNotif(t('pseudoNotFound'), 'error'); return; }
     var target = snap.docs[0].data();
     if (target.playerId === monPlayerId) { showNotif(t('cantAddSelf'), 'warn'); return; }
-    // Verifier si deja amis (un seul where, filtre en JS)
-    return db.collection('friends').where('playerId', '==', monPlayerId).get().then(function(friendSnap) {
-      var dejaAmis = false;
-      friendSnap.forEach(function(doc) {
-        if (doc.data().friendPlayerId === target.playerId) dejaAmis = true;
-      });
-      if (dejaAmis) { showNotif(t('alreadyFriend'), 'warn'); return; }
-      // Verifier si demande deja envoyee (un seul where, filtre en JS)
-      return db.collection('friendRequests').where('fromPlayerId', '==', monPlayerId).get().then(function(reqSnap) {
-        var dejaEnvoyee = false;
-        reqSnap.forEach(function(doc) {
-          var r = doc.data();
-          if (r.toPlayerId === target.playerId && r.status === 'pending') dejaEnvoyee = true;
-        });
-        if (dejaEnvoyee) { showNotif(t('requestAlreadySent'), 'warn'); return; }
-        // Envoyer la demande
-        return db.collection('friendRequests').add({
-          fromPlayerId: monPlayerId,
-          fromPseudo: getPseudo(),
-          toPlayerId: target.playerId,
-          toPseudo: pseudo,
-          status: 'pending'
-        }).then(function() {
-          showNotif(t('requestSentTo', pseudo), 'info');
-          input.value = '';
-        });
-      });
+    // Envoyer la demande directement (verification locale deja faite)
+    return db.collection('friendRequests').add({
+      fromPlayerId: monPlayerId,
+      fromPseudo: getPseudo(),
+      toPlayerId: target.playerId,
+      toPseudo: pseudo,
+      status: 'pending'
+    }).then(function() {
+      showNotif(t('requestSentTo', pseudo), 'info');
+      input.value = '';
     });
   }).catch(function(err) {
     console.error('Erreur envoi demande ami:', err);

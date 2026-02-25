@@ -8,7 +8,7 @@ var MUSIQUES_BOUTIQUE = [
   { id: 'tadc', nom: 'The Amazing Digital Circus', artiste: '', fichier: 'musique/The_Amazing_Digital_Circus/The_Amazing_Digital_Circus_.mp3', image: 'musique/The_Amazing_Digital_Circus/The_Amazing_Digital_Circus.png', prix: 250, couleur: '#9b59b6' },
   { id: 'multiverse', nom: 'Multiverse', artiste: '', fichier: 'musique/multiverse/Multiverse.mp3', image: 'musique/multiverse/affiche_de_multiverse.png', prix: 200, couleur: '#e74c3c' },
   { id: 'flute_flailed', nom: 'Fl\u00fbte flailed', artiste: '', fichier: 'musique/fl\u00fbte_flailed/flute-failed-sondtrack.mp3', image: 'musique/fl\u00fbte_flailed/affiche_de_fl\u00fbte.flailed.png', prix: 200, couleur: '#3b3b98' },
-  { id: 'ssbu', nom: 'Super Smash Bros Ultimate', artiste: '', fichier: 'musique/Super-smash-bros-ultimate/super-smash-bros-ultimate-theme-lifelight-with-lyrics-128-ytshorts.savetube.me.mp3', image: 'musique/Super-smash-bros-ultimate/Capture d\'écran 2026-02-25 135401.png', prix: 200, couleur: '#e74c3c' }
+  { id: 'ssbu', nom: 'Super Smash Bros Ultimate', artiste: '', fichier: 'musique/Super-smash-bros-ultimate/super-smash-bros-ultimate-theme-lifelight-with-lyrics-128-ytshorts.savetube.me.mp3', image: 'musique/Super-smash-bros-ultimate/Capture d\'écran 2026-02-25 135401.png', prix: 200, couleur: '#5dade2' }
 ];
 
 function getMusiqueId() {

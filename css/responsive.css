@@ -576,9 +576,40 @@
   /* ============================== */
   /* FIN DE PARTIE                  */
   /* ============================== */
-  .fin-partie-box {
-    width: 90vw;
-    padding: 20px;
+  .fin-partie-overlay {
+    padding: 20px 10px;
+    gap: 12px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .fin-partie-titre {
+    font-size: clamp(28px, 7vw, 50px);
+    letter-spacing: 3px;
+  }
+  .fin-partie-sous-titre {
+    font-size: 13px;
+    max-width: 90vw;
+  }
+  .fin-partie-roles {
+    gap: 8px;
+    max-width: 95vw;
+  }
+  .fin-partie-joueur {
+    padding: 8px 10px;
+  }
+  .fin-partie-joueur img {
+    height: 32px;
+  }
+  .fin-partie-joueur .fp-pseudo {
+    font-size: 10px;
+  }
+  .fin-partie-joueur .fp-role {
+    font-size: 9px;
+  }
+  .fin-partie-btn {
+    padding: 12px 30px;
+    font-size: 16px;
+    margin-top: 10px;
+    margin-bottom: 30px;
   }
 
   /* ============================== */

@@ -130,6 +130,7 @@ function subscribeToParty(partyId) {
   firebaseUnsubscribers.push(
     db.collection('partyPlayers').where('partyId', '==', partyId).onSnapshot(function(snapshot) {
       var oldCount = firebasePartyPlayers.length;
+      var oldPlayers = firebasePartyPlayers.slice();
       firebasePartyPlayers = [];
       snapshot.forEach(function(doc) {
         var data = doc.data();
@@ -159,6 +160,14 @@ function subscribeToParty(partyId) {
         }
       } else if (oldCount > 0 && firebasePartyPlayers.length < oldCount) {
         jouerSonSalle('Audio/quitter.mp3');
+        // Trouver qui a quitte et afficher la notification
+        var currentIds = {};
+        firebasePartyPlayers.forEach(function(p) { currentIds[p.playerId] = true; });
+        oldPlayers.forEach(function(p) {
+          if (!currentIds[p.playerId] && p.playerId !== monPlayerId) {
+            ajouterNotifSalle(t('playerLeft', p.pseudo), 'leave');
+          }
+        });
       }
     }, function(err) {
       console.error('Erreur listener joueurs:', err);

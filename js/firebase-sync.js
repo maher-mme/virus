@@ -667,25 +667,46 @@ function updateSalleAttenteUI(players) {
 function renderWaitingRoomPlayers(players) {
   var container = document.querySelector('.sa-content');
   if (!container) return;
-  // Supprimer les anciens avatars distants
-  container.querySelectorAll('.sa-remote-avatar').forEach(function(el) { el.remove(); });
+  // IDs des joueurs actuels (sauf moi)
+  var currentIds = {};
   players.forEach(function(p) {
     if (p.playerId === monPlayerId) return;
-    var div = document.createElement('div');
-    div.className = 'sa-joueur-avatar sa-remote-avatar';
-    div.style.position = 'absolute';
-    div.style.left = (p.saX || 50) + '%';
-    div.style.top = (p.saY || 70) + '%';
-    div.style.transform = 'translate(-50%, -50%)';
-    div.style.textAlign = 'center';
-    div.style.zIndex = '5';
-    var saAdminClass = isAdmin(p.pseudo) ? ' pseudo-admin-text' : '';
-    var saDir = p.saDirection === -1 ? 'scaleX(-1)' : 'scaleX(1)';
-    div.innerHTML = '<div class="' + saAdminClass.trim() + '" style="font-size:10px;color:#fff;margin-bottom:2px;">' +
-      p.pseudo.replace(/</g, '&lt;') + '</div>' +
-      '<img src="' + (p.skin || 'skin/gratuit/skin-de-base-garcon.svg') +
-      '" style="width:48px;height:48px;transform:' + saDir + ';" alt="skin">';
-    container.appendChild(div);
+    currentIds[p.playerId] = true;
+    var existing = document.getElementById('sa-remote-' + p.playerId);
+    if (existing) {
+      // Mettre a jour la position avec transition CSS (mouvement fluide)
+      existing.style.left = (p.saX || 50) + '%';
+      existing.style.top = (p.saY || 70) + '%';
+      // Mettre a jour la direction du skin
+      var img = existing.querySelector('img');
+      if (img) {
+        img.style.transform = p.saDirection === -1 ? 'scaleX(-1)' : 'scaleX(1)';
+      }
+    } else {
+      // Creer un nouvel avatar
+      var div = document.createElement('div');
+      div.id = 'sa-remote-' + p.playerId;
+      div.className = 'sa-joueur-avatar sa-remote-avatar';
+      div.style.position = 'absolute';
+      div.style.left = (p.saX || 50) + '%';
+      div.style.top = (p.saY || 70) + '%';
+      div.style.transform = 'translate(-50%, -50%)';
+      div.style.textAlign = 'center';
+      div.style.zIndex = '5';
+      div.style.transition = 'left 0.15s linear, top 0.15s linear';
+      var saAdminClass = isAdmin(p.pseudo) ? ' pseudo-admin-text' : '';
+      var saDir = p.saDirection === -1 ? 'scaleX(-1)' : 'scaleX(1)';
+      div.innerHTML = '<div class="' + saAdminClass.trim() + '" style="font-size:10px;color:#fff;margin-bottom:2px;">' +
+        p.pseudo.replace(/</g, '&lt;') + '</div>' +
+        '<img src="' + (p.skin || 'skin/gratuit/skin-de-base-garcon.svg') +
+        '" style="width:48px;height:48px;transform:' + saDir + ';" alt="skin">';
+      container.appendChild(div);
+    }
+  });
+  // Supprimer les avatars des joueurs qui ont quitte
+  container.querySelectorAll('.sa-remote-avatar').forEach(function(el) {
+    var pid = el.id.replace('sa-remote-', '');
+    if (!currentIds[pid]) el.remove();
   });
 }
 

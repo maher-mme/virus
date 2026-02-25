@@ -949,8 +949,8 @@ function salleLoop() {
 
   if (moved) {
     updateSallePosition();
-    // Envoyer la position via Firebase (throttle 200ms)
-    if (partieActuelleId && !modeHorsLigne && myPartyPlayerDocId && Date.now() - lastSaPositionSend > 200) {
+    // Envoyer la position via Firebase (throttle 100ms)
+    if (partieActuelleId && !modeHorsLigne && myPartyPlayerDocId && Date.now() - lastSaPositionSend > 100) {
       lastSaPositionSend = Date.now();
       db.collection('partyPlayers').doc(myPartyPlayerDocId).update({
         saX: saJoueurX, saY: saJoueurY, saDirection: saDirection

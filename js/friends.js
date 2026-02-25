@@ -290,11 +290,13 @@ function afficherInvitation(inviteId, fromPseudo, partyId) {
 
 function accepterInvitation() {
   if (!invitationActuelle) return;
-  db.collection('gameInvites').doc(invitationActuelle.id).update({ status: 'accepted' }).then(function() {
-    rejoindrePartie(invitationActuelle.partyId);
-  }).catch(function() {});
+  var partyId = invitationActuelle.partyId;
+  var inviteId = invitationActuelle.id;
   document.getElementById('popup-invitation').style.display = 'none';
   invitationActuelle = null;
+  // Rejoindre immediatement, mettre a jour le statut en parallele
+  rejoindrePartie(partyId);
+  db.collection('gameInvites').doc(inviteId).update({ status: 'accepted' }).catch(function() {});
 }
 
 function refuserInvitation() {

@@ -41,7 +41,11 @@
     z-index: 300;
   }
   #reunion-chat-toggle.visible {
-    display: flex;
+    display: flex !important;
+    position: fixed !important;
+    bottom: 20px;
+    right: 20px;
+    z-index: 300;
   }
   .reunion-chat,
   .reunion-chat.visible {

@@ -157,7 +157,7 @@ function toggleChat(context) {
   var chatCol = chat.closest('.sa-droite-chat-col');
   if (isVisible) {
     // Fermer le chat
-    chat.style.display = 'none';
+    chat.style.setProperty('display', 'none', 'important');
     chat.style.position = '';
     chat.style.top = '';
     chat.style.bottom = '';
@@ -168,6 +168,7 @@ function toggleChat(context) {
     chat.style.height = '';
     chat.style.borderRadius = '';
     chat.style.boxShadow = '';
+    chat.style.width = '';
     btn.style.top = '';
     btn.style.bottom = '';
     btn.style.right = '';
@@ -178,14 +179,15 @@ function toggleChat(context) {
   } else {
     // Rendre le parent visible pour pouvoir afficher le chat
     if (chatCol) chatCol.style.display = 'block';
-    // Ouvrir le chat en plein ecran
-    chat.style.display = 'flex';
+    // Ouvrir le chat en plein ecran (important pour surpasser le CSS mobile)
+    chat.style.setProperty('display', 'flex', 'important');
     chat.style.position = 'fixed';
     chat.style.top = '50px';
     chat.style.bottom = '0';
     chat.style.left = '0';
     chat.style.right = '0';
-    chat.style.zIndex = '400';
+    chat.style.width = '100%';
+    chat.style.zIndex = '9999';
     chat.style.maxHeight = 'none';
     chat.style.height = 'auto';
     chat.style.borderRadius = '12px 12px 0 0';
@@ -196,7 +198,7 @@ function toggleChat(context) {
     btn.style.left = '10px';
     btn.style.right = 'auto';
     btn.style.bottom = 'auto';
-    btn.style.zIndex = '410';
+    btn.style.zIndex = '10000';
   }
   btn.classList.toggle('active');
 }

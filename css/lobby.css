@@ -632,6 +632,11 @@
   font-size: 10px;
   color: #7f8c8d;
 }
+.lp-langue-badge {
+  font-size: 12px;
+  vertical-align: middle;
+  margin-left: 4px;
+}
 
 .lp-joueurs {
   display: flex;

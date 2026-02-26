@@ -1017,7 +1017,7 @@ function rafraichirListeParties() {
           adminDeleteBtn +
           '<div class="lp-icone-partie" style="border:2px solid ' + p.couleur + '">&#128367;</div>' +
           '<div class="lp-nom-texte">' +
-            '<span class="nom">' + p.nom.replace(/</g, '&lt;') + '</span>' +
+            '<span class="nom">' + p.nom.replace(/</g, '&lt;') + ' <span class="lp-langue-badge">' + (p.langue === 'en' ? '&#127468;&#127463;' : '&#127467;&#127479;') + '</span></span>' +
             '<span class="host">' + t('hostLabel') + ' ' + hostPseudo.replace(/</g, '&lt;') + '</span>' +
           '</div>' +
         '</div>' +

@@ -51,7 +51,7 @@ function creerCompte() {
   if (!pseudo) { alert(t('vChoosePseudo')); return; }
   if (pseudo.length < 2) { alert(t('vPseudoTooShort')); return; }
   if (!pin) { showNotif(t('vPinRequired'), 'warn'); return; }
-  if (!/^\d{4}$/.test(pin)) { showNotif(t('vPinInvalid'), 'warn'); return; }
+  if (pin.length < 5 || pin.length > 10) { showNotif(t('vPinInvalid'), 'warn'); return; }
   // Verifier dans Firebase si le pseudo existe deja
   db.collection('players').where('pseudo', '==', pseudo).limit(1).get().then(function(snap) {
     if (!snap.empty) {
@@ -233,7 +233,7 @@ function majModeCompte() {
 function sauvegarderPin() {
   var input = document.getElementById('input-set-pin');
   var pin = input ? input.value.trim() : '';
-  if (!/^\d{4}$/.test(pin)) { showNotif(t('vPinInvalid'), 'warn'); return; }
+  if (pin.length < 5 || pin.length > 10) { showNotif(t('vPinInvalid'), 'warn'); return; }
   db.collection('players').doc(monPlayerId).update({ pin: pin }).then(function() {
     showNotif(t('pinSaved'), 'success');
     // Cacher la section set-pin

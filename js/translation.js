@@ -229,8 +229,8 @@ var TR = {
     vPseudoEmpty: 'Le pseudo ne peut pas etre vide !',
     vPseudoShort: 'Pseudo trop court !',
     vDeleteAccount: 'Supprimer ton compte ? Ton pseudo, tes parties, ton or et tes skins seront effaces!',
-    vPinRequired: 'Choisis un code PIN a 4 chiffres !',
-    vPinInvalid: 'Le code PIN doit contenir exactement 4 chiffres.',
+    vPinRequired: 'Choisis un code PIN !',
+    vPinInvalid: 'Le code PIN doit contenir entre 5 et 10 caracteres.',
     wrongCredentials: 'Pseudo ou code PIN incorrect !',
     accountNotFound: 'Aucun compte trouve avec ce pseudo.',
     confirmLogout: 'Te deconnecter ? Tu pourras te reconnecter avec ton pseudo et code PIN.',
@@ -242,8 +242,8 @@ var TR = {
 
     // Placeholders
     phPseudo: 'Entre ton pseudo...',
-    phPin: '4 chiffres...',
-    phSetPin: 'Nouveau code PIN (4 chiffres)',
+    phPin: '5 a 10 caracteres...',
+    phSetPin: 'Nouveau code PIN (5 a 10 car.)',
     phNewPseudo: 'Nouveau pseudo...',
     phGameName: 'Ex: Ma super partie',
     phChat: 'Ecrire ici...',
@@ -743,8 +743,8 @@ var TR = {
     vPseudoEmpty: 'Nickname cannot be empty!',
     vPseudoShort: 'Nickname too short!',
     vDeleteAccount: 'Delete your account? Your nickname, games, gold and skins will be erased.',
-    vPinRequired: 'Choose a 4-digit PIN code!',
-    vPinInvalid: 'PIN code must be exactly 4 digits.',
+    vPinRequired: 'Choose a PIN code!',
+    vPinInvalid: 'PIN code must be between 5 and 10 characters.',
     wrongCredentials: 'Wrong nickname or PIN code!',
     accountNotFound: 'No account found with this nickname.',
     confirmLogout: 'Log out? You can log back in with your nickname and PIN code.',
@@ -756,8 +756,8 @@ var TR = {
 
     // Placeholders
     phPseudo: 'Enter your nickname...',
-    phPin: '4 digits...',
-    phSetPin: 'New PIN code (4 digits)',
+    phPin: '5 to 10 characters...',
+    phSetPin: 'New PIN code (5-10 chars)',
     phNewPseudo: 'New nickname...',
     phGameName: 'Ex: My awesome game',
     phChat: 'Type here...',

@@ -13,7 +13,7 @@
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="css/menu.css?v=2">
   <link rel="stylesheet" href="css/lobby.css?v=5">
   <link rel="stylesheet" href="css/game.css?v=2">
   <link rel="stylesheet" href="css/hud.css">
@@ -32,8 +32,8 @@
 
     <div class="compte-carte">
       <div class="compte-header">
-        <h3 data-i18n="createAccount">CREER TON COMPTE</h3>
-        <p data-i18n="chooseNickname">Choisis un pseudo pour jouer</p>
+        <h3 id="compte-titre" data-i18n="createAccount">CREER TON COMPTE</h3>
+        <p id="compte-sous-titre" data-i18n="chooseNickname">Choisis un pseudo pour jouer</p>
       </div>
       <div class="compte-body">
         <div class="compte-avatar">&#128566;</div>
@@ -42,13 +42,20 @@
           <input type="text" id="input-pseudo-compte" placeholder="Entre ton pseudo..." maxlength="20" data-i18n="phPseudo" data-i18n-attr="placeholder">
         </div>
         <div class="compte-champ">
+          <label data-i18n="pinCode">CODE PIN</label>
+          <input type="password" id="input-pin-compte" placeholder="4 chiffres..." maxlength="4" inputmode="numeric" pattern="[0-9]*" data-i18n="phPin" data-i18n-attr="placeholder">
+        </div>
+        <div class="compte-champ">
           <label>LANGUE / LANGUAGE</label>
           <div class="lang-selector" style="margin-top:4px;">
             <button class="lang-btn active" id="compte-lang-fr" onclick="setLangueCompte('fr')">Francais</button>
             <button class="lang-btn" id="compte-lang-en" onclick="setLangueCompte('en')">English</button>
           </div>
         </div>
-        <button class="btn-creer-compte" onclick="creerCompte()" data-i18n="play">C'EST PARTI !</button>
+        <button class="btn-creer-compte" id="btn-creer-compte" onclick="creerCompte()" data-i18n="play">C'EST PARTI !</button>
+        <button class="btn-creer-compte" id="btn-connecter" onclick="connecterCompte()" style="display:none; background:linear-gradient(180deg,#3498db,#2980b9); border-color:#5dade2;" data-i18n="login">SE CONNECTER</button>
+        <span class="compte-toggle-link" id="toggle-login" onclick="toggleModeCompte()"><span data-i18n="alreadyHaveAccount">Tu as deja un compte ? Connecte-toi</span></span>
+        <span class="compte-toggle-link" id="toggle-create" onclick="toggleModeCompte()" style="display:none;"><span data-i18n="noAccountYet">Pas encore de compte ? Cree-en un</span></span>
       </div>
     </div>
 
@@ -149,8 +156,16 @@
             <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">English</button>
           </div>
         </div>
+        <div class="popup-section" id="section-set-pin" style="display:none;">
+          <label data-i18n="setPin">CHOISIR UN CODE PIN</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="password" id="input-set-pin" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="1234" data-i18n="phSetPin" data-i18n-attr="placeholder" style="flex:1;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px 12px;color:#ecf0f1;font-size:16px;text-align:center;letter-spacing:8px;font-family:Arial,sans-serif;outline:none;">
+            <button class="btn-sauver-pseudo" onclick="sauvegarderPin()" data-i18n="save" style="padding:8px 16px;">SAUVER</button>
+          </div>
+        </div>
         <div class="popup-section">
           <label data-i18n="account">COMPTE</label>
+          <button class="btn-sauver-pseudo" data-i18n="logout" style="background:linear-gradient(180deg,#3498db,#2980b9); border-color:#3498db; width:100%; padding:10px; margin-bottom:8px;" onclick="deconnecterCompte()">SE DECONNECTER</button>
           <button class="btn-sauver-pseudo" data-i18n="deleteAccount" style="background:linear-gradient(180deg,#e74c3c,#c0392b); border-color:#e74c3c; width:100%; padding:10px;" onclick="supprimerCompte()">SUPPRIMER MON COMPTE</button>
         </div>
         <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v0.1 - ALPHA</p>
@@ -1499,10 +1514,10 @@
 <script src="js/config.js"></script>
 <script src="js/skins.js"></script>
 <script src="js/music.js"></script>
-<script src="js/account.js?v=3"></script>
+<script src="js/account.js?v=4"></script>
 <script src="js/ui.js?v=20260226a"></script>
 <script src="js/chat.js"></script>
-<script src="js/translation.js?v=20260226a"></script>
+<script src="js/translation.js?v=20260226b"></script>
 <script src="js/firebase-sync.js?v=12"></script>
 <script src="js/player.js?v=5"></script>
 <script src="js/shop.js"></script>

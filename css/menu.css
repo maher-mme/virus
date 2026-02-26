@@ -348,6 +348,16 @@
   transform: translateY(-2px);
 }
 
+.compte-toggle-link {
+  color: #3498db;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+.compte-toggle-link:hover { color: #5dade2; }
+
 /* Affichage pseudo dans le menu */
 .btn-musique {
   position: absolute;

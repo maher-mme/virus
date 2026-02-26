@@ -154,9 +154,12 @@ function ouvrirReunion() {
   // Afficher HUD reunion
   document.getElementById('reunion-bandeau').classList.add('visible');
   document.getElementById('reunion-chat').classList.add('visible');
-  // Afficher le bouton toggle chat sur mobile
+  // Afficher le bouton toggle chat sur mobile (deplacer vers body)
   var reunionToggle = document.getElementById('reunion-chat-toggle');
-  if (reunionToggle) reunionToggle.classList.add('visible');
+  if (reunionToggle) {
+    reunionToggle.classList.add('visible');
+    if (typeof ouvrirReunionChatMobile === 'function') ouvrirReunionChatMobile();
+  }
   // Masquer le skip si le joueur est fantome
   if (!joueurEstFantome) {
     document.getElementById('reunion-btn-skip').classList.add('visible');

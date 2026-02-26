@@ -614,10 +614,11 @@ function retourMenuFinPartie() {
   reunionEnCours = false;
   document.getElementById('reunion-btn-skip').classList.remove('visible');
   document.getElementById('reunion-bandeau').classList.remove('visible');
+  if (typeof fermerReunionChatMobile === 'function') fermerReunionChatMobile();
   var elChatClean = document.getElementById('reunion-chat');
-  if (elChatClean) { elChatClean.classList.remove('visible'); elChatClean.classList.remove('chat-visible'); elChatClean.style.display = ''; }
+  if (elChatClean) { elChatClean.classList.remove('visible', 'chat-visible', 'chat-mobile-open'); elChatClean.style.cssText = ''; }
   var elToggleClean = document.getElementById('reunion-chat-toggle');
-  if (elToggleClean) { elToggleClean.classList.remove('visible'); elToggleClean.classList.remove('active'); }
+  if (elToggleClean) { elToggleClean.classList.remove('visible', 'active'); elToggleClean.style.cssText = ''; }
   document.getElementById('reunion-resultat').classList.remove('visible');
   document.getElementById('reunion-resultat').style.display = 'none';
   nettoyerBots();
@@ -638,10 +639,11 @@ function fermerReunion() {
     // Masquer HUD reunion
     var elBandeau = document.getElementById('reunion-bandeau');
     if (elBandeau) elBandeau.classList.remove('visible');
+    if (typeof fermerReunionChatMobile === 'function') fermerReunionChatMobile();
     var elChat = document.getElementById('reunion-chat');
-    if (elChat) { elChat.classList.remove('visible'); elChat.classList.remove('chat-visible'); elChat.style.display = ''; }
+    if (elChat) { elChat.classList.remove('visible', 'chat-visible', 'chat-mobile-open'); elChat.style.cssText = ''; }
     var elReunionToggle = document.getElementById('reunion-chat-toggle');
-    if (elReunionToggle) { elReunionToggle.classList.remove('visible'); elReunionToggle.classList.remove('active'); }
+    if (elReunionToggle) { elReunionToggle.classList.remove('visible', 'active'); elReunionToggle.style.cssText = ''; }
     var elSkip = document.getElementById('reunion-btn-skip');
     if (elSkip) elSkip.classList.remove('visible');
     var elResultat = document.getElementById('reunion-resultat');

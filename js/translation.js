@@ -26,6 +26,7 @@ var TR = {
     cont: 'CONTINUER',
     mainMenu: 'MENU PRINCIPAL',
     add: 'AJOUTER',
+    invite: 'INVITER',
     accept: 'ACCEPTER',
     refuse: 'REFUSER',
     start: 'DEMARRER',
@@ -37,6 +38,9 @@ var TR = {
     cameras: 'CAMERAS',
     confirmSkin: 'CONFIRMER LE SKIN',
     deleteAccount: 'SUPPRIMER MON COMPTE',
+    purgeAll: '\uD83D\uDDD1 PURGER TOUTES LES PARTIES',
+    noGamesMsg: 'Aucune partie en attente pour le moment.<br>Creez-en une depuis le menu online !',
+    refreshBtn: '\u21BB ACTUALISER',
 
     // Titres / Labels
     createAccount: 'CREER TON COMPTE',
@@ -87,9 +91,12 @@ var TR = {
     waitingForHost: 'En attente du host pour demarrer...',
     savedAuto: 'Les changements sont sauvegardes automatiquement.<br>VIRUS v0.1 - ALPHA',
     noGamesWaiting: 'Aucune partie en attente pour le moment. Creez-en une depuis le menu online !',
+    hostLabel: 'Host :',
     game: 'PARTIE',
     villains: 'MECHANTS',
     noPendingRequests: 'Aucune demande en attente.',
+    friendRemoved: '{0} a ete retire de tes amis.',
+    confirmRemoveFriend: 'Retirer {0} de tes amis ?',
     securityCams: 'CAMERAS DE SECURITE',
 
     // Roles
@@ -514,6 +521,7 @@ var TR = {
     cont: 'CONTINUE',
     mainMenu: 'MAIN MENU',
     add: 'ADD',
+    invite: 'INVITE',
     accept: 'ACCEPT',
     refuse: 'REFUSE',
     start: 'START',
@@ -525,6 +533,9 @@ var TR = {
     cameras: 'CAMERAS',
     confirmSkin: 'CONFIRM SKIN',
     deleteAccount: 'DELETE MY ACCOUNT',
+    purgeAll: '\uD83D\uDDD1 PURGE ALL GAMES',
+    noGamesMsg: 'No games waiting right now.<br>Create one from the online menu!',
+    refreshBtn: '\u21BB REFRESH',
 
     // Titles / Labels
     createAccount: 'CREATE YOUR ACCOUNT',
@@ -575,9 +586,12 @@ var TR = {
     waitingForHost: 'Waiting for host to start...',
     savedAuto: 'Changes are saved automatically.<br>VIRUS v0.1 - ALPHA',
     noGamesWaiting: 'No games waiting right now. Create one from the online menu!',
+    hostLabel: 'Host:',
     game: 'GAME',
     villains: 'VILLAINS',
     noPendingRequests: 'No pending requests.',
+    friendRemoved: '{0} has been removed from your friends.',
+    confirmRemoveFriend: 'Remove {0} from your friends?',
     securityCams: 'SECURITY CAMERAS',
 
     // Roles

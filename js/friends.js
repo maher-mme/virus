@@ -53,8 +53,9 @@ function afficherAmis() {
       html += '<div class="ami-statut-dot ' + (isOnline ? 'online' : 'offline') + '"></div>';
       html += '<span class="ami-pseudo ' + (isOnline ? '' : 'offline-text') + '">' + escapeHtml(ami.pseudo) + '</span>';
       if (isOnline) {
-        html += '<button class="ami-btn-inviter" onclick="inviterAmi(\'' + escapeOnclick(ami.uid) + '\', \'' + escapeOnclick(ami.pseudo) + '\')">INVITER</button>';
+        html += '<button class="ami-btn-inviter" onclick="inviterAmi(\'' + escapeOnclick(ami.uid) + '\', \'' + escapeOnclick(ami.pseudo) + '\')">' + t('invite') + '</button>';
       }
+      html += '<button class="ami-btn-supprimer" onclick="supprimerAmi(\'' + escapeOnclick(ami.uid) + '\', \'' + escapeOnclick(ami.pseudo) + '\')">&#10005;</button>';
       html += '</div>';
     });
   }
@@ -170,6 +171,27 @@ function refuserDemande(requestId) {
   db.collection('friendRequests').doc(requestId).delete().then(function() {
     showNotif(t('requestRefused'), 'warn');
   }).catch(function() {});
+}
+
+function supprimerAmi(amiPlayerId, amiPseudo) {
+  if (!confirm(t('confirmRemoveFriend', amiPseudo))) return;
+  // Supprimer les deux enregistrements d'amitie (mon cote et le cote de l'ami)
+  var batch = db.batch();
+  var deleted = 0;
+  // Mon enregistrement (playerId == moi, friendPlayerId == ami)
+  db.collection('friends').where('playerId', '==', monPlayerId).where('friendPlayerId', '==', amiPlayerId).get().then(function(snap) {
+    snap.forEach(function(doc) { batch.delete(doc.ref); deleted++; });
+    // L'enregistrement de l'ami (playerId == ami, friendPlayerId == moi)
+    return db.collection('friends').where('playerId', '==', amiPlayerId).where('friendPlayerId', '==', monPlayerId).get();
+  }).then(function(snap) {
+    snap.forEach(function(doc) { batch.delete(doc.ref); deleted++; });
+    if (deleted > 0) return batch.commit();
+  }).then(function() {
+    showNotif(t('friendRemoved', amiPseudo), 'info');
+  }).catch(function(err) {
+    console.error('Erreur suppression ami:', err);
+    showNotif(t('connectionError'), 'error');
+  });
 }
 
 function chargerStatutAmis() {

@@ -505,9 +505,12 @@ function ouvrirReunionMultiplayer(meeting) {
   try { var sReunion = new Audio("Audio/reunion-urgence.mp3"); sReunion.volume = 0.6; sReunion.play(); } catch(e) {}
   var popup = document.getElementById('popup-reunion');
   if (popup) popup.style.display = 'flex';
-  // Afficher le bouton toggle chat sur mobile
+  // Afficher le bouton toggle chat sur mobile (deplacer vers body)
   var reunionToggle = document.getElementById('reunion-chat-toggle');
-  if (reunionToggle) reunionToggle.classList.add('visible');
+  if (reunionToggle) {
+    reunionToggle.classList.add('visible');
+    if (typeof ouvrirReunionChatMobile === 'function') ouvrirReunionChatMobile();
+  }
   // Afficher les joueurs vivants dans la liste de vote
   var voteList = document.getElementById('reunion-vote-liste');
   if (voteList) {
@@ -604,11 +607,12 @@ function fermerReunionMultiplayer(state) {
   jeuActif = true;
   var popup = document.getElementById('popup-reunion');
   if (popup) popup.style.display = 'none';
-  // Cacher le chat et le toggle reunion sur mobile
+  // Remettre le chat et le toggle dans #jeu puis nettoyer
+  if (typeof fermerReunionChatMobile === 'function') fermerReunionChatMobile();
   var elChatM = document.getElementById('reunion-chat');
-  if (elChatM) { elChatM.classList.remove('visible'); elChatM.classList.remove('chat-visible'); elChatM.style.display = ''; }
+  if (elChatM) { elChatM.classList.remove('visible', 'chat-visible', 'chat-mobile-open'); elChatM.style.cssText = ''; }
   var elToggleM = document.getElementById('reunion-chat-toggle');
-  if (elToggleM) { elToggleM.classList.remove('visible'); elToggleM.classList.remove('active'); }
+  if (elToggleM) { elToggleM.classList.remove('visible', 'active'); elToggleM.style.cssText = ''; }
   reunionCooldown = true;
   setTimeout(function() { reunionCooldown = false; }, 15000);
   killProtection = true;
@@ -1014,7 +1018,7 @@ function rafraichirListeParties() {
           '<div class="lp-icone-partie" style="border:2px solid ' + p.couleur + '">&#128367;</div>' +
           '<div class="lp-nom-texte">' +
             '<span class="nom">' + p.nom.replace(/</g, '&lt;') + '</span>' +
-            '<span class="host">Host: ' + hostPseudo.replace(/</g, '&lt;') + '</span>' +
+            '<span class="host">' + t('hostLabel') + ' ' + hostPseudo.replace(/</g, '&lt;') + '</span>' +
           '</div>' +
         '</div>' +
       '</td>' +

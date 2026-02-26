@@ -197,6 +197,23 @@
   transition: background 0.2s;
 }
 .ami-btn-inviter:hover { background: #2980b9; }
+.ami-btn-supprimer {
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  border: 1px solid #e74c3c;
+  border-radius: 50%;
+  color: #e74c3c;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+}
+.ami-btn-supprimer:hover { background: #e74c3c; color: white; }
 
 .demande-item {
   display: flex;

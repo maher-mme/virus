@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="css/game.css?v=2">
   <link rel="stylesheet" href="css/hud.css">
   <link rel="stylesheet" href="css/meeting.css?v=5">
-  <link rel="stylesheet" href="css/friends.css">
+  <link rel="stylesheet" href="css/friends.css?v=2">
   <link rel="stylesheet" href="css/responsive.css?v=20260225c">
   <link rel="stylesheet" href="css/minigames.css">
 </head>
@@ -474,15 +474,15 @@
 
       <div class="lp-vide" id="lp-vide">
         <div class="lp-vide-icone">&#128269;</div>
-        <p>Aucune partie en attente pour le moment.<br>Creez-en une depuis le menu online !</p>
+        <p data-i18n="noGamesMsg" data-i18n-html="true">Aucune partie en attente pour le moment.<br>Creez-en une depuis le menu online !</p>
       </div>
     </div>
 
-    <button class="btn-actualiser" onclick="rafraichirListeParties()">
+    <button class="btn-actualiser" onclick="rafraichirListeParties()" data-i18n="refreshBtn" data-i18n-html="true">
       &#8635; ACTUALISER
     </button>
 
-    <button class="btn-admin-purge" id="btn-purge-parties" onclick="purgerToutesLesParties()" style="display:none;">
+    <button class="btn-admin-purge" id="btn-purge-parties" onclick="purgerToutesLesParties()" style="display:none;" data-i18n="purgeAll" data-i18n-html="true">
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
@@ -1500,20 +1500,20 @@
 <script src="js/skins.js"></script>
 <script src="js/music.js"></script>
 <script src="js/account.js?v=3"></script>
-<script src="js/ui.js?v=20260225d"></script>
+<script src="js/ui.js?v=20260226a"></script>
 <script src="js/chat.js"></script>
-<script src="js/translation.js"></script>
-<script src="js/firebase-sync.js?v=11"></script>
+<script src="js/translation.js?v=20260226a"></script>
+<script src="js/firebase-sync.js?v=12"></script>
 <script src="js/player.js?v=5"></script>
 <script src="js/shop.js"></script>
 <script src="js/bots.js"></script>
 <script src="js/game.js?v=20260225b"></script>
-<script src="js/roles.js?v=6"></script>
-<script src="js/meeting.js?v=5"></script>
+<script src="js/roles.js?v=7"></script>
+<script src="js/meeting.js?v=6"></script>
 <script src="js/missions.js"></script>
 <script src="js/minigames.js"></script>
 <script src="js/cameras.js"></script>
-<script src="js/friends.js?v=6"></script>
+<script src="js/friends.js?v=7"></script>
 
 <script>
 // Initialisation (apres que tous les scripts et le DOM sont prets)

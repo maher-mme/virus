@@ -152,34 +152,29 @@ function toggleChat(context) {
     btn = document.getElementById('reunion-chat-toggle');
   }
   if (!chat || !btn) return;
-  var isVisible = chat.style.display === 'flex';
+  var isVisible = chat.classList.contains('chat-mobile-open');
   // Rendre le parent visible (sa-droite-chat-col est display:none sur mobile)
   var chatCol = chat.closest('.sa-droite-chat-col');
   if (isVisible) {
     // Fermer le chat
-    chat.style.setProperty('display', 'none', 'important');
-    chat.style.position = '';
-    chat.style.top = '';
-    chat.style.bottom = '';
-    chat.style.left = '';
-    chat.style.right = '';
-    chat.style.zIndex = '';
-    chat.style.maxHeight = '';
-    chat.style.height = '';
-    chat.style.borderRadius = '';
-    chat.style.boxShadow = '';
-    chat.style.width = '';
-    btn.style.top = '';
-    btn.style.bottom = '';
-    btn.style.right = '';
-    btn.style.left = '';
-    btn.style.position = '';
-    btn.style.zIndex = '';
+    chat.classList.remove('chat-mobile-open');
+    chat.style.cssText = '';
+    btn.style.cssText = '';
+    // Remettre le chat dans #jeu si deplace vers body
+    if (context !== 'sa') {
+      var jeu = document.getElementById('jeu');
+      if (jeu && chat.parentNode === document.body) {
+        jeu.appendChild(chat);
+      }
+    }
     if (chatCol) chatCol.style.display = '';
   } else {
-    // Rendre le parent visible pour pouvoir afficher le chat
     if (chatCol) chatCol.style.display = 'block';
-    // Ouvrir le chat en plein ecran (important pour surpasser le CSS mobile)
+    // Pour la reunion : deplacer le chat vers body (hors stacking context de #jeu)
+    if (context !== 'sa' && chat.parentNode !== document.body) {
+      document.body.appendChild(chat);
+    }
+    chat.classList.add('chat-mobile-open');
     chat.style.setProperty('display', 'flex', 'important');
     chat.style.position = 'fixed';
     chat.style.top = '50px';
@@ -192,7 +187,8 @@ function toggleChat(context) {
     chat.style.height = 'auto';
     chat.style.borderRadius = '12px 12px 0 0';
     chat.style.boxShadow = '0 -4px 30px rgba(0,0,0,0.8)';
-    // Bouton en haut a GAUCHE pour fermer (droite = bouton amis)
+    chat.style.background = 'rgba(26,26,46,0.98)';
+    // Bouton en haut a GAUCHE pour fermer
     btn.style.position = 'fixed';
     btn.style.top = '10px';
     btn.style.left = '10px';
@@ -201,6 +197,32 @@ function toggleChat(context) {
     btn.style.zIndex = '10000';
   }
   btn.classList.toggle('active');
+}
+
+// Deplacer le bouton toggle reunion vers body sur mobile
+function ouvrirReunionChatMobile() {
+  var btn = document.getElementById('reunion-chat-toggle');
+  if (btn && btn.parentNode !== document.body) {
+    document.body.appendChild(btn);
+  }
+}
+
+// Remettre le bouton toggle et chat dans #jeu apres reunion
+function fermerReunionChatMobile() {
+  var jeu = document.getElementById('jeu');
+  if (!jeu) return;
+  var btn = document.getElementById('reunion-chat-toggle');
+  var chat = document.getElementById('reunion-chat');
+  if (btn && btn.parentNode === document.body) {
+    btn.style.cssText = '';
+    btn.classList.remove('visible', 'active');
+    jeu.appendChild(btn);
+  }
+  if (chat && chat.parentNode === document.body) {
+    chat.classList.remove('chat-mobile-open');
+    chat.style.cssText = '';
+    jeu.appendChild(chat);
+  }
 }
 
 // ============================

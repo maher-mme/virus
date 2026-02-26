@@ -20,6 +20,15 @@ function getSkin() {
 function setSkin(skinId) {
   localStorage.setItem('virus_skin', skinId);
   appliquerSkinPartout();
+  // Synchroniser le skin sur Firebase (pour les autres joueurs)
+  if (typeof db !== 'undefined' && typeof monPlayerId !== 'undefined' && monPlayerId) {
+    var fichier = getSkinFichier(skinId);
+    db.collection('players').doc(monPlayerId).update({ skin: fichier }).catch(function() {});
+    // Mettre a jour aussi dans partyPlayers si en partie
+    if (typeof myPartyPlayerDocId !== 'undefined' && myPartyPlayerDocId) {
+      db.collection('partyPlayers').doc(myPartyPlayerDocId).update({ skin: fichier }).catch(function() {});
+    }
+  }
 }
 function getSkinFichier(skinId) {
   var s = SKINS.find(function(sk) { return sk.id === skinId; });

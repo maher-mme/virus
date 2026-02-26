@@ -96,6 +96,7 @@ function quitterPartie() {
     partieActuelleId = null;
   }
   estHost = false;
+  nettoyerChatReunion();
   showScreen('menu-online');
 }
 
@@ -108,7 +109,21 @@ function ejecterDeLaPartie(raison) {
   estHost = false;
   jeuActif = false;
   reunionEnCours = false;
+  nettoyerChatReunion();
   showScreen('menu-online');
+}
+
+// Nettoyer le chat reunion et le bouton toggle (apres avoir quitte une partie)
+function nettoyerChatReunion() {
+  if (typeof fermerReunionChatMobile === 'function') fermerReunionChatMobile();
+  var chatEl = document.getElementById('reunion-chat');
+  if (chatEl) { chatEl.classList.remove('visible', 'chat-visible', 'chat-mobile-open'); chatEl.style.cssText = ''; }
+  var toggleEl = document.getElementById('reunion-chat-toggle');
+  if (toggleEl) { toggleEl.classList.remove('visible', 'active'); toggleEl.style.cssText = ''; }
+  var bandeauEl = document.getElementById('reunion-bandeau');
+  if (bandeauEl) bandeauEl.classList.remove('visible');
+  var skipEl = document.getElementById('reunion-btn-skip');
+  if (skipEl) skipEl.classList.remove('visible');
 }
 
 // S'abonner aux mises a jour d'une partie (joueurs, chat)

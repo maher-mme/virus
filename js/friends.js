@@ -143,6 +143,14 @@ function envoyerDemandeAmi() {
 }
 
 function accepterDemande(requestId, fromPlayerId, fromPseudo) {
+  // Verifier si deja ami pour eviter les doublons
+  var dejaAmi = mesAmis.some(function(a) { return a.uid === fromPlayerId; });
+  if (dejaAmi) {
+    // Juste supprimer la demande, on est deja amis
+    db.collection('friendRequests').doc(requestId).update({ status: 'accepted' }).catch(function() {});
+    showNotif(t('alreadyFriend'), 'warn');
+    return;
+  }
   // Batch write pour garantir l'atomicite
   var batch = db.batch();
   batch.update(db.collection('friendRequests').doc(requestId), { status: 'accepted' });
@@ -211,8 +219,12 @@ function initAmisListeners() {
     db.collection('friends').where('playerId', '==', monPlayerId).onSnapshot(function(snapshot) {
       mesAmis = [];
       var friendIds = [];
+      var seen = {};
       snapshot.forEach(function(doc) {
         var f = doc.data();
+        // Deduplication : ignorer les doublons par friendPlayerId
+        if (seen[f.friendPlayerId]) return;
+        seen[f.friendPlayerId] = true;
         mesAmis.push({ uid: f.friendPlayerId, pseudo: f.friendPseudo, online: false });
         friendIds.push(f.friendPlayerId);
       });

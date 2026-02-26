@@ -70,11 +70,15 @@
   letter-spacing: 1px;
 }
 .scratch-pfp {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  max-height: 40px;
   border-radius: 50%;
   border: 2px solid #f39c12;
   box-shadow: 0 0 12px rgba(243,156,18,0.3);
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 /* ============================== */

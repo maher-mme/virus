@@ -35,29 +35,29 @@
         <h3 id="compte-titre" data-i18n="createAccount">CREER TON COMPTE</h3>
         <p id="compte-sous-titre" data-i18n="chooseNickname">Choisis un pseudo pour jouer</p>
       </div>
-      <div class="compte-body">
+      <form id="form-compte" class="compte-body" autocomplete="on" onsubmit="return soumettreFormCompte(event)">
         <div class="compte-avatar">&#128566;</div>
         <div class="compte-champ">
           <label data-i18n="pseudo">TON PSEUDO</label>
-          <input type="text" id="input-pseudo-compte" placeholder="Entre ton pseudo..." maxlength="20" data-i18n="phPseudo" data-i18n-attr="placeholder">
+          <input type="text" id="input-pseudo-compte" name="username" autocomplete="username" placeholder="Entre ton pseudo..." maxlength="20" data-i18n="phPseudo" data-i18n-attr="placeholder">
         </div>
         <div class="compte-champ">
           <label data-i18n="pinCode">CODE PIN</label>
-          <input type="password" id="input-pin-compte" placeholder="5 a 10 caracteres..." maxlength="10" data-i18n="phPin" data-i18n-attr="placeholder" oninput="majCompteurPin('input-pin-compte','pin-counter')">
+          <input type="password" id="input-pin-compte" name="password" autocomplete="current-password" placeholder="5 a 10 caracteres..." maxlength="10" data-i18n="phPin" data-i18n-attr="placeholder" oninput="majCompteurPin('input-pin-compte','pin-counter')">
           <span class="pin-counter" id="pin-counter">0 / 10</span>
         </div>
         <div class="compte-champ">
           <label>LANGUE / LANGUAGE</label>
           <div class="lang-selector" style="margin-top:4px;">
-            <button class="lang-btn active" id="compte-lang-fr" onclick="setLangueCompte('fr')">Francais</button>
-            <button class="lang-btn" id="compte-lang-en" onclick="setLangueCompte('en')">English</button>
+            <button type="button" class="lang-btn active" id="compte-lang-fr" onclick="setLangueCompte('fr')">Francais</button>
+            <button type="button" class="lang-btn" id="compte-lang-en" onclick="setLangueCompte('en')">English</button>
           </div>
         </div>
-        <button class="btn-creer-compte" id="btn-creer-compte" onclick="creerCompte()" data-i18n="play">C'EST PARTI !</button>
-        <button class="btn-creer-compte" id="btn-connecter" onclick="connecterCompte()" style="display:none; background:linear-gradient(180deg,#3498db,#2980b9); border-color:#5dade2;" data-i18n="login">SE CONNECTER</button>
+        <button type="submit" class="btn-creer-compte" id="btn-creer-compte" data-i18n="play">C'EST PARTI !</button>
+        <button type="submit" class="btn-creer-compte" id="btn-connecter" style="display:none; background:linear-gradient(180deg,#3498db,#2980b9); border-color:#5dade2;" data-i18n="login">SE CONNECTER</button>
         <span class="compte-toggle-link" id="toggle-login" onclick="toggleModeCompte()"><span data-i18n="alreadyHaveAccount">Tu as deja un compte ? Connecte-toi</span></span>
         <span class="compte-toggle-link" id="toggle-create" onclick="toggleModeCompte()" style="display:none;"><span data-i18n="noAccountYet">Pas encore de compte ? Cree-en un</span></span>
-      </div>
+      </form>
     </div>
 
     <span class="version">VIRUS v0.1 - ALPHA</span>

@@ -45,6 +45,16 @@ function setLangueCompte(lang) {
   setLanguage(lang);
 }
 
+function soumettreFormCompte(e) {
+  e.preventDefault();
+  if (modeCompteLogin) {
+    connecterCompte();
+  } else {
+    creerCompte();
+  }
+  return false;
+}
+
 function creerCompte() {
   var pseudo = document.getElementById('input-pseudo-compte').value.trim();
   var pin = document.getElementById('input-pin-compte').value.trim();
@@ -210,6 +220,7 @@ function majModeCompte() {
   var btnConnecter = document.getElementById('btn-connecter');
   var toggleLogin = document.getElementById('toggle-login');
   var toggleCreate = document.getElementById('toggle-create');
+  var pinInput = document.getElementById('input-pin-compte');
   if (modeCompteLogin) {
     if (titre) { titre.setAttribute('data-i18n', 'loginTitle'); titre.textContent = t('loginTitle'); }
     if (sousTitre) { sousTitre.setAttribute('data-i18n', 'enterCredentials'); sousTitre.textContent = t('enterCredentials'); }
@@ -217,6 +228,7 @@ function majModeCompte() {
     if (btnConnecter) btnConnecter.style.display = '';
     if (toggleLogin) toggleLogin.style.display = 'none';
     if (toggleCreate) toggleCreate.style.display = '';
+    if (pinInput) pinInput.autocomplete = 'current-password';
   } else {
     if (titre) { titre.setAttribute('data-i18n', 'createAccount'); titre.textContent = t('createAccount'); }
     if (sousTitre) { sousTitre.setAttribute('data-i18n', 'chooseNickname'); sousTitre.textContent = t('chooseNickname'); }
@@ -224,6 +236,7 @@ function majModeCompte() {
     if (btnConnecter) btnConnecter.style.display = 'none';
     if (toggleLogin) toggleLogin.style.display = '';
     if (toggleCreate) toggleCreate.style.display = 'none';
+    if (pinInput) pinInput.autocomplete = 'new-password';
   }
 }
 

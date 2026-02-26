@@ -228,6 +228,22 @@ function majModeCompte() {
 }
 
 // ============================
+// COMPTEUR CARACTERES PIN
+// ============================
+function majCompteurPin(inputId, counterId) {
+  var input = document.getElementById(inputId);
+  var counter = document.getElementById(counterId);
+  if (!input || !counter) return;
+  var len = input.value.length;
+  counter.textContent = len + ' / 10';
+  if (len < 5) {
+    counter.style.color = '#e74c3c';
+  } else {
+    counter.style.color = '#2ecc71';
+  }
+}
+
+// ============================
 // SAUVEGARDER PIN (parametres)
 // ============================
 function sauvegarderPin() {

@@ -43,7 +43,8 @@
         </div>
         <div class="compte-champ">
           <label data-i18n="pinCode">CODE PIN</label>
-          <input type="password" id="input-pin-compte" placeholder="5 a 10 caracteres..." maxlength="10" data-i18n="phPin" data-i18n-attr="placeholder">
+          <input type="password" id="input-pin-compte" placeholder="5 a 10 caracteres..." maxlength="10" data-i18n="phPin" data-i18n-attr="placeholder" oninput="majCompteurPin('input-pin-compte','pin-counter')">
+          <span class="pin-counter" id="pin-counter">0 / 10</span>
         </div>
         <div class="compte-champ">
           <label>LANGUE / LANGUAGE</label>
@@ -159,9 +160,10 @@
         <div class="popup-section" id="section-set-pin" style="display:none;">
           <label data-i18n="setPin">CHOISIR UN CODE PIN</label>
           <div style="display:flex;gap:8px;align-items:center;">
-            <input type="password" id="input-set-pin" maxlength="10" placeholder="5 a 10 caracteres" data-i18n="phSetPin" data-i18n-attr="placeholder" style="flex:1;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px 12px;color:#ecf0f1;font-size:16px;text-align:center;letter-spacing:4px;font-family:Arial,sans-serif;outline:none;">
+            <input type="password" id="input-set-pin" maxlength="10" placeholder="5 a 10 caracteres" data-i18n="phSetPin" data-i18n-attr="placeholder" style="flex:1;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px 12px;color:#ecf0f1;font-size:16px;text-align:center;letter-spacing:4px;font-family:Arial,sans-serif;outline:none;" oninput="majCompteurPin('input-set-pin','set-pin-counter')">
             <button class="btn-sauver-pseudo" onclick="sauvegarderPin()" data-i18n="save" style="padding:8px 16px;">SAUVER</button>
           </div>
+          <span class="pin-counter" id="set-pin-counter">0 / 10</span>
         </div>
         <div class="popup-section">
           <label data-i18n="account">COMPTE</label>

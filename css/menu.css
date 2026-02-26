@@ -52,9 +52,9 @@
 
 .scratch-link {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
   margin-top: 15px;
   text-decoration: none;
   transition: transform 0.2s, filter 0.2s;

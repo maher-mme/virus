@@ -329,6 +329,10 @@ var TR = {
     followScratch: 'Suivez-moi sur Scratch',
     afkWarning: 'Tu es inactif ! Tu seras expulse dans 30 secondes...',
     afkKicked: 'Tu as ete expulse pour inactivite.',
+    lastSeenMinutes: 'vu il y a {0} min',
+    lastSeenHours: 'vu il y a {0}h',
+    lastSeenDays: 'vu il y a {0}j',
+    lastSeenWeeks: 'vu il y a {0} sem',
     langLabel: 'LANGUE',
     locker: 'CASIER',
     changeSkin: 'Changer de skin',
@@ -846,6 +850,10 @@ var TR = {
     followScratch: 'Follow me on Scratch',
     afkWarning: 'You are inactive! You will be kicked in 30 seconds...',
     afkKicked: 'You were kicked for inactivity.',
+    lastSeenMinutes: 'seen {0}m ago',
+    lastSeenHours: 'seen {0}h ago',
+    lastSeenDays: 'seen {0}d ago',
+    lastSeenWeeks: 'seen {0}w ago',
     langLabel: 'LANGUAGE',
     locker: 'LOCKERS',
     changeSkin: 'Change your skin',
@@ -1059,6 +1067,8 @@ function setLanguage(lang) {
     if (btn) btn.classList.add('active');
   });
   translatePage();
+  // Rafraichir le contenu dynamique du panel amis
+  if (typeof rafraichirPanelAmis === 'function') rafraichirPanelAmis();
 }
 
 function translatePage() {

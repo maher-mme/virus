@@ -52,6 +52,12 @@ function afficherAmis() {
       html += '<div class="ami-item">';
       html += '<div class="ami-statut-dot ' + (isOnline ? 'online' : 'offline') + '"></div>';
       html += '<span class="ami-pseudo ' + (isOnline ? '' : 'offline-text') + '">' + escapeHtml(ami.pseudo) + '</span>';
+      if (!isOnline && amisStatuts[ami.uid] && amisStatuts[ami.uid].lastSeen) {
+        var dernierVu = formatDernierVu(amisStatuts[ami.uid].lastSeen);
+        if (dernierVu) {
+          html += '<span class="ami-last-seen">' + escapeHtml(dernierVu) + '</span>';
+        }
+      }
       if (isOnline) {
         html += '<button class="ami-btn-inviter" onclick="inviterAmi(\'' + escapeOnclick(ami.uid) + '\', \'' + escapeOnclick(ami.pseudo) + '\')">' + t('invite') + '</button>';
       }
@@ -89,6 +95,23 @@ function escapeHtml(str) {
 // Echapper pour utilisation dans un onclick="func('...')"
 function escapeOnclick(str) {
   return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+function formatDernierVu(lastSeen) {
+  if (!lastSeen) return '';
+  var lastDate = lastSeen.toDate ? lastSeen.toDate() : new Date(lastSeen);
+  var diff = Date.now() - lastDate.getTime();
+  // Plus de 3 semaines : juste "hors ligne"
+  if (diff > 21 * 24 * 60 * 60 * 1000) return '';
+  var minutes = Math.floor(diff / 60000);
+  var heures = Math.floor(diff / 3600000);
+  var jours = Math.floor(diff / 86400000);
+  var semaines = Math.floor(diff / (7 * 86400000));
+  if (semaines > 0) return t('lastSeenWeeks', semaines);
+  if (jours > 0) return t('lastSeenDays', jours);
+  if (heures > 0) return t('lastSeenHours', heures);
+  if (minutes > 1) return t('lastSeenMinutes', minutes);
+  return t('lastSeenMinutes', 1);
 }
 
 function updateBadgeAmis() {
@@ -262,7 +285,7 @@ function initAmisListeners() {
             var pData = pDoc.data();
             var ami = mesAmis.find(function(a) { return a.uid === fid; });
             if (ami) ami.online = pData.online || false;
-            amisStatuts[fid] = { online: pData.online || false, pseudo: pData.pseudo };
+            amisStatuts[fid] = { online: pData.online || false, pseudo: pData.pseudo, lastSeen: pData.lastSeen || null };
           }
           if (panelAmisOuvert && tabAmiActif !== 'demandes') afficherAmis();
         });

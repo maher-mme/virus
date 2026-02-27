@@ -36,9 +36,35 @@ var lastPositionSend = 0;
 var lastSaPositionSend = 0;
 var myPartyPlayerDocId = null;
 
-// Heartbeat toutes les 30 secondes
+// ============================
+// SYSTEME ANTI-AFK (inactivite)
+// ============================
+var dernierActivite = Date.now();
+var afkAverti = false;
+
+function enregistrerActivite() {
+  dernierActivite = Date.now();
+  if (afkAverti) {
+    afkAverti = false;
+    if (monPlayerId) {
+      db.collection('players').doc(monPlayerId).update({
+        online: true,
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+      }).catch(function() {});
+    }
+  }
+}
+
+['keydown', 'mousedown', 'mousemove', 'touchstart', 'touchmove', 'click', 'scroll'].forEach(function(evt) {
+  document.addEventListener(evt, enregistrerActivite, { passive: true });
+});
+
+// Heartbeat toutes les 30 secondes (conditionnel sur activite)
 setInterval(function() {
-  if (monPlayerId) {
+  if (!monPlayerId) return;
+  var inactif = Date.now() - dernierActivite;
+  if (inactif < 180000) {
+    // Actif : mettre en ligne
     db.collection('players').doc(monPlayerId).set({
       lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
       online: true
@@ -46,11 +72,41 @@ setInterval(function() {
   }
 }, 30000);
 
-// Heartbeat partyPlayer : mise a jour lastActive toutes les 10s
+// Heartbeat partyPlayer : mise a jour lastActive toutes les 10s (conditionnel)
 setInterval(function() {
-  if (myPartyPlayerDocId && partieActuelleId) {
+  if (!myPartyPlayerDocId || !partieActuelleId) return;
+  var inactif = Date.now() - dernierActivite;
+  if (inactif < 60000) {
+    // Actif : envoyer heartbeat
     db.collection('partyPlayers').doc(myPartyPlayerDocId).update({
       lastActive: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(function() {});
+  }
+}, 10000);
+
+// Timer AFK : verifier inactivite toutes les 10s
+setInterval(function() {
+  var inactif = Date.now() - dernierActivite;
+  // En partie (sauf en reunion) : avertir a 90s, kick a 120s
+  if (partieActuelleId && !reunionEnCours) {
+    if (inactif > 120000) {
+      showNotif(t('afkKicked'), 'error');
+      quitterPartie();
+      afkAverti = false;
+    } else if (inactif > 90000 && !afkAverti) {
+      showNotif(t('afkWarning'), 'warn');
+      afkAverti = true;
+    }
+  }
+  // Reset le timer AFK quand une reunion commence
+  if (reunionEnCours) {
+    dernierActivite = Date.now();
+    afkAverti = false;
+  }
+  // Hors ligne apres 3 min d'inactivite
+  if (inactif > 180000 && monPlayerId) {
+    db.collection('players').doc(monPlayerId).update({
+      online: false
     }).catch(function() {});
   }
 }, 10000);

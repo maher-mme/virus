@@ -96,6 +96,7 @@ function quitterPartie() {
     partieActuelleId = null;
   }
   estHost = false;
+  _lastChatCount = { lobby: -1, meeting: -1 };
   nettoyerChatReunion();
   showScreen('menu-online');
 }
@@ -109,6 +110,7 @@ function ejecterDeLaPartie(raison) {
   estHost = false;
   jeuActif = false;
   reunionEnCours = false;
+  _lastChatCount = { lobby: -1, meeting: -1 };
   nettoyerChatReunion();
   showScreen('menu-online');
 }
@@ -739,7 +741,7 @@ function renderWaitingRoomPlayers(players) {
 }
 
 // Mettre a jour le chat depuis Firebase
-var _lastChatCount = { lobby: 0, meeting: 0 };
+var _lastChatCount = { lobby: -1, meeting: -1 };
 
 function updateChatUI(messages, context) {
   var chatId = context === 'lobby' ? 'chat-messages' : 'reunion-chat-messages';
@@ -762,6 +764,11 @@ function updateChatUI(messages, context) {
   }
   // Badge point rouge si nouveau message et chat ferme (mobile)
   var key = context === 'lobby' ? 'lobby' : 'meeting';
+  // Premier chargement : juste memoriser le count sans afficher le badge
+  if (_lastChatCount[key] === -1) {
+    _lastChatCount[key] = messages.length;
+    return;
+  }
   if (messages.length > _lastChatCount[key]) {
     var toggleId = context === 'lobby' ? 'sa-chat-toggle' : 'reunion-chat-toggle';
     var badgeId = context === 'lobby' ? 'sa-chat-badge' : 'reunion-chat-badge';

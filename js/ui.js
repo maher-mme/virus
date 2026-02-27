@@ -152,6 +152,10 @@ function toggleChat(context) {
     btn = document.getElementById('reunion-chat-toggle');
   }
   if (!chat || !btn) return;
+  // Cacher le badge point rouge quand on ouvre le chat
+  var badgeId = context === 'sa' ? 'sa-chat-badge' : 'reunion-chat-badge';
+  var badge = document.getElementById(badgeId);
+  if (badge) badge.style.display = 'none';
   var isVisible = chat.classList.contains('chat-mobile-open');
   // Rendre le parent visible (sa-droite-chat-col est display:none sur mobile)
   var chatCol = chat.closest('.sa-droite-chat-col');

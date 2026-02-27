@@ -739,6 +739,8 @@ function renderWaitingRoomPlayers(players) {
 }
 
 // Mettre a jour le chat depuis Firebase
+var _lastChatCount = { lobby: 0, meeting: 0 };
+
 function updateChatUI(messages, context) {
   var chatId = context === 'lobby' ? 'chat-messages' : 'reunion-chat-messages';
   var chatDiv = document.getElementById(chatId);
@@ -758,6 +760,19 @@ function updateChatUI(messages, context) {
   if (messages.length > 0) {
     try { var sChat = new Audio(Math.random() < 0.5 ? 'Audio/chat1.mp3' : 'Audio/chat2.mp3'); sChat.volume = 0.4; sChat.play(); } catch(e) {}
   }
+  // Badge point rouge si nouveau message et chat ferme (mobile)
+  var key = context === 'lobby' ? 'lobby' : 'meeting';
+  if (messages.length > _lastChatCount[key]) {
+    var toggleId = context === 'lobby' ? 'sa-chat-toggle' : 'reunion-chat-toggle';
+    var badgeId = context === 'lobby' ? 'sa-chat-badge' : 'reunion-chat-badge';
+    var toggleBtn = document.getElementById(toggleId);
+    var badge = document.getElementById(badgeId);
+    // Afficher le badge seulement si le chat n'est pas ouvert
+    if (badge && toggleBtn && !toggleBtn.classList.contains('active')) {
+      badge.style.display = 'block';
+    }
+  }
+  _lastChatCount[key] = messages.length;
 }
 
 function mettreAJourOptionsVirus() {

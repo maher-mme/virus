@@ -299,6 +299,18 @@
   justify-content: center;
   transition: transform 0.2s, background 0.2s;
 }
+.chat-badge {
+  display: none;
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 14px;
+  height: 14px;
+  background: #e74c3c;
+  border-radius: 50%;
+  border: 2px solid #2980b9;
+  box-shadow: 0 0 6px rgba(231,76,60,0.6);
+}
 .chat-toggle-btn:active {
   transform: scale(0.9);
 }

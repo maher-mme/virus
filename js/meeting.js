@@ -261,6 +261,29 @@ function lancerChatBotsIA() {
   }
   if (botsActifs.length === 0) return;
 
+  // Chaque bot decide sa cible de vote (coherence chat/vote)
+  for (var vc = 0; vc < botsActifs.length; vc++) {
+    var botVC = botsActifs[vc];
+    var ciblesVC = [];
+    for (var j = 0; j < bots.length; j++) {
+      if (bots[j].pseudo !== botVC.pseudo && joueursElimines.indexOf(bots[j].pseudo) < 0) ciblesVC.push(bots[j]);
+    }
+    var pseudoCiblesVC = ciblesVC.map(function(b) { return b.pseudo; });
+    if (pseudoJoueur && joueursElimines.indexOf(pseudoJoueur) < 0) pseudoCiblesVC.push(pseudoJoueur);
+
+    if (botVC.role === 'fanatique') {
+      botVC.voteCible = botVC.pseudo;
+    } else if (botVC.role === 'virus') {
+      var innocVC = pseudoCiblesVC.filter(function(p) {
+        for (var k = 0; k < bots.length; k++) { if (bots[k].pseudo === p && bots[k].role === 'virus') return false; }
+        return true;
+      });
+      botVC.voteCible = innocVC.length > 0 ? innocVC[Math.floor(Math.random() * innocVC.length)] : (pseudoCiblesVC.length > 0 ? pseudoCiblesVC[Math.floor(Math.random() * pseudoCiblesVC.length)] : '');
+    } else {
+      botVC.voteCible = pseudoCiblesVC.length > 0 ? pseudoCiblesVC[Math.floor(Math.random() * pseudoCiblesVC.length)] : '';
+    }
+  }
+
   var delaiCumule = 2000; // Premier message apres 2s
   // 3-5 messages par bot, melanges aleatoirement
   var fileMessages = [];
@@ -280,14 +303,7 @@ function lancerChatBotsIA() {
         if (!reunionEnCours) return;
         var msg;
         var rand = Math.random();
-
-        // Cibles pour accusations/enquetes
-        var cibles = [];
-        for (var j = 0; j < bots.length; j++) {
-          if (bots[j].pseudo !== bot.pseudo && joueursElimines.indexOf(bots[j].pseudo) < 0) cibles.push(bots[j].pseudo);
-        }
-        if (pseudoJoueur && joueursElimines.indexOf(pseudoJoueur) < 0) cibles.push(pseudoJoueur);
-        var cible = cibles.length > 0 ? cibles[Math.floor(Math.random() * cibles.length)] : '';
+        var cible = bot.voteCible || '';
 
         // Les virus essaient de devier l'attention
         if (bot.role === 'virus' && rand < 0.5) {
@@ -299,7 +315,7 @@ function lancerChatBotsIA() {
         } else if (bot.role === 'espion' && rand < 0.5) {
           msg = phrasesEspion[Math.floor(Math.random() * phrasesEspion.length)].replace('{c}', cible);
         } else if (rand < 0.4) {
-          if (cibles.length > 0) {
+          if (cible) {
             msg = phrasesAccusation[Math.floor(Math.random() * phrasesAccusation.length)].replace('{c}', cible);
           } else {
             msg = phrasesReaction[Math.floor(Math.random() * phrasesReaction.length)];
@@ -405,29 +421,42 @@ function botVoter(botIdx) {
   var bot = bots[botIdx];
   if (!bot) return;
 
-  var cibles = [];
-  for (var i = 0; i < joueursReunion.length; i++) {
-    if (!joueursReunion[i].elimine && joueursReunion[i].pseudo !== bot.pseudo) {
-      cibles.push(i);
+  var cibleIdx = -1;
+
+  // Utiliser l'intention de vote si elle existe
+  if (bot.voteCible) {
+    for (var i = 0; i < joueursReunion.length; i++) {
+      if (joueursReunion[i].pseudo === bot.voteCible && !joueursReunion[i].elimine) {
+        cibleIdx = i;
+        break;
+      }
     }
   }
-  if (cibles.length === 0) return;
 
-  var cibleIdx;
-  if (bot.role === 'fanatique') {
-    // Le fanatique vote pour lui-meme (il veut etre elimine)
-    for (var fi = 0; fi < joueursReunion.length; fi++) {
-      if (joueursReunion[fi].pseudo === bot.pseudo && !joueursReunion[fi].elimine) { cibleIdx = fi; break; }
+  // Fallback : vote aleatoire si la cible n'est pas trouvee
+  if (cibleIdx < 0) {
+    var cibles = [];
+    for (var i = 0; i < joueursReunion.length; i++) {
+      if (!joueursReunion[i].elimine && joueursReunion[i].pseudo !== bot.pseudo) {
+        cibles.push(i);
+      }
     }
-    if (cibleIdx === undefined || cibleIdx === null) cibleIdx = cibles[Math.floor(Math.random() * cibles.length)];
-  } else if (bot.role === 'virus') {
-    var innocentCibles = cibles.filter(function(ci) { return joueursReunion[ci].role !== 'virus'; });
-    cibleIdx = innocentCibles.length > 0 ? innocentCibles[Math.floor(Math.random() * innocentCibles.length)] : cibles[Math.floor(Math.random() * cibles.length)];
-  } else {
-    cibleIdx = cibles[Math.floor(Math.random() * cibles.length)];
+    if (cibles.length === 0) return;
+
+    if (bot.role === 'fanatique') {
+      for (var fi = 0; fi < joueursReunion.length; fi++) {
+        if (joueursReunion[fi].pseudo === bot.pseudo && !joueursReunion[fi].elimine) { cibleIdx = fi; break; }
+      }
+      if (cibleIdx < 0) cibleIdx = cibles[Math.floor(Math.random() * cibles.length)];
+    } else if (bot.role === 'virus') {
+      var innocentCibles = cibles.filter(function(ci) { return joueursReunion[ci].role !== 'virus'; });
+      cibleIdx = innocentCibles.length > 0 ? innocentCibles[Math.floor(Math.random() * innocentCibles.length)] : cibles[Math.floor(Math.random() * cibles.length)];
+    } else {
+      cibleIdx = cibles[Math.floor(Math.random() * cibles.length)];
+    }
   }
 
-  if (cibleIdx === undefined || cibleIdx === null || cibleIdx < 0 || cibleIdx >= joueursReunion.length) return;
+  if (cibleIdx < 0 || cibleIdx >= joueursReunion.length) return;
   nbVotesTotal++;
   votesParJoueur[cibleIdx]++;
 
@@ -436,7 +465,7 @@ function botVoter(botIdx) {
     bulle.textContent = votesParJoueur[cibleIdx];
     bulle.classList.add('has-votes');
   }
-  ajouterMsgReunion(bot.pseudo, t('meetBotVoted'), '#95a5a6');
+  ajouterMsgReunion(bot.pseudo, t('meetBotVotedFor', joueursReunion[cibleIdx].pseudo), '#95a5a6');
 }
 
 function verifierTousOntVote() {

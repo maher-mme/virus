@@ -120,9 +120,23 @@ function connecterCompte() {
     }
     if (data.skinsAchetes) {
       localStorage.setItem('virusSkinsAchetes', JSON.stringify(data.skinsAchetes));
+      // Recharger les skins achetes dans le tableau SKINS
+      data.skinsAchetes.forEach(function(skinId) {
+        if (!SKINS.find(function(s) { return s.id === skinId; })) {
+          var sb = SKINS_BOUTIQUE.find(function(s) { return s.id === skinId; });
+          if (sb) SKINS.push({ id: sb.id, nom: sb.nom, fichier: sb.fichier, rarete: sb.rarete });
+        }
+      });
     }
     if (data.musiquesAchetees) {
       localStorage.setItem('virusMusiquesAchetees', JSON.stringify(data.musiquesAchetees));
+      // Recharger les musiques achetees dans le tableau MUSIQUES
+      data.musiquesAchetees.forEach(function(mId) {
+        if (!MUSIQUES.find(function(m) { return m.id === mId; })) {
+          var mb = MUSIQUES_BOUTIQUE.find(function(m) { return m.id === mId; });
+          if (mb) MUSIQUES.push({ id: mb.id, nom: mb.nom, artiste: mb.artiste, fichier: mb.fichier, image: mb.image });
+        }
+      });
     }
     // Mettre en ligne
     db.collection('players').doc(monPlayerId).update({

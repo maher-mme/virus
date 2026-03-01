@@ -6,6 +6,10 @@ function sauvegarderGold() {
   if (el) el.textContent = playerGold;
   var bel = document.getElementById('boutique-gold-display');
   if (bel) bel.textContent = playerGold;
+  // Sync Firebase
+  if (monPlayerId) {
+    db.collection('players').doc(monPlayerId).update({ gold: playerGold }).catch(function() {});
+  }
 }
 function gagnerGold(montant) {
   playerGold += montant;
@@ -37,6 +41,10 @@ function getSkinsAchetes() {
 }
 function sauvegarderSkinsAchetes(liste) {
   localStorage.setItem('virusSkinsAchetes', JSON.stringify(liste));
+  // Sync Firebase
+  if (monPlayerId) {
+    db.collection('players').doc(monPlayerId).update({ skinsAchetes: liste }).catch(function() {});
+  }
 }
 
 function acheterSkin(skinId) {
@@ -130,6 +138,10 @@ function getMusiquesAchetees() {
 }
 function sauvegarderMusiquesAchetees(liste) {
   localStorage.setItem('virusMusiquesAchetees', JSON.stringify(liste));
+  // Sync Firebase
+  if (monPlayerId) {
+    db.collection('players').doc(monPlayerId).update({ musiquesAchetees: liste }).catch(function() {});
+  }
 }
 
 function acheterMusique(musiqueId) {

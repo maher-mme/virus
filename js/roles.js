@@ -651,6 +651,10 @@ function fermerReunion() {
     var elTimer = document.getElementById('reunion-timer');
     if (elTimer) elTimer.style.color = '#e74c3c';
 
+    // Nettoyer animation elimination (fontaine trou)
+    var fontaine = document.querySelector('.mall-fontaine');
+    if (fontaine) fontaine.classList.remove('fontaine-trou');
+
     // Nettoyer les bulles de vote, badge createur et les classes
     var badgeCr = document.getElementById('reunion-createur-badge');
     if (badgeCr && badgeCr.parentNode) badgeCr.parentNode.removeChild(badgeCr);
@@ -658,7 +662,9 @@ function fermerReunion() {
       try {
         var el = document.getElementById(joueursReunion[i].elementId);
         if (el) {
-          el.classList.remove('reunion-cliquable', 'reunion-vote-selection');
+          el.classList.remove('reunion-cliquable', 'reunion-vote-selection', 'joueur-tombe-anim');
+          el.style.transform = '';
+          el.style.opacity = '';
           el.onclick = null;
           var bulle = document.getElementById('vote-bulle-' + i);
           if (bulle && bulle.parentNode) bulle.parentNode.removeChild(bulle);

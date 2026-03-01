@@ -513,6 +513,8 @@ function terminerVote() {
     roleEl.textContent = '';
     roleEl.style.display = 'none';
     ajouterMsgReunion(t('system'), t('meetNoElim'), '#f39c12');
+    resultatDiv.style.display = 'block';
+    resultatDiv.classList.add('visible');
   } else {
     var elimine = joueursReunion[maxIdx];
     joueursElimines.push(elimine.pseudo);
@@ -547,31 +549,60 @@ function terminerVote() {
       ajouterMsgReunion(t('system'), t('meetWasInnocent', elimine.pseudo), '#27ae60');
     }
 
-    // Si c'est le joueur qui est elimine, appliquer le visuel fantome
-    if (!elimine.estBot) {
-      if (monRole === 'fanatique') {
-        showNotif(t('youEliminatedFanatic'), 'info');
-      }
-      var joueurEl = document.getElementById('joueur');
-      if (joueurEl) joueurEl.classList.add('bot-mort');
+    // Animation : fontaine → trou + joueur tombe dedans
+    var fontaine = document.querySelector('.mall-fontaine');
+    if (fontaine) fontaine.classList.add('fontaine-trou');
+
+    var elimEl = document.getElementById(elimine.elementId);
+    if (elimEl) {
+      var fontCX = 3800, fontCY = 2800;
+      var currentX = parseFloat(elimEl.style.left) || 0;
+      var currentY = parseFloat(elimEl.style.top) || 0;
+      var deltaX = fontCX - currentX - 30;
+      var deltaY = fontCY - currentY - 30;
+
+      // Demarrer la chute apres que la fontaine se transforme
+      setTimeout(function() {
+        elimEl.classList.add('joueur-tombe-anim');
+        elimEl.style.transform = 'translate(' + deltaX + 'px, ' + deltaY + 'px) scale(0) rotate(720deg)';
+        elimEl.style.opacity = '0';
+      }, 600);
     }
 
-    // Eliminer le bot (garder comme fantome)
-    if (elimine.estBot) {
-      for (var b = 0; b < bots.length; b++) {
-        if (bots[b].pseudo === elimine.pseudo) {
-          if (bots[b].element) {
-            bots[b].element.classList.add('bot-fantome');
+    // Apres l'animation : appliquer fantome + afficher resultat
+    setTimeout(function() {
+      // Nettoyer l'animation
+      if (elimEl) {
+        elimEl.classList.remove('joueur-tombe-anim');
+        elimEl.style.transform = '';
+        elimEl.style.opacity = '';
+      }
+      if (fontaine) fontaine.classList.remove('fontaine-trou');
+
+      // Appliquer le visuel fantome
+      if (!elimine.estBot) {
+        if (monRole === 'fanatique') {
+          showNotif(t('youEliminatedFanatic'), 'info');
+        }
+        var joueurEl = document.getElementById('joueur');
+        if (joueurEl) joueurEl.classList.add('bot-mort');
+      }
+      if (elimine.estBot) {
+        for (var b = 0; b < bots.length; b++) {
+          if (bots[b].pseudo === elimine.pseudo) {
+            if (bots[b].element) {
+              bots[b].element.classList.add('bot-fantome');
+            }
+            botsMorts.push(bots[b]);
+            bots.splice(b, 1);
+            break;
           }
-          botsMorts.push(bots[b]);
-          bots.splice(b, 1);
-          break;
         }
       }
-    }
-  }
 
-  resultatDiv.style.display = 'block';
-  resultatDiv.classList.add('visible');
+      resultatDiv.style.display = 'block';
+      resultatDiv.classList.add('visible');
+    }, 3000);
+  }
 }
 

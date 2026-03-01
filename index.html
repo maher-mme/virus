@@ -1,3 +1,4 @@
+<!-- VIRUS - (c) 2025-2026 Maher. Tous droits reserves. Copie interdite. -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -17,7 +18,7 @@
   <link rel="stylesheet" href="css/lobby.css?v=20260227c">
   <link rel="stylesheet" href="css/game.css?v=2">
   <link rel="stylesheet" href="css/hud.css">
-  <link rel="stylesheet" href="css/meeting.css?v=5">
+  <link rel="stylesheet" href="css/meeting.css?v=6">
   <link rel="stylesheet" href="css/friends.css?v=3">
   <link rel="stylesheet" href="css/responsive.css?v=20260225c">
   <link rel="stylesheet" href="css/minigames.css">
@@ -1530,14 +1531,23 @@
 <script src="js/shop.js"></script>
 <script src="js/bots.js"></script>
 <script src="js/game.js?v=20260225b"></script>
-<script src="js/roles.js?v=7"></script>
-<script src="js/meeting.js?v=7"></script>
+<script src="js/roles.js?v=8"></script>
+<script src="js/meeting.js?v=8"></script>
 <script src="js/missions.js"></script>
 <script src="js/minigames.js"></script>
 <script src="js/cameras.js"></script>
 <script src="js/friends.js?v=8"></script>
 
 <script>
+// Protection anti-copie
+document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+document.addEventListener('keydown', function(e) {
+  // Bloquer F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S
+  if (e.key === 'F12') { e.preventDefault(); return; }
+  if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) { e.preventDefault(); return; }
+  if (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S')) { e.preventDefault(); return; }
+});
+
 // Initialisation (apres que tous les scripts et le DOM sont prets)
 (function() {
   // Verifier compte et afficher le bon ecran

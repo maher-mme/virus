@@ -210,8 +210,8 @@ function deconnecterCompte() {
   localStorage.setItem('virus_player_id', monPlayerId);
   // Fermer le popup params si ouvert
   fermerParams();
-  // Remettre en mode creation
-  modeCompteLogin = false;
+  // Afficher le formulaire de connexion par defaut
+  modeCompteLogin = true;
   majModeCompte();
   showScreen('ecran-compte');
   showNotif(t('loggedOut'), 'info');
@@ -310,8 +310,18 @@ function fermerParams() {
 
 function supprimerCompte() {
   if (confirm(t('vDeleteAccount'))) {
-    // Passer hors ligne sur Firebase
-    db.collection('players').doc(monPlayerId).update({ online: false }).catch(function() {});
+    // Supprimer le document joueur de Firebase
+    db.collection('players').doc(monPlayerId).delete().catch(function() {});
+    // Supprimer les amis et demandes liees
+    db.collection('friends').where('playerId', '==', monPlayerId).get().then(function(snap) {
+      snap.forEach(function(d) { d.ref.delete(); });
+    }).catch(function() {});
+    db.collection('friendRequests').where('fromPlayerId', '==', monPlayerId).get().then(function(snap) {
+      snap.forEach(function(d) { d.ref.delete(); });
+    }).catch(function() {});
+    db.collection('friendRequests').where('toPlayerId', '==', monPlayerId).get().then(function(snap) {
+      snap.forEach(function(d) { d.ref.delete(); });
+    }).catch(function() {});
     localStorage.removeItem('virus_pseudo');
     localStorage.removeItem('virus_skin');
     localStorage.removeItem('virus_admin');

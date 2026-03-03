@@ -280,7 +280,6 @@
   padding-top: 20px;
   gap: 0;
   z-index: 999;
-  overflow-y: auto;
 }
 
 .compte-carte {

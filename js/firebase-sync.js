@@ -855,8 +855,9 @@ function setCpLang(lang) {
 }
 
 function creerPartie() {
-  const nom = document.getElementById('cp-nom').value.trim();
   const pseudo = getPseudo();
+  if (!pseudo) { showNotif(t('connectionError'), 'error'); return; }
+  const nom = document.getElementById('cp-nom').value.trim();
   const maxJoueurs = parseInt(document.getElementById('cp-max-joueurs').value);
   const mechants = parseInt(document.getElementById('cp-mechants').value);
 

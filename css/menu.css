@@ -276,9 +276,11 @@
 /* ECRAN CREATION COMPTE          */
 /* ============================== */
 #ecran-compte {
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: 20px;
   gap: 0;
   z-index: 999;
+  overflow-y: auto;
 }
 
 .compte-carte {
@@ -287,7 +289,9 @@
   border-radius: 20px;
   border: 2px solid #e74c3c;
   overflow: hidden;
-  margin-top: 25px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  flex-shrink: 0;
   box-shadow: 0 0 40px rgba(231,76,60,0.15);
 }
 .compte-header {

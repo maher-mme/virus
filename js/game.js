@@ -384,12 +384,37 @@ function lancerJeu() {
     var hasFanatique = partyData ? partyData.fanatique : false;
     var hasEspion = partyData ? partyData.espion : false;
 
+    // Ajuster automatiquement le nombre de virus selon le nombre reel de joueurs
+    var nbJoueurs = firebasePartyPlayers.length;
+    var nbVirusOriginal = nbVirus;
+    if (nbJoueurs < 7 && nbVirus > 1) nbVirus = 1;
+    else if (nbJoueurs < 10 && nbVirus > 2) nbVirus = 2;
+
+    // Desactiver les roles speciaux s'il n'y a pas assez de joueurs
+    if (nbJoueurs < 7) {
+      hasJournaliste = false;
+      hasFanatique = false;
+      hasEspion = false;
+    }
+
+    // S'assurer qu'il reste au moins 1 innocent
+    var totalSpeciaux = nbVirus + (hasJournaliste ? 1 : 0) + (hasFanatique ? 1 : 0) + (hasEspion ? 1 : 0);
+    while (totalSpeciaux >= nbJoueurs && nbVirus > 1) {
+      nbVirus--;
+      totalSpeciaux--;
+    }
+
+    // Notifier si les roles ont ete ajustes
+    if (nbVirus !== nbVirusOriginal) {
+      showNotif(t('virusAdjusted', nbVirus, nbJoueurs), 'info');
+    }
+
     var roles = [];
     for (var v = 0; v < nbVirus; v++) roles.push('virus');
     if (hasJournaliste) roles.push('journaliste');
     if (hasFanatique) roles.push('fanatique');
     if (hasEspion) roles.push('espion');
-    while (roles.length < firebasePartyPlayers.length) roles.push('innocent');
+    while (roles.length < nbJoueurs) roles.push('innocent');
 
     // Melanger les roles
     for (var i = roles.length - 1; i > 0; i--) {

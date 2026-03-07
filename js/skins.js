@@ -102,8 +102,8 @@ function switchCasierTab(tab) {
 // ============================
 // SYSTEME DE PHOTO DE PROFIL (PFP)
 // ============================
-var PFP_MAX_SIZE = 80;
-var PFP_QUALITY = 0.7;
+var PFP_MAX_SIZE = 200;
+var PFP_QUALITY = 0.9;
 var PFP_DE_BASE = 'assets/pfp_de_base.png';
 
 function getPfp() {

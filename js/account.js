@@ -103,7 +103,7 @@ function connecterCompte() {
     if (snap.empty) { showNotif(t('accountNotFound'), 'error'); return; }
     var doc = snap.docs[0];
     var data = doc.data();
-    if (data.pin !== pin) { showNotif(t('wrongCredentials'), 'error'); return; }
+    if (String(data.pin) !== String(pin)) { showNotif(t('wrongCredentials'), 'error'); return; }
     // Restaurer la session
     monPlayerId = data.playerId;
     localStorage.setItem('virus_player_id', monPlayerId);

@@ -494,6 +494,7 @@ function updateCadavresMultiplayer(cadavres) {
       '" style="width:60px;height:60px;filter:grayscale(100%);transform:rotate(90deg);">';
     div.onclick = function() {
       if (!c.reported && !reunionEnCours) {
+        c.reported = true;
         // Verifier en temps reel que le cadavre n'a pas deja ete signale
         db.collection('cadavres').doc(c._id).get().then(function(doc) {
           if (!doc.exists || doc.data().reported) return;
@@ -609,7 +610,7 @@ function checkEndGame() {
   if (!estHost) return;
   setTimeout(function() {
     var virusAlive = firebasePartyPlayers.filter(function(p) { return p.alive && p.role === 'virus'; }).length;
-    var innocentsAlive = firebasePartyPlayers.filter(function(p) { return p.alive && p.role !== 'virus'; }).length;
+    var innocentsAlive = firebasePartyPlayers.filter(function(p) { return p.alive && p.role !== 'virus' && p.role !== 'fanatique' && p.role !== 'espion'; }).length;
     if (virusAlive === 0 || virusAlive >= innocentsAlive) {
       db.collection('parties').doc(partieActuelleId).update({
         phase: 'finished',

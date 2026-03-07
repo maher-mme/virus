@@ -196,6 +196,7 @@ function ouvrirReunion() {
   // Timer 60 secondes
   var tempsRestant = 60;
   document.getElementById('reunion-timer').textContent = tempsRestant;
+  document.getElementById('reunion-timer').style.color = '';
   reunionTimer = setInterval(function() {
     tempsRestant--;
     document.getElementById('reunion-timer').textContent = tempsRestant;

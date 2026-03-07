@@ -1071,7 +1071,7 @@ function t(key) {
   if (Array.isArray(val)) return val;
   // Remplacer {0}, {1}, etc.
   for (var i = 1; i < arguments.length; i++) {
-    val = val.replace('{' + (i - 1) + '}', arguments[i]);
+    val = val.replace(new RegExp('\\{' + (i - 1) + '\\}', 'g'), arguments[i]);
   }
   return val;
 }

@@ -385,7 +385,7 @@ function updateBots() {
     if (!ghost.element) continue;
 
     // Initialiser cible si pas encore fait
-    if (!ghost.cibleX && !ghost.cibleY) {
+    if (ghost.cibleX === undefined && ghost.cibleY === undefined) {
       var gw = BOT_WAYPOINTS[Math.floor(Math.random() * BOT_WAYPOINTS.length)];
       ghost.cibleX = gw.x + Math.random() * 100 - 50;
       ghost.cibleY = gw.y + Math.random() * 100 - 50;

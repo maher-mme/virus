@@ -44,7 +44,7 @@ function genererMusiqueList() {
         '<div class="musique-item-title">' + m.nom + '</div>' +
         '<div class="musique-item-artist">' + m.artiste + '</div>' +
       '</div>' +
-      '<button class="musique-item-equip">' + (isActive ? t('equip') : t('equip')) + '</button>';
+      '<button class="musique-item-equip"></button>';
     div.querySelector('.musique-item-equip').textContent = isActive ? '✓' : t('equip');
     div.querySelector('.musique-item-equip').onclick = function(e) {
       e.stopPropagation();

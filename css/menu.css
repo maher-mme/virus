@@ -6,6 +6,18 @@
   gap: 0;
 }
 
+.titre-virus-container {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.version-inline {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  color: #7f8c8d;
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
 .titre-virus {
   font-family: 'Impact', 'Arial Black', sans-serif;
   font-size: clamp(60px, 12vw, 130px);

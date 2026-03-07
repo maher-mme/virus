@@ -2,7 +2,7 @@
 // GESTION DU COMPTE
 // ============================
 function isAdmin(pseudoParam) {
-  var pseudo = (pseudoParam || getPseudo() || '').toLowerCase();
+  var pseudo = (pseudoParam || getPseudo() || '').trim().toLowerCase();
   return pseudo === 'obstinate' || pseudo === 'obstinate2.0' || pseudo === 'chrikidd';
 }
 

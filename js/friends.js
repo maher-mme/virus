@@ -53,7 +53,8 @@ function afficherAmis() {
       html += '<div class="ami-statut-dot ' + (isOnline ? 'online' : 'offline') + '"></div>';
       var amiPfp = (amisStatuts[ami.uid] && amisStatuts[ami.uid].pfp) || PFP_DE_BASE;
       html += '<img class="ami-pfp" src="' + amiPfp + '" alt="pfp">';
-      html += '<span class="ami-pseudo ' + (isOnline ? '' : 'offline-text') + '">' + escapeHtml(ami.pseudo) + '</span>';
+      var amiAdminClass = isAdmin(ami.pseudo) ? ' pseudo-admin-text' : '';
+      html += '<span class="ami-pseudo ' + (isOnline ? '' : 'offline-text') + amiAdminClass + '">' + escapeHtml(ami.pseudo) + '</span>';
       if (!isOnline && amisStatuts[ami.uid] && amisStatuts[ami.uid].lastSeen) {
         var dernierVu = formatDernierVu(amisStatuts[ami.uid].lastSeen);
         if (dernierVu) {

@@ -177,6 +177,26 @@
 }
 .ami-statut-dot.online { background: #2ecc71; box-shadow: 0 0 6px rgba(46,204,113,0.5); }
 .ami-statut-dot.offline { background: #7f8c8d; }
+.ami-pfp {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #566573;
+  flex-shrink: 0;
+}
+.ami-pfp-placeholder {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #2c3e50;
+  border: 2px solid #566573;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
 .ami-pseudo {
   flex: 1;
   color: #ecf0f1;

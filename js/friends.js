@@ -51,6 +51,8 @@ function afficherAmis() {
       var isOnline = amisStatuts[ami.uid] && amisStatuts[ami.uid].online;
       html += '<div class="ami-item">';
       html += '<div class="ami-statut-dot ' + (isOnline ? 'online' : 'offline') + '"></div>';
+      var amiPfp = (amisStatuts[ami.uid] && amisStatuts[ami.uid].pfp) || PFP_DE_BASE;
+      html += '<img class="ami-pfp" src="' + amiPfp + '" alt="pfp">';
       html += '<span class="ami-pseudo ' + (isOnline ? '' : 'offline-text') + '">' + escapeHtml(ami.pseudo) + '</span>';
       if (!isOnline && amisStatuts[ami.uid] && amisStatuts[ami.uid].lastSeen) {
         var dernierVu = formatDernierVu(amisStatuts[ami.uid].lastSeen);
@@ -285,7 +287,7 @@ function initAmisListeners() {
             var pData = pDoc.data();
             var ami = mesAmis.find(function(a) { return a.uid === fid; });
             if (ami) ami.online = pData.online || false;
-            amisStatuts[fid] = { online: pData.online || false, pseudo: pData.pseudo, lastSeen: pData.lastSeen || null };
+            amisStatuts[fid] = { online: pData.online || false, pseudo: pData.pseudo, lastSeen: pData.lastSeen || null, pfp: pData.pfp || '' };
           }
           if (panelAmisOuvert && tabAmiActif !== 'demandes') afficherAmis();
         });

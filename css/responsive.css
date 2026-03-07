@@ -648,6 +648,17 @@
     height: 38px;
     width: 38px;
   }
+  .pfp-preview-container {
+    width: 80px;
+    height: 80px;
+  }
+  .pfp-preview-placeholder {
+    font-size: 32px;
+  }
+  .pfp-import-btn {
+    font-size: 11px;
+    padding: 7px 16px;
+  }
 
   /* ============================== */
   /* MINI-JEUX RESPONSIVE           */

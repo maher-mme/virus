@@ -138,6 +138,11 @@ function connecterCompte() {
         }
       });
     }
+    // Restaurer la photo de profil
+    if (data.pfp) {
+      localStorage.setItem('virusPfp', data.pfp);
+      afficherPfpPartout();
+    }
     // Mettre en ligne
     db.collection('players').doc(monPlayerId).update({
       online: true,
@@ -190,6 +195,7 @@ function deconnecterCompte() {
   localStorage.removeItem('virusGold');
   localStorage.removeItem('virusSkinsAchetes');
   localStorage.removeItem('virusMusiquesAchetees');
+  localStorage.removeItem('virusPfp');
   localStorage.removeItem('virus_player_id');
   // Nettoyer les donnees en memoire
   mesAmis = [];
@@ -328,6 +334,7 @@ function supprimerCompte() {
     localStorage.removeItem('virusGold');
     localStorage.removeItem('virusSkinsAchetes');
     localStorage.removeItem('virusMusiquesAchetees');
+    localStorage.removeItem('virusPfp');
     localStorage.removeItem('virus_player_id');
     mesAmis = [];
     demandesEnAttente = [];
@@ -371,6 +378,7 @@ function initFirebaseAuth() {
       gold: goldActuel,
       skinsAchetes: skinsActuels,
       musiquesAchetees: musiquesActuelles,
+      pfp: localStorage.getItem('virusPfp') || '',
       lastSeen: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true }).then(function() {
       initAmisListeners();
@@ -390,6 +398,7 @@ function initCompteEtFirebase() {
       display.classList.add('pseudo-admin-text');
     }
     appliquerSkinPartout();
+    afficherPfpPartout();
     showScreen('menu-principal');
     // Verifier si le joueur a un PIN, sinon notifier
     setTimeout(function() {

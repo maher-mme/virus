@@ -96,4 +96,122 @@ function switchCasierTab(tab) {
   document.getElementById('casier-tab-' + tab).classList.add('active');
   document.getElementById('casier-content-' + tab).classList.add('active');
   if (tab === 'musique') genererMusiqueList();
+  if (tab === 'pfp') chargerPfpDansCasier();
+}
+
+// ============================
+// SYSTEME DE PHOTO DE PROFIL (PFP)
+// ============================
+var PFP_MAX_SIZE = 80;
+var PFP_QUALITY = 0.7;
+var PFP_DE_BASE = 'assets/pfp_de_base.png';
+
+function getPfp() {
+  return localStorage.getItem('virusPfp') || PFP_DE_BASE;
+}
+
+function setPfp(base64) {
+  localStorage.setItem('virusPfp', base64);
+  afficherPfpPartout();
+  if (typeof db !== 'undefined' && typeof monPlayerId !== 'undefined' && monPlayerId) {
+    db.collection('players').doc(monPlayerId).update({ pfp: base64 }).catch(function() {});
+  }
+}
+
+function supprimerPfp() {
+  localStorage.removeItem('virusPfp');
+  afficherPfpPartout();
+  if (typeof db !== 'undefined' && typeof monPlayerId !== 'undefined' && monPlayerId) {
+    db.collection('players').doc(monPlayerId).update({ pfp: '' }).catch(function() {});
+  }
+  var previewImg = document.getElementById('pfp-preview-img');
+  var btnSupprimer = document.getElementById('pfp-supprimer-btn');
+  var placeholder = document.getElementById('pfp-preview-placeholder');
+  if (previewImg) {
+    previewImg.src = PFP_DE_BASE;
+    previewImg.style.display = 'block';
+  }
+  if (placeholder) placeholder.style.display = 'none';
+  if (btnSupprimer) btnSupprimer.style.display = 'none';
+  showNotif(t('pfpRemoved'), 'info');
+}
+
+function handlePfpFileSelect(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) {
+    showNotif(t('pfpInvalidFile'), 'warn');
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    showNotif(t('pfpFileTooLarge'), 'warn');
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    redimensionnerImage(e.target.result, PFP_MAX_SIZE, PFP_QUALITY, function(base64Resized) {
+      setPfp(base64Resized);
+      var previewImg = document.getElementById('pfp-preview-img');
+      var placeholder = document.getElementById('pfp-preview-placeholder');
+      var btnSupprimer = document.getElementById('pfp-supprimer-btn');
+      if (previewImg) {
+        previewImg.src = base64Resized;
+        previewImg.style.display = 'block';
+      }
+      if (placeholder) placeholder.style.display = 'none';
+      if (btnSupprimer) btnSupprimer.style.display = 'inline-block';
+      showNotif(t('pfpSaved'), 'success');
+    });
+  };
+  reader.readAsDataURL(file);
+  // Reset input pour permettre de re-selectionner le meme fichier
+  event.target.value = '';
+}
+
+function redimensionnerImage(dataUrl, maxSize, quality, callback) {
+  var img = new Image();
+  img.onload = function() {
+    var canvas = document.createElement('canvas');
+    var srcSize = Math.min(img.width, img.height);
+    var srcX = (img.width - srcSize) / 2;
+    var srcY = (img.height - srcSize) / 2;
+    canvas.width = maxSize;
+    canvas.height = maxSize;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, srcX, srcY, srcSize, srcSize, 0, 0, maxSize, maxSize);
+    var result = canvas.toDataURL('image/jpeg', quality);
+    callback(result);
+  };
+  img.src = dataUrl;
+}
+
+function afficherPfpPartout() {
+  var pfp = getPfp();
+  var compteImg = document.getElementById('compte-avatar-pfp');
+  var compteEmoji = document.getElementById('compte-avatar-emoji');
+  if (compteImg && compteEmoji) {
+    if (pfp) {
+      compteImg.src = pfp;
+      compteImg.style.display = 'block';
+      compteEmoji.style.display = 'none';
+    } else {
+      compteImg.style.display = 'none';
+      compteEmoji.style.display = '';
+    }
+  }
+}
+
+function chargerPfpDansCasier() {
+  var pfpPerso = localStorage.getItem('virusPfp');
+  var pfp = pfpPerso || PFP_DE_BASE;
+  var previewImg = document.getElementById('pfp-preview-img');
+  var placeholder = document.getElementById('pfp-preview-placeholder');
+  var btnSupprimer = document.getElementById('pfp-supprimer-btn');
+  if (previewImg) {
+    previewImg.src = pfp;
+    previewImg.style.display = 'block';
+  }
+  if (placeholder) placeholder.style.display = 'none';
+  // Montrer le bouton supprimer seulement si une PFP perso est definie
+  if (btnSupprimer) btnSupprimer.style.display = pfpPerso ? 'inline-block' : 'none';
 }

@@ -327,6 +327,14 @@
   justify-content: center;
   font-size: 36px;
   box-shadow: 0 0 20px rgba(231,76,60,0.3);
+  overflow: hidden;
+  position: relative;
+}
+.compte-avatar-pfp {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .compte-champ {

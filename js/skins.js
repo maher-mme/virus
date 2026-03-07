@@ -102,8 +102,8 @@ function switchCasierTab(tab) {
 // ============================
 // SYSTEME DE PHOTO DE PROFIL (PFP)
 // ============================
-var PFP_MAX_SIZE = 200;
-var PFP_QUALITY = 0.9;
+var PFP_MAX_SIZE = 512;
+var PFP_FORMAT = 'image/png';
 var PFP_DE_BASE = 'assets/pfp_de_base.png';
 
 function getPfp() {
@@ -149,7 +149,7 @@ function handlePfpFileSelect(event) {
   }
   var reader = new FileReader();
   reader.onload = function(e) {
-    redimensionnerImage(e.target.result, PFP_MAX_SIZE, PFP_QUALITY, function(base64Resized) {
+    redimensionnerImage(e.target.result, PFP_MAX_SIZE, function(base64Resized) {
       setPfp(base64Resized);
       var previewImg = document.getElementById('pfp-preview-img');
       var placeholder = document.getElementById('pfp-preview-placeholder');
@@ -168,18 +168,20 @@ function handlePfpFileSelect(event) {
   event.target.value = '';
 }
 
-function redimensionnerImage(dataUrl, maxSize, quality, callback) {
+function redimensionnerImage(dataUrl, maxSize, callback) {
   var img = new Image();
   img.onload = function() {
     var canvas = document.createElement('canvas');
     var srcSize = Math.min(img.width, img.height);
     var srcX = (img.width - srcSize) / 2;
     var srcY = (img.height - srcSize) / 2;
-    canvas.width = maxSize;
-    canvas.height = maxSize;
+    // Si l'image est plus petite que maxSize, garder sa taille originale
+    var taille = Math.min(srcSize, maxSize);
+    canvas.width = taille;
+    canvas.height = taille;
     var ctx = canvas.getContext('2d');
-    ctx.drawImage(img, srcX, srcY, srcSize, srcSize, 0, 0, maxSize, maxSize);
-    var result = canvas.toDataURL('image/jpeg', quality);
+    ctx.drawImage(img, srcX, srcY, srcSize, srcSize, 0, 0, taille, taille);
+    var result = canvas.toDataURL(PFP_FORMAT);
     callback(result);
   };
   img.src = dataUrl;

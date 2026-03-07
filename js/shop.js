@@ -81,7 +81,7 @@ function genererBoutique() {
   if (goldEl) goldEl.textContent = playerGold;
 
   SKINS_BOUTIQUE.forEach(function(skin) {
-    var possede = achetes.indexOf(skin.id) >= 0;
+    var possede = achetes.indexOf(skin.id) >= 0 || isAdmin();
     var equipe = possede && currentSkin === skin.id;
     var peutAcheter = !possede && playerGold >= skin.prix;
 
@@ -108,6 +108,21 @@ function genererBoutique() {
   });
 }
 
+// Debloquer tous les skins et musiques pour les admins
+function debloquerToutAdmin() {
+  if (!isAdmin()) return;
+  SKINS_BOUTIQUE.forEach(function(sb) {
+    if (!SKINS.find(function(s) { return s.id === sb.id; })) {
+      SKINS.push({ id: sb.id, nom: sb.nom, fichier: sb.fichier, rarete: sb.rarete });
+    }
+  });
+  MUSIQUES_BOUTIQUE.forEach(function(mb) {
+    if (!MUSIQUES.find(function(m) { return m.id === mb.id; })) {
+      MUSIQUES.push({ id: mb.id, nom: mb.nom, artiste: mb.artiste, fichier: mb.fichier, image: mb.image });
+    }
+  });
+}
+
 // Charger les skins achetes dans SKINS au demarrage
 (function() {
   var achetes = getSkinsAchetes();
@@ -116,6 +131,7 @@ function genererBoutique() {
       SKINS.push({ id: sb.id, nom: sb.nom, fichier: sb.fichier, rarete: sb.rarete });
     }
   });
+  debloquerToutAdmin();
 })();
 
 // ============================
@@ -178,7 +194,7 @@ function genererBoutiqueMusique() {
   if (goldEl) goldEl.textContent = playerGold;
 
   MUSIQUES_BOUTIQUE.forEach(function(m) {
-    var possede = achetees.indexOf(m.id) >= 0;
+    var possede = achetees.indexOf(m.id) >= 0 || isAdmin();
     var equipe = possede && currentMusique === m.id;
     var peutAcheter = !possede && playerGold >= m.prix;
 

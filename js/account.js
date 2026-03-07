@@ -152,6 +152,7 @@ function connecterCompte() {
     var btnAmis = document.getElementById('btn-amis');
     if (btnAmis) btnAmis.style.display = 'flex';
     appliquerSkinPartout();
+    if (typeof debloquerToutAdmin === 'function') debloquerToutAdmin();
     showScreen('menu-principal');
     showNotif(t('loggedIn'), 'success');
   }).catch(function(err) {
@@ -401,6 +402,7 @@ function initCompteEtFirebase() {
     }
     appliquerSkinPartout();
     afficherPfpPartout();
+    if (typeof debloquerToutAdmin === 'function') debloquerToutAdmin();
     showScreen('menu-principal');
     // Verifier si le joueur a un PIN, sinon notifier
     setTimeout(function() {

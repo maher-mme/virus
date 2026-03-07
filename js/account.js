@@ -393,9 +393,11 @@ function initCompteEtFirebase() {
   var pseudo = getPseudo();
   if (pseudo) {
     var display = document.getElementById('pseudo-display');
-    display.textContent = pseudo;
-    if (isAdmin()) {
-      display.classList.add('pseudo-admin-text');
+    if (display) {
+      display.textContent = pseudo;
+      if (isAdmin()) {
+        display.classList.add('pseudo-admin-text');
+      }
     }
     appliquerSkinPartout();
     afficherPfpPartout();

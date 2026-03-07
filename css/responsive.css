@@ -549,29 +549,32 @@
     right: 5px;
     left: 5px;
     width: auto;
-    max-height: 30vh;
+    max-height: 45vh;
   }
   .reunion-chat-messages {
-    min-height: 50px;
-    max-height: 16vh;
-    font-size: 11px;
+    min-height: 80px;
+    max-height: 30vh;
+    font-size: 13px;
+    padding: 10px 12px;
+    gap: 8px;
   }
   .reunion-chat-header {
-    padding: 3px 8px;
+    padding: 5px 15px;
   }
   .reunion-chat-header h4 {
-    font-size: 9px;
+    font-size: 11px;
   }
   .reunion-chat-input {
-    padding: 4px;
+    padding: 6px;
   }
   .reunion-chat-input input {
-    font-size: 12px;
-    padding: 6px 8px;
+    font-size: 14px;
+    padding: 8px 10px;
   }
   .reunion-chat-input button {
-    width: 28px;
-    height: 28px;
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
   }
   .reunion-btn-skip {
     bottom: 12px;

@@ -3,7 +3,7 @@
 // ============================
 function isAdmin(pseudoParam) {
   var pseudo = (pseudoParam || getPseudo() || '').trim().toLowerCase();
-  return pseudo === 'obstinate' || pseudo === 'obstinate2.0' || pseudo === 'chrikidd';
+  return pseudo === 'obstinate' || pseudo === 'obstinate2.0' || pseudo === 'chrikidd77';
 }
 
 function getPseudo() {

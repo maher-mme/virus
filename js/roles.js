@@ -717,9 +717,9 @@ function ajouterMsgReunion(auteur, message, couleur, isGhost) {
   var reunionAdminClass = isAdmin(auteur) ? ' pseudo-admin-text' : '';
   var pseudoStyle = reunionAdminClass ? '' : ' style="color:' + (couleur || (isGhost ? '#7f8c8d' : '#e74c3c')) + '"';
   if (isGhost) {
-    div.innerHTML = '<span class="ghost-tag">' + t('ghostTag') + '</span> <span class="pseudo' + reunionAdminClass + '"' + pseudoStyle + '>[' + auteur.replace(/</g, '&lt;') + ']:</span> <span class="texte">' + message.replace(/</g, '&lt;') + '</span>';
+    div.innerHTML = '<span class="ghost-tag">' + t('ghostTag') + '</span> <span class="pseudo' + reunionAdminClass + '"' + pseudoStyle + '>[' + escapeHtml(auteur) + ']:</span> <span class="texte">' + escapeHtml(message) + '</span>';
   } else {
-    div.innerHTML = '<span class="pseudo' + reunionAdminClass + '"' + pseudoStyle + '>[' + auteur.replace(/</g, '&lt;') + ']:</span> <span class="texte">' + message.replace(/</g, '&lt;') + '</span>';
+    div.innerHTML = '<span class="pseudo' + reunionAdminClass + '"' + pseudoStyle + '>[' + escapeHtml(auteur) + ']:</span> <span class="texte">' + escapeHtml(message) + '</span>';
   }
   container.appendChild(div);
   container.scrollTop = container.scrollHeight;
@@ -733,6 +733,11 @@ function envoyerMsgReunion() {
   var input = document.getElementById('reunion-chat-input');
   var msg = input.value.trim();
   if (!msg) return;
+  if (msg.length > (typeof CHAT_MAX_LENGTH !== 'undefined' ? CHAT_MAX_LENGTH : 200)) {
+    showNotif('Message trop long.', 'warn');
+    return;
+  }
+  if (typeof chatAntiSpam === 'function' && !chatAntiSpam()) return;
   var pseudo = getPseudo() || t('player');
   var suisFantome = joueursElimines.indexOf(pseudo) >= 0;
   var msgFiltre = filtrerMessage(msg);

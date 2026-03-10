@@ -420,7 +420,7 @@ function createRemotePlayerElement(p) {
   div.style.left = p.x + 'px';
   div.style.top = p.y + 'px';
   var adminClass = isAdmin(p.pseudo) ? ' pseudo-admin' : '';
-  div.innerHTML = '<div class="bot-pseudo' + adminClass + '">' + p.pseudo.replace(/</g, '&lt;') + '</div>' +
+  div.innerHTML = '<div class="bot-pseudo' + adminClass + '">' + escapeHtml(p.pseudo) + '</div>' +
     '<img src="' + (p.skin || 'skin/gratuit/skin-de-base-garcon.svg') +
     '" class="bot-skin" style="width:60px;height:60px;">';
   container.appendChild(div);
@@ -677,7 +677,7 @@ function updateSalleAttenteUI(players) {
       var hostLabel = p.isHost ? ' (Host)' : '';
       var listAdminClass = isAdmin(p.pseudo) ? ' pseudo-admin-text' : '';
       html += '<div class="sa-joueur-item connecte">&#9679; <span class="' + listAdminClass.trim() + '">' +
-        p.pseudo.replace(/</g, '&lt;') + '</span>' + hostLabel + '</div>';
+        escapeHtml(p.pseudo) + '</span>' + hostLabel + '</div>';
     });
     for (var i = players.length; i < maxJ; i++) {
       html += '<div class="sa-joueur-item attente">&#9675; ' + t('waiting') + '</div>';
@@ -728,7 +728,7 @@ function renderWaitingRoomPlayers(players) {
       var saAdminClass = isAdmin(p.pseudo) ? ' pseudo-admin-text' : '';
       var saDir = p.saDirection === -1 ? 'scaleX(-1)' : 'scaleX(1)';
       div.innerHTML = '<div class="' + saAdminClass.trim() + '" style="font-size:10px;color:#fff;margin-bottom:2px;">' +
-        p.pseudo.replace(/</g, '&lt;') + '</div>' +
+        escapeHtml(p.pseudo) + '</div>' +
         '<img src="' + (p.skin || 'skin/gratuit/skin-de-base-garcon.svg') +
         '" style="width:48px;height:48px;transform:' + saDir + ';" alt="skin">';
       container.appendChild(div);
@@ -754,8 +754,8 @@ function updateChatUI(messages, context) {
     var div = document.createElement('div');
     div.className = 'chat-message' + (msg.isSystem ? ' system' : '');
     var chatAdminClass = isAdmin(msg.pseudo) ? ' pseudo-admin-text' : '';
-    div.innerHTML = '<strong class="' + chatAdminClass.trim() + '">' + msg.pseudo.replace(/</g, '&lt;') + ':</strong> ' +
-      msg.message.replace(/</g, '&lt;');
+    div.innerHTML = '<strong class="' + chatAdminClass.trim() + '">' + escapeHtml(msg.pseudo) + ':</strong> ' +
+      escapeHtml(msg.message);
     chatDiv.appendChild(div);
   });
   chatDiv.scrollTop = chatDiv.scrollHeight;

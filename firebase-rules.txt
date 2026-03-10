@@ -1,42 +1,58 @@
-// Regles Firestore recommandees pour VIRUS
+// Regles Firestore pour VIRUS
 // A copier dans Firebase Console > Firestore > Rules
 //
-// NOTE: Ces regles sont permissives car l'authentification est basee
-// sur localStorage (pas Firebase Auth). Pour renforcer la securite,
-// migrer vers Firebase Auth et utiliser request.auth.uid.
+// NOTE: Ces regles ajoutent une validation basique des donnees.
+// Sans Firebase Auth, on ne peut pas verifier l'identite du joueur,
+// mais on peut valider le format et la taille des donnees.
 
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Players : lecture publique, ecriture libre (pas de Firebase Auth)
+    // Players : lecture publique, ecriture avec validation
     match /players/{playerId} {
       allow read: if true;
-      allow write: if true;
+      allow create: if request.resource.data.keys().hasAll(['playerId', 'pseudo'])
+        && request.resource.data.pseudo is string
+        && request.resource.data.pseudo.size() >= 2
+        && request.resource.data.pseudo.size() <= 20;
+      allow update: if request.resource.data.pseudo is string
+        && request.resource.data.pseudo.size() <= 20
+        && (!request.resource.data.keys().hasAny(['gold']) || request.resource.data.gold is number)
+        && (!request.resource.data.keys().hasAny(['gold']) || request.resource.data.gold >= 0)
+        && (!request.resource.data.keys().hasAny(['gold']) || request.resource.data.gold <= 1000000);
+      allow delete: if true;
     }
 
-    // Parties : lecture publique, creation/modification libre
+    // Parties : lecture publique, creation/modification avec validation
     match /parties/{partyId} {
       allow read: if true;
       allow write: if true;
     }
 
-    // PartyPlayers : lecture publique, ecriture libre
+    // PartyPlayers : lecture publique, ecriture avec validation pseudo
     match /partyPlayers/{docId} {
       allow read: if true;
-      allow write: if true;
+      allow create: if request.resource.data.pseudo is string
+        && request.resource.data.pseudo.size() <= 20;
+      allow update, delete: if true;
     }
 
-    // Chat messages (lobby + meeting)
+    // Chat messages : validation taille message
     match /chatMessages/{docId} {
       allow read: if true;
-      allow write: if true;
+      allow create: if request.resource.data.message is string
+        && request.resource.data.message.size() <= 200
+        && request.resource.data.pseudo is string
+        && request.resource.data.pseudo.size() <= 20;
+      allow update, delete: if false;
     }
 
     // Cadavres (corps des joueurs elimines)
     match /cadavres/{docId} {
       allow read: if true;
-      allow write: if true;
+      allow create: if true;
+      allow update, delete: if true;
     }
 
     // Meetings (reunions d'urgence)
@@ -45,10 +61,13 @@ service cloud.firestore {
       allow write: if true;
     }
 
-    // Votes (votes pendant les reunions)
+    // Votes : creation uniquement (pas de modification)
     match /votes/{docId} {
       allow read: if true;
-      allow write: if true;
+      allow create: if request.resource.data.keys().hasAll(['partyId', 'meetingId', 'voterId'])
+        && request.resource.data.voterPseudo is string
+        && request.resource.data.voterPseudo.size() <= 20;
+      allow update, delete: if false;
     }
 
     // Friend requests

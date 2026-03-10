@@ -53,15 +53,27 @@ function acheterSkin(skinId) {
   var achetes = getSkinsAchetes();
   if (achetes.indexOf(skinId) >= 0) return;
   if (playerGold < skinBoutique.prix) return;
-  playerGold -= skinBoutique.prix;
-  sauvegarderGold();
-  achetes.push(skinId);
-  sauvegarderSkinsAchetes(achetes);
-  // Ajouter au tableau SKINS pour pouvoir l'equiper
-  if (!SKINS.find(function(s) { return s.id === skinId; })) {
-    SKINS.push({ id: skinBoutique.id, nom: skinBoutique.nom, fichier: skinBoutique.fichier, rarete: skinBoutique.rarete });
-  }
-  genererBoutique();
+  // Verification anti-triche : valider le gold depuis Firebase
+  if (!monPlayerId) return;
+  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+    if (!doc.exists) return;
+    var goldFirebase = doc.data().gold || 0;
+    if (goldFirebase < skinBoutique.prix) {
+      playerGold = goldFirebase;
+      sauvegarderGold();
+      showNotif('Solde insuffisant.', 'error');
+      genererBoutique();
+      return;
+    }
+    playerGold = goldFirebase - skinBoutique.prix;
+    sauvegarderGold();
+    achetes.push(skinId);
+    sauvegarderSkinsAchetes(achetes);
+    if (!SKINS.find(function(s) { return s.id === skinId; })) {
+      SKINS.push({ id: skinBoutique.id, nom: skinBoutique.nom, fichier: skinBoutique.fichier, rarete: skinBoutique.rarete });
+    }
+    genererBoutique();
+  }).catch(function() {});
 }
 
 function equiperSkinBoutique(skinId) {
@@ -166,15 +178,28 @@ function acheterMusique(musiqueId) {
   var achetees = getMusiquesAchetees();
   if (achetees.indexOf(musiqueId) >= 0) return;
   if (playerGold < mBoutique.prix) return;
-  playerGold -= mBoutique.prix;
-  sauvegarderGold();
-  achetees.push(musiqueId);
-  sauvegarderMusiquesAchetees(achetees);
-  if (!MUSIQUES.find(function(m) { return m.id === musiqueId; })) {
-    MUSIQUES.push({ id: mBoutique.id, nom: mBoutique.nom, artiste: mBoutique.artiste, fichier: mBoutique.fichier, image: mBoutique.image });
-  }
-  showNotif(t('notif.musicPurchased', mBoutique.nom), 'success');
-  genererBoutiqueMusique();
+  // Verification anti-triche : valider le gold depuis Firebase
+  if (!monPlayerId) return;
+  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+    if (!doc.exists) return;
+    var goldFirebase = doc.data().gold || 0;
+    if (goldFirebase < mBoutique.prix) {
+      playerGold = goldFirebase;
+      sauvegarderGold();
+      showNotif('Solde insuffisant.', 'error');
+      genererBoutiqueMusique();
+      return;
+    }
+    playerGold = goldFirebase - mBoutique.prix;
+    sauvegarderGold();
+    achetees.push(musiqueId);
+    sauvegarderMusiquesAchetees(achetees);
+    if (!MUSIQUES.find(function(m) { return m.id === musiqueId; })) {
+      MUSIQUES.push({ id: mBoutique.id, nom: mBoutique.nom, artiste: mBoutique.artiste, fichier: mBoutique.fichier, image: mBoutique.image });
+    }
+    showNotif(t('notif.musicPurchased', mBoutique.nom), 'success');
+    genererBoutiqueMusique();
+  }).catch(function() {});
 }
 
 function equiperMusiqueBoutique(musiqueId) {

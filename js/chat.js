@@ -27,11 +27,33 @@ function filtrerMessage(msg) {
   return msgFiltre;
 }
 
+// Anti-spam : max 3 messages par 5 secondes
+var _chatTimestamps = [];
+var CHAT_MAX_MSG = 3;
+var CHAT_COOLDOWN = 5000;
+var CHAT_MAX_LENGTH = 200;
+
+function chatAntiSpam() {
+  var now = Date.now();
+  _chatTimestamps = _chatTimestamps.filter(function(t) { return now - t < CHAT_COOLDOWN; });
+  if (_chatTimestamps.length >= CHAT_MAX_MSG) {
+    showNotif('Trop de messages, attends un peu.', 'warn');
+    return false;
+  }
+  _chatTimestamps.push(now);
+  return true;
+}
+
 // Chat
 function sendChat() {
   const input = document.getElementById('chat-input');
   const msg = input.value.trim();
   if (!msg) return;
+  if (msg.length > CHAT_MAX_LENGTH) {
+    showNotif('Message trop long (max ' + CHAT_MAX_LENGTH + ' caracteres).', 'warn');
+    return;
+  }
+  if (!chatAntiSpam()) return;
   var msgFiltre = filtrerMessage(msg);
   input.value = '';
 
@@ -54,7 +76,7 @@ function sendChat() {
     var monPseudo = getPseudo() || 'Vous';
     var pseudoClass = isAdmin() ? 'pseudo pseudo-admin-text' : 'pseudo';
     var pseudoStyle = isAdmin() ? '' : ' style="color:#e74c3c"';
-    div.innerHTML = '<span class="' + pseudoClass + '"' + pseudoStyle + '>[' + monPseudo.replace(/</g, '&lt;') + ']:</span> <span class="texte">' + msgFiltre.replace(/</g, '&lt;') + '</span>';
+    div.innerHTML = '<span class="' + pseudoClass + '"' + pseudoStyle + '>[' + escapeHtml(monPseudo) + ']:</span> <span class="texte">' + escapeHtml(msgFiltre) + '</span>';
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
     try { var sChat = new Audio(Math.random() < 0.5 ? 'Audio/chat1.mp3' : 'Audio/chat2.mp3'); sChat.volume = 0.4; sChat.play(); } catch(e) {}

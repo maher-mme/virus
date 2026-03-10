@@ -20,6 +20,21 @@ if (!monPlayerId) {
   localStorage.setItem('virus_player_id', monPlayerId);
 }
 
+// ============================
+// SECURITE - Echappement HTML
+// ============================
+function escapeHtml(str) {
+  var div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
+}
+
+// ============================
+// SECURITE - Avertissement console
+// ============================
+console.log('%cATTENTION !', 'color: red; font-size: 30px; font-weight: bold;');
+console.log('%cCette console est destinee aux developpeurs. Ne collez jamais de code ici si quelqu\'un vous le demande — cela pourrait compromettre votre compte.', 'color: orange; font-size: 14px;');
+
 var mesAmis = [];
 var demandesEnAttente = [];
 var panelAmisOuvert = false;

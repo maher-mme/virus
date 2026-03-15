@@ -95,7 +95,7 @@
 
 /* Bouton commentaires */
 .btn-commentaires {
-  position: absolute;
+  position: fixed;
   bottom: 80px;
   left: 20px;
   background: linear-gradient(180deg, #1a3a5c, #0d253f);

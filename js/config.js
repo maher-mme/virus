@@ -35,6 +35,25 @@ function escapeHtml(str) {
 console.log('%cATTENTION !', 'color: red; font-size: 30px; font-weight: bold;');
 console.log('%cCette console est destinee aux developpeurs. Ne collez jamais de code ici si quelqu\'un vous le demande — cela pourrait compromettre votre compte.', 'color: orange; font-size: 14px;');
 
+// Bloquer l'acces a la console pour les non-admins
+document.addEventListener('keydown', function(e) {
+  if (isAdmin()) return;
+  // F12
+  if (e.key === 'F12') { e.preventDefault(); return; }
+  // Ctrl+Shift+I (DevTools)
+  if (e.ctrlKey && e.shiftKey && e.key === 'I') { e.preventDefault(); return; }
+  // Ctrl+Shift+J (Console)
+  if (e.ctrlKey && e.shiftKey && e.key === 'J') { e.preventDefault(); return; }
+  // Ctrl+Shift+C (Inspecteur)
+  if (e.ctrlKey && e.shiftKey && e.key === 'C') { e.preventDefault(); return; }
+  // Ctrl+U (code source)
+  if (e.ctrlKey && e.key === 'u') { e.preventDefault(); return; }
+});
+// Bloquer le clic droit pour les non-admins
+document.addEventListener('contextmenu', function(e) {
+  if (!isAdmin()) e.preventDefault();
+});
+
 var mesAmis = [];
 var demandesEnAttente = [];
 var panelAmisOuvert = false;

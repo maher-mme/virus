@@ -304,7 +304,8 @@ function ouvrirParams() {
   var sectionPin = document.getElementById('section-set-pin');
   if (sectionPin) {
     db.collection('players').doc(monPlayerId).get().then(function(doc) {
-      if (doc.exists && !doc.data().pin) {
+      var p = doc.exists ? doc.data().pin : null;
+      if (doc.exists && (p === undefined || p === null || p === '')) {
         sectionPin.style.display = '';
       } else {
         sectionPin.style.display = 'none';
@@ -410,7 +411,8 @@ function initCompteEtFirebase() {
     // Verifier si le joueur a un PIN, sinon notifier
     setTimeout(function() {
       db.collection('players').doc(monPlayerId).get().then(function(doc) {
-        if (doc.exists && !doc.data().pin) {
+        var pin = doc.exists ? doc.data().pin : null;
+        if (doc.exists && (pin === undefined || pin === null || pin === '')) {
           showNotif(t('setPinNotif'), 'warn');
         }
       }).catch(function() {});

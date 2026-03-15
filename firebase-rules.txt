@@ -87,5 +87,16 @@ service cloud.firestore {
       allow read: if true;
       allow write: if true;
     }
+
+    // Commentaires sur le jeu
+    match /comments/{docId} {
+      allow read: if true;
+      allow create: if request.resource.data.message is string
+        && request.resource.data.message.size() <= 300
+        && request.resource.data.pseudo is string
+        && request.resource.data.pseudo.size() <= 20;
+      allow delete: if true;
+      allow update: if false;
+    }
   }
 }

@@ -62,8 +62,9 @@ function creerCompte() {
   if (pseudo.length < 2) { alert(t('vPseudoTooShort')); return; }
   if (!pin) { showNotif(t('vPinRequired'), 'warn'); return; }
   if (pin.length < 5 || pin.length > 10) { showNotif(t('vPinInvalid'), 'warn'); return; }
-  // Verifier dans Firebase si le pseudo existe deja
-  db.collection('players').where('pseudo', '==', pseudo).limit(1).get().then(function(snap) {
+  // Verifier dans Firebase si le pseudo existe deja (insensible a la casse)
+  var pseudoLower = pseudo.toLowerCase();
+  db.collection('players').where('pseudoLower', '==', pseudoLower).limit(1).get().then(function(snap) {
     if (!snap.empty) {
       showNotif(t('pseudoTaken'), 'warn');
       return;
@@ -76,6 +77,7 @@ function creerCompte() {
     db.collection('players').doc(monPlayerId).set({
       playerId: monPlayerId,
       pseudo: pseudo,
+      pseudoLower: pseudoLower,
       pin: pin,
       skin: getSkinFichier(skinAleatoire),
       online: true,
@@ -99,7 +101,7 @@ function connecterCompte() {
   var pin = document.getElementById('input-pin-compte').value.trim();
   if (!pseudo) { showNotif(t('vChoosePseudo'), 'warn'); return; }
   if (!pin) { showNotif(t('vPinRequired'), 'warn'); return; }
-  db.collection('players').where('pseudo', '==', pseudo).limit(1).get().then(function(snap) {
+  db.collection('players').where('pseudoLower', '==', pseudo.toLowerCase()).limit(1).get().then(function(snap) {
     if (snap.empty) { showNotif(t('accountNotFound'), 'error'); return; }
     var doc = snap.docs[0];
     var data = doc.data();
@@ -374,6 +376,7 @@ function initFirebaseAuth() {
     db.collection('players').doc(monPlayerId).set({
       playerId: monPlayerId,
       pseudo: pseudo,
+      pseudoLower: pseudo.toLowerCase(),
       skin: getSkinFichier(getSkin()),
       online: true,
       gold: goldActuel,

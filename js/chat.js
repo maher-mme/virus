@@ -67,7 +67,12 @@ function sendChat() {
       context: reunionEnCours ? 'meeting' : 'lobby',
       isSystem: false,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    }).catch(function() {});
+    }).then(function() {
+      console.log('Message chat envoye');
+    }).catch(function(err) {
+      console.error('Erreur envoi chat:', err);
+      showNotif('Erreur envoi message', 'warn');
+    });
   } else {
     // Mode hors ligne : affichage local
     const container = document.getElementById('chat-messages');

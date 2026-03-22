@@ -338,6 +338,13 @@ function handleGameStateUpdate(state) {
 
 // Lancer le jeu en mode multiplayer
 function lancerJeuMultiplayer(state) {
+  // Nettoyer les joueurs distants precedents
+  for (var pid in remotePlayers) {
+    var el = document.getElementById('remote-' + pid);
+    if (el) el.remove();
+  }
+  remotePlayers = {};
+
   // Trouver mon role depuis les partyPlayers
   var myPlayer = firebasePartyPlayers.find(function(p) { return p.playerId === monPlayerId; });
   monRole = (myPlayer && myPlayer.role) || 'innocent';
@@ -374,6 +381,37 @@ function lancerJeuMultiplayer(state) {
   } else {
     showNotif(t('youAreInnocent'), 'info');
   }
+
+  // Afficher le pseudo du joueur local
+  var pseudo = getPseudo() || t('player');
+  var pseudoLabel = document.getElementById('joueur-pseudo-label');
+  if (pseudoLabel) {
+    pseudoLabel.textContent = pseudo;
+    if (isAdmin()) {
+      pseudoLabel.classList.add('pseudo-admin');
+    } else {
+      pseudoLabel.classList.remove('pseudo-admin');
+    }
+  }
+
+  // Appliquer le skin du joueur local
+  if (typeof appliquerSkinPartout === 'function') appliquerSkinPartout();
+  if (typeof updateJoueur === 'function') updateJoueur();
+
+  // Reset UI reunion au demarrage
+  var skipBtn = document.getElementById('reunion-btn-skip');
+  if (skipBtn) skipBtn.classList.remove('visible');
+  var bandeauR = document.getElementById('reunion-bandeau');
+  if (bandeauR) bandeauR.classList.remove('visible');
+  var chatR = document.getElementById('reunion-chat');
+  if (chatR) chatR.classList.remove('visible');
+  var resultatR = document.getElementById('reunion-resultat');
+  if (resultatR) { resultatR.classList.remove('visible'); resultatR.style.display = 'none'; }
+
+  // Build collision
+  requestAnimationFrame(function() {
+    if (typeof buildCollisionData === 'function') buildCollisionData();
+  });
 
   // Initialiser les missions
   initMissions();
@@ -431,6 +469,9 @@ function handleSinglePlayerUpdate(p) {
 function createRemotePlayerElement(p) {
   var container = document.getElementById('mall-map');
   if (!container) return;
+  // Eviter les doublons DOM
+  var existant = document.getElementById('remote-' + p.playerId);
+  if (existant) existant.remove();
   var div = document.createElement('div');
   div.id = 'remote-' + p.playerId;
   div.className = 'bot';

@@ -1,8 +1,6 @@
 // ============================
 // SYSTEME DE NIVEAUX / XP
 // ============================
-var XP_PAR_PARTIE = 10;
-var XP_PAR_VICTOIRE = 20;
 var XP_PAR_KILL = 5;
 var GOLD_PAR_NIVEAU = 50;
 
@@ -236,8 +234,12 @@ function enregistrerStatsFinPartie(gagnant) {
     incrementerStat('wins');
   }
 
-  // XP : 10 par partie + 20 si victoire
-  var xpGagne = XP_PAR_PARTIE;
-  if (aGagne) xpGagne += XP_PAR_VICTOIRE;
+  // XP : defaite 10-100, victoire 100-250
+  var xpGagne;
+  if (aGagne) {
+    xpGagne = 100 + Math.floor(Math.random() * 151); // 100 a 250
+  } else {
+    xpGagne = 10 + Math.floor(Math.random() * 91); // 10 a 100
+  }
   ajouterXP(xpGagne);
 }

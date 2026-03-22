@@ -70,6 +70,34 @@ function chargerClassement(champ) {
   if (!liste) return;
   liste.innerHTML = '<div class="classement-vide">...</div>';
 
+  // Cas special : skins (c'est un tableau, pas un nombre)
+  if (champ === 'skins') {
+    db.collection('players').get().then(function(snap) {
+      var joueurs = [];
+      snap.forEach(function(doc) {
+        var data = doc.data();
+        var nbSkins = (data.skinsAchetes || []).length;
+        if (nbSkins > 0) {
+          joueurs.push({ data: data, count: nbSkins });
+        }
+      });
+      joueurs.sort(function(a, b) { return b.count - a.count; });
+      joueurs = joueurs.slice(0, 20);
+      if (joueurs.length === 0) {
+        liste.innerHTML = '<div class="classement-vide">' + t('noLeaderboard') + '</div>';
+        return;
+      }
+      liste.innerHTML = '';
+      joueurs.forEach(function(j, idx) {
+        liste.appendChild(creerClassementItem(j.data, idx + 1, j.count));
+      });
+    }).catch(function(err) {
+      console.error('Erreur classement skins:', err);
+      liste.innerHTML = '<div class="classement-vide">' + t('connectionError') + '</div>';
+    });
+    return;
+  }
+
   db.collection('players')
     .where(champ, '>', 0)
     .orderBy(champ, 'desc')
@@ -85,51 +113,55 @@ function chargerClassement(champ) {
       snap.forEach(function(doc) {
         rang++;
         var data = doc.data();
-        var item = document.createElement('div');
-        item.className = 'classement-item';
-        if (rang === 1) item.classList.add('top1');
-        else if (rang === 2) item.classList.add('top2');
-        else if (rang === 3) item.classList.add('top3');
-
-        var rangEl = document.createElement('div');
-        rangEl.className = 'classement-rang';
-        rangEl.textContent = rang;
-        item.appendChild(rangEl);
-
-        if (data.pfp) {
-          var img = document.createElement('img');
-          img.className = 'classement-pfp';
-          img.src = data.pfp;
-          item.appendChild(img);
-        } else {
-          var placeholder = document.createElement('div');
-          placeholder.className = 'classement-pfp';
-          placeholder.style.background = '#34495e';
-          placeholder.style.display = 'flex';
-          placeholder.style.alignItems = 'center';
-          placeholder.style.justifyContent = 'center';
-          placeholder.style.fontSize = '16px';
-          placeholder.textContent = '?';
-          item.appendChild(placeholder);
-        }
-
-        var pseudo = document.createElement('span');
-        pseudo.className = 'classement-pseudo';
-        pseudo.textContent = escapeHtml(data.pseudo || '???');
-        item.appendChild(pseudo);
-
-        var val = document.createElement('span');
-        val.className = 'classement-val';
-        val.textContent = data[champ] || 0;
-        item.appendChild(val);
-
-        liste.appendChild(item);
+        liste.appendChild(creerClassementItem(data, rang, data[champ] || 0));
       });
     })
     .catch(function(err) {
       console.error('Erreur classement:', err);
       liste.innerHTML = '<div class="classement-vide">' + t('connectionError') + '</div>';
     });
+}
+
+function creerClassementItem(data, rang, valeur) {
+  var item = document.createElement('div');
+  item.className = 'classement-item';
+  if (rang === 1) item.classList.add('top1');
+  else if (rang === 2) item.classList.add('top2');
+  else if (rang === 3) item.classList.add('top3');
+
+  var rangEl = document.createElement('div');
+  rangEl.className = 'classement-rang';
+  rangEl.textContent = rang;
+  item.appendChild(rangEl);
+
+  if (data.pfp) {
+    var img = document.createElement('img');
+    img.className = 'classement-pfp';
+    img.src = data.pfp;
+    item.appendChild(img);
+  } else {
+    var placeholder = document.createElement('div');
+    placeholder.className = 'classement-pfp';
+    placeholder.style.background = '#34495e';
+    placeholder.style.display = 'flex';
+    placeholder.style.alignItems = 'center';
+    placeholder.style.justifyContent = 'center';
+    placeholder.style.fontSize = '16px';
+    placeholder.textContent = '?';
+    item.appendChild(placeholder);
+  }
+
+  var pseudo = document.createElement('span');
+  pseudo.className = 'classement-pseudo';
+  pseudo.textContent = escapeHtml(data.pseudo || '???');
+  item.appendChild(pseudo);
+
+  var val = document.createElement('span');
+  val.className = 'classement-val';
+  val.textContent = valeur;
+  item.appendChild(val);
+
+  return item;
 }
 
 // ============================

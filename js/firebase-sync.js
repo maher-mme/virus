@@ -780,10 +780,24 @@ function renderWaitingRoomPlayers(players) {
       // Mettre a jour la position avec transition CSS (mouvement fluide)
       existing.style.left = (p.saX || 50) + '%';
       existing.style.top = (p.saY || 70) + '%';
-      // Mettre a jour la direction du skin
-      var img = existing.querySelector('img');
+      // Mettre a jour la direction et le skin
+      var img = existing.querySelector('.sa-skin-img');
       if (img) {
         img.style.transform = p.saDirection === -1 ? 'scaleX(-1)' : 'scaleX(1)';
+        var newSkin = p.skin || 'skin/gratuit/skin-de-base-garcon.svg';
+        if (img.src.indexOf(newSkin) === -1) img.src = newSkin;
+      }
+      // Mettre a jour le pet
+      var petEl = existing.querySelector('.sa-pet-img');
+      if (p.pet && !petEl && typeof PETS_BOUTIQUE !== 'undefined') {
+        var petData = PETS_BOUTIQUE.find(function(pt) { return pt.id === p.pet; });
+        if (petData) {
+          var petImg = document.createElement('img');
+          petImg.className = 'sa-pet-img';
+          petImg.src = petData.idle;
+          petImg.style.cssText = 'width:24px;height:24px;position:absolute;bottom:-5px;right:-10px;';
+          existing.appendChild(petImg);
+        }
       }
     } else {
       // Creer un nouvel avatar
@@ -799,10 +813,17 @@ function renderWaitingRoomPlayers(players) {
       div.style.transition = 'left 0.15s linear, top 0.15s linear';
       var saAdminClass = isAdmin(p.pseudo) ? ' pseudo-admin-text' : '';
       var saDir = p.saDirection === -1 ? 'scaleX(-1)' : 'scaleX(1)';
+      var petHtml = '';
+      if (p.pet && typeof PETS_BOUTIQUE !== 'undefined') {
+        var petInfo = PETS_BOUTIQUE.find(function(pt) { return pt.id === p.pet; });
+        if (petInfo) {
+          petHtml = '<img class="sa-pet-img" src="' + petInfo.idle + '" style="width:24px;height:24px;position:absolute;bottom:-5px;right:-10px;">';
+        }
+      }
       div.innerHTML = '<div class="' + saAdminClass.trim() + '" style="font-size:10px;color:#fff;margin-bottom:2px;">' +
         escapeHtml(p.pseudo) + '</div>' +
-        '<img src="' + (p.skin || 'skin/gratuit/skin-de-base-garcon.svg') +
-        '" style="width:48px;height:48px;transform:' + saDir + ';" alt="skin">';
+        '<img class="sa-skin-img" src="' + (p.skin || 'skin/gratuit/skin-de-base-garcon.svg') +
+        '" style="width:48px;height:48px;transform:' + saDir + ';" alt="skin">' + petHtml;
       container.appendChild(div);
     }
   });

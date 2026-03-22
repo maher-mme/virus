@@ -70,37 +70,12 @@ function chargerClassement(champ) {
   if (!liste) return;
   liste.innerHTML = '<div class="classement-vide">...</div>';
 
-  // Cas special : skins (c'est un tableau, pas un nombre)
-  if (champ === 'skins') {
-    db.collection('players').get().then(function(snap) {
-      var joueurs = [];
-      snap.forEach(function(doc) {
-        var data = doc.data();
-        var nbSkins = (data.skinsAchetes || []).length;
-        if (nbSkins > 0) {
-          joueurs.push({ data: data, count: nbSkins });
-        }
-      });
-      joueurs.sort(function(a, b) { return b.count - a.count; });
-      joueurs = joueurs.slice(0, 20);
-      if (joueurs.length === 0) {
-        liste.innerHTML = '<div class="classement-vide">' + t('noLeaderboard') + '</div>';
-        return;
-      }
-      liste.innerHTML = '';
-      joueurs.forEach(function(j, idx) {
-        liste.appendChild(creerClassementItem(j.data, idx + 1, j.count));
-      });
-    }).catch(function(err) {
-      console.error('Erreur classement skins:', err);
-      liste.innerHTML = '<div class="classement-vide">' + t('connectionError') + '</div>';
-    });
-    return;
-  }
+  // Skins : utiliser le champ skinsCount
+  var champQuery = champ === 'skins' ? 'skinsCount' : champ;
 
   db.collection('players')
-    .where(champ, '>', 0)
-    .orderBy(champ, 'desc')
+    .where(champQuery, '>', 0)
+    .orderBy(champQuery, 'desc')
     .limit(20)
     .get()
     .then(function(snap) {
@@ -113,7 +88,7 @@ function chargerClassement(champ) {
       snap.forEach(function(doc) {
         rang++;
         var data = doc.data();
-        liste.appendChild(creerClassementItem(data, rang, data[champ] || 0));
+        liste.appendChild(creerClassementItem(data, rang, data[champQuery] || 0));
       });
     })
     .catch(function(err) {

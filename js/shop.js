@@ -43,7 +43,7 @@ function sauvegarderSkinsAchetes(liste) {
   localStorage.setItem('virusSkinsAchetes', JSON.stringify(liste));
   // Sync Firebase
   if (monPlayerId) {
-    db.collection('players').doc(monPlayerId).update({ skinsAchetes: liste }).catch(function() {});
+    db.collection('players').doc(monPlayerId).update({ skinsAchetes: liste, skinsCount: liste.length }).catch(function() {});
   }
 }
 

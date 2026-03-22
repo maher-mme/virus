@@ -145,9 +145,11 @@ function connecterCompte() {
       localStorage.setItem('virusPfp', data.pfp);
       afficherPfpPartout();
     }
-    // Mettre en ligne
+    // Mettre en ligne + sync skinsCount
+    var skinsLogin = data.skinsAchetes || [];
     db.collection('players').doc(monPlayerId).update({
       online: true,
+      skinsCount: skinsLogin.length,
       lastSeen: firebase.firestore.FieldValue.serverTimestamp()
     }).catch(function() {});
     initAmisListeners();
@@ -193,6 +195,7 @@ function deconnecterCompte() {
     online: false,
     gold: goldActuel,
     skinsAchetes: skinsActuels,
+    skinsCount: skinsActuels.length,
     musiquesAchetees: musiquesActuelles
   }).catch(function() {});
   // Nettoyer localStorage

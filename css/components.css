@@ -247,6 +247,17 @@
 }
 .skin-carte-btn.equipe:hover { filter: none; }
 
+/* Message vide boutique */
+.boutique-vide {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #7f8c8d;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  padding: 40px 20px;
+  letter-spacing: 1px;
+}
+
 /* Onglets boutique */
 .boutique-tabs {
   display: flex;

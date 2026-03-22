@@ -72,7 +72,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v0.7 - ALPHA</span>
+    <span class="version">VIRUS v0.8 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -142,7 +142,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v0.7 - ALPHA</span>
+    <span class="version">VIRUS v0.8 - ALPHA</span>
     </div>
   </div>
 
@@ -186,7 +186,7 @@
           <button class="btn-sauver-pseudo" data-i18n="logout" style="background:linear-gradient(180deg,#3498db,#2980b9); border-color:#3498db; width:100%; padding:10px; margin-bottom:8px;" onclick="deconnecterCompte()">SE DECONNECTER</button>
           <button class="btn-sauver-pseudo" data-i18n="deleteAccount" style="background:linear-gradient(180deg,#e74c3c,#c0392b); border-color:#e74c3c; width:100%; padding:10px;" onclick="supprimerCompte()">SUPPRIMER MON COMPTE</button>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v0.7 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v0.8 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -244,7 +244,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v0.7 - ALPHA</span>
+        <span class="version-inline">v0.8 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -371,6 +371,7 @@
     <div class="boutique-tabs">
       <button class="boutique-tab active" id="boutique-tab-skins" onclick="switchBoutiqueTab('skins')" data-i18n="skinsTab">SKINS</button>
       <button class="boutique-tab" id="boutique-tab-musique" onclick="switchBoutiqueTab('musique')" data-i18n="musicTab">MUSIQUE</button>
+      <button class="boutique-tab" id="boutique-tab-animaux" onclick="switchBoutiqueTab('animaux')" data-i18n="petsTab">ANIMAUX</button>
     </div>
 
     <div class="boutique-tab-content active" id="boutique-content-skins">
@@ -380,6 +381,11 @@
 
     <div class="boutique-tab-content" id="boutique-content-musique">
       <div class="boutique-grille" id="boutique-grille-musique">
+      </div>
+    </div>
+
+    <div class="boutique-tab-content" id="boutique-content-animaux">
+      <div class="boutique-grille" id="boutique-grille-animaux">
       </div>
     </div>
   </div>
@@ -422,7 +428,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v0.7 - ALPHA</span>
+    <span class="version">VIRUS v0.8 - ALPHA</span>
     </div>
   </div>
 
@@ -506,7 +512,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v0.7 - ALPHA</span>
+    <span class="version">VIRUS v0.8 - ALPHA</span>
     </div>
   </div>
 
@@ -552,7 +558,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v0.7 - ALPHA</span>
+    <span class="version">VIRUS v0.8 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -714,6 +720,7 @@
     <div class="casier-tabs">
       <button class="casier-tab active" id="casier-tab-skin" onclick="switchCasierTab('skin')" data-i18n="skin">SKIN</button>
       <button class="casier-tab" id="casier-tab-musique" onclick="switchCasierTab('musique')" data-i18n="musicTab">MUSIQUE</button>
+      <button class="casier-tab" id="casier-tab-animaux" onclick="switchCasierTab('animaux')" data-i18n="petsTab">ANIMAUX</button>
       <button class="casier-tab" id="casier-tab-pfp" onclick="switchCasierTab('pfp')" data-i18n="pfpTab">PHOTO</button>
     </div>
 
@@ -727,6 +734,13 @@
     <div class="casier-tab-content" id="casier-content-musique">
       <p data-i18n="chooseMusic">Choisis ta musique !</p>
       <div class="musique-list" id="casier-musique-list"></div>
+      <button class="cabine-popup-close" onclick="fermerCabine()" data-i18n="close">FERMER</button>
+    </div>
+
+    <div class="casier-tab-content" id="casier-content-animaux">
+      <p data-i18n="choosePet">Choisis ton animal !</p>
+      <div class="skin-selector" id="casier-animaux-selector">
+      </div>
       <button class="cabine-popup-close" onclick="fermerCabine()" data-i18n="close">FERMER</button>
     </div>
 

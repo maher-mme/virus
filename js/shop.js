@@ -155,6 +155,7 @@ function switchBoutiqueTab(tab) {
   document.getElementById('boutique-tab-' + tab).classList.add('active');
   document.getElementById('boutique-content-' + tab).classList.add('active');
   if (tab === 'musique') genererBoutiqueMusique();
+  if (tab === 'animaux') genererBoutiqueAnimaux();
 }
 
 // ============================
@@ -266,3 +267,159 @@ function genererBoutiqueMusique() {
     }
   }
 })();
+
+// ============================
+// BOUTIQUE D'ANIMAUX (PETS)
+// ============================
+var PETS_BOUTIQUE = [
+  { id: 'chien-spatial', nom: 'Chien Spatial', idle: 'pets/chien_de_l\'espsace1.svg', walk1: 'pets/chien_de_l\'espsace2.svg', walk2: 'pets/chien_de_l\'espsace3.svg', prix: 50, rarete: 'typique' }
+];
+
+var petEquipe = localStorage.getItem('virusPet') || '';
+
+function getPetsAchetes() {
+  try { return JSON.parse(localStorage.getItem('virusPetsAchetes')) || []; }
+  catch(e) { return []; }
+}
+
+function sauvegarderPetsAchetes(liste) {
+  localStorage.setItem('virusPetsAchetes', JSON.stringify(liste));
+  if (monPlayerId) {
+    db.collection('players').doc(monPlayerId).update({ petsAchetes: liste }).catch(function() {});
+  }
+}
+
+function getPetEquipe() {
+  return localStorage.getItem('virusPet') || '';
+}
+
+function setPetEquipe(petId) {
+  petEquipe = petId;
+  localStorage.setItem('virusPet', petId);
+  if (monPlayerId) {
+    db.collection('players').doc(monPlayerId).update({ pet: petId }).catch(function() {});
+  }
+}
+
+function acheterPet(petId) {
+  var pet = PETS_BOUTIQUE.find(function(p) { return p.id === petId; });
+  if (!pet) return;
+  var achetes = getPetsAchetes();
+  if (achetes.indexOf(petId) >= 0) return;
+  if (playerGold < pet.prix) return;
+  if (!monPlayerId) return;
+  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+    if (!doc.exists) return;
+    var goldFirebase = doc.data().gold || 0;
+    if (goldFirebase < pet.prix) {
+      playerGold = goldFirebase;
+      sauvegarderGold();
+      showNotif(t('notEnoughGold'), 'error');
+      genererBoutiqueAnimaux();
+      return;
+    }
+    playerGold = goldFirebase - pet.prix;
+    sauvegarderGold();
+    achetes.push(petId);
+    sauvegarderPetsAchetes(achetes);
+    genererBoutiqueAnimaux();
+    showNotif(t('petBought', pet.nom), 'success');
+  }).catch(function() {});
+}
+
+function equiperPet(petId) {
+  setPetEquipe(petId);
+  genererBoutiqueAnimaux();
+  genererCasierAnimaux();
+}
+
+function desequiperPet() {
+  setPetEquipe('');
+  genererBoutiqueAnimaux();
+  genererCasierAnimaux();
+}
+
+function genererBoutiqueAnimaux() {
+  var grille = document.getElementById('boutique-grille-animaux');
+  if (!grille) return;
+  grille.innerHTML = '';
+  playerGold = parseInt(localStorage.getItem('virusGold')) || 0;
+  var achetes = getPetsAchetes();
+  var currentPet = getPetEquipe();
+  var goldEl = document.getElementById('boutique-gold-display');
+  if (goldEl) goldEl.textContent = playerGold;
+
+  if (PETS_BOUTIQUE.length === 0) {
+    grille.innerHTML = '<div class="boutique-vide" data-i18n="petsSoon">' + t('petsSoon') + '</div>';
+    return;
+  }
+
+  PETS_BOUTIQUE.forEach(function(pet) {
+    var possede = achetes.indexOf(pet.id) >= 0 || isAdmin();
+    var equipe = possede && currentPet === pet.id;
+    var peutAcheter = !possede && playerGold >= pet.prix;
+
+    var carte = document.createElement('div');
+    carte.className = 'skin-carte';
+    var btnHtml = '';
+    if (equipe) {
+      btnHtml = '<button class="skin-carte-btn equipe" onclick="desequiperPet()">' + t('equipped') + '</button>';
+    } else if (possede) {
+      btnHtml = '<button class="skin-carte-btn possede" onclick="equiperPet(\'' + pet.id + '\')">' + t('equip') + '</button>';
+    } else if (peutAcheter) {
+      btnHtml = '<button class="skin-carte-btn acheter" onclick="acheterPet(\'' + pet.id + '\')">' + t('buy') + '</button>';
+    } else {
+      btnHtml = '<button class="skin-carte-btn acheter desactive">' + t('buy') + '</button>';
+    }
+    var rar = RARETES[pet.rarete] || RARETES.typique;
+    carte.style.borderColor = rar.couleur;
+    carte.innerHTML = '<img class="skin-carte-img" src="' + pet.idle + '" alt="' + pet.nom + '">' +
+      '<div class="skin-carte-rarete" style="color:' + rar.couleur + '">' + rar.nom + '</div>' +
+      '<div class="skin-carte-nom">' + pet.nom + '</div>' +
+      (possede ? '' : '<div class="skin-carte-prix"><span class="prix-icon">&#9733;</span>' + pet.prix + '</div>') +
+      btnHtml;
+    grille.appendChild(carte);
+  });
+}
+
+function genererCasierAnimaux() {
+  var container = document.getElementById('casier-animaux-selector');
+  if (!container) return;
+  container.innerHTML = '';
+  var achetes = getPetsAchetes();
+  var currentPet = getPetEquipe();
+
+  // Option "aucun pet"
+  var divNone = document.createElement('div');
+  divNone.className = 'skin-option' + (currentPet === '' ? ' skin-selected' : '');
+  divNone.onclick = function() {
+    desequiperPet();
+    container.querySelectorAll('.skin-option').forEach(function(el) { el.classList.remove('skin-selected'); });
+    divNone.classList.add('skin-selected');
+  };
+  divNone.innerHTML = '<div style="height:46px;width:46px;display:flex;align-items:center;justify-content:center;font-size:24px;color:#566573;">&#10005;</div><span class="skin-label">' + t('none') + '</span>';
+  container.appendChild(divNone);
+
+  // Pets possedes
+  var petsDisponibles = PETS_BOUTIQUE.filter(function(p) { return achetes.indexOf(p.id) >= 0 || isAdmin(); });
+  if (petsDisponibles.length === 0 && !isAdmin()) {
+    var vide = document.createElement('div');
+    vide.className = 'boutique-vide';
+    vide.textContent = t('noPets');
+    container.appendChild(vide);
+    return;
+  }
+
+  petsDisponibles.forEach(function(pet) {
+    var div = document.createElement('div');
+    div.className = 'skin-option' + (pet.id === currentPet ? ' skin-selected' : '');
+    div.onclick = function() {
+      equiperPet(pet.id);
+      container.querySelectorAll('.skin-option').forEach(function(el) { el.classList.remove('skin-selected'); });
+      div.classList.add('skin-selected');
+    };
+    var rar = RARETES[pet.rarete] || RARETES.typique;
+    div.innerHTML = '<img src="' + pet.idle + '" alt="' + pet.nom + '"><span class="skin-rarete" style="color:' + rar.couleur + '">' + rar.nom + '</span><span class="skin-label">' + pet.nom + '</span>';
+    container.appendChild(div);
+  });
+}

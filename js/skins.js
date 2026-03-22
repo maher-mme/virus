@@ -96,6 +96,7 @@ function switchCasierTab(tab) {
   document.getElementById('casier-tab-' + tab).classList.add('active');
   document.getElementById('casier-content-' + tab).classList.add('active');
   if (tab === 'musique') genererMusiqueList();
+  if (tab === 'animaux') genererCasierAnimaux();
   if (tab === 'pfp') chargerPfpDansCasier();
 }
 

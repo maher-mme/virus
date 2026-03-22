@@ -7,9 +7,7 @@ var XP_PAR_KILL = 5;
 var GOLD_PAR_NIVEAU = 50;
 
 function xpPourNiveau(niveau) {
-  if (niveau < 10) return 100;
-  if (niveau < 50) return 1000;
-  return 1500;
+  return 1000;
 }
 
 function calculerNiveau(xpTotal) {

@@ -70,12 +70,43 @@ function chargerClassement(champ) {
   if (!liste) return;
   liste.innerHTML = '<div class="classement-vide">...</div>';
 
-  // Skins : utiliser le champ skinsCount
-  var champQuery = champ === 'skins' ? 'skinsCount' : champ;
+  // Skins : compter depuis le tableau skinsAchetes
+  if (champ === 'skins') {
+    db.collection('players').get().then(function(snap) {
+      var joueurs = [];
+      snap.forEach(function(doc) {
+        var data = doc.data();
+        data._id = doc.id;
+        var nbSkins = 0;
+        if (data.skinsAchetes && Array.isArray(data.skinsAchetes)) {
+          nbSkins = data.skinsAchetes.length;
+        } else if (data.skinsCount) {
+          nbSkins = data.skinsCount;
+        }
+        if (nbSkins > 0) {
+          joueurs.push({ data: data, count: nbSkins });
+        }
+      });
+      joueurs.sort(function(a, b) { return b.count - a.count; });
+      joueurs = joueurs.slice(0, 20);
+      if (joueurs.length === 0) {
+        liste.innerHTML = '<div class="classement-vide">' + t('noLeaderboard') + '</div>';
+        return;
+      }
+      liste.innerHTML = '';
+      joueurs.forEach(function(j, idx) {
+        liste.appendChild(creerClassementItem(j.data, idx + 1, j.count));
+      });
+    }).catch(function(err) {
+      console.error('Erreur classement skins:', err);
+      liste.innerHTML = '<div class="classement-vide">' + t('connectionError') + '</div>';
+    });
+    return;
+  }
 
   db.collection('players')
-    .where(champQuery, '>', 0)
-    .orderBy(champQuery, 'desc')
+    .where(champ, '>', 0)
+    .orderBy(champ, 'desc')
     .limit(20)
     .get()
     .then(function(snap) {
@@ -88,7 +119,7 @@ function chargerClassement(champ) {
       snap.forEach(function(doc) {
         rang++;
         var data = doc.data();
-        liste.appendChild(creerClassementItem(data, rang, data[champQuery] || 0));
+        liste.appendChild(creerClassementItem(data, rang, data[champ] || 0));
       });
     })
     .catch(function(err) {

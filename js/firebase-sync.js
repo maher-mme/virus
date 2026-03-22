@@ -132,12 +132,23 @@ function nettoyerChatReunion() {
 function subscribeToParty(partyId) {
   unsubscribeFromParty();
 
-  // Detecter suppression de la partie
+  // Detecter suppression ou changement de phase de la partie
+  var partyPhase = 'lobby';
   firebaseUnsubscribers.push(
     db.collection('parties').doc(partyId).onSnapshot(function(doc) {
       if (!doc.exists && partieActuelleId === partyId) {
         ejecterDeLaPartie(t('partyDeleted'));
+        return;
       }
+      if (!doc.exists) return;
+      var data = doc.data();
+      // Detecter le passage lobby -> playing pour lancer le jeu
+      if (data.phase === 'playing' && partyPhase === 'lobby') {
+        partyPhase = 'playing';
+        lastGamePhase = 'playing';
+        lancerJeuMultiplayer(data);
+      }
+      partyPhase = data.phase || partyPhase;
     }, function(err) {
       console.error('Erreur listener partie:', err);
     })

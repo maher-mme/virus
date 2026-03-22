@@ -432,7 +432,12 @@ function lancerJeu() {
       }
     });
     batch.update(db.collection('parties').doc(partieActuelleId), { phase: 'playing' });
-    batch.commit().catch(function() { showNotif(t('mjConnError'), 'warn'); });
+    batch.commit().then(function() {
+      console.log('Partie demarree avec succes');
+    }).catch(function(err) {
+      console.error('Erreur demarrage partie:', err);
+      showNotif(t('mjConnError') + ' : ' + err.message, 'warn');
+    });
     return;
   }
 

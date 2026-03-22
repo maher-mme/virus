@@ -217,6 +217,52 @@
 .commentaire-supprimer:hover {
   transform: scale(1.2);
 }
+.commentaire-repondre {
+  background: none;
+  border: none;
+  color: #3498db;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0 4px;
+  font-family: Arial, sans-serif;
+  transition: color 0.2s;
+}
+.commentaire-repondre:hover {
+  color: #5dade2;
+}
+.commentaire-reponse {
+  margin-left: 30px;
+  border-left: 3px solid #3498db;
+  background: rgba(52,73,94,0.4);
+}
+.commentaire-mention {
+  color: #3498db;
+  font-weight: bold;
+}
+.commentaire-reply-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(52,152,219,0.15);
+  border: 1px solid #3498db;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: #3498db;
+  font-family: Arial, sans-serif;
+}
+.commentaire-reply-bar .reply-bar-pseudo {
+  font-weight: bold;
+  color: #f39c12;
+}
+.commentaire-reply-bar button {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 4px;
+}
 
 /* Boutons classement/profil dans menu online */
 .online-extras {

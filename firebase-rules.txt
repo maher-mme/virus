@@ -109,7 +109,8 @@ service cloud.firestore {
       allow create: if request.resource.data.message is string
         && request.resource.data.message.size() <= 300
         && request.resource.data.pseudo is string
-        && request.resource.data.pseudo.size() <= 20;
+        && request.resource.data.pseudo.size() <= 20
+        && (!request.resource.data.keys().hasAny(['replyTo']) || request.resource.data.replyTo is string);
       allow delete: if true;
       allow update: if false;
     }

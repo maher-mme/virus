@@ -202,6 +202,10 @@
       </div>
       <div class="popup-body">
         <div class="commentaires-liste" id="commentaires-liste"></div>
+        <div id="commentaire-reply-bar" class="commentaire-reply-bar" style="display:none;">
+          <span>&#8618; <span class="reply-bar-pseudo"></span></span>
+          <button onclick="annulerReponse()">&times;</button>
+        </div>
         <div class="commentaire-form">
           <textarea id="input-commentaire" maxlength="300" rows="2" placeholder="Votre avis sur le jeu..." data-i18n="phComment" data-i18n-attr="placeholder"></textarea>
           <button class="btn-envoyer-commentaire" onclick="envoyerCommentaire()" data-i18n="send">ENVOYER</button>

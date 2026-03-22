@@ -8,8 +8,8 @@ var COMMENT_COOLDOWN = 10000;
 var COMMENT_MAX_LENGTH = 300;
 
 function ouvrirCommentaires() {
-  showNotif(t('commentsNotReady'), 'warn');
-  return;
+  document.getElementById('popup-commentaires').classList.add('visible');
+  chargerCommentaires();
 }
 
 function fermerCommentaires() {

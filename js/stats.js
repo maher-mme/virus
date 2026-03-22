@@ -70,8 +70,12 @@ function chargerClassement(champ) {
   if (!liste) return;
   liste.innerHTML = '<div class="classement-vide">...</div>';
 
-  // Skins : compter depuis le tableau skinsAchetes
+  // Skins : compter depuis le tableau skinsAchetes + skins de base
   if (champ === 'skins') {
+    var nbSkinsBase = (typeof SKINS !== 'undefined') ? SKINS.filter(function(s) { return !SKINS_BOUTIQUE.find(function(sb) { return sb.id === s.id; }); }).length : 2;
+    var nbSkinsBoutique = (typeof SKINS_BOUTIQUE !== 'undefined') ? SKINS_BOUTIQUE.length : 0;
+    var totalSkinsExistants = nbSkinsBase + nbSkinsBoutique;
+
     db.collection('players').get().then(function(snap) {
       var joueurs = [];
       snap.forEach(function(doc) {
@@ -79,17 +83,15 @@ function chargerClassement(champ) {
         data._id = doc.id;
         var pseudo = (data.pseudo || '').trim().toLowerCase();
         var estAdmin = pseudo === 'obstinate' || pseudo === 'obstinate2.0' || pseudo === 'chrikidd77';
-        var nbSkins = 0;
-        if (estAdmin && typeof SKINS_BOUTIQUE !== 'undefined') {
-          nbSkins = SKINS_BOUTIQUE.length;
+        var nbSkins = nbSkinsBase; // Tout le monde a les skins de base
+        if (estAdmin) {
+          nbSkins = totalSkinsExistants;
         } else if (data.skinsAchetes && Array.isArray(data.skinsAchetes)) {
-          nbSkins = data.skinsAchetes.length;
+          nbSkins += data.skinsAchetes.length;
         } else if (data.skinsCount) {
-          nbSkins = data.skinsCount;
+          nbSkins += data.skinsCount;
         }
-        if (nbSkins > 0) {
-          joueurs.push({ data: data, count: nbSkins });
-        }
+        joueurs.push({ data: data, count: nbSkins });
       });
       joueurs.sort(function(a, b) { return b.count - a.count; });
       joueurs = joueurs.slice(0, 20);
@@ -98,8 +100,13 @@ function chargerClassement(champ) {
         return;
       }
       liste.innerHTML = '';
+      // Info total skins au-dessus du classement
+      var info = document.createElement('div');
+      info.className = 'classement-info-skins';
+      info.textContent = totalSkinsExistants + ' skins disponibles (' + nbSkinsBase + ' gratuits + ' + nbSkinsBoutique + ' boutique)';
+      liste.appendChild(info);
       joueurs.forEach(function(j, idx) {
-        liste.appendChild(creerClassementItem(j.data, idx + 1, j.count));
+        liste.appendChild(creerClassementItem(j.data, idx + 1, j.count + '/' + totalSkinsExistants));
       });
     }).catch(function(err) {
       console.error('Erreur classement skins:', err);

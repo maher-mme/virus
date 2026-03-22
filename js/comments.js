@@ -45,6 +45,10 @@ function chargerCommentaires() {
         gauche.style.display = 'flex';
         gauche.style.alignItems = 'center';
         gauche.style.gap = '8px';
+        gauche.style.cursor = 'pointer';
+        gauche.onclick = (function(pid) {
+          return function() { ouvrirProfilJoueur(pid); };
+        })(data.playerId);
 
         // Photo de profil
         if (data.pfp) {

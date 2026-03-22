@@ -91,40 +91,48 @@ function chargerClassement(champ) {
 // ============================
 // PROFIL JOUEUR
 // ============================
-function ouvrirProfil() {
+function ouvrirProfil(playerId) {
   document.getElementById('popup-profil').classList.add('visible');
-  chargerProfil();
+  chargerProfil(playerId);
 }
 
 function fermerProfil() {
   document.getElementById('popup-profil').classList.remove('visible');
 }
 
-function chargerProfil() {
+function ouvrirProfilJoueur(playerId) {
+  fermerCommentaires();
+  ouvrirProfil(playerId);
+}
+
+function chargerProfil(playerId) {
   var headerEl = document.getElementById('profil-header');
   var statsEl = document.getElementById('profil-stats');
   if (!headerEl || !statsEl) return;
 
-  var pseudo = getPseudo() || '???';
-  var pfp = localStorage.getItem('virusPfp') || '';
-
-  // Header
-  var pfpHtml = pfp
-    ? '<img class="profil-pfp" src="' + pfp + '" alt="PFP">'
-    : '<div class="profil-pfp-placeholder">?</div>';
-  headerEl.innerHTML = pfpHtml +
-    '<div class="profil-info">' +
-    '<span class="profil-pseudo">' + escapeHtml(pseudo) + '</span>' +
-    '</div>';
+  var targetId = playerId || monPlayerId;
 
   // Stats depuis Firebase
+  headerEl.innerHTML = '';
   statsEl.innerHTML = '<div class="classement-vide">...</div>';
-  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+  db.collection('players').doc(targetId).get().then(function(doc) {
     if (!doc.exists) {
       statsEl.innerHTML = '<div class="classement-vide">' + t('accountNotFound') + '</div>';
       return;
     }
     var data = doc.data();
+    var pseudo = data.pseudo || '???';
+    var pfp = data.pfp || '';
+
+    // Header
+    var pfpHtml = pfp
+      ? '<img class="profil-pfp" src="' + pfp + '" alt="PFP">'
+      : '<div class="profil-pfp-placeholder">?</div>';
+    headerEl.innerHTML = pfpHtml +
+      '<div class="profil-info">' +
+      '<span class="profil-pseudo">' + escapeHtml(pseudo) + '</span>' +
+      '</div>';
+
     var wins = data.wins || 0;
     var kills = data.kills || 0;
     var games = data.gamesPlayed || 0;

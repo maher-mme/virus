@@ -373,6 +373,74 @@
 }
 .btn-signaler:hover { filter: brightness(1.15); transform: translateX(-50%) scale(1.05); }
 
+/* Bouton SUIVRE (fantome) */
+.btn-suivre {
+  position: absolute;
+  bottom: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #3498db, #2980b9);
+  color: white;
+  border: 2px solid #5dade2;
+  border-radius: 12px;
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+  letter-spacing: 2px;
+  z-index: 210;
+  display: none;
+  animation: suivrePulse 2s infinite;
+}
+@keyframes suivrePulse {
+  0%, 100% { box-shadow: 0 4px 15px rgba(52,152,219,0.5); }
+  50% { box-shadow: 0 4px 25px rgba(52,152,219,0.8); }
+}
+.btn-suivre:hover { filter: brightness(1.15); transform: translateX(-50%) scale(1.05); }
+
+/* Bouton ARRETER (fantome suit) */
+.btn-arreter-suivre {
+  position: absolute;
+  bottom: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #e74c3c, #c0392b);
+  color: white;
+  border: 2px solid #ec7063;
+  border-radius: 12px;
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+  letter-spacing: 2px;
+  z-index: 210;
+  display: none;
+}
+.btn-arreter-suivre:hover { filter: brightness(1.15); transform: translateX(-50%) scale(1.05); }
+
+/* Info role du joueur suivi */
+.suivre-role-info {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  border: 2px solid #3498db;
+  border-radius: 12px;
+  padding: 10px 24px;
+  color: #ecf0f1;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  letter-spacing: 1px;
+  z-index: 210;
+  display: none;
+  text-align: center;
+  white-space: nowrap;
+}
+
 /* Joystick mobile */
 #joystick-container {
   position: fixed;

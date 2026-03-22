@@ -96,6 +96,129 @@ function fermerPouvoirJournaliste() {
 }
 
 // ============================
+// SYSTEME FANTOME - SUIVRE UN JOUEUR
+// ============================
+var suivreCible = null; // pseudo du joueur suivi
+var suivreCibleProche = null; // pseudo du joueur le plus proche pour suivre
+var SUIVRE_DISTANCE = 120; // distance pour activer le bouton suivre
+var SUIVRE_OFFSET_X = 30; // decalage pour ne pas etre exactement dessus
+
+function detecterCibleSuivre() {
+  var pseudo = getPseudo() || t('player');
+  if (!joueursElimines || joueursElimines.indexOf(pseudo) < 0 || reunionEnCours || suivreCible) {
+    suivreCibleProche = null;
+    return;
+  }
+  var minDist = Infinity;
+  suivreCibleProche = null;
+  // Chercher parmi les bots vivants
+  for (var i = 0; i < bots.length; i++) {
+    if (joueursElimines.indexOf(bots[i].pseudo) >= 0) continue;
+    var dx = joueurX - bots[i].x;
+    var dy = joueurY - bots[i].y;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < SUIVRE_DISTANCE && dist < minDist) {
+      minDist = dist;
+      suivreCibleProche = bots[i].pseudo;
+    }
+  }
+  // Chercher parmi les joueurs distants (online)
+  if (typeof remotePlayers !== 'undefined') {
+    for (var pid in remotePlayers) {
+      var rp = remotePlayers[pid];
+      if (!rp || !rp.pseudo || joueursElimines.indexOf(rp.pseudo) >= 0) continue;
+      var rdx = joueurX - (rp.x || 0);
+      var rdy = joueurY - (rp.y || 0);
+      var rdist = Math.sqrt(rdx * rdx + rdy * rdy);
+      if (rdist < SUIVRE_DISTANCE && rdist < minDist) {
+        minDist = rdist;
+        suivreCibleProche = rp.pseudo;
+      }
+    }
+  }
+}
+
+function suivreJoueur() {
+  if (!suivreCibleProche) return;
+  suivreCible = suivreCibleProche;
+  var btnSuivre = document.getElementById('btn-suivre');
+  var btnArreter = document.getElementById('btn-arreter-suivre');
+  if (btnSuivre) btnSuivre.style.display = 'none';
+  if (btnArreter) btnArreter.style.display = 'block';
+  showNotif(t('followingPlayer', suivreCible), 'info');
+  majSuivreRoleInfo();
+}
+
+function arreterSuivre() {
+  suivreCible = null;
+  var btnArreter = document.getElementById('btn-arreter-suivre');
+  var roleInfo = document.getElementById('suivre-role-info');
+  if (btnArreter) btnArreter.style.display = 'none';
+  if (roleInfo) roleInfo.style.display = 'none';
+}
+
+function majSuivreRoleInfo() {
+  var roleInfo = document.getElementById('suivre-role-info');
+  if (!roleInfo || !suivreCible) { if (roleInfo) roleInfo.style.display = 'none'; return; }
+  var role = null;
+  // Chercher le role dans les bots
+  for (var i = 0; i < bots.length; i++) {
+    if (bots[i].pseudo === suivreCible) { role = bots[i].role; break; }
+  }
+  // Chercher dans les joueurs distants
+  if (!role && typeof remotePlayers !== 'undefined') {
+    for (var pid in remotePlayers) {
+      if (remotePlayers[pid].pseudo === suivreCible) { role = remotePlayers[pid].role; break; }
+    }
+  }
+  if (role) {
+    var roleKeys = {virus:'roleVirus', innocent:'roleInnocent', journaliste:'roleJournalist', fanatique:'roleFanatic', espion:'roleSpy'};
+    var roleNom = t(roleKeys[role] || role) || role;
+    var couleur = '#ecf0f1';
+    if (role === 'virus') couleur = '#e74c3c';
+    else if (role === 'innocent') couleur = '#2ecc71';
+    else if (role === 'journaliste') couleur = '#3498db';
+    else if (role === 'fanatique') couleur = '#9b59b6';
+    else if (role === 'espion') couleur = '#f39c12';
+    roleInfo.innerHTML = escapeHtml(suivreCible) + ' — <span style="color:' + couleur + '">' + escapeHtml(roleNom) + '</span>';
+    roleInfo.style.borderColor = couleur;
+    roleInfo.style.display = 'block';
+  } else {
+    roleInfo.style.display = 'none';
+  }
+}
+
+function updateSuivre() {
+  if (!suivreCible) return;
+  var cibleX = null, cibleY = null;
+  // Trouver la position de la cible
+  for (var i = 0; i < bots.length; i++) {
+    if (bots[i].pseudo === suivreCible) {
+      if (joueursElimines.indexOf(bots[i].pseudo) >= 0) { arreterSuivre(); return; }
+      cibleX = bots[i].x;
+      cibleY = bots[i].y;
+      break;
+    }
+  }
+  if (cibleX === null && typeof remotePlayers !== 'undefined') {
+    for (var pid in remotePlayers) {
+      if (remotePlayers[pid].pseudo === suivreCible) {
+        if (joueursElimines.indexOf(remotePlayers[pid].pseudo) >= 0) { arreterSuivre(); return; }
+        cibleX = remotePlayers[pid].x || 0;
+        cibleY = remotePlayers[pid].y || 0;
+        break;
+      }
+    }
+  }
+  if (cibleX !== null) {
+    joueurX = cibleX + SUIVRE_OFFSET_X;
+    joueurY = cibleY;
+    updateJoueur();
+  }
+  majSuivreRoleInfo();
+}
+
+// ============================
 // SYSTEME DE KILL (VIRUS)
 // ============================
 var killCooldown = false; // cooldown de 15 secondes apres un kill

@@ -72,7 +72,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v0.6 - ALPHA</span>
+    <span class="version">VIRUS v0.7 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -142,7 +142,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v0.6 - ALPHA</span>
+    <span class="version">VIRUS v0.7 - ALPHA</span>
     </div>
   </div>
 
@@ -186,7 +186,7 @@
           <button class="btn-sauver-pseudo" data-i18n="logout" style="background:linear-gradient(180deg,#3498db,#2980b9); border-color:#3498db; width:100%; padding:10px; margin-bottom:8px;" onclick="deconnecterCompte()">SE DECONNECTER</button>
           <button class="btn-sauver-pseudo" data-i18n="deleteAccount" style="background:linear-gradient(180deg,#e74c3c,#c0392b); border-color:#e74c3c; width:100%; padding:10px;" onclick="supprimerCompte()">SUPPRIMER MON COMPTE</button>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v0.6 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v0.7 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -244,7 +244,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v0.6 - ALPHA</span>
+        <span class="version-inline">v0.7 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -422,7 +422,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v0.6 - ALPHA</span>
+    <span class="version">VIRUS v0.7 - ALPHA</span>
     </div>
   </div>
 
@@ -506,7 +506,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v0.6 - ALPHA</span>
+    <span class="version">VIRUS v0.7 - ALPHA</span>
     </div>
   </div>
 
@@ -552,7 +552,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v0.6 - ALPHA</span>
+    <span class="version">VIRUS v0.7 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -1391,6 +1391,9 @@
       <button class="btn-signaler" id="btn-signaler" onclick="signalerCadavre()" data-i18n="report">SIGNALER</button>
       <button class="btn-enqueter" id="btn-enqueter" onclick="enqueterCible()" data-i18n="investigate">ENQUETER</button>
       <button class="btn-cameras" id="btn-cameras" onclick="ouvrirCameras()" data-i18n="cameras">CAMERAS</button>
+      <button class="btn-suivre" id="btn-suivre" onclick="suivreJoueur()" data-i18n="follow">SUIVRE</button>
+      <button class="btn-arreter-suivre" id="btn-arreter-suivre" onclick="arreterSuivre()" data-i18n="stopFollow">ARRETER</button>
+      <div class="suivre-role-info" id="suivre-role-info"></div>
 
       <!-- Joystick mobile -->
       <div id="joystick-container">

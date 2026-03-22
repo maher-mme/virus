@@ -831,6 +831,21 @@ function gameLoop() {
     }
   }
 
+  // Fantome : suivre un joueur ou detecter cible proche
+  var pseudoSuivre = getPseudo() || t('player');
+  var estMortSuivre = joueursElimines.indexOf(pseudoSuivre) >= 0;
+  if (estMortSuivre) {
+    if (suivreCible) {
+      updateSuivre();
+    } else {
+      detecterCibleSuivre();
+      var btnSuivre = document.getElementById('btn-suivre');
+      if (btnSuivre) {
+        btnSuivre.style.display = suivreCibleProche ? 'block' : 'none';
+      }
+    }
+  }
+
   requestAnimationFrame(gameLoop);
 }
 

@@ -20,7 +20,15 @@ service cloud.firestore {
         && request.resource.data.pseudo.size() <= 20
         && (!request.resource.data.keys().hasAny(['gold']) || request.resource.data.gold is number)
         && (!request.resource.data.keys().hasAny(['gold']) || request.resource.data.gold >= 0)
-        && (!request.resource.data.keys().hasAny(['gold']) || request.resource.data.gold <= 1000000);
+        && (!request.resource.data.keys().hasAny(['gold']) || request.resource.data.gold <= 1000000)
+        && (!request.resource.data.keys().hasAny(['wins']) || request.resource.data.wins is number)
+        && (!request.resource.data.keys().hasAny(['wins']) || request.resource.data.wins >= 0)
+        && (!request.resource.data.keys().hasAny(['kills']) || request.resource.data.kills is number)
+        && (!request.resource.data.keys().hasAny(['kills']) || request.resource.data.kills >= 0)
+        && (!request.resource.data.keys().hasAny(['gamesPlayed']) || request.resource.data.gamesPlayed is number)
+        && (!request.resource.data.keys().hasAny(['gamesPlayed']) || request.resource.data.gamesPlayed >= 0)
+        && (!request.resource.data.keys().hasAny(['deaths']) || request.resource.data.deaths is number)
+        && (!request.resource.data.keys().hasAny(['deaths']) || request.resource.data.deaths >= 0);
       allow delete: if true;
     }
 

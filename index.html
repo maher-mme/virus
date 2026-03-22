@@ -211,6 +211,42 @@
   </div>
 
   <!-- ============================== -->
+  <!-- POPUP CLASSEMENT               -->
+  <!-- ============================== -->
+  <div class="popup-overlay" id="popup-classement">
+    <div class="popup-box popup-box-classement">
+      <div class="popup-header" style="background:#b8860b;">
+        <h3 data-i18n="leaderboard">CLASSEMENT</h3>
+        <button class="popup-close" onclick="fermerClassement()">&times;</button>
+      </div>
+      <div class="popup-body">
+        <div class="classement-tabs">
+          <button class="classement-tab active" onclick="switchClassementTab('wins')" id="classement-tab-wins" data-i18n="victories">VICTOIRES</button>
+          <button class="classement-tab" onclick="switchClassementTab('kills')" id="classement-tab-kills" data-i18n="kill">KILLS</button>
+          <button class="classement-tab" onclick="switchClassementTab('gamesPlayed')" id="classement-tab-gamesPlayed" data-i18n="gamesPlayed">PARTIES</button>
+        </div>
+        <div class="classement-liste" id="classement-liste"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- POPUP PROFIL                    -->
+  <!-- ============================== -->
+  <div class="popup-overlay" id="popup-profil">
+    <div class="popup-box popup-box-profil">
+      <div class="popup-header" style="background:#2c3e50;">
+        <h3 data-i18n="profile">PROFIL</h3>
+        <button class="popup-close" onclick="fermerProfil()">&times;</button>
+      </div>
+      <div class="popup-body">
+        <div class="profil-header" id="profil-header"></div>
+        <div class="profil-stats" id="profil-stats"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
   <!-- ECRAN 1 : MENU PRINCIPAL      -->
   <!-- ============================== -->
   <audio id="musique-menu" loop preload="auto" src="musique/Destroyed/destroyed-multiverse-album.mp3"></audio>
@@ -421,6 +457,17 @@
           <span class="btn-label" data-i18n="findGame">TROUVER UNE PARTIE</span>
           <span class="btn-sub" data-i18n="joinExisting">Rejoindre une partie existante</span>
         </div>
+      </button>
+    </div>
+
+    <div class="online-extras">
+      <button class="btn-online-extra btn-classement" onclick="ouvrirClassement()">
+        <span class="btn-extra-icon">&#127942;</span>
+        <span data-i18n="leaderboard">CLASSEMENT</span>
+      </button>
+      <button class="btn-online-extra btn-profil" onclick="ouvrirProfil()">
+        <span class="btn-extra-icon">&#128100;</span>
+        <span data-i18n="profile">PROFIL</span>
       </button>
     </div>
 
@@ -1601,17 +1648,18 @@
 <script src="js/ui.js?v=20260227a"></script>
 <script src="js/chat.js"></script>
 <script src="js/comments.js"></script>
-<script src="js/translation.js?v=20260322"></script>
+<script src="js/translation.js?v=20260322b"></script>
 <script src="js/firebase-sync.js?v=15"></script>
 <script src="js/player.js?v=5"></script>
 <script src="js/shop.js?v=3"></script>
 <script src="js/bots.js"></script>
 <script src="js/game.js?v=20260322"></script>
-<script src="js/roles.js?v=9"></script>
+<script src="js/roles.js?v=10"></script>
 <script src="js/meeting.js?v=8"></script>
 <script src="js/missions.js"></script>
 <script src="js/minigames.js"></script>
 <script src="js/cameras.js"></script>
+<script src="js/stats.js?v=1"></script>
 <script src="js/friends.js?v=9"></script>
 
 <script>

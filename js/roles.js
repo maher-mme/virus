@@ -383,6 +383,7 @@ function tuerVictime() {
 
   killCooldown = true;
 
+  incrementerStat('kills');
   showNotif(t('youInfected', pseudoVictime), 'warn');
 
   setTimeout(function() {
@@ -635,6 +636,7 @@ function verifierVictoire() {
 }
 
 function afficherFinPartie(gagnant) {
+  enregistrerStatsFinPartie(gagnant);
   jeuActif = false;
   touchActif = false;
   if (miniJeuOuvert) fermerMiniJeu();

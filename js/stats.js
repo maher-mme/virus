@@ -213,14 +213,9 @@ function incrementerStat(champ, valeur) {
 }
 
 function enregistrerStatsFinPartie(gagnant) {
-  // Parties jouees
-  incrementerStat('gamesPlayed');
-
   // Mort ?
   var pseudo = getPseudo() || '';
-  if (joueursElimines.indexOf(pseudo) >= 0) {
-    incrementerStat('deaths');
-  }
+  var estMort = joueursElimines.indexOf(pseudo) >= 0;
 
   // Victoire ?
   var aGagne = false;
@@ -230,16 +225,33 @@ function enregistrerStatsFinPartie(gagnant) {
   if ((gagnant === 'innocents' || gagnant === 'missions') && monRole === 'espion' && espionCamp === 'innocent') aGagne = true;
   if (gagnant === 'fanatique' && monRole === 'fanatique') aGagne = true;
 
-  if (aGagne) {
-    incrementerStat('wins');
+  // Mode API : le serveur gere tout
+  if (typeof apiDisponible !== 'undefined' && apiDisponible && partieActuelleId) {
+    var killsCount = typeof playerKills !== 'undefined' ? playerKills : 0;
+    apiEndGameStats(partieActuelleId, aGagne, estMort, killsCount).catch(function() {});
+    apiEndGameXP(partieActuelleId, aGagne).then(function(data) {
+      if (data && data.niveauxGagnes > 0) {
+        playerGold += data.goldBonus;
+        showNotif(t('levelUp', data.niveau, data.goldBonus), 'success');
+      }
+      if (data && data.xpGagne) {
+        showNotif('+' + data.xpGagne + ' XP', 'info');
+      }
+    }).catch(function() {});
+    return;
   }
+
+  // Mode local (fallback) : gestion directe
+  incrementerStat('gamesPlayed');
+  if (estMort) incrementerStat('deaths');
+  if (aGagne) incrementerStat('wins');
 
   // XP : defaite 10-100, victoire 100-250
   var xpGagne;
   if (aGagne) {
-    xpGagne = 100 + Math.floor(Math.random() * 151); // 100 a 250
+    xpGagne = 100 + Math.floor(Math.random() * 151);
   } else {
-    xpGagne = 10 + Math.floor(Math.random() * 91); // 10 a 100
+    xpGagne = 10 + Math.floor(Math.random() * 91);
   }
   ajouterXP(xpGagne);
 }

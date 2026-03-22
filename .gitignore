@@ -1,3 +1,5 @@
 .claude/
 nul
 desktop.ini
+firebase-credentials.json
+python/__pycache__/

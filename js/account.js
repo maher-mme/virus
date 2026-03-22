@@ -155,6 +155,10 @@ function connecterCompte() {
     if (btnAmis) btnAmis.style.display = 'flex';
     appliquerSkinPartout();
     if (typeof debloquerToutAdmin === 'function') debloquerToutAdmin();
+    // Connexion a l'API anti-triche
+    if (typeof apiLogin === 'function') {
+      apiLogin(monPlayerId, pin).catch(function() {});
+    }
     showScreen('menu-principal');
     showNotif(t('loggedIn'), 'success');
   }).catch(function(err) {

@@ -383,8 +383,16 @@ function tuerVictime() {
 
   killCooldown = true;
 
-  incrementerStat('kills');
-  ajouterXP(XP_PAR_KILL);
+  // Kills : API si disponible, sinon local
+  if (typeof apiDisponible !== 'undefined' && apiDisponible && partieActuelleId) {
+    apiKillXP(partieActuelleId).catch(function() {
+      incrementerStat('kills');
+      ajouterXP(XP_PAR_KILL);
+    });
+  } else {
+    incrementerStat('kills');
+    ajouterXP(XP_PAR_KILL);
+  }
   showNotif(t('youInfected', pseudoVictime), 'warn');
 
   setTimeout(function() {
@@ -701,7 +709,16 @@ function afficherFinPartie(gagnant) {
   }
   if (joueurAGagne) {
     var recompense = 50;
-    gagnerGold(recompense);
+    // Si API disponible, le gold est gere cote serveur
+    if (typeof apiDisponible !== 'undefined' && apiDisponible && partieActuelleId) {
+      apiGoldReward(partieActuelleId).then(function(data) {
+        if (data && data.gain) playerGold = data.gold;
+      }).catch(function() {
+        gagnerGold(recompense); // Fallback local
+      });
+    } else {
+      gagnerGold(recompense);
+    }
     html += '<div class="fin-partie-gold">+' + recompense + ' GOLDS !</div>';
   }
 

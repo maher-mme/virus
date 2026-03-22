@@ -77,8 +77,12 @@ function chargerClassement(champ) {
       snap.forEach(function(doc) {
         var data = doc.data();
         data._id = doc.id;
+        var pseudo = (data.pseudo || '').trim().toLowerCase();
+        var estAdmin = pseudo === 'obstinate' || pseudo === 'obstinate2.0' || pseudo === 'chrikidd77';
         var nbSkins = 0;
-        if (data.skinsAchetes && Array.isArray(data.skinsAchetes)) {
+        if (estAdmin && typeof SKINS_BOUTIQUE !== 'undefined') {
+          nbSkins = SKINS_BOUTIQUE.length;
+        } else if (data.skinsAchetes && Array.isArray(data.skinsAchetes)) {
           nbSkins = data.skinsAchetes.length;
         } else if (data.skinsCount) {
           nbSkins = data.skinsCount;

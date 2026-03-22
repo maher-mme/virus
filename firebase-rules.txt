@@ -29,6 +29,10 @@ service cloud.firestore {
         && (!request.resource.data.keys().hasAny(['gamesPlayed']) || request.resource.data.gamesPlayed >= 0)
         && (!request.resource.data.keys().hasAny(['deaths']) || request.resource.data.deaths is number)
         && (!request.resource.data.keys().hasAny(['deaths']) || request.resource.data.deaths >= 0)
+        && (!request.resource.data.keys().hasAny(['xp']) || request.resource.data.xp is number)
+        && (!request.resource.data.keys().hasAny(['xp']) || request.resource.data.xp >= 0)
+        && (!request.resource.data.keys().hasAny(['level']) || request.resource.data.level is number)
+        && (!request.resource.data.keys().hasAny(['level']) || request.resource.data.level >= 1)
         && (!request.resource.data.keys().hasAny(['pet']) || request.resource.data.pet is string)
         && (!request.resource.data.keys().hasAny(['pet']) || request.resource.data.pet.size() <= 50)
         && (!request.resource.data.keys().hasAny(['petsAchetes']) || request.resource.data.petsAchetes is list);

@@ -1,4 +1,52 @@
 // ============================
+// SYSTEME DE NIVEAUX / XP
+// ============================
+var XP_PAR_PARTIE = 10;
+var XP_PAR_VICTOIRE = 20;
+var XP_PAR_KILL = 5;
+var GOLD_PAR_NIVEAU = 50;
+
+function xpPourNiveau(niveau) {
+  if (niveau < 10) return 100;
+  if (niveau < 50) return 1000;
+  return 1500;
+}
+
+function calculerNiveau(xpTotal) {
+  var niveau = 1;
+  var xpRestant = xpTotal;
+  while (xpRestant >= xpPourNiveau(niveau)) {
+    xpRestant -= xpPourNiveau(niveau);
+    niveau++;
+  }
+  return { niveau: niveau, xpDansNiveau: xpRestant, xpRequis: xpPourNiveau(niveau) };
+}
+
+function ajouterXP(xpGagne) {
+  if (!monPlayerId) return;
+  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+    if (!doc.exists) return;
+    var data = doc.data();
+    var ancienXP = data.xp || 0;
+    var ancienNiveau = calculerNiveau(ancienXP).niveau;
+    var nouveauXP = ancienXP + xpGagne;
+    var nouveauNiveau = calculerNiveau(nouveauXP).niveau;
+    var niveauxGagnes = nouveauNiveau - ancienNiveau;
+
+    var updateData = { xp: nouveauXP };
+    if (niveauxGagnes > 0) {
+      updateData.level = nouveauNiveau;
+      // Donner 50 gold par niveau gagne
+      var goldBonus = niveauxGagnes * GOLD_PAR_NIVEAU;
+      playerGold += goldBonus;
+      sauvegarderGold();
+      showNotif(t('levelUp', nouveauNiveau, goldBonus), 'success');
+    }
+    db.collection('players').doc(monPlayerId).update(updateData).catch(function() {});
+  }).catch(function() {});
+}
+
+// ============================
 // CLASSEMENT & PROFIL JOUEUR
 // ============================
 var classementTab = 'wins';
@@ -124,6 +172,11 @@ function chargerProfil(playerId) {
     var pseudo = data.pseudo || '???';
     var pfp = data.pfp || '';
 
+    // Niveau
+    var xpTotal = data.xp || 0;
+    var niveauInfo = calculerNiveau(xpTotal);
+    var pourcent = Math.round((niveauInfo.xpDansNiveau / niveauInfo.xpRequis) * 100);
+
     // Header
     var pfpHtml = pfp
       ? '<img class="profil-pfp" src="' + pfp + '" alt="PFP">'
@@ -131,6 +184,9 @@ function chargerProfil(playerId) {
     headerEl.innerHTML = pfpHtml +
       '<div class="profil-info">' +
       '<span class="profil-pseudo">' + escapeHtml(pseudo) + '</span>' +
+      '<span class="profil-niveau">' + t('level') + ' ' + niveauInfo.niveau + '</span>' +
+      '<div class="profil-xp-bar"><div class="profil-xp-fill" style="width:' + pourcent + '%"></div></div>' +
+      '<span class="profil-xp-text">' + niveauInfo.xpDansNiveau + ' / ' + niveauInfo.xpRequis + ' XP</span>' +
       '</div>';
 
     var wins = data.wins || 0;
@@ -181,4 +237,9 @@ function enregistrerStatsFinPartie(gagnant) {
   if (aGagne) {
     incrementerStat('wins');
   }
+
+  // XP : 10 par partie + 20 si victoire
+  var xpGagne = XP_PAR_PARTIE;
+  if (aGagne) xpGagne += XP_PAR_VICTOIRE;
+  ajouterXP(xpGagne);
 }

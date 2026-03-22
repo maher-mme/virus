@@ -384,6 +384,7 @@ function tuerVictime() {
   killCooldown = true;
 
   incrementerStat('kills');
+  ajouterXP(XP_PAR_KILL);
   showNotif(t('youInfected', pseudoVictime), 'warn');
 
   setTimeout(function() {

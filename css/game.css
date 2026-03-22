@@ -552,6 +552,20 @@
   transition: left 0.15s linear, top 0.15s linear;
 }
 
+/* Pet (animal de compagnie) */
+.pet-element {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  pointer-events: none;
+  z-index: 99;
+  transition: left 0.15s linear, top 0.15s linear;
+}
+.pet-element img {
+  width: 30px;
+  height: 30px;
+}
+
 /* Pseudo au-dessus du joueur */
 .joueur-pseudo {
   position: absolute;

@@ -367,6 +367,12 @@ function lancerJeuMultiplayer(state) {
   // Initialiser les missions
   initMissions();
 
+  // Initialiser le pet du joueur
+  if (typeof initMonPet === 'function') {
+    petInitialized = false;
+    initMonPet();
+  }
+
   // Souscrire a l'etat du jeu
   subscribeToGameState(partieActuelleId);
   lastGamePhase = 'playing';
@@ -383,7 +389,8 @@ function handleSinglePlayerUpdate(p) {
       targetX: p.x, targetY: p.y,
       velocityX: 0, velocityY: 0,
       direction: p.direction, lastUpdate: now,
-      alive: p.alive, pseudo: p.pseudo, skin: p.skin
+      alive: p.alive, pseudo: p.pseudo, skin: p.skin,
+      pet: p.pet || '', petObj: null
     };
     createRemotePlayerElement(p);
   } else {
@@ -424,6 +431,14 @@ function createRemotePlayerElement(p) {
     '<img src="' + (p.skin || 'skin/gratuit/skin-de-base-garcon.svg') +
     '" class="bot-skin" style="width:60px;height:60px;">';
   container.appendChild(div);
+
+  // Creer le pet du joueur distant si equipe
+  if (p.pet && typeof creerPetElement !== 'undefined' && typeof PETS_BOUTIQUE !== 'undefined') {
+    var rp = remotePlayers[p.playerId];
+    if (rp) {
+      rp.petObj = creerPetElement(p.pet, container);
+    }
+  }
 }
 
 // Mettre a jour les joueurs distants (prediction + lerp frame-rate independent)
@@ -473,6 +488,11 @@ function updateRemotePlayers() {
       var img = el.querySelector('img');
       if (img) img.style.transform = 'scaleX(' + rp.direction + ')';
       if (!rp.alive) el.style.opacity = '0.3';
+    }
+    // Mettre a jour le pet du joueur distant
+    if (rp.petObj) {
+      var rpMoved = (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5);
+      updatePetSuivi(rp.petObj, rp.x, rp.y, rpMoved);
     }
   }
 }
@@ -895,8 +915,9 @@ function creerPartie() {
   }).then(function(docRef) {
     var partyId = docRef.id;
     // Ajouter le joueur host
+    var monPet = typeof getPetEquipe === 'function' ? getPetEquipe() : '';
     return db.collection('partyPlayers').add({
-      partyId: partyId, playerId: monPlayerId, pseudo: pseudo, skin: skin,
+      partyId: partyId, playerId: monPlayerId, pseudo: pseudo, skin: skin, pet: monPet,
       isHost: true, role: '', alive: true, x: 0, y: 0, direction: 1, saX: 50, saY: 70, saDirection: 1,
       lastActive: firebase.firestore.FieldValue.serverTimestamp()
     }).then(function(ppDoc) {
@@ -929,8 +950,9 @@ function rejoindrePartie(partieId) {
       online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true }).then(function() {
       // Ajouter a la partie
+      var monPet = typeof getPetEquipe === 'function' ? getPetEquipe() : '';
       return db.collection('partyPlayers').add({
-        partyId: partieId, playerId: monPlayerId, pseudo: pseudo, skin: skin,
+        partyId: partieId, playerId: monPlayerId, pseudo: pseudo, skin: skin, pet: monPet,
         isHost: false, role: '', alive: true, x: 0, y: 0, direction: 1, saX: 50, saY: 70, saDirection: 1,
         lastActive: firebase.firestore.FieldValue.serverTimestamp()
       });

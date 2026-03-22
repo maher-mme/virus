@@ -440,6 +440,8 @@ function lancerJeu() {
 
   showScreen('jeu');
   jeuActif = true;
+  petInitialized = false;
+  initMonPet();
   // Reset UI reunion au demarrage
   var skipBtn = document.getElementById('reunion-btn-skip');
   if (skipBtn) skipBtn.classList.remove('visible');
@@ -654,6 +656,135 @@ function demanderReunion() {
   }, 500);
 }
 
+// ============================
+// SYSTEME D'AFFICHAGE DES PETS
+// ============================
+var petAnimFrame = 0;
+var petAnimTimer = 0;
+var PET_ANIM_INTERVAL = 250; // ms entre frames walk
+var petLastX = 0;
+var petLastY = 0;
+var petOffsetX = 20; // decalage derriere le joueur
+var petOffsetY = 10;
+var petCurrentX = 0;
+var petCurrentY = 0;
+var petInitialized = false;
+
+function initMonPet() {
+  var petId = getPetEquipe();
+  var petEl = document.getElementById('mon-pet');
+  var petImg = document.getElementById('mon-pet-img');
+  if (!petEl || !petImg) return;
+  if (!petId) {
+    petEl.style.display = 'none';
+    return;
+  }
+  var pet = PETS_BOUTIQUE.find(function(p) { return p.id === petId; });
+  if (!pet) { petEl.style.display = 'none'; return; }
+  petImg.src = pet.idle;
+  petEl.style.display = 'block';
+  petCurrentX = joueurX + petOffsetX;
+  petCurrentY = joueurY + petOffsetY;
+  petLastX = joueurX;
+  petLastY = joueurY;
+  petInitialized = true;
+}
+
+function updateMonPet(moved) {
+  var petId = getPetEquipe();
+  var petEl = document.getElementById('mon-pet');
+  var petImg = document.getElementById('mon-pet-img');
+  if (!petEl || !petImg || !petId) return;
+  var pet = PETS_BOUTIQUE.find(function(p) { return p.id === petId; });
+  if (!pet) return;
+
+  if (!petInitialized) { initMonPet(); return; }
+
+  // Le pet suit le joueur avec un leger retard (lerp)
+  var targetX = joueurX + petOffsetX;
+  var targetY = joueurY + petOffsetY;
+  petCurrentX += (targetX - petCurrentX) * 0.08;
+  petCurrentY += (targetY - petCurrentY) * 0.08;
+  petEl.style.left = Math.round(petCurrentX) + 'px';
+  petEl.style.top = Math.round(petCurrentY) + 'px';
+
+  // Direction du pet (suit le joueur)
+  if (joueurX < petLastX - 1) {
+    petImg.style.transform = 'scaleX(-1)';
+  } else if (joueurX > petLastX + 1) {
+    petImg.style.transform = 'scaleX(1)';
+  }
+
+  // Animation marche
+  var now = Date.now();
+  if (moved) {
+    if (now - petAnimTimer > PET_ANIM_INTERVAL) {
+      petAnimTimer = now;
+      petAnimFrame = (petAnimFrame === 1) ? 2 : 1;
+      petImg.src = petAnimFrame === 1 ? pet.walk1 : pet.walk2;
+    }
+  } else {
+    if (petAnimFrame !== 0) {
+      petAnimFrame = 0;
+      petImg.src = pet.idle;
+    }
+  }
+  petLastX = joueurX;
+  petLastY = joueurY;
+}
+
+function creerPetElement(petId, parentEl) {
+  var pet = PETS_BOUTIQUE.find(function(p) { return p.id === petId; });
+  if (!pet) return null;
+  var div = document.createElement('div');
+  div.className = 'pet-element';
+  var img = document.createElement('img');
+  img.src = pet.idle;
+  img.alt = 'pet';
+  div.appendChild(img);
+  parentEl.appendChild(div);
+  return { element: div, img: img, petData: pet, animFrame: 0, animTimer: 0, lastX: 0, lastY: 0, curX: 0, curY: 0, init: false };
+}
+
+function updatePetSuivi(petObj, ownerX, ownerY, ownerMoved) {
+  if (!petObj || !petObj.element) return;
+  if (!petObj.init) {
+    petObj.curX = ownerX + petOffsetX;
+    petObj.curY = ownerY + petOffsetY;
+    petObj.lastX = ownerX;
+    petObj.lastY = ownerY;
+    petObj.init = true;
+  }
+  var tx = ownerX + petOffsetX;
+  var ty = ownerY + petOffsetY;
+  petObj.curX += (tx - petObj.curX) * 0.08;
+  petObj.curY += (ty - petObj.curY) * 0.08;
+  petObj.element.style.left = Math.round(petObj.curX) + 'px';
+  petObj.element.style.top = Math.round(petObj.curY) + 'px';
+
+  if (ownerX < petObj.lastX - 1) {
+    petObj.img.style.transform = 'scaleX(-1)';
+  } else if (ownerX > petObj.lastX + 1) {
+    petObj.img.style.transform = 'scaleX(1)';
+  }
+
+  var now = Date.now();
+  if (ownerMoved) {
+    if (now - petObj.animTimer > PET_ANIM_INTERVAL) {
+      petObj.animTimer = now;
+      petObj.animFrame = (petObj.animFrame === 1) ? 2 : 1;
+      petObj.img.src = petObj.animFrame === 1 ? petObj.petData.walk1 : petObj.petData.walk2;
+    }
+  } else {
+    if (petObj.animFrame !== 0) {
+      petObj.animFrame = 0;
+      petObj.img.src = petObj.petData.idle;
+    }
+  }
+  petObj.lastX = ownerX;
+  petObj.lastY = ownerY;
+}
+
 function gameLoop() {
   if (!jeuActif) return;
 
@@ -727,6 +858,9 @@ function gameLoop() {
       }).catch(function() {});
     }
   }
+
+  // Mettre a jour le pet du joueur local
+  updateMonPet(moved);
 
   // Mettre a jour les joueurs distants en mode multiplayer
   if (!modeHorsLigne && partieActuelleId) {

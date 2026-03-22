@@ -26,6 +26,9 @@ function nettoyerBots() {
     if (bots[i].element && bots[i].element.parentNode) {
       bots[i].element.parentNode.removeChild(bots[i].element);
     }
+    if (bots[i].petObj && bots[i].petObj.element && bots[i].petObj.element.parentNode) {
+      bots[i].petObj.element.parentNode.removeChild(bots[i].petObj.element);
+    }
   }
   bots = [];
   // Nettoyer aussi les fantomes
@@ -98,6 +101,13 @@ function initBots(nbBots) {
 
     mallMap.appendChild(div);
 
+    // Pet aleatoire (50% de chance)
+    var botPetObj = null;
+    if (Math.random() < 0.5 && typeof PETS_BOUTIQUE !== 'undefined' && PETS_BOUTIQUE.length > 0) {
+      var randomPet = PETS_BOUTIQUE[Math.floor(Math.random() * PETS_BOUTIQUE.length)];
+      botPetObj = creerPetElement(randomPet.id, mallMap);
+    }
+
     bots.push({
       id: 'bot-' + i,
       pseudo: pseudo,
@@ -113,7 +123,8 @@ function initBots(nbBots) {
       pauseTimer: 0,
       suiviCible: null, // pseudo du joueur/bot suivi
       missionsVisitees: 0, // compteur de boutiques visitees
-      element: div
+      element: div,
+      petObj: botPetObj
     });
   }
 }
@@ -376,6 +387,11 @@ function updateBots() {
     if (bot.element) {
       bot.element.style.left = bot.x + 'px';
       bot.element.style.top = bot.y + 'px';
+    }
+    // Mettre a jour le pet du bot
+    if (bot.petObj) {
+      var botMoved = (mx !== 0 || my !== 0);
+      updatePetSuivi(bot.petObj, bot.x, bot.y, botMoved);
     }
   }
 

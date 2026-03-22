@@ -472,36 +472,6 @@
           <span class="btn-sub" data-i18n="joinExisting">Rejoindre une partie existante</span>
         </div>
       </button>
-
-      <div class="separateur-ou">
-        <div class="ligne"></div>
-        <div class="ou-cercle" data-i18n="or">OU</div>
-        <div class="ligne"></div>
-      </div>
-
-      <button class="btn btn-matchmaking" onclick="rejoindreMatchmaking()">
-        <div class="btn-icon">&#9889;</div>
-        <div class="btn-content">
-          <span class="btn-label" data-i18n="matchmaking">MATCHMAKING</span>
-          <span class="btn-sub" data-i18n="autoMatch">Trouver des joueurs automatiquement</span>
-        </div>
-      </button>
-    </div>
-
-    <!-- Popup matchmaking en attente -->
-    <div class="popup-overlay" id="popup-matchmaking">
-      <div class="popup-box" style="max-width:400px;">
-        <div class="popup-header" style="background:#8e44ad;">
-          <h3 data-i18n="matchmaking">MATCHMAKING</h3>
-          <button class="popup-close" onclick="quitterMatchmaking()">&times;</button>
-        </div>
-        <div class="popup-body" style="text-align:center; padding:30px;">
-          <div class="matchmaking-spinner"></div>
-          <p id="matchmaking-statut" style="color:#ecf0f1; font-size:16px; margin:15px 0;" data-i18n="searchingPlayers">Recherche de joueurs...</p>
-          <p id="matchmaking-info" style="color:#95a5a6; font-size:13px;"></p>
-          <button class="btn" style="margin-top:15px; padding:10px 30px;" onclick="quitterMatchmaking()" data-i18n="cancel">ANNULER</button>
-        </div>
-      </div>
     </div>
 
     <div class="online-extras">
@@ -1707,7 +1677,6 @@
 <script src="js/missions.js"></script>
 <script src="js/minigames.js"></script>
 <script src="js/cameras.js"></script>
-<script src="js/matchmaking.js?v=1"></script>
 <script src="js/stats.js?v=2"></script>
 <script src="js/friends.js?v=9"></script>
 

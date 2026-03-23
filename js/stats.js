@@ -179,32 +179,7 @@ function creerClassementItem(data, rang, valeur) {
   val.textContent = valeur;
   item.appendChild(val);
 
-  // Bouton supprimer pour admin uniquement
-  if (isAdmin() && data._id) {
-    var btnSuppr = document.createElement('button');
-    btnSuppr.textContent = '✕';
-    btnSuppr.className = 'classement-btn-suppr';
-    btnSuppr.title = 'Supprimer ce compte';
-    btnSuppr.onclick = function() {
-      if (confirm('Supprimer le compte "' + (data.pseudo || '???') + '" ?')) {
-        supprimerCompte(data._id);
-      }
-    };
-    item.appendChild(btnSuppr);
-  }
-
   return item;
-}
-
-function supprimerCompte(playerId) {
-  db.collection('players').doc(playerId).delete().then(function() {
-    showNotif('Compte supprime', 'success');
-    // Rafraichir le classement
-    chargerClassement(classementTab);
-  }).catch(function(err) {
-    console.error('Erreur suppression:', err);
-    showNotif('Erreur suppression', 'warn');
-  });
 }
 
 // ============================

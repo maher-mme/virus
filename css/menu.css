@@ -50,14 +50,15 @@
     transform: none;
     flex-direction: row;
     justify-content: center;
-    margin-bottom: 8px;
-  }
-  .btn-side span {
-    display: none;
+    margin: 5px 0;
+    gap: 8px;
   }
   .btn-side {
-    padding: 10px 14px;
-    font-size: 18px;
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+  .btn-side span {
+    font-size: 9px;
   }
 }
 

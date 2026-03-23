@@ -159,7 +159,6 @@ function creerClassementItem(data, rang, valeur) {
   img.className = 'classement-pfp';
   img.src = data.pfp || (typeof PFP_DE_BASE !== 'undefined' ? PFP_DE_BASE : 'assets/pfp_de_base.png');
   item.appendChild(img);
-  }
 
   var pseudo = document.createElement('span');
   pseudo.className = 'classement-pseudo';

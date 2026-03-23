@@ -46,19 +46,33 @@
 }
 @media (max-width: 700px) {
   .menu-side-buttons {
-    position: static;
-    transform: none;
-    flex-direction: row;
-    justify-content: center;
-    margin: 5px 0;
-    gap: 8px;
+    position: fixed;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-direction: column;
+    gap: 6px;
   }
   .btn-side {
-    padding: 6px 10px;
-    font-size: 10px;
+    padding: 6px 8px;
+    font-size: 14px;
   }
   .btn-side span {
-    font-size: 9px;
+    display: none;
+  }
+  .titre-virus {
+    font-size: 40px !important;
+  }
+  .virus-icons {
+    gap: 20px !important;
+    margin-bottom: 5px;
+  }
+  .virus-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .version-inline {
+    font-size: 8px !important;
   }
 }
 

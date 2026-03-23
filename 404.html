@@ -4,10 +4,19 @@
   <meta charset="utf-8">
   <script>
     // GitHub Pages SPA redirect
-    // Stocke le chemin demande et redirige vers la racine du site
-    var repo = '/virus';
-    sessionStorage.setItem('spa_redirect', location.pathname.replace(repo, '') || '/');
-    location.replace(repo + '/');
+    // Detecte automatiquement si on est sur un domaine perso ou sous /repo/
+    var path = location.pathname;
+    var isCustomDomain = (location.hostname !== 'maher-mme.github.io');
+    if (isCustomDomain) {
+      // Domaine perso (virus.solyntek.io) : base = /
+      sessionStorage.setItem('spa_redirect', path || '/');
+      location.replace('/');
+    } else {
+      // GitHub Pages (maher-mme.github.io/virus/) : base = /virus/
+      var repo = '/virus';
+      sessionStorage.setItem('spa_redirect', path.replace(repo, '') || '/');
+      location.replace(repo + '/');
+    }
   </script>
 </head>
 <body></body>

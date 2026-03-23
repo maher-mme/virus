@@ -12,10 +12,15 @@ var _replyToPseudo = null;
 function ouvrirCommentaires() {
   document.getElementById('popup-commentaires').classList.add('visible');
   chargerCommentaires();
+  if (typeof navigateTo === 'function') navigateTo('/comments/');
 }
 
 function fermerCommentaires() {
   document.getElementById('popup-commentaires').classList.remove('visible');
+  // Revenir a l'URL precedente
+  if (typeof getRoutePath === 'function' && getRoutePath() === '/comments/') {
+    history.back();
+  }
   if (_commentairesUnsub) {
     _commentairesUnsub();
     _commentairesUnsub = null;

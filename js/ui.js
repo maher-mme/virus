@@ -1,4 +1,118 @@
 // Navigation entre ecrans
+
+// === ROUTING (URLs propres) ===
+var ROUTES = {
+  '/': 'menu-principal',
+  '/online/': 'menu-online',
+  '/offline/': 'config-horsline',
+  '/shop/': 'boutique-skins',
+  '/settings/': 'ecran-compte',
+  '/online/create/': 'creer-partie',
+  '/online/join/': 'liste-parties',
+  '/comments/': '_comments',
+  '/game/': 'jeu',
+  '/lobby/': 'salle-attente'
+};
+
+// Inverse : screen ID -> URL
+var SCREEN_TO_ROUTE = {};
+(function() {
+  for (var route in ROUTES) {
+    SCREEN_TO_ROUTE[ROUTES[route]] = route;
+  }
+})();
+
+// Trouver le basePath (pour GitHub Pages sous /virus/ par ex.)
+var _basePath = '';
+(function() {
+  var path = window.location.pathname;
+  // Detecter si on est sous un sous-dossier (ex: /virus/)
+  // On cherche le premier segment qui correspond a un repo name
+  for (var route in ROUTES) {
+    var idx = path.indexOf(route);
+    if (idx > 0 && route !== '/') {
+      _basePath = path.substring(0, idx);
+      return;
+    }
+  }
+  // Sinon verifier si le path finit par /index.html ou contient un segment de base
+  var segments = path.split('/').filter(function(s) { return s.length > 0; });
+  if (segments.length > 0) {
+    // Verifier si le dernier segment est une route connue
+    var lastPart = '/' + segments[segments.length - 1] + '/';
+    if (!ROUTES[lastPart]) {
+      // C'est probablement le base path
+      _basePath = '/' + segments[0];
+    }
+  }
+})();
+
+function getRoutePath() {
+  var path = window.location.pathname;
+  if (_basePath && path.indexOf(_basePath) === 0) {
+    path = path.substring(_basePath.length);
+  }
+  if (path === '' || path === '/index.html') path = '/';
+  // S'assurer que ca finit par /
+  if (path !== '/' && path.charAt(path.length - 1) !== '/') path += '/';
+  return path;
+}
+
+function navigateTo(route, replace) {
+  var fullPath = _basePath + route;
+  if (replace) {
+    history.replaceState({ route: route }, '', fullPath);
+  } else {
+    history.pushState({ route: route }, '', fullPath);
+  }
+}
+
+// Gerer le bouton retour du navigateur
+window.addEventListener('popstate', function(e) {
+  var path = getRoutePath();
+  var screenId = ROUTES[path];
+  if (screenId === '_comments') {
+    if (typeof ouvrirCommentaires === 'function') ouvrirCommentaires();
+    return;
+  }
+  if (screenId) {
+    showScreen(screenId, true); // true = ne pas push l'URL (on vient du popstate)
+  } else {
+    showScreen('menu-principal', true);
+  }
+});
+
+// Au chargement, afficher le bon ecran selon l'URL
+window.addEventListener('DOMContentLoaded', function() {
+  // Verifier si on vient d'un redirect 404.html
+  var redirectPath = sessionStorage.getItem('spa_redirect');
+  if (redirectPath) {
+    sessionStorage.removeItem('spa_redirect');
+    navigateTo(redirectPath, true);
+  }
+
+  var path = getRoutePath();
+  var screenId = ROUTES[path];
+  if (screenId === '_comments') {
+    setTimeout(function() {
+      if (typeof ouvrirCommentaires === 'function') ouvrirCommentaires();
+    }, 500);
+    return;
+  }
+  if (screenId && screenId !== 'menu-principal' && screenId !== 'ecran-compte') {
+    // Ecrans qui necessitent d'etre en partie — rediriger vers le menu
+    if (screenId === 'jeu' || screenId === 'salle-attente') {
+      navigateTo('/', true);
+      return;
+    }
+    setTimeout(function() {
+      if (typeof monPlayerId !== 'undefined' && monPlayerId) {
+        showScreen(screenId, true);
+      }
+    }, 800);
+  }
+});
+
 var musiqueMuted = false;
 function toggleMusique() {
   var audio = document.getElementById('musique-menu');
@@ -65,11 +179,16 @@ function choisirCampEspion(camp) {
   }
 }
 
-function showScreen(id) {
+function showScreen(id, fromPopstate) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const screen = document.getElementById(id);
   screen.classList.add('active', 'fade-in');
   setTimeout(() => screen.classList.remove('fade-in'), 300);
+
+  // Mettre a jour l'URL
+  if (!fromPopstate && SCREEN_TO_ROUTE[id]) {
+    navigateTo(SCREEN_TO_ROUTE[id]);
+  }
 
   // Gerer la musique du menu
   gererMusiqueMenu(id);

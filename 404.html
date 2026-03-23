@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script>
+    // GitHub Pages SPA redirect
+    // Stocke le chemin demande et redirige vers la racine du site
+    var repo = '/virus';
+    sessionStorage.setItem('spa_redirect', location.pathname.replace(repo, '') || '/');
+    location.replace(repo + '/');
+  </script>
+</head>
+<body></body>
+</html>

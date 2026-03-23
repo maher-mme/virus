@@ -91,7 +91,9 @@ function chargerClassement(champ) {
         } else if (data.skinsCount) {
           nbSkins += data.skinsCount;
         }
-        joueurs.push({ data: data, count: nbSkins });
+        if (data.pseudo && data.pseudo.trim()) {
+          joueurs.push({ data: data, count: nbSkins });
+        }
       });
       joueurs.sort(function(a, b) { return b.count - a.count; });
       joueurs = joueurs.slice(0, 20);
@@ -128,8 +130,9 @@ function chargerClassement(champ) {
       liste.innerHTML = '';
       var rang = 0;
       snap.forEach(function(doc) {
-        rang++;
         var data = doc.data();
+        if (!data.pseudo || !data.pseudo.trim()) return;
+        rang++;
         data._id = doc.id;
         liste.appendChild(creerClassementItem(data, rang, data[champ] || 0));
       });
@@ -152,21 +155,10 @@ function creerClassementItem(data, rang, valeur) {
   rangEl.textContent = rang;
   item.appendChild(rangEl);
 
-  if (data.pfp) {
-    var img = document.createElement('img');
-    img.className = 'classement-pfp';
-    img.src = data.pfp;
-    item.appendChild(img);
-  } else {
-    var placeholder = document.createElement('div');
-    placeholder.className = 'classement-pfp';
-    placeholder.style.background = '#34495e';
-    placeholder.style.display = 'flex';
-    placeholder.style.alignItems = 'center';
-    placeholder.style.justifyContent = 'center';
-    placeholder.style.fontSize = '16px';
-    placeholder.textContent = '?';
-    item.appendChild(placeholder);
+  var img = document.createElement('img');
+  img.className = 'classement-pfp';
+  img.src = data.pfp || (typeof PFP_DE_BASE !== 'undefined' ? PFP_DE_BASE : 'assets/pfp_de_base.png');
+  item.appendChild(img);
   }
 
   var pseudo = document.createElement('span');

@@ -17,9 +17,9 @@ function ouvrirCommentaires() {
 
 function fermerCommentaires() {
   document.getElementById('popup-commentaires').classList.remove('visible');
-  // Revenir a l'URL precedente
-  if (typeof getRoutePath === 'function' && getRoutePath() === '/comments/') {
-    history.back();
+  // Revenir a l'URL du menu principal
+  if (typeof navigateTo === 'function' && typeof getRoutePath === 'function' && getRoutePath() === '/comments/') {
+    navigateTo('/', true);
   }
   if (_commentairesUnsub) {
     _commentairesUnsub();

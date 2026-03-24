@@ -76,7 +76,7 @@ function chargerClassement(champ) {
     var nbSkinsBoutique = (typeof SKINS_BOUTIQUE !== 'undefined') ? SKINS_BOUTIQUE.length : 0;
     var totalSkinsExistants = nbSkinsBase + nbSkinsBoutique;
 
-    db.collection('players').get().then(function(snap) {
+    db.collection('players').get({ source: 'server' }).then(function(snap) {
       var joueurs = [];
       snap.forEach(function(doc) {
         var data = doc.data();
@@ -120,7 +120,7 @@ function chargerClassement(champ) {
     .where(champ, '>', 0)
     .orderBy(champ, 'desc')
     .limit(20)
-    .get()
+    .get({ source: 'server' })
     .then(function(snap) {
       if (snap.empty) {
         liste.innerHTML = '<div class="classement-vide">' + t('noLeaderboard') + '</div>';

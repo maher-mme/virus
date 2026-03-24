@@ -1,5 +1,88 @@
 // Navigation entre ecrans
 
+// === DETECTION DE MISE A JOUR ===
+var CURRENT_VERSION = '1.3.0';
+var _updateDismissed = false;
+var _updateForceTimer = null;
+
+(function() {
+  // Ecouter les changements de version en temps reel
+  if (typeof db !== 'undefined') {
+    db.collection('config').doc('version').onSnapshot(function(doc) {
+      if (!doc.exists) return;
+      var data = doc.data();
+      var serverVersion = data.version;
+      if (serverVersion && serverVersion !== CURRENT_VERSION) {
+        afficherPopupMiseAJour(serverVersion);
+      }
+    }, function() {});
+  }
+})();
+
+function afficherPopupMiseAJour(newVersion) {
+  if (_updateDismissed) return;
+  _updateDismissed = true;
+  // Verifier si le popup existe deja
+  if (document.getElementById('popup-update')) return;
+
+  var totalSeconds = 10 * 60; // 10 minutes
+  var countdown = totalSeconds;
+
+  var overlay = document.createElement('div');
+  overlay.id = 'popup-update';
+  overlay.style.cssText = 'position:fixed;top:20px;right:20px;z-index:99999;';
+
+  var box = document.createElement('div');
+  box.style.cssText = 'background:linear-gradient(180deg,#1a1a2e,#16213e);border:2px solid #f39c12;border-radius:12px;padding:15px 20px;max-width:350px;color:#ecf0f1;font-family:Arial,sans-serif;box-shadow:0 4px 20px rgba(0,0,0,0.5);';
+
+  function formatTime(sec) {
+    var m = Math.floor(sec / 60);
+    var s = sec % 60;
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  box.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">' +
+    '<span style="font-size:24px;">🔄</span>' +
+    '<span style="color:#f39c12;font-weight:bold;font-size:14px;">Mise a jour v' + newVersion + '</span></div>' +
+    '<p style="color:#ccc;margin:0 0 8px;font-size:12px;">Rechargement automatique dans</p>' +
+    '<div style="display:flex;align-items:center;gap:10px;">' +
+    '<div id="update-countdown" style="font-size:20px;font-weight:bold;color:#f39c12;">' + formatTime(countdown) + '</div>' +
+    '<button id="btn-update-now" style="padding:6px 14px;background:linear-gradient(180deg,#27ae60,#219a52);border:2px solid #1e8449;border-radius:6px;color:white;font-weight:bold;cursor:pointer;font-size:12px;">Recharger</button></div>' +
+    '<div style="margin-top:8px;background:#34495e;border-radius:6px;height:4px;overflow:hidden;">' +
+    '<div id="update-progress" style="background:linear-gradient(90deg,#f39c12,#e67e22);height:100%;width:0%;transition:width 1s linear;border-radius:6px;"></div></div>';
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  document.getElementById('btn-update-now').onclick = function() {
+    location.reload(true);
+  };
+
+  var countdownEl = document.getElementById('update-countdown');
+  var progressEl = document.getElementById('update-progress');
+
+  var interval = setInterval(function() {
+    countdown--;
+    if (countdownEl) countdownEl.textContent = formatTime(countdown);
+    if (progressEl) progressEl.style.width = (((totalSeconds - countdown) / totalSeconds) * 100) + '%';
+    if (countdown <= 0) {
+      clearInterval(interval);
+      location.reload(true);
+    }
+  }, 1000);
+}
+
+// Detecteur d'ancienne version (au chargement)
+(function() {
+  var storedVersion = localStorage.getItem('virusVersion');
+  if (storedVersion && storedVersion !== CURRENT_VERSION) {
+    // L'utilisateur vient de mettre a jour
+    localStorage.setItem('virusVersion', CURRENT_VERSION);
+  } else if (!storedVersion) {
+    localStorage.setItem('virusVersion', CURRENT_VERSION);
+  }
+})();
+
 // === ROUTING (URLs propres) ===
 var ROUTES = {
   '/': 'menu-principal',

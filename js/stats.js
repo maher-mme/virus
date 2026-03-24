@@ -81,12 +81,11 @@ function chargerClassement(champ) {
       snap.forEach(function(doc) {
         var data = doc.data();
         data._id = doc.id;
-        var pseudo = (data.pseudo || '').trim().toLowerCase();
-        var estAdmin = pseudo === 'obstinate' || pseudo === 'obstinate2.0' || pseudo === 'chrikidd77';
+        var pseudoLower = (data.pseudo || '').trim().toLowerCase();
+        var estAdmin = pseudoLower === 'obstinate' || pseudoLower === 'obstinate2.0' || pseudoLower === 'chrikidd77';
+        if (estAdmin) return; // Exclure les admins du classement skins
         var nbSkins = nbSkinsBase; // Tout le monde a les skins de base
-        if (estAdmin) {
-          nbSkins = totalSkinsExistants;
-        } else if (data.skinsAchetes && Array.isArray(data.skinsAchetes)) {
+        if (data.skinsAchetes && Array.isArray(data.skinsAchetes)) {
           nbSkins += data.skinsAchetes.length;
         } else if (data.skinsCount) {
           nbSkins += data.skinsCount;

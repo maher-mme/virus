@@ -272,7 +272,8 @@ function genererBoutiqueMusique() {
 // BOUTIQUE D'ANIMAUX (PETS)
 // ============================
 var PETS_BOUTIQUE = [
-  { id: 'chien-spatial', nom: 'Chien Spatial', idle: 'pets/chien_de_l\'espsace1.svg', walk1: 'pets/chien_de_l\'espsace2.svg', walk2: 'pets/chien_de_l\'espsace3.svg', prix: 50, rarete: 'typique' }
+  { id: 'chien-spatial', nom: 'Chien Spatial', idle: 'pets/chien_de_l\'espsace1.svg', walk1: 'pets/chien_de_l\'espsace2.svg', walk2: 'pets/chien_de_l\'espsace3.svg', prix: 50, rarete: 'typique' },
+  { id: 'lapin', nom: 'Lapin', idle: 'pets/Rabbit-a.svg', walk1: 'pets/Rabbit-a.svg', walk2: 'pets/Rabbit-b.svg', prix: 100, rarete: 'commun' }
 ];
 
 var petEquipe = localStorage.getItem('virusPet') || '';

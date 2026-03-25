@@ -852,6 +852,24 @@ function gameLoop() {
   if (joueurY < 25) joueurY = 25;
   if (joueurY > MAP_H - 40) joueurY = MAP_H - 40;
 
+  // Animation skin anime (ex: Caine) - changer frame idle/move + effet vol
+  if (cachedSkinImg && typeof SKINS_BOUTIQUE !== 'undefined') {
+    var currentSkinId = (typeof getSkin === 'function') ? getSkin() : '';
+    var skinData = SKINS_BOUTIQUE.find(function(s) { return s.id === currentSkinId && s.animated; });
+    if (skinData) {
+      var joueurEl = document.getElementById('joueur');
+      if (moved) {
+        if (cachedSkinImg.src.indexOf(skinData.fichierMove) < 0) cachedSkinImg.src = skinData.fichierMove;
+        if (joueurEl) joueurEl.classList.add('skin-flying');
+        if (joueurEl) joueurEl.classList.remove('skin-landing');
+      } else {
+        if (cachedSkinImg.src.indexOf(skinData.fichier) < 0) cachedSkinImg.src = skinData.fichier;
+        if (joueurEl) joueurEl.classList.remove('skin-flying');
+        if (joueurEl) joueurEl.classList.add('skin-landing');
+      }
+    }
+  }
+
   if (moved) {
     updateJoueur();
     // Envoyer position via Firebase en mode multijoueur (throttle 50ms)

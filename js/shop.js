@@ -33,7 +33,8 @@ var SKINS_BOUTIQUE = [
   { id: 'obstinate', nom: 'Obstinate', fichier: 'skin/boutique/obstinate.svg', prix: 500, rarete: 'epic' },
   { id: 'fermier', nom: 'Fermier', fichier: 'skin/boutique/fermier.svg', prix: 50, rarete: 'typique' },
   { id: 'pandareulou', nom: 'Panda Reulou', fichier: 'skin/boutique/panda-reulou.svg', prix: 1000, rarete: 'legendaire' },
-  { id: 'pomni', nom: 'Pomni', fichier: 'skin/boutique/pomni.svg', prix: 400, rarete: 'epic' }
+  { id: 'pomni', nom: 'Pomni', fichier: 'skin/boutique/pomni.svg', prix: 400, rarete: 'epic' },
+  { id: 'caine', nom: 'Caine', fichier: 'skin/boutique/Caine-immobile.svg', fichierMove: 'skin/boutique/Caine-d\u00e9placment.svg', prix: 900, rarete: 'legendaire', animated: true }
 ];
 
 function getSkinsAchetes() {

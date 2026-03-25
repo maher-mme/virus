@@ -29,9 +29,8 @@ function ajouterXP(xpGagne) {
     var nouveauNiveau = calculerNiveau(nouveauXP).niveau;
     var niveauxGagnes = nouveauNiveau - ancienNiveau;
 
-    var updateData = { xp: nouveauXP };
+    var updateData = { xp: nouveauXP, level: nouveauNiveau };
     if (niveauxGagnes > 0) {
-      updateData.level = nouveauNiveau;
       // Donner 50 gold par niveau gagne
       var goldBonus = niveauxGagnes * GOLD_PAR_NIVEAU;
       playerGold += goldBonus;

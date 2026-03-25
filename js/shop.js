@@ -93,7 +93,8 @@ function genererBoutique() {
   var goldEl = document.getElementById('boutique-gold-display');
   if (goldEl) goldEl.textContent = playerGold;
 
-  SKINS_BOUTIQUE.forEach(function(skin) {
+  var skinsAffichage = SKINS_BOUTIQUE.slice().reverse();
+  skinsAffichage.forEach(function(skin) {
     var possede = achetes.indexOf(skin.id) >= 0 || isAdmin();
     var equipe = possede && currentSkin === skin.id;
     var peutAcheter = !possede && playerGold >= skin.prix;

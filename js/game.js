@@ -768,10 +768,19 @@ function updatePetSuivi(petObj, ownerX, ownerY, ownerMoved) {
   petObj.element.style.left = Math.round(petObj.curX) + 'px';
   petObj.element.style.top = Math.round(petObj.curY) + 'px';
 
-  if (ownerX < petObj.lastX - 1) {
-    petObj.img.style.transform = 'scaleX(-1)';
-  } else if (ownerX > petObj.lastX + 1) {
-    petObj.img.style.transform = 'scaleX(1)';
+  if (petObj.petData.flipDefault) {
+    // Pet qui regarde vers la droite par defaut (inverser la logique)
+    if (ownerX < petObj.lastX - 1) {
+      petObj.img.style.transform = 'scaleX(1)';
+    } else if (ownerX > petObj.lastX + 1) {
+      petObj.img.style.transform = 'scaleX(-1)';
+    }
+  } else {
+    if (ownerX < petObj.lastX - 1) {
+      petObj.img.style.transform = 'scaleX(-1)';
+    } else if (ownerX > petObj.lastX + 1) {
+      petObj.img.style.transform = 'scaleX(1)';
+    }
   }
 
   var now = Date.now();

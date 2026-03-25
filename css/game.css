@@ -555,15 +555,15 @@
 /* Pet (animal de compagnie) */
 .pet-element {
   position: absolute;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   pointer-events: none;
   z-index: 99;
   transition: left 0.15s linear, top 0.15s linear;
 }
 .pet-element img {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
 }
 
 /* Pseudo au-dessus du joueur */

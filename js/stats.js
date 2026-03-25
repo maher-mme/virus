@@ -67,7 +67,7 @@ function switchClassementTab(tab) {
 function chargerClassement(champ) {
   var liste = document.getElementById('classement-liste');
   if (!liste) return;
-  liste.innerHTML = '<div class="classement-vide">...</div>';
+  liste.innerHTML = '<div class="spinner"></div>';
 
   // Skins : compter depuis le tableau skinsAchetes + skins de base
   if (champ === 'skins') {
@@ -197,7 +197,7 @@ function chargerProfil(playerId) {
 
   // Stats depuis Firebase
   headerEl.innerHTML = '';
-  statsEl.innerHTML = '<div class="classement-vide">...</div>';
+  statsEl.innerHTML = '<div class="spinner"></div>';
   db.collection('players').doc(targetId).get().then(function(doc) {
     if (!doc.exists) {
       statsEl.innerHTML = '<div class="classement-vide">' + t('accountNotFound') + '</div>';

@@ -64,6 +64,8 @@ function annulerReponse() {
 
 function chargerCommentaires() {
   if (_commentairesUnsub) _commentairesUnsub();
+  var liste = document.getElementById('commentaires-liste');
+  if (liste) liste.innerHTML = '<div class="spinner"></div>';
   _commentairesUnsub = db.collection('comments')
     .orderBy('date', 'asc')
     .limit(100)

@@ -594,6 +594,9 @@ function terminerVote() {
             if (bots[b].element) {
               bots[b].element.classList.add('bot-fantome');
             }
+            if (bots[b].petObj && bots[b].petObj.element) {
+              bots[b].petObj.element.style.display = 'none';
+            }
             botsMorts.push(bots[b]);
             bots.splice(b, 1);
             break;

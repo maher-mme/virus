@@ -358,6 +358,10 @@ function eliminerBot(pseudoVictime) {
       if (bots[b].element) {
         bots[b].element.classList.add('bot-fantome');
       }
+      // Cacher le pet du bot elimine
+      if (bots[b].petObj && bots[b].petObj.element) {
+        bots[b].petObj.element.style.display = 'none';
+      }
       botsMorts.push(bots[b]);
       bots.splice(b, 1);
       creerCadavre(bx, by, pseudoVictime, bskin);

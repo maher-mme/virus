@@ -600,3 +600,228 @@ function initMJ_ballons(zone) {
     }else if(size<tgt-10){msg.textContent=t('mjNotInflated');}
   }
 }
+
+// 24. SCAN : Scanner d'identite (maintenir le bouton 3 secondes)
+function initMJ_scan(zone) {
+  var holding = false;
+  var progress = 0;
+  var done = false;
+  var gauge = mjGauge(80);
+  var msg = mjMsg('Maintenez le bouton pour scanner...');
+  var scanBtn = document.createElement('button');
+  scanBtn.textContent = '\uD83D\uDD0D Scanner';
+  scanBtn.style.cssText = 'padding:20px 40px;border:3px solid #3498db;border-radius:15px;font-size:20px;font-family:Impact,Arial Black,sans-serif;cursor:pointer;background:linear-gradient(180deg,#2980b9,#1a6fa0);color:white;letter-spacing:2px;user-select:none;-webkit-user-select:none;touch-action:none;';
+
+  var scanLine = document.createElement('div');
+  scanLine.style.cssText = 'width:80%;height:4px;background:#2ecc71;margin:10px auto;border-radius:2px;opacity:0;transition:opacity 0.2s;box-shadow:0 0 10px rgba(46,204,113,0.5);';
+
+  zone.appendChild(msg);
+  zone.appendChild(gauge.el);
+  zone.appendChild(document.createElement('br'));
+  zone.appendChild(scanBtn);
+  zone.appendChild(scanLine);
+
+  function startHold() { if (done) return; holding = true; scanBtn.style.borderColor = '#2ecc71'; scanLine.style.opacity = '1'; }
+  function stopHold() { if (done) return; holding = false; scanBtn.style.borderColor = '#3498db'; scanLine.style.opacity = '0'; }
+
+  scanBtn.addEventListener('mousedown', startHold);
+  scanBtn.addEventListener('mouseup', stopHold);
+  scanBtn.addEventListener('mouseleave', stopHold);
+  scanBtn.addEventListener('touchstart', function(e) { e.preventDefault(); startHold(); });
+  scanBtn.addEventListener('touchend', function(e) { e.preventDefault(); stopHold(); });
+  scanBtn.addEventListener('touchcancel', stopHold);
+
+  miniJeuInterval = setInterval(function() {
+    if (done) return;
+    if (holding) {
+      progress += 1;
+      var pct = Math.min(100, Math.round((progress / 60) * 100));
+      gauge.fill.style.width = pct + '%';
+      gauge.txt.textContent = pct + '%';
+      if (progress >= 60) {
+        done = true;
+        scanBtn.textContent = '\u2705 Identite verifiee';
+        scanBtn.style.background = 'linear-gradient(180deg,#27ae60,#219a52)';
+        scanBtn.style.borderColor = '#2ecc71';
+        msg.textContent = 'Scan termine !';
+        completerMiniJeu();
+      }
+    } else if (progress > 0) {
+      progress -= 2;
+      if (progress < 0) progress = 0;
+      var pct2 = Math.min(100, Math.round((progress / 60) * 100));
+      gauge.fill.style.width = pct2 + '%';
+      gauge.txt.textContent = pct2 + '%';
+    }
+  }, 50);
+  miniJeuResumeFn = function() {
+    miniJeuInterval = setInterval(function() {
+      if (done) return;
+      if (holding) {
+        progress += 1;
+        var pct = Math.min(100, Math.round((progress / 60) * 100));
+        gauge.fill.style.width = pct + '%';
+        gauge.txt.textContent = pct + '%';
+        if (progress >= 60) { done = true; completerMiniJeu(); }
+      } else if (progress > 0) {
+        progress -= 2; if (progress < 0) progress = 0;
+        gauge.fill.style.width = Math.round((progress / 60) * 100) + '%';
+      }
+    }, 50);
+  };
+}
+
+// 25. DECHETS : Trier les dechets (cliquer pour mettre dans la bonne poubelle)
+function initMJ_dechets(zone) {
+  var categories = [
+    { nom: 'Plastique', emoji: '\u267B\uFE0F', couleur: '#f1c40f', items: ['\uD83E\uDDF4', '\uD83E\uDD64', '\uD83D\uDED2'] },
+    { nom: 'Papier', emoji: '\uD83D\uDCF0', couleur: '#3498db', items: ['\uD83D\uDCF0', '\uD83D\uDCE6', '\uD83D\uDCC4'] },
+    { nom: 'Organique', emoji: '\uD83C\uDF4E', couleur: '#2ecc71', items: ['\uD83C\uDF4C', '\uD83C\uDF4E', '\uD83C\uDF56'] }
+  ];
+  var allItems = [];
+  categories.forEach(function(cat, ci) {
+    cat.items.forEach(function(item) {
+      allItems.push({ emoji: item, cat: ci });
+    });
+  });
+  mjShuffle(allItems);
+
+  var current = 0;
+  var total = allItems.length;
+  var msg = mjMsg('Triez les dechets dans la bonne poubelle ! (' + current + '/' + total + ')');
+
+  var itemDisplay = document.createElement('div');
+  itemDisplay.style.cssText = 'font-size:50px;text-align:center;margin:15px 0;min-height:60px;';
+  itemDisplay.textContent = allItems[current].emoji;
+
+  var bins = document.createElement('div');
+  bins.style.cssText = 'display:flex;gap:10px;justify-content:center;flex-wrap:wrap;';
+
+  categories.forEach(function(cat, ci) {
+    var bin = document.createElement('button');
+    bin.style.cssText = 'padding:12px 18px;border:3px solid ' + cat.couleur + ';border-radius:12px;background:rgba(0,0,0,0.3);cursor:pointer;font-size:14px;color:white;font-family:Arial,sans-serif;min-width:90px;text-align:center;';
+    bin.innerHTML = '<div style="font-size:30px;">\uD83D\uDDD1\uFE0F</div><div style="color:' + cat.couleur + ';font-weight:bold;">' + cat.nom + '</div>';
+    bin.onclick = function() {
+      if (current >= total) return;
+      if (allItems[current].cat === ci) {
+        bin.style.background = 'rgba(46,204,113,0.2)';
+        setTimeout(function() { bin.style.background = 'rgba(0,0,0,0.3)'; }, 200);
+        current++;
+        msg.textContent = 'Triez les dechets dans la bonne poubelle ! (' + current + '/' + total + ')';
+        if (current >= total) {
+          itemDisplay.textContent = '\u2705';
+          completerMiniJeu();
+        } else {
+          itemDisplay.textContent = allItems[current].emoji;
+        }
+      } else {
+        bin.style.background = 'rgba(231,76,60,0.2)';
+        setTimeout(function() { bin.style.background = 'rgba(0,0,0,0.3)'; }, 300);
+        msg.textContent = '\u274C Mauvaise poubelle ! Reessayez.';
+        setTimeout(function() { msg.textContent = 'Triez les dechets dans la bonne poubelle ! (' + current + '/' + total + ')'; }, 1000);
+      }
+    };
+    bins.appendChild(bin);
+  });
+
+  zone.appendChild(msg);
+  zone.appendChild(itemDisplay);
+  zone.appendChild(bins);
+}
+
+// 26. COFFRE : Deverrouiller le coffre (trouver la bonne combinaison)
+function initMJ_coffre(zone) {
+  var code = [];
+  for (var i = 0; i < 3; i++) code.push(Math.floor(Math.random() * 10));
+  var attempt = [0, 0, 0];
+  var locked = true;
+  var tries = 0;
+
+  var msg = mjMsg('Trouvez la combinaison a 3 chiffres !');
+
+  var cadran = document.createElement('div');
+  cadran.style.cssText = 'display:flex;gap:15px;justify-content:center;align-items:center;margin:15px 0;';
+
+  var dials = [];
+  for (var d = 0; d < 3; d++) {
+    var dialBox = document.createElement('div');
+    dialBox.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:5px;';
+
+    var btnUp = document.createElement('button');
+    btnUp.textContent = '\u25B2';
+    btnUp.style.cssText = 'width:50px;height:30px;border:2px solid #34495e;border-radius:6px;background:#1a252f;color:#ecf0f1;cursor:pointer;font-size:16px;';
+
+    var display = document.createElement('div');
+    display.textContent = '0';
+    display.style.cssText = 'width:50px;height:50px;display:flex;align-items:center;justify-content:center;background:#0a0a1a;border:2px solid #f39c12;border-radius:8px;font-size:28px;font-weight:bold;color:#f39c12;font-family:Courier New,monospace;';
+
+    var btnDown = document.createElement('button');
+    btnDown.textContent = '\u25BC';
+    btnDown.style.cssText = 'width:50px;height:30px;border:2px solid #34495e;border-radius:6px;background:#1a252f;color:#ecf0f1;cursor:pointer;font-size:16px;';
+
+    (function(idx, disp) {
+      btnUp.onclick = function() {
+        if (!locked) return;
+        attempt[idx] = (attempt[idx] + 1) % 10;
+        disp.textContent = attempt[idx];
+      };
+      btnDown.onclick = function() {
+        if (!locked) return;
+        attempt[idx] = (attempt[idx] + 9) % 10;
+        disp.textContent = attempt[idx];
+      };
+    })(d, display);
+
+    dialBox.appendChild(btnUp);
+    dialBox.appendChild(display);
+    dialBox.appendChild(btnDown);
+    cadran.appendChild(dialBox);
+    dials.push(display);
+  }
+
+  var tryBtn = mjBtn('\uD83D\uDD13 Essayer', '#e67e22', 'white');
+  tryBtn.style.marginTop = '15px';
+
+  var hintEl = document.createElement('div');
+  hintEl.style.cssText = 'display:flex;gap:8px;justify-content:center;margin-top:10px;min-height:30px;';
+
+  tryBtn.onclick = function() {
+    if (!locked) return;
+    tries++;
+    var correct = 0;
+    var hints = [];
+    for (var i = 0; i < 3; i++) {
+      if (attempt[i] === code[i]) {
+        hints.push('\uD83D\uDFE2'); // vert = bon chiffre bon emplacement
+        correct++;
+      } else if (code.indexOf(attempt[i]) >= 0) {
+        hints.push('\uD83D\uDFE1'); // jaune = bon chiffre mauvais emplacement
+      } else {
+        hints.push('\uD83D\uDD34'); // rouge = mauvais chiffre
+      }
+    }
+    hintEl.innerHTML = '';
+    hints.forEach(function(h) {
+      var s = document.createElement('span');
+      s.style.fontSize = '24px';
+      s.textContent = h;
+      hintEl.appendChild(s);
+    });
+
+    if (correct === 3) {
+      locked = false;
+      msg.textContent = '\uD83D\uDD13 Coffre ouvert en ' + tries + ' essai(s) !';
+      for (var j = 0; j < 3; j++) dials[j].style.borderColor = '#2ecc71';
+      tryBtn.textContent = '\u2705';
+      tryBtn.style.background = '#27ae60';
+      completerMiniJeu();
+    } else {
+      msg.textContent = 'Essai ' + tries + ' - \uD83D\uDFE2 = bon, \uD83D\uDFE1 = mal place, \uD83D\uDD34 = absent';
+    }
+  };
+
+  zone.appendChild(msg);
+  zone.appendChild(cadran);
+  zone.appendChild(tryBtn);
+  zone.appendChild(hintEl);
+}

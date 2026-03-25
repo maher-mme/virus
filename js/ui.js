@@ -5,19 +5,23 @@ var CURRENT_VERSION = '1.4.8';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
-(function() {
-  // Ecouter les changements de version en temps reel
-  if (typeof db !== 'undefined') {
-    db.collection('config').doc('version').onSnapshot(function(doc) {
-      if (!doc.exists) return;
-      var data = doc.data();
-      var serverVersion = data.version;
-      if (serverVersion && serverVersion !== CURRENT_VERSION) {
-        afficherPopupMiseAJour(serverVersion);
-      }
-    }, function() {});
+function initVersionCheck() {
+  if (typeof db === 'undefined') {
+    setTimeout(initVersionCheck, 1000);
+    return;
   }
-})();
+  db.collection('config').doc('version').onSnapshot(function(doc) {
+    if (!doc.exists) return;
+    var data = doc.data();
+    var serverVersion = data.version;
+    if (serverVersion && serverVersion !== CURRENT_VERSION) {
+      afficherPopupMiseAJour(serverVersion);
+    }
+  }, function(err) {
+    console.error('Erreur version check:', err);
+  });
+}
+setTimeout(initVersionCheck, 2000);
 
 function afficherPopupMiseAJour(newVersion) {
   if (_updateDismissed) return;

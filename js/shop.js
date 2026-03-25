@@ -378,7 +378,7 @@ function genererBoutiqueAnimaux() {
     }
     var rar = RARETES[pet.rarete] || RARETES.typique;
     carte.style.borderColor = rar.couleur;
-    carte.innerHTML = '<img class="skin-carte-img" src="' + pet.idle + '" alt="' + pet.nom + '">' +
+    carte.innerHTML = '<img class="skin-carte-img" src="' + pet.idle + '?v=' + CURRENT_VERSION + '" alt="' + pet.nom + '">' +
       '<div class="skin-carte-rarete" style="color:' + rar.couleur + '">' + rar.nom + '</div>' +
       '<div class="skin-carte-nom">' + pet.nom + '</div>' +
       (possede ? '' : '<div class="skin-carte-prix"><span class="prix-icon">&#9733;</span>' + pet.prix + '</div>') +

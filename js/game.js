@@ -744,7 +744,8 @@ function creerPetElement(petId, parentEl) {
   var div = document.createElement('div');
   div.className = 'pet-element';
   var img = document.createElement('img');
-  img.src = pet.idle;
+  var petCacheBust = (typeof CURRENT_VERSION !== 'undefined') ? '?v=' + CURRENT_VERSION : '';
+  img.src = pet.idle + petCacheBust;
   img.alt = 'pet';
   div.appendChild(img);
   parentEl.appendChild(div);

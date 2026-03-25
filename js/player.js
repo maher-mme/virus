@@ -3,7 +3,7 @@
 // ============================
 var joueurX = 3800;
 var joueurY = 3050;
-var vitesse = 6;
+var vitesse = 8;
 var keys = {};
 var jeuActif = false;
 var isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);

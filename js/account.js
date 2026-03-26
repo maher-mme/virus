@@ -60,6 +60,17 @@ function creerCompte() {
   var pin = document.getElementById('input-pin-compte').value.trim();
   if (!pseudo) { alert(t('vChoosePseudo')); return; }
   if (pseudo.length < 2) { alert(t('vPseudoTooShort')); return; }
+  // Verifier si le pseudo contient un mot interdit (meme avec des * ou caracteres speciaux)
+  if (typeof MOTS_INTERDITS !== 'undefined') {
+    var pseudoClean = pseudo.toLowerCase().replace(/[^a-z]/g, '');
+    for (var mi = 0; mi < MOTS_INTERDITS.length; mi++) {
+      var motClean = MOTS_INTERDITS[mi].replace(/[^a-z]/g, '');
+      if (pseudoClean.indexOf(motClean) >= 0) {
+        showNotif(t('pseudoInappropriate') || 'Ce pseudo contient un mot inapproprie.', 'warn');
+        return;
+      }
+    }
+  }
   if (!pin) { showNotif(t('vPinRequired'), 'warn'); return; }
   if (pin.length < 5 || pin.length > 10) { showNotif(t('vPinInvalid'), 'warn'); return; }
   // Verifier dans Firebase si le pseudo existe deja (insensible a la casse)

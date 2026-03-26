@@ -119,6 +119,7 @@ var TR = {
 
     // Notifications
     pseudoTaken: 'Ce pseudo est deja utilise ! Choisis-en un autre.',
+    pseudoInappropriate: 'Ce pseudo contient un mot inapproprie. Choisis-en un autre.',
     pseudoTakenKeep: 'Ce pseudo est deja utilise ! Ton pseudo reste : {0}',
     need7For2Virus: 'Il faut au moins 7 joueurs pour avoir 2 virus !',
     need10For3Virus: 'Il faut au moins 10 joueurs pour avoir 3 virus !',

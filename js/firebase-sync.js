@@ -202,6 +202,9 @@ function subscribeToParty(partyId) {
     })
   );
 
+  // Timestamp d'arrivee pour filtrer les messages anterieurs
+  var joinTimestamp = Date.now();
+
   // Chat (un seul where sur partyId, filtre lobby/meeting en JS)
   firebaseUnsubscribers.push(
     db.collection('chatMessages').where('partyId', '==', partyId).onSnapshot(function(snapshot) {
@@ -209,6 +212,9 @@ function subscribeToParty(partyId) {
       var meetingMsgs = [];
       snapshot.forEach(function(doc) {
         var data = doc.data();
+        // Ne pas afficher les messages envoyes avant l'arrivee du joueur
+        var msgTime = data.timestamp ? data.timestamp.toMillis() : 0;
+        if (msgTime < joinTimestamp) return;
         if (data.context === 'lobby') lobbyMsgs.push(data);
         else if (data.context === 'meeting') meetingMsgs.push(data);
       });

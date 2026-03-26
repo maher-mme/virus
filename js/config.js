@@ -233,11 +233,6 @@ document.addEventListener('visibilitychange', function() {
   }
 });
 
-// TEMPORAIRE : supprimer le compte "zebi"
-db.collection('players').where('pseudoLower', '==', 'zebi').get().then(function(snap) {
-  snap.forEach(function(doc) { doc.ref.delete(); });
-});
-
 // Heartbeat : mettre a jour lastSeen toutes les 60s pour detecter les deconnexions
 setInterval(function() {
   if (monPlayerId && document.visibilityState === 'visible') {

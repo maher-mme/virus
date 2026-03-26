@@ -348,16 +348,36 @@ function supprimerCompte() {
   if (confirm(t('vDeleteAccount'))) {
     // Supprimer le document joueur de Firebase
     db.collection('players').doc(monPlayerId).delete().catch(function() {});
-    // Supprimer les amis et demandes liees
+    // Supprimer les amis (les deux cotes)
     db.collection('friends').where('playerId', '==', monPlayerId).get().then(function(snap) {
       snap.forEach(function(d) { d.ref.delete(); });
     }).catch(function() {});
+    db.collection('friends').where('friendPlayerId', '==', monPlayerId).get().then(function(snap) {
+      snap.forEach(function(d) { d.ref.delete(); });
+    }).catch(function() {});
+    // Supprimer les demandes d'amis
     db.collection('friendRequests').where('fromPlayerId', '==', monPlayerId).get().then(function(snap) {
       snap.forEach(function(d) { d.ref.delete(); });
     }).catch(function() {});
     db.collection('friendRequests').where('toPlayerId', '==', monPlayerId).get().then(function(snap) {
       snap.forEach(function(d) { d.ref.delete(); });
     }).catch(function() {});
+    // Supprimer les commentaires du joueur
+    db.collection('comments').where('playerId', '==', monPlayerId).get().then(function(snap) {
+      snap.forEach(function(d) { d.ref.delete(); });
+    }).catch(function() {});
+    // Supprimer les votes du joueur
+    db.collection('votes').where('voterId', '==', monPlayerId).get().then(function(snap) {
+      snap.forEach(function(d) { d.ref.delete(); });
+    }).catch(function() {});
+    // Supprimer les invitations de partie
+    db.collection('gameInvites').where('fromPlayerId', '==', monPlayerId).get().then(function(snap) {
+      snap.forEach(function(d) { d.ref.delete(); });
+    }).catch(function() {});
+    db.collection('gameInvites').where('toPlayerId', '==', monPlayerId).get().then(function(snap) {
+      snap.forEach(function(d) { d.ref.delete(); });
+    }).catch(function() {});
+    // Nettoyer tout le localStorage
     localStorage.removeItem('virus_pseudo');
     localStorage.removeItem('virus_skin');
     localStorage.removeItem('virus_admin');
@@ -365,6 +385,9 @@ function supprimerCompte() {
     localStorage.removeItem('virusSkinsAchetes');
     localStorage.removeItem('virusMusiquesAchetees');
     localStorage.removeItem('virusPfp');
+    localStorage.removeItem('virusPetsAchetes');
+    localStorage.removeItem('virusPet');
+    localStorage.removeItem('virusVersion');
     localStorage.removeItem('virus_player_id');
     mesAmis = [];
     demandesEnAttente = [];

@@ -287,8 +287,14 @@ function initAmisListeners() {
           if (pDoc.exists) {
             var pData = pDoc.data();
             var ami = mesAmis.find(function(a) { return a.uid === fid; });
-            if (ami) ami.online = pData.online || false;
-            amisStatuts[fid] = { online: pData.online || false, pseudo: pData.pseudo, lastSeen: pData.lastSeen || null, pfp: pData.pfp || '' };
+            // Verifier si lastSeen date de moins de 2 minutes
+            var estEnLigne = pData.online || false;
+            if (estEnLigne && pData.lastSeen && pData.lastSeen.toDate) {
+              var diff = Date.now() - pData.lastSeen.toDate().getTime();
+              if (diff > 2 * 60 * 1000) estEnLigne = false;
+            }
+            if (ami) ami.online = estEnLigne;
+            amisStatuts[fid] = { online: estEnLigne, pseudo: pData.pseudo, lastSeen: pData.lastSeen || null, pfp: pData.pfp || '' };
           }
           if (panelAmisOuvert && tabAmiActif !== 'demandes') afficherAmis();
         });

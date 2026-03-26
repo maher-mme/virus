@@ -233,3 +233,13 @@ document.addEventListener('visibilitychange', function() {
   }
 });
 
+// Heartbeat : mettre a jour lastSeen toutes les 60s pour detecter les deconnexions
+setInterval(function() {
+  if (monPlayerId && document.visibilityState === 'visible') {
+    db.collection('players').doc(monPlayerId).update({
+      lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+      online: true
+    }).catch(function() {});
+  }
+}, 60000);
+

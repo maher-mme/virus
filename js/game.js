@@ -866,7 +866,7 @@ function gameLoop() {
   if (cachedSkinImg && typeof SKINS_BOUTIQUE !== 'undefined') {
     var currentSkinId = (typeof getSkin === 'function') ? getSkin() : '';
     var skinData = SKINS_BOUTIQUE.find(function(s) { return s.id === currentSkinId && s.animated; });
-    if (skinData) {
+    if (skinData && skinData.fichierMove) {
       var joueurEl = document.getElementById('joueur');
       if (moved) {
         if (cachedSkinImg.src.indexOf(skinData.fichierMove) < 0) cachedSkinImg.src = skinData.fichierMove;

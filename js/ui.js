@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '1.5.3';
+var CURRENT_VERSION = '1.5.4';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -207,16 +207,22 @@ function toggleMusique() {
   if (!audio) return;
   if (musiqueMuted) {
     audio.play();
+    if (_lobbyAudio && document.getElementById('salle-attente') && document.getElementById('salle-attente').classList.contains('active')) {
+      playLobbyMusic();
+    }
     btn.classList.remove('muted');
     btn.innerHTML = '&#9835;';
     musiqueMuted = false;
   } else {
     audio.pause();
+    stopLobbyMusic();
     btn.classList.add('muted');
     btn.innerHTML = '&#9835;';
     musiqueMuted = true;
   }
 }
+
+var _lobbyAudio = null;
 
 function gererMusiqueMenu(ecranId) {
   var audio = document.getElementById('musique-menu');
@@ -225,9 +231,34 @@ function gererMusiqueMenu(ecranId) {
     audio.pause();
     audio.currentTime = 0;
   } else {
+    // Arreter la musique du lobby quand on quitte le lobby
+    stopLobbyMusic();
     if (!musiqueMuted && audio.paused) {
       audio.play().catch(function() {});
     }
+  }
+
+  // Musique du lobby (Minecraft)
+  if (ecranId === 'salle-attente') {
+    if (!musiqueMuted) playLobbyMusic();
+  } else {
+    stopLobbyMusic();
+  }
+}
+
+function playLobbyMusic() {
+  if (!_lobbyAudio) {
+    _lobbyAudio = new Audio('musique/mincraft/minecraft-game-relax.wav');
+    _lobbyAudio.loop = true;
+    _lobbyAudio.volume = 0.3;
+  }
+  _lobbyAudio.play().catch(function() {});
+}
+
+function stopLobbyMusic() {
+  if (_lobbyAudio) {
+    _lobbyAudio.pause();
+    _lobbyAudio.currentTime = 0;
   }
 }
 

@@ -140,6 +140,14 @@ function connecterCompte() {
         }
       });
     }
+    // Restaurer les pets achetes
+    if (data.petsAchetes) {
+      localStorage.setItem('virusPetsAchetes', JSON.stringify(data.petsAchetes));
+    }
+    // Restaurer le pet equipe
+    if (data.pet) {
+      localStorage.setItem('virusPet', data.pet);
+    }
     // Restaurer la photo de profil
     if (data.pfp) {
       localStorage.setItem('virusPfp', data.pfp);

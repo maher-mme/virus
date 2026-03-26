@@ -430,7 +430,6 @@ var TR = {
       'C\'est peut-etre un self-report non ?',
       'Faut pas voter au hasard les gars',
       'Je pense que c\'est quelqu\'un d\'autre...',
-      'wsh',
       'Peut-etre',
       'vous n\'avez pas assez preuve pour me convaincre',
       'euh...'
@@ -476,7 +475,6 @@ var TR = {
       'Je joue mon propre jeu, ne m\'incluez pas dans vos plans'
     ],
     botComment: [
-      'wsh wsh canne a peche.',
       'aller votez !',
       'je vais faire mes taches apres',
       'voter avec moi !',

@@ -57,14 +57,108 @@ function jouerSonSalle(fichier) {
 function updateSalleAttente() {
   var btnDemarrer = document.getElementById('btn-demarrer');
   var msgAttente = document.getElementById('msg-attente-host');
+  var botControls = document.getElementById('bot-controls');
 
   if (estHost) {
     btnDemarrer.style.display = 'flex';
     msgAttente.style.display = 'none';
+    if (botControls) botControls.style.display = 'block';
   } else {
     btnDemarrer.style.display = 'none';
     msgAttente.style.display = 'block';
+    if (botControls) botControls.style.display = 'none';
   }
+  updateBotControlsUI();
+}
+
+var MAX_BOTS_ONLINE = 3;
+
+function getNbBotsEnLigne() {
+  return firebasePartyPlayers.filter(function(p) { return p.isBot; }).length;
+}
+
+function updateBotControlsUI() {
+  var nbBots = getNbBotsEnLigne();
+  var btnAdd = document.getElementById('btn-add-bot');
+  var btnRemove = document.getElementById('btn-remove-bot');
+  var info = document.getElementById('bot-count-info');
+  var currentParty = firebaseParties.find(function(p) { return p._id === partieActuelleId; });
+  var maxJ = currentParty ? currentParty.maxJoueurs : 10;
+
+  if (!btnAdd) return;
+
+  // Cacher ajouter si max bots atteint ou partie pleine
+  if (nbBots >= MAX_BOTS_ONLINE || firebasePartyPlayers.length >= maxJ) {
+    btnAdd.style.display = 'none';
+  } else {
+    btnAdd.style.display = 'inline-block';
+  }
+
+  // Afficher retirer seulement s'il y a des bots
+  if (btnRemove) btnRemove.style.display = nbBots > 0 ? 'inline-block' : 'none';
+
+  if (info) info.textContent = nbBots > 0 ? 'Bots : ' + nbBots + '/' + MAX_BOTS_ONLINE : '';
+}
+
+function ajouterBotEnLigne() {
+  if (!estHost || !partieActuelleId) return;
+  var nbBots = getNbBotsEnLigne();
+  if (nbBots >= MAX_BOTS_ONLINE) { showNotif('Maximum ' + MAX_BOTS_ONLINE + ' bots', 'warn'); return; }
+
+  var currentParty = firebaseParties.find(function(p) { return p._id === partieActuelleId; });
+  var maxJ = currentParty ? currentParty.maxJoueurs : 10;
+  if (firebasePartyPlayers.length >= maxJ) { showNotif('Partie pleine', 'warn'); return; }
+
+  var nomsPool = typeof FAUX_PSEUDOS !== 'undefined' ? FAUX_PSEUDOS.slice() : ['Bot1','Bot2','Bot3'];
+  // Retirer les pseudos deja utilises
+  var usedNames = firebasePartyPlayers.map(function(p) { return p.pseudo; });
+  nomsPool = nomsPool.filter(function(n) { return usedNames.indexOf(n) === -1; });
+  var pseudo = nomsPool.length > 0 ? nomsPool[Math.floor(Math.random() * nomsPool.length)] : 'Bot' + (nbBots + 1);
+
+  // Skin aleatoire
+  var tousLesSkins = (typeof SKINS !== 'undefined' ? SKINS : []).concat(typeof SKINS_BOUTIQUE !== 'undefined' ? SKINS_BOUTIQUE : []);
+  var skinFichier = tousLesSkins.length > 0 ? tousLesSkins[Math.floor(Math.random() * tousLesSkins.length)].fichier : '';
+
+  var botId = 'bot-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+
+  db.collection('partyPlayers').add({
+    partyId: partieActuelleId,
+    playerId: botId,
+    pseudo: pseudo,
+    skin: skinFichier,
+    pet: '',
+    isHost: false,
+    isBot: true,
+    role: '',
+    alive: true,
+    x: 3800, y: 3050,
+    direction: 1,
+    saX: 30 + Math.floor(Math.random() * 40),
+    saY: 60 + Math.floor(Math.random() * 20),
+    saDirection: 1,
+    lastActive: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(function() {
+    db.collection('parties').doc(partieActuelleId).update({
+      joueurs: firebase.firestore.FieldValue.increment(1),
+      listeJoueurs: firebase.firestore.FieldValue.arrayUnion(pseudo)
+    });
+    showNotif('Bot ' + pseudo + ' ajoute', 'info');
+  });
+}
+
+function retirerBotEnLigne() {
+  if (!estHost || !partieActuelleId) return;
+  var botPlayers = firebasePartyPlayers.filter(function(p) { return p.isBot; });
+  if (botPlayers.length === 0) return;
+
+  var lastBot = botPlayers[botPlayers.length - 1];
+  db.collection('partyPlayers').doc(lastBot._docId).delete().then(function() {
+    db.collection('parties').doc(partieActuelleId).update({
+      joueurs: firebase.firestore.FieldValue.increment(-1),
+      listeJoueurs: firebase.firestore.FieldValue.arrayRemove(lastBot.pseudo)
+    });
+    showNotif('Bot ' + lastBot.pseudo + ' retire', 'info');
+  });
 }
 
 function quitterPartie() {
@@ -428,6 +522,12 @@ function lancerJeuMultiplayer(state) {
     initMonPet();
   }
 
+  // Initialiser les bots en ligne (chaque client les fait tourner localement)
+  var botsEnLigne = firebasePartyPlayers.filter(function(p) { return p.isBot; });
+  if (botsEnLigne.length > 0 && typeof initBotsEnLigne === 'function') {
+    initBotsEnLigne(botsEnLigne);
+  }
+
   // Souscrire a l'etat du jeu
   subscribeToGameState(partieActuelleId);
   lastGamePhase = 'playing';
@@ -437,6 +537,7 @@ function lancerJeuMultiplayer(state) {
 // Gestion d'un joueur distant individuel (velocite + lissage)
 function handleSinglePlayerUpdate(p) {
   if (p.playerId === monPlayerId) return;
+  if (p.isBot) return; // Les bots tournent en local, pas besoin de les afficher comme joueurs distants
   var now = Date.now();
   if (!remotePlayers[p.playerId]) {
     remotePlayers[p.playerId] = {

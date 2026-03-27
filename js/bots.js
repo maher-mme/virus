@@ -129,6 +129,73 @@ function initBots(nbBots) {
   }
 }
 
+// Initialiser les bots pour le mode en ligne
+function initBotsEnLigne(botPlayers) {
+  nettoyerBots();
+  var mallMap = document.getElementById('mall-map');
+  if (!mallMap) return;
+
+  for (var i = 0; i < botPlayers.length; i++) {
+    var bp = botPlayers[i];
+
+    var angle = (i / botPlayers.length) * Math.PI * 2 + (Math.random() * 0.3 - 0.15);
+    var rayon = 250 + Math.floor(Math.random() * 150);
+    var spawnX = 3800 + Math.floor(Math.cos(angle) * rayon);
+    var spawnY = 2800 + Math.floor(Math.sin(angle) * rayon);
+
+    var wp = BOT_WAYPOINTS[Math.floor(Math.random() * BOT_WAYPOINTS.length)];
+
+    var div = document.createElement('div');
+    div.className = 'joueur-perso bot-perso';
+    div.id = 'bot-online-' + i;
+    div.style.left = spawnX + 'px';
+    div.style.top = spawnY + 'px';
+
+    var span = document.createElement('span');
+    span.className = 'joueur-pseudo';
+    span.textContent = bp.pseudo;
+    div.appendChild(span);
+
+    var img = document.createElement('img');
+    img.src = bp.skin || 'skin/gratuit/skin-de-base-garcon.svg';
+    img.alt = 'bot';
+    div.appendChild(img);
+
+    var badge = document.createElement('div');
+    badge.className = 'virus-allie-badge';
+    div.appendChild(badge);
+
+    mallMap.appendChild(div);
+
+    var botPetObj = null;
+    if (Math.random() < 0.5 && typeof PETS_BOUTIQUE !== 'undefined' && PETS_BOUTIQUE.length > 0) {
+      var randomPet = PETS_BOUTIQUE[Math.floor(Math.random() * PETS_BOUTIQUE.length)];
+      botPetObj = creerPetElement(randomPet.id, mallMap);
+    }
+
+    bots.push({
+      id: 'bot-online-' + i,
+      pseudo: bp.pseudo,
+      x: spawnX,
+      y: spawnY,
+      skin: bp.skin || 'skin/gratuit/skin-de-base-garcon.svg',
+      role: bp.role || 'innocent',
+      cibleX: wp.x,
+      cibleY: wp.y,
+      timer: 100 + Math.floor(Math.random() * 200),
+      blockedTimer: 0,
+      etat: 'deplacement',
+      pauseTimer: 0,
+      suiviCible: null,
+      missionsVisitees: 0,
+      element: div,
+      petObj: botPetObj,
+      isOnline: true,
+      firebasePlayerId: bp.playerId
+    });
+  }
+}
+
 // Trouver le joueur ou bot vivant le plus proche
 function botTrouverCibleProche(bot, cibleRole) {
   var meilleur = null;

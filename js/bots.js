@@ -167,12 +167,6 @@ function initBotsEnLigne(botPlayers) {
 
     mallMap.appendChild(div);
 
-    var botPetObj = null;
-    if (Math.random() < 0.5 && typeof PETS_BOUTIQUE !== 'undefined' && PETS_BOUTIQUE.length > 0) {
-      var randomPet = PETS_BOUTIQUE[Math.floor(Math.random() * PETS_BOUTIQUE.length)];
-      botPetObj = creerPetElement(randomPet.id, mallMap);
-    }
-
     bots.push({
       id: 'bot-online-' + i,
       pseudo: bp.pseudo,
@@ -189,7 +183,7 @@ function initBotsEnLigne(botPlayers) {
       suiviCible: null,
       missionsVisitees: 0,
       element: div,
-      petObj: botPetObj,
+      petObj: null,
       isOnline: true,
       firebasePlayerId: bp.playerId
     });
@@ -346,6 +340,13 @@ function updateBots() {
       if (bot.pauseTimer <= 0) {
         bot.etat = 'deplacement';
         bot.missionsVisitees++;
+        // En mode en ligne, incrementer la jauge collective
+        if (bot.isOnline && bot.role !== 'virus' && typeof missionsCollectivesCompletees !== 'undefined' && typeof totalMissionsCollectives !== 'undefined') {
+          if (missionsCollectivesCompletees < totalMissionsCollectives) {
+            missionsCollectivesCompletees++;
+            if (typeof updateJaugeMissions === 'function') updateJaugeMissions();
+          }
+        }
         botChoisirCible(bot);
       }
       continue;

@@ -518,10 +518,13 @@ function lancerJeuMultiplayer(state) {
 
   // Jauge collective de missions
   var nbTotalJoueurs = firebasePartyPlayers.length;
+  var nbBotsOnline = firebasePartyPlayers.filter(function(p) { return p.isBot; }).length;
+  var nbVraisJoueurs = nbTotalJoueurs - nbBotsOnline;
   totalMissionsCollectives = nbTotalJoueurs * 4;
   missionsCollectivesCompletees = 0;
   updateJaugeMissions();
-  demarrerSimulationMissions(nbTotalJoueurs - 1);
+  // Simuler les missions des autres vrais joueurs seulement (les bots font les leurs localement)
+  if (nbVraisJoueurs > 1) demarrerSimulationMissions(nbVraisJoueurs - 1);
 
   // Initialiser le pet du joueur
   if (typeof initMonPet === 'function') {

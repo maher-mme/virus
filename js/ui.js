@@ -10,7 +10,7 @@ function initVersionCheck() {
     setTimeout(initVersionCheck, 1000);
     return;
   }
-  db.collection('config').doc('version').onSnapshot(function(doc) {
+  db.collection('version').doc('version').onSnapshot(function(doc) {
     if (!doc.exists) return;
     var data = doc.data();
     var serverVersion = data.version;

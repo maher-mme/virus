@@ -103,8 +103,8 @@ service cloud.firestore {
       allow write: if true;
     }
 
-    // Config (version du jeu, etc.)
-    match /config/{docId} {
+    // Version du jeu
+    match /version/{docId} {
       allow read: if true;
       allow write: if false;
     }

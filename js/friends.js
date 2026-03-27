@@ -327,6 +327,7 @@ function initAmisListeners() {
 // SYSTEME D'INVITATION EN PARTIE
 // ============================
 var invitationActuelle = null;
+var fileInvitations = [];
 
 function inviterAmi(amiPlayerId, amiPseudo) {
   if (!partieActuelleId) {
@@ -345,11 +346,28 @@ function inviterAmi(amiPlayerId, amiPseudo) {
 }
 
 function afficherInvitation(inviteId, fromPseudo, partyId) {
+  // Si une invitation est deja affichee, mettre en file d'attente
+  if (invitationActuelle) {
+    fileInvitations.push({ id: inviteId, fromPseudo: fromPseudo, partyId: partyId });
+    return;
+  }
   invitationActuelle = { id: inviteId, partyId: partyId };
   var popup = document.getElementById('popup-invitation');
   var texte = document.getElementById('invitation-texte');
   if (popup && texte) {
     texte.textContent = t('inviteToJoin', fromPseudo);
+    popup.style.display = 'block';
+  }
+}
+
+function afficherProchaineInvitation() {
+  if (fileInvitations.length === 0) return;
+  var next = fileInvitations.shift();
+  invitationActuelle = { id: next.id, partyId: next.partyId };
+  var popup = document.getElementById('popup-invitation');
+  var texte = document.getElementById('invitation-texte');
+  if (popup && texte) {
+    texte.textContent = t('inviteToJoin', next.fromPseudo);
     popup.style.display = 'block';
   }
 }
@@ -360,9 +378,9 @@ function accepterInvitation() {
   var inviteId = invitationActuelle.id;
   document.getElementById('popup-invitation').style.display = 'none';
   invitationActuelle = null;
-  // Rejoindre immediatement, mettre a jour le statut en parallele
   rejoindrePartie(partyId);
   db.collection('gameInvites').doc(inviteId).update({ status: 'accepted' }).catch(function() {});
+  afficherProchaineInvitation();
 }
 
 function refuserInvitation() {
@@ -370,4 +388,5 @@ function refuserInvitation() {
   db.collection('gameInvites').doc(invitationActuelle.id).update({ status: 'declined' }).catch(function() {});
   document.getElementById('popup-invitation').style.display = 'none';
   invitationActuelle = null;
+  afficherProchaineInvitation();
 }

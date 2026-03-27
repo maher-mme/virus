@@ -771,9 +771,9 @@ function updatePetSuivi(petObj, ownerX, ownerY, ownerMoved) {
   if (petObj.petData.flipDefault) {
     // Pet qui regarde vers la droite par defaut (inverser la logique)
     if (ownerX < petObj.lastX - 1) {
-      petObj.img.style.transform = 'scaleX(1)';
-    } else if (ownerX > petObj.lastX + 1) {
       petObj.img.style.transform = 'scaleX(-1)';
+    } else if (ownerX > petObj.lastX + 1) {
+      petObj.img.style.transform = 'scaleX(1)';
     }
   } else {
     if (ownerX < petObj.lastX - 1) {

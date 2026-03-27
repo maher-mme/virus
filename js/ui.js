@@ -63,7 +63,7 @@ function afficherPopupMiseAJour(newVersion) {
 
   document.getElementById('btn-update-now').onclick = function() {
     localStorage.setItem('updateDismissed', newVersion);
-    location.reload(true);
+    forceHardReload();
   };
 
   var countdownEl = document.getElementById('update-countdown');
@@ -75,9 +75,20 @@ function afficherPopupMiseAJour(newVersion) {
     if (progressEl) progressEl.style.width = (((totalSeconds - countdown) / totalSeconds) * 100) + '%';
     if (countdown <= 0) {
       clearInterval(interval);
-      location.reload(true);
+      forceHardReload();
     }
   }, 1000);
+}
+
+function forceHardReload() {
+  // Vider le cache du Service Worker si present
+  if ('caches' in window) {
+    caches.keys().then(function(names) {
+      names.forEach(function(name) { caches.delete(name); });
+    });
+  }
+  // Forcer un rechargement complet sans cache
+  window.location.href = window.location.pathname + '?nocache=' + Date.now();
 }
 
 // Detecteur d'ancienne version (au chargement)

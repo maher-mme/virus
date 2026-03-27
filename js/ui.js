@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '1.5.6';
+var CURRENT_VERSION = '1.5.8';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -15,6 +15,9 @@ function initVersionCheck() {
     var data = doc.data();
     var serverVersion = data.version;
     if (serverVersion && serverVersion !== CURRENT_VERSION) {
+      // Ne pas afficher si deja vu pour cette version
+      var dismissed = localStorage.getItem('updateDismissed');
+      if (dismissed === serverVersion) return;
       afficherPopupMiseAJour(serverVersion);
     }
   }, function(err) {
@@ -34,7 +37,7 @@ function afficherPopupMiseAJour(newVersion) {
 
   var overlay = document.createElement('div');
   overlay.id = 'popup-update';
-  overlay.style.cssText = 'position:fixed;top:20px;right:20px;z-index:99999;';
+  overlay.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:99999;';
 
   var box = document.createElement('div');
   box.style.cssText = 'background:linear-gradient(180deg,#1a1a2e,#16213e);border:2px solid #f39c12;border-radius:12px;padding:15px 20px;max-width:350px;color:#ecf0f1;font-family:Arial,sans-serif;box-shadow:0 4px 20px rgba(0,0,0,0.5);';
@@ -59,6 +62,7 @@ function afficherPopupMiseAJour(newVersion) {
   document.body.appendChild(overlay);
 
   document.getElementById('btn-update-now').onclick = function() {
+    localStorage.setItem('updateDismissed', newVersion);
     location.reload(true);
   };
 

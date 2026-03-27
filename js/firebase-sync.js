@@ -706,43 +706,11 @@ function updateCadavresMultiplayer(cadavres) {
 
 // Reunion en multiplayer
 function ouvrirReunionMultiplayer(meeting) {
-  if (miniJeuOuvert) pauserMiniJeu();
-  reunionEnCours = true;
-  jeuActif = false;
-  try { var sReunion = new Audio("Audio/reunion-urgence.mp3"); sReunion.volume = 0.6; sReunion.play(); } catch(e) {}
-  var popup = document.getElementById('popup-reunion');
-  if (popup) popup.style.display = 'flex';
-  // Afficher le bouton toggle chat sur mobile (deplacer vers body)
-  var reunionToggle = document.getElementById('reunion-chat-toggle');
-  if (reunionToggle) {
-    reunionToggle.classList.add('visible');
-    if (typeof ouvrirReunionChatMobile === 'function') ouvrirReunionChatMobile();
-  }
-  // Afficher les joueurs vivants dans la liste de vote
-  var voteList = document.getElementById('reunion-vote-liste');
-  if (voteList) {
-    voteList.innerHTML = '';
-    firebasePartyPlayers.forEach(function(j) {
-      if (!j.alive || j.playerId === monPlayerId) return;
-      var btn = document.createElement('button');
-      btn.className = 'reunion-vote-btn';
-      if (isAdmin(j.pseudo)) btn.classList.add('pseudo-admin-text');
-      btn.textContent = j.pseudo;
-      btn.onclick = function() {
-        db.collection('votes').add({
-          meetingId: meeting._id,
-          partyId: partieActuelleId,
-          voterPlayerId: monPlayerId,
-          targetPlayerId: j.playerId,
-          isSkip: false
-        }).catch(function() {});
-        try { var sVote = new Audio('Audio/i-voted.mp3'); sVote.volume = 0.5; sVote.play(); } catch(e) {}
-        voteList.querySelectorAll('.reunion-vote-btn').forEach(function(b) { b.disabled = true; });
-        // Host verifie si tous ont vote
-        if (estHost) checkVotesComplete(meeting._id);
-      };
-      voteList.appendChild(btn);
-    });
+  // Utiliser le systeme de reunion standard (meeting.js) qui gere tout :
+  // teleportation fontaine, affichage joueurs, votes, bots, chat IA
+  reunionCreateur = meeting.callerPseudo || '';
+  if (typeof ouvrirReunion === 'function') {
+    ouvrirReunion();
   }
 }
 

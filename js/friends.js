@@ -329,11 +329,20 @@ function initAmisListeners() {
 var invitationActuelle = null;
 var fileInvitations = [];
 
+var _lastInviteTime = 0;
 function inviterAmi(amiPlayerId, amiPseudo) {
   if (!partieActuelleId) {
     showNotif(t('mustBeInGame'), 'warn');
     return;
   }
+  var now = Date.now();
+  var cooldown = 15000; // 15 secondes
+  if (now - _lastInviteTime < cooldown) {
+    var reste = Math.ceil((cooldown - (now - _lastInviteTime)) / 1000);
+    showNotif('Attends ' + reste + 's avant de reinviter', 'warn');
+    return;
+  }
+  _lastInviteTime = now;
   db.collection('gameInvites').add({
     fromPlayerId: monPlayerId,
     fromPseudo: getPseudo(),

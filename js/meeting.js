@@ -45,6 +45,21 @@ function ouvrirReunion() {
     elimine: joueursElimines.indexOf(pseudo) >= 0,
     elementId: 'joueur'
   });
+  // Ajouter les joueurs distants (mode en ligne)
+  if (!modeHorsLigne && typeof remotePlayers !== 'undefined') {
+    for (var rpId in remotePlayers) {
+      var rp = remotePlayers[rpId];
+      joueursReunion.push({
+        pseudo: rp.pseudo,
+        skin: rp.skin,
+        role: '',
+        estBot: false,
+        elimine: joueursElimines.indexOf(rp.pseudo) >= 0,
+        elementId: 'remote-' + rpId
+      });
+    }
+  }
+  // Ajouter les bots
   if (bots.length > 0) {
     for (var i = 0; i < bots.length; i++) {
       joueursReunion.push({
@@ -78,20 +93,39 @@ function ouvrirReunion() {
     var px = fontCX + Math.cos(angle) * rayon;
     var py = fontCY + Math.sin(angle) * rayon;
 
-    if (j === 0) {
-      // Teleporter le joueur
+    var jr = joueursReunion[j];
+    if (jr.elementId === 'joueur') {
+      // Teleporter le joueur local
       joueurX = px;
       joueurY = py;
       updateJoueur();
     } else {
-      // Teleporter les bots
-      var botData = bots[j - 1];
-      if (botData) {
-        positionsAvantReunion[botData.id] = { x: botData.x, y: botData.y };
-        botData.x = px;
-        botData.y = py;
-        botData.element.style.left = px + 'px';
-        botData.element.style.top = py + 'px';
+      // Teleporter les bots ou joueurs distants
+      var el = document.getElementById(jr.elementId);
+      if (el) {
+        el.style.left = px + 'px';
+        el.style.top = py + 'px';
+      }
+      // Sauvegarder position des bots
+      if (jr.estBot) {
+        var botIdx = joueursReunion.slice(0, j).filter(function(x) { return x.estBot; }).length;
+        var botData = bots[botIdx];
+        if (botData) {
+          positionsAvantReunion[botData.id] = { x: botData.x, y: botData.y };
+          botData.x = px;
+          botData.y = py;
+        }
+      }
+      // Sauvegarder position des joueurs distants
+      if (!jr.estBot && typeof remotePlayers !== 'undefined') {
+        var rpId = jr.elementId.replace('remote-', '');
+        if (remotePlayers[rpId]) {
+          positionsAvantReunion[jr.elementId] = { x: remotePlayers[rpId].x, y: remotePlayers[rpId].y };
+          remotePlayers[rpId].x = px;
+          remotePlayers[rpId].y = py;
+          remotePlayers[rpId].targetX = px;
+          remotePlayers[rpId].targetY = py;
+        }
       }
     }
   }
@@ -211,7 +245,7 @@ function ouvrirReunion() {
   }, 1000);
 
   // Bots votent apres un delai
-  if (modeHorsLigne) {
+  if (bots.length > 0) {
     for (var bi = 0; bi < bots.length; bi++) {
       (function(botIndex) {
         var delai = 5000 + Math.floor(Math.random() * 30000);

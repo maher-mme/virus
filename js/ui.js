@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '1.6.2';
+var CURRENT_VERSION = '1.6.3';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -366,7 +366,7 @@ function showScreen(id, fromPopstate) {
   // Afficher/cacher le bouton amis
   var btnAmis = document.getElementById('btn-amis');
   if (btnAmis) {
-    btnAmis.style.display = (id === 'ecran-compte' || modeHorsLigne) ? 'none' : 'flex';
+    btnAmis.style.display = (id === 'ecran-compte' || id === 'jeu' || modeHorsLigne) ? 'none' : 'flex';
   }
   // Fermer le panel amis si on change d'ecran
   if (panelAmisOuvert) {

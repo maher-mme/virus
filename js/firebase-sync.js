@@ -516,6 +516,13 @@ function lancerJeuMultiplayer(state) {
   // Initialiser les missions
   initMissions();
 
+  // Jauge collective de missions
+  var nbTotalJoueurs = firebasePartyPlayers.length;
+  totalMissionsCollectives = nbTotalJoueurs * 4;
+  missionsCollectivesCompletees = 0;
+  updateJaugeMissions();
+  demarrerSimulationMissions(nbTotalJoueurs - 1);
+
   // Initialiser le pet du joueur
   if (typeof initMonPet === 'function') {
     petInitialized = false;

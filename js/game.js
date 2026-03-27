@@ -1089,13 +1089,13 @@ function quitterJeu() {
     modeHorsLigne = false;
     showScreen('menu-principal');
   } else {
-    // En mode online, le joueur qui quitte est considere comme mort
-    var pseudoQuitte = getPseudo() || t('player');
-    if (joueursElimines.indexOf(pseudoQuitte) < 0) {
-      joueursElimines.push(pseudoQuitte);
-    }
+    // En mode online, quitter la partie completement
     nettoyerBots();
-    showScreen('salle-attente');
+    if (typeof quitterPartie === 'function') {
+      quitterPartie();
+    } else {
+      showScreen('menu-principal');
+    }
   }
 }
 

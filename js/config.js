@@ -153,6 +153,7 @@ setInterval(function() {
     snap.forEach(function(doc) {
       var data = doc.data();
       if (data.playerId === monPlayerId) return;
+      if (data.isBot) return; // Les bots n'envoient pas de heartbeat
       var lastActive = data.lastActive ? data.lastActive.toDate() : null;
       if (lastActive && lastActive < seuil) {
         // Joueur deconnecte : le retirer

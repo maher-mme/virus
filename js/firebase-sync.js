@@ -71,7 +71,7 @@ function updateSalleAttente() {
   updateBotControlsUI();
 }
 
-var MAX_BOTS_ONLINE = 3;
+var MAX_BOTS_ONLINE = 2;
 
 function getNbBotsEnLigne() {
   return firebasePartyPlayers.filter(function(p) { return p.isBot; }).length;

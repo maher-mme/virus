@@ -107,7 +107,7 @@ function initBots(nbBots) {
 
     // Pet aleatoire (50% de chance)
     var botPetObj = null;
-    if (Math.random() < 0.5 && typeof PETS_BOUTIQUE !== 'undefined' && PETS_BOUTIQUE.length > 0) {
+    if (Math.random() < 0.5 && typeof PETS_BOUTIQUE !== 'undefined' && PETS_BOUTIQUE.length > 0 && typeof creerPetElement === 'function') {
       var randomPet = PETS_BOUTIQUE[Math.floor(Math.random() * PETS_BOUTIQUE.length)];
       botPetObj = creerPetElement(randomPet.id, mallMap);
     }
@@ -410,14 +410,15 @@ function updateBots() {
     var dx = bot.cibleX - bot.x;
     var dy = bot.cibleY - bot.y;
     var dist = Math.sqrt(dx * dx + dy * dy);
+    var mx = 0, my = 0;
 
     if (dist > 2) {
       // Vitesse : virus un peu plus rapide en traque
       var vitesse = BOT_VITESSE;
       if (bot.role === 'virus' && bot.etat === 'traque') vitesse = BOT_VITESSE + 0.5;
 
-      var mx = (dx / dist) * vitesse;
-      var my = (dy / dist) * vitesse;
+      mx = (dx / dist) * vitesse;
+      my = (dy / dist) * vitesse;
 
       // Collision X
       var newX = bot.x + mx;
@@ -462,7 +463,7 @@ function updateBots() {
       bot.element.style.top = bot.y + 'px';
     }
     // Mettre a jour le pet du bot
-    if (bot.petObj) {
+    if (bot.petObj && typeof updatePetSuivi === 'function') {
       var botMoved = (mx !== 0 || my !== 0);
       updatePetSuivi(bot.petObj, bot.x, bot.y, botMoved);
     }

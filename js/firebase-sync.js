@@ -605,10 +605,11 @@ function createRemotePlayerElement(p) {
   container.appendChild(div);
 
   // Creer le pet du joueur distant si equipe
-  if (p.pet && typeof creerPetElement !== 'undefined' && typeof PETS_BOUTIQUE !== 'undefined') {
+  if (p.pet && typeof creerPetElement === 'function' && typeof PETS_BOUTIQUE !== 'undefined') {
     var rp = remotePlayers[p.playerId];
     if (rp) {
-      rp.petObj = creerPetElement(p.pet, container);
+      var petResult = creerPetElement(p.pet, container);
+      if (petResult) rp.petObj = petResult;
     }
   }
 }

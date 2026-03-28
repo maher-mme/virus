@@ -740,6 +740,7 @@ function updateMonPet(moved) {
 }
 
 function creerPetElement(petId, parentEl) {
+  if (!parentEl) return null;
   var pet = PETS_BOUTIQUE.find(function(p) { return p.id === petId; });
   if (!pet) return null;
   var div = document.createElement('div');

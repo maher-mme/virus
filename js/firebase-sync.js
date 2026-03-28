@@ -109,15 +109,15 @@ function ajouterBotEnLigne() {
   var maxJ = currentParty ? currentParty.maxJoueurs : 10;
   if (firebasePartyPlayers.length >= maxJ) { showNotif('Partie pleine', 'warn'); return; }
 
-  var nomsPool = typeof FAUX_PSEUDOS !== 'undefined' ? FAUX_PSEUDOS.slice() : ['Bot1','Bot2','Bot3'];
-  // Retirer les pseudos deja utilises
-  var usedNames = firebasePartyPlayers.map(function(p) { return p.pseudo; });
-  nomsPool = nomsPool.filter(function(n) { return usedNames.indexOf(n) === -1; });
-  var pseudo = nomsPool.length > 0 ? nomsPool[Math.floor(Math.random() * nomsPool.length)] : 'Bot' + (nbBots + 1);
-
-  // Skin aleatoire
+  // Skin unique (pas deja utilise dans la partie)
   var tousLesSkins = (typeof SKINS !== 'undefined' ? SKINS : []).concat(typeof SKINS_BOUTIQUE !== 'undefined' ? SKINS_BOUTIQUE : []);
-  var skinFichier = tousLesSkins.length > 0 ? tousLesSkins[Math.floor(Math.random() * tousLesSkins.length)].fichier : '';
+  var usedSkins = firebasePartyPlayers.map(function(p) { return p.skin; });
+  var skinsDispos = tousLesSkins.filter(function(s) { return usedSkins.indexOf(s.fichier) === -1; });
+  if (skinsDispos.length === 0) skinsDispos = tousLesSkins;
+  var skinObj = skinsDispos[Math.floor(Math.random() * skinsDispos.length)];
+  var skinFichier = skinObj.fichier;
+  // Pseudo = nom du skin
+  var pseudo = skinObj.nom;
 
   var botId = 'bot-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
 

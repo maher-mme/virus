@@ -42,32 +42,25 @@ function nettoyerBots() {
 
 function initBots(nbBots) {
   nettoyerBots();
-  var nomsPool = FAUX_PSEUDOS.slice();
   var mallMap = document.getElementById('mall-map');
   if (!mallMap) return;
 
-  for (var i = 0; i < nbBots && nomsPool.length > 0; i++) {
-    // Pseudo aleatoire
-    var ni = Math.floor(Math.random() * nomsPool.length);
-    var pseudo = nomsPool[ni];
-    nomsPool.splice(ni, 1);
+  // Melanger tous les skins pour garantir des skins differents
+  var tousLesSkins = SKINS.concat(SKINS_BOUTIQUE);
+  var skinsDisponibles = tousLesSkins.slice();
+  for (var sh = skinsDisponibles.length - 1; sh > 0; sh--) {
+    var sj = Math.floor(Math.random() * (sh + 1));
+    var tmp = skinsDisponibles[sh];
+    skinsDisponibles[sh] = skinsDisponibles[sj];
+    skinsDisponibles[sj] = tmp;
+  }
 
-    // Skin aleatoire pondere par rarete : typique 80, commun 60, rare 40, epic 30, legendaire 10
-    var skinObj;
-    var tousLesSkins = SKINS.concat(SKINS_BOUTIQUE);
-    var poidsRarete = {typique:80, commun:60, rare:40, epic:30, legendaire:10};
-    var poidsTotal = 0;
-    for (var ps = 0; ps < tousLesSkins.length; ps++) {
-      poidsTotal += (poidsRarete[tousLesSkins[ps].rarete] || 50);
-    }
-    var tirage = Math.random() * poidsTotal;
-    var cumul = 0;
-    skinObj = tousLesSkins[0];
-    for (var ps = 0; ps < tousLesSkins.length; ps++) {
-      cumul += (poidsRarete[tousLesSkins[ps].rarete] || 50);
-      if (tirage <= cumul) { skinObj = tousLesSkins[ps]; break; }
-    }
+  for (var i = 0; i < nbBots; i++) {
+    // Skin unique par bot
+    var skinObj = skinsDisponibles[i % skinsDisponibles.length];
     var skinFichier = skinObj.fichier;
+    // Pseudo = nom du skin
+    var pseudo = skinObj.nom;
 
     // Position de spawn - autour de la fontaine centrale (3800, 2800)
     var angle = (i / nbBots) * Math.PI * 2 + (Math.random() * 0.3 - 0.15);

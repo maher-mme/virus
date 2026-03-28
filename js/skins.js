@@ -35,11 +35,37 @@ function getSkinFichier(skinId) {
   return s ? s.fichier : SKINS[0].fichier;
 }
 function appliquerSkinPartout() {
-  var fichier = getSkinFichier(getSkin());
+  var skinName = getSkin();
+  var fichier = getSkinFichier(skinName);
   var joueurImg = document.getElementById('joueur-skin-img');
   if (joueurImg) joueurImg.src = fichier;
   var saImg = document.getElementById('sa-avatar-skin-img');
-  if (saImg) saImg.src = fichier;
+  if (saImg) {
+    saImg.src = fichier;
+    // Effet flottement pour Caine dans le lobby
+    var skinData = SKINS.find(function(s) { return s.nom === skinName; });
+    if (skinData && skinData.animated) {
+      saImg.classList.add('skin-lobby-float');
+    } else {
+      saImg.classList.remove('skin-lobby-float');
+    }
+  }
+  // Pet dans le lobby
+  var saPet = document.getElementById('sa-mon-pet');
+  if (saPet) {
+    var petEquipe = localStorage.getItem('petEquipe');
+    if (petEquipe && typeof PETS_BOUTIQUE !== 'undefined') {
+      var petData = PETS_BOUTIQUE.find(function(p) { return p.nom === petEquipe; });
+      if (petData) {
+        saPet.src = petData.fichier + '?v=' + (typeof CURRENT_VERSION !== 'undefined' ? CURRENT_VERSION : '1');
+        saPet.style.display = 'block';
+      } else {
+        saPet.style.display = 'none';
+      }
+    } else {
+      saPet.style.display = 'none';
+    }
+  }
 }
 var skinTempSelection = null; // Skin selectionne mais pas encore confirme
 

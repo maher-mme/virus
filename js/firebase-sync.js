@@ -175,15 +175,18 @@ function quitterPartie() {
       joueurs: firebase.firestore.FieldValue.increment(-1),
       listeJoueurs: firebase.firestore.FieldValue.arrayRemove(pseudo)
     }).catch(function() {});
-    // Transferer host si necessaire
-    db.collection('partyPlayers').where('partyId', '==', partieActuelleId).limit(1).get().then(function(snap) {
-      if (!snap.empty) {
-        var newHost = snap.docs[0];
+    // Transferer host si necessaire (ignorer les bots)
+    var _partyIdToClean = partieActuelleId;
+    db.collection('partyPlayers').where('partyId', '==', _partyIdToClean).get().then(function(snap) {
+      var vraisJoueurs = snap.docs.filter(function(d) { return !d.data().isBot; });
+      if (vraisJoueurs.length > 0) {
+        var newHost = vraisJoueurs[0];
         newHost.ref.update({ isHost: true });
-        db.collection('parties').doc(partieActuelleId).update({ hostPlayerId: newHost.data().playerId, hostPseudo: newHost.data().pseudo });
+        db.collection('parties').doc(_partyIdToClean).update({ hostPlayerId: newHost.data().playerId, hostPseudo: newHost.data().pseudo });
       } else {
-        // Plus personne -> supprimer la partie
-        db.collection('parties').doc(partieActuelleId).delete().catch(function() {});
+        // Plus de vrais joueurs -> supprimer les bots et la partie
+        snap.docs.forEach(function(d) { d.ref.delete().catch(function() {}); });
+        db.collection('parties').doc(_partyIdToClean).delete().catch(function() {});
       }
     }).catch(function() {});
     unsubscribeFromParty();

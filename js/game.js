@@ -403,6 +403,7 @@ function lancerJeu() {
       nbVirus--;
       totalSpeciaux--;
     }
+    if (nbVirus < 1) nbVirus = 1;
 
     // Notifier si les roles ont ete ajustes
     if (nbVirus !== nbVirusOriginal) {

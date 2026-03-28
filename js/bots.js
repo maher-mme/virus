@@ -331,6 +331,7 @@ function botChoisirCible(bot) {
 }
 
 function updateBots() {
+  if (reunionEnCours) return; // Figer les bots pendant la reunion
   for (var i = 0; i < bots.length; i++) {
     var bot = bots[i];
 

@@ -565,15 +565,11 @@
             </div>
           </div>
         </div>
-        <div class="cp-role-item" style="margin-top:10px">
+        <div class="cp-role-item">
           <label>PARTIE PRIVEE</label>
-          <div class="toggle-container">
-            <button class="toggle-btn" id="cp-toggle-prive" onclick="this.classList.toggle('active')">
-              <span class="toggle-label-off">NON</span>
-              <span class="toggle-label-on">OUI</span>
-              <span class="toggle-slider"></span>
-            </button>
-            <span class="cp-role-desc" style="margin-left:8px;color:#95a5a6;font-size:11px">Seuls vos amis verront la partie</span>
+          <div class="cp-toggle-row">
+            <div class="cp-toggle" id="cp-toggle-prive" onclick="this.classList.toggle('active')"></div>
+            <span class="cp-toggle-label" id="cp-toggle-prive-label" style="color:#95a5a6;font-size:11px">Seuls vos amis verront la partie</span>
           </div>
         </div>
         <button class="btn-valider-creer" onclick="creerPartie()" data-i18n="create">CREER LA PARTIE</button>

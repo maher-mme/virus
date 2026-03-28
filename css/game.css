@@ -824,7 +824,7 @@
   from { transform: translateY(-8px); }
   to { transform: translateY(0px); }
 }
-.skin-lobby-float {
+.sa-avatar-skin.skin-lobby-float {
   animation: lobbyFloat 2s ease-in-out infinite;
 }
 @keyframes lobbyFloat {

@@ -42,13 +42,16 @@ function appliquerSkinPartout() {
   var saImg = document.getElementById('sa-avatar-skin-img');
   if (saImg) {
     saImg.src = fichier;
-    // Effet flottement pour Caine dans le lobby
+    // Effet flottement pour Caine dans le lobby (sur le conteneur pour ne pas ecraser scaleX)
     var skinData = SKINS.find(function(s) { return s.id === skinName; });
     var boutiqueSkin = typeof SKINS_BOUTIQUE !== 'undefined' ? SKINS_BOUTIQUE.find(function(s) { return s.id === skinName; }) : null;
-    if ((skinData && skinData.animated) || (boutiqueSkin && boutiqueSkin.animated)) {
-      saImg.classList.add('skin-lobby-float');
-    } else {
-      saImg.classList.remove('skin-lobby-float');
+    var skinContainer = saImg.parentElement;
+    if (skinContainer) {
+      if ((skinData && skinData.animated) || (boutiqueSkin && boutiqueSkin.animated)) {
+        skinContainer.classList.add('skin-lobby-float');
+      } else {
+        skinContainer.classList.remove('skin-lobby-float');
+      }
     }
   }
   // Pet dans le lobby
@@ -56,7 +59,7 @@ function appliquerSkinPartout() {
   if (saPet) {
     var petEquipe = localStorage.getItem('virusPet');
     if (petEquipe && typeof PETS_BOUTIQUE !== 'undefined') {
-      var petData = PETS_BOUTIQUE.find(function(p) { return p.nom === petEquipe; });
+      var petData = PETS_BOUTIQUE.find(function(p) { return p.id === petEquipe; });
       if (petData) {
         saPet.src = petData.idle + '?v=' + (typeof CURRENT_VERSION !== 'undefined' ? CURRENT_VERSION : '1');
         saPet.style.display = 'block';

@@ -1121,6 +1121,11 @@ function updateSallePosition() {
   if (skinImg) {
     skinImg.style.transform = saDirection === -1 ? 'scaleX(-1)' : 'scaleX(1)';
   }
+  // Retourner le pet selon la direction
+  var saPet = document.getElementById('sa-mon-pet');
+  if (saPet && saPet.style.display !== 'none') {
+    saPet.style.transform = saDirection === -1 ? 'scaleX(-1)' : 'scaleX(1)';
+  }
 }
 
 function salleLoop() {
@@ -1154,6 +1159,20 @@ function salleLoop() {
   if (saJoueurX > 95) saJoueurX = 95;
   if (saJoueurY < 5) saJoueurY = 5;
   if (saJoueurY > 92) saJoueurY = 92;
+
+  // Animation skin anime (Caine) dans le lobby
+  var saImg = document.getElementById('sa-avatar-skin-img');
+  if (saImg && typeof SKINS_BOUTIQUE !== 'undefined') {
+    var currentSkinId = (typeof getSkin === 'function') ? getSkin() : '';
+    var skinData = SKINS_BOUTIQUE.find(function(s) { return s.id === currentSkinId && s.animated; });
+    if (skinData && skinData.fichierMove) {
+      if (moved) {
+        if (saImg.src.indexOf(skinData.fichierMove) < 0) saImg.src = skinData.fichierMove;
+      } else {
+        if (saImg.src.indexOf(skinData.fichier) < 0) saImg.src = skinData.fichier;
+      }
+    }
+  }
 
   if (moved) {
     updateSallePosition();

@@ -627,6 +627,13 @@
   height: 60px;
   width: auto;
 }
+.sa-pet {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  bottom: 0;
+  right: -30px;
+}
 
 /* ============================== */
 /* ECRAN FIN DE PARTIE            */

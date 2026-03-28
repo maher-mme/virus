@@ -43,8 +43,9 @@ function appliquerSkinPartout() {
   if (saImg) {
     saImg.src = fichier;
     // Effet flottement pour Caine dans le lobby
-    var skinData = SKINS.find(function(s) { return s.nom === skinName; });
-    if (skinData && skinData.animated) {
+    var skinData = SKINS.find(function(s) { return s.id === skinName; });
+    var boutiqueSkin = typeof SKINS_BOUTIQUE !== 'undefined' ? SKINS_BOUTIQUE.find(function(s) { return s.id === skinName; }) : null;
+    if ((skinData && skinData.animated) || (boutiqueSkin && boutiqueSkin.animated)) {
       saImg.classList.add('skin-lobby-float');
     } else {
       saImg.classList.remove('skin-lobby-float');
@@ -53,11 +54,11 @@ function appliquerSkinPartout() {
   // Pet dans le lobby
   var saPet = document.getElementById('sa-mon-pet');
   if (saPet) {
-    var petEquipe = localStorage.getItem('petEquipe');
+    var petEquipe = localStorage.getItem('virusPet');
     if (petEquipe && typeof PETS_BOUTIQUE !== 'undefined') {
       var petData = PETS_BOUTIQUE.find(function(p) { return p.nom === petEquipe; });
       if (petData) {
-        saPet.src = petData.fichier + '?v=' + (typeof CURRENT_VERSION !== 'undefined' ? CURRENT_VERSION : '1');
+        saPet.src = petData.idle + '?v=' + (typeof CURRENT_VERSION !== 'undefined' ? CURRENT_VERSION : '1');
         saPet.style.display = 'block';
       } else {
         saPet.style.display = 'none';

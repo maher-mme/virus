@@ -1066,12 +1066,14 @@ function creerPartie() {
     online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp()
   }, { merge: true }).then(function() {
     // Creer la partie
+    var estPrive = document.getElementById('cp-toggle-prive') && document.getElementById('cp-toggle-prive').classList.contains('active');
     return db.collection('parties').add({
       nom: nom, hostPlayerId: monPlayerId, hostPseudo: pseudo,
       maxJoueurs: maxJoueurs, mechants: mechants,
       journaliste: cpJournaliste, fanatique: cpFanatique, espion: cpEspion,
       langue: cpLang, couleur: COULEURS_PARTIES[Math.floor(Math.random() * COULEURS_PARTIES.length)],
       phase: 'lobby', joueurs: 1, listeJoueurs: [pseudo],
+      private: estPrive,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
   }).then(function(docRef) {
@@ -1106,6 +1108,11 @@ function rejoindrePartie(partieId) {
     var party = doc.data();
     if (party.phase !== 'lobby') { showNotif(t('gameAlreadyStarted'), 'warn'); return; }
     if (party.joueurs >= party.maxJoueurs) { showNotif(t('gameFull'), 'warn'); return; }
+    // Bloquer si partie privee et pas ami du host
+    if (party.private && party.hostPlayerId !== monPlayerId) {
+      var amisIds = (typeof mesAmis !== 'undefined') ? mesAmis.map(function(a) { return a.uid; }) : [];
+      if (amisIds.indexOf(party.hostPlayerId) < 0) { showNotif('Partie privee - amis du host uniquement', 'warn'); return; }
+    }
     // Enregistrer le joueur
     return db.collection('players').doc(monPlayerId).set({
       playerId: monPlayerId, pseudo: pseudo, skin: skin,
@@ -1199,7 +1206,14 @@ function rafraichirListeParties() {
   // Auto-nettoyage des parties fantomes
   nettoyerPartiesFantomes();
 
-  const parties = getParties();
+  var toutesParties = getParties();
+  // Filtrer les parties privees : ne montrer que celles dont le host est ami
+  var amisIds = (typeof mesAmis !== 'undefined') ? mesAmis.map(function(a) { return a.uid; }) : [];
+  const parties = toutesParties.filter(function(p) {
+    if (!p.private) return true; // Partie publique
+    if (p.hostPlayerId === monPlayerId) return true; // C'est ma partie
+    return amisIds.indexOf(p.hostPlayerId) >= 0; // Je suis ami du host
+  });
   const tbody = document.getElementById('lp-tbody');
   const vide = document.getElementById('lp-vide');
   const total = document.getElementById('lp-total');
@@ -1240,7 +1254,7 @@ function rafraichirListeParties() {
           adminDeleteBtn +
           '<div class="lp-icone-partie" style="border:2px solid ' + p.couleur + '">&#128367;</div>' +
           '<div class="lp-nom-texte">' +
-            '<span class="nom">' + p.nom.replace(/</g, '&lt;') + ' <span class="lp-langue-badge">' + (p.langue === 'en' ? '&#127468;&#127463;' : '&#127467;&#127479;') + '</span></span>' +
+            '<span class="nom">' + (p.private ? '&#128274; ' : '') + p.nom.replace(/</g, '&lt;') + ' <span class="lp-langue-badge">' + (p.langue === 'en' ? '&#127468;&#127463;' : '&#127467;&#127479;') + '</span></span>' +
             '<span class="host">' + t('hostLabel') + ' ' + hostPseudo.replace(/</g, '&lt;') + '</span>' +
           '</div>' +
         '</div>' +

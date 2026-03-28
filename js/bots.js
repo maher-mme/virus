@@ -45,19 +45,30 @@ function initBots(nbBots) {
   var mallMap = document.getElementById('mall-map');
   if (!mallMap) return;
 
-  // Melanger tous les skins pour garantir des skins differents
+  // Tous les skins sans doublons (dedupliques par id)
   var tousLesSkins = SKINS.concat(SKINS_BOUTIQUE);
-  var skinsDisponibles = tousLesSkins.slice();
-  for (var sh = skinsDisponibles.length - 1; sh > 0; sh--) {
+  var skinsUniques = [];
+  var idsVus = {};
+  for (var su = 0; su < tousLesSkins.length; su++) {
+    if (!idsVus[tousLesSkins[su].id]) {
+      idsVus[tousLesSkins[su].id] = true;
+      skinsUniques.push(tousLesSkins[su]);
+    }
+  }
+  // Exclure le skin du joueur
+  var monSkin = (typeof getSkin === 'function') ? getSkin() : '';
+  skinsUniques = skinsUniques.filter(function(s) { return s.id !== monSkin; });
+  // Melanger pour garantir des skins differents
+  for (var sh = skinsUniques.length - 1; sh > 0; sh--) {
     var sj = Math.floor(Math.random() * (sh + 1));
-    var tmp = skinsDisponibles[sh];
-    skinsDisponibles[sh] = skinsDisponibles[sj];
-    skinsDisponibles[sj] = tmp;
+    var tmp = skinsUniques[sh];
+    skinsUniques[sh] = skinsUniques[sj];
+    skinsUniques[sj] = tmp;
   }
 
   for (var i = 0; i < nbBots; i++) {
     // Skin unique par bot
-    var skinObj = skinsDisponibles[i % skinsDisponibles.length];
+    var skinObj = skinsUniques[i % skinsUniques.length];
     var skinFichier = skinObj.fichier;
     // Pseudo = nom du skin
     var pseudo = skinObj.nom;

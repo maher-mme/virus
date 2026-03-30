@@ -181,10 +181,20 @@ function ouvrirProfil(playerId) {
   }
   document.getElementById('popup-profil').classList.add('visible');
   chargerProfil(playerId);
+  // Mettre a jour l'URL avec le pseudo du joueur
+  if (playerId) {
+    db.collection('players').doc(playerId).get().then(function(doc) {
+      if (doc.exists && doc.data().pseudo) {
+        window.history.pushState({}, '', '?profil=' + encodeURIComponent(doc.data().pseudo));
+      }
+    }).catch(function() {});
+  }
 }
 
 function fermerProfil() {
   document.getElementById('popup-profil').classList.remove('visible');
+  // Restaurer l'URL d'origine
+  window.history.pushState({}, '', window.location.pathname);
 }
 
 function ouvrirProfilJoueur(playerId) {

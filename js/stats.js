@@ -175,6 +175,10 @@ function creerClassementItem(data, rang, valeur) {
 // PROFIL JOUEUR
 // ============================
 function ouvrirProfil(playerId) {
+  // Fermer le panel amis s'il est ouvert
+  if (typeof panelAmisOuvert !== 'undefined' && panelAmisOuvert) {
+    togglePanelAmis();
+  }
   document.getElementById('popup-profil').classList.add('visible');
   chargerProfil(playerId);
 }

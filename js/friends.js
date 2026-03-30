@@ -61,6 +61,7 @@ function afficherAmis() {
           html += '<span class="ami-last-seen">' + escapeHtml(dernierVu) + '</span>';
         }
       }
+      html += '<button class="ami-btn-profil" onclick="ouvrirProfil(\'' + escapeOnclick(ami.uid) + '\')" title="Voir le profil">&#128100;</button>';
       if (isOnline) {
         html += '<button class="ami-btn-inviter" onclick="inviterAmi(\'' + escapeOnclick(ami.uid) + '\', \'' + escapeOnclick(ami.pseudo) + '\')">' + t('invite') + '</button>';
       }

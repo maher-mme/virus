@@ -216,12 +216,14 @@ function chargerProfil(playerId) {
     var pfpHtml = pfp
       ? '<img class="profil-pfp" src="' + pfp + '" alt="PFP">'
       : '<div class="profil-pfp-placeholder">?</div>';
+    var lienProfil = window.location.origin + window.location.pathname + '?profil=' + encodeURIComponent(pseudo);
     headerEl.innerHTML = pfpHtml +
       '<div class="profil-info">' +
       '<span class="profil-pseudo">' + escapeHtml(pseudo) + '</span>' +
       '<span class="profil-niveau">' + t('level') + ' ' + niveauInfo.niveau + '</span>' +
       '<div class="profil-xp-bar"><div class="profil-xp-fill" style="width:' + pourcent + '%"></div></div>' +
       '<span class="profil-xp-text">' + niveauInfo.xpDansNiveau + ' / ' + niveauInfo.xpRequis + ' XP</span>' +
+      '<button class="btn-copier-lien" onclick="copierLienProfil(\'' + lienProfil.replace(/'/g, "\\'") + '\')">Copier le lien du profil</button>' +
       '</div>';
 
     var wins = data.wins || 0;
@@ -240,6 +242,35 @@ function chargerProfil(playerId) {
     statsEl.innerHTML = '<div class="classement-vide">' + t('connectionError') + '</div>';
   });
 }
+
+// ============================
+// LIEN PROFIL VIA URL : ?profil=pseudo
+// ============================
+function copierLienProfil(lien) {
+  navigator.clipboard.writeText(lien).then(function() {
+    showNotif('Lien copie !', 'info');
+  }).catch(function() {
+    showNotif('Erreur copie', 'warn');
+  });
+}
+
+function checkProfilURL() {
+  var params = new URLSearchParams(window.location.search);
+  var profilPseudo = params.get('profil');
+  if (!profilPseudo) return;
+  // Chercher le joueur par pseudo dans Firebase
+  if (typeof db === 'undefined') { setTimeout(checkProfilURL, 1000); return; }
+  db.collection('players').where('pseudo', '==', profilPseudo).limit(1).get().then(function(snap) {
+    if (!snap.empty) {
+      ouvrirProfil(snap.docs[0].id);
+    } else {
+      showNotif('Joueur "' + profilPseudo + '" introuvable', 'warn');
+    }
+    // Nettoyer l'URL sans recharger
+    window.history.replaceState({}, '', window.location.pathname);
+  }).catch(function() {});
+}
+setTimeout(checkProfilURL, 2500);
 
 // ============================
 // MISE A JOUR DES STATS EN FIN DE PARTIE

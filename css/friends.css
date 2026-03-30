@@ -235,6 +235,21 @@
   margin-left: auto;
 }
 .ami-btn-supprimer:hover { background: #e74c3c; color: white; }
+.ami-btn-profil {
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  border: 1px solid #3498db;
+  border-radius: 50%;
+  color: #3498db;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ami-btn-profil:hover { background: #3498db; color: white; }
 .ami-last-seen {
   color: #7f8c8d;
   font-size: 11px;

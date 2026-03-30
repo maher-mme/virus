@@ -182,8 +182,9 @@ function ouvrirProfil(playerId) {
   document.getElementById('popup-profil').classList.add('visible');
   chargerProfil(playerId);
   // Mettre a jour l'URL avec le pseudo du joueur
-  if (playerId) {
-    db.collection('players').doc(playerId).get().then(function(doc) {
+  var targetId = playerId || monPlayerId;
+  if (targetId) {
+    db.collection('players').doc(targetId).get().then(function(doc) {
       if (doc.exists && doc.data().pseudo) {
         window.history.pushState({}, '', '?profil=' + encodeURIComponent(doc.data().pseudo));
       }

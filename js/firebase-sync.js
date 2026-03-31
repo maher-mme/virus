@@ -299,8 +299,8 @@ function subscribeToParty(partyId) {
     })
   );
 
-  // Timestamp d'arrivee pour filtrer les messages anterieurs
-  var joinTimestamp = Date.now();
+  // Timestamp d'arrivee pour filtrer les messages anterieurs (marge de 5s pour decalage horloge)
+  var joinTimestamp = Date.now() - 5000;
 
   // Chat (un seul where sur partyId, filtre lobby/meeting en JS)
   firebaseUnsubscribers.push(
@@ -617,6 +617,7 @@ function createRemotePlayerElement(p) {
 // Mettre a jour les joueurs distants (prediction + lerp frame-rate independent)
 var _lastRemoteTime = 0;
 function updateRemotePlayers() {
+  if (reunionEnCours) return; // Ne pas bouger les joueurs distants pendant la reunion
   var now = Date.now();
   var dt = _lastRemoteTime ? (now - _lastRemoteTime) / 1000 : 0.016;
   _lastRemoteTime = now;

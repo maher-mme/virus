@@ -444,8 +444,10 @@ function lancerJeu() {
     var hasFanatique = partyData ? partyData.fanatique : false;
     var hasEspion = partyData ? partyData.espion : false;
 
-    // Ajuster automatiquement le nombre de virus selon le nombre reel de joueurs
-    var nbJoueurs = firebasePartyPlayers.length;
+    // Separer vrais joueurs et bots
+    var vraisJoueurs = firebasePartyPlayers.filter(function(p) { return !p.isBot; });
+    var botsJoueurs = firebasePartyPlayers.filter(function(p) { return p.isBot; });
+    var nbJoueurs = vraisJoueurs.length + botsJoueurs.length;
     var nbVirusOriginal = nbVirus;
     if (nbJoueurs < 7 && nbVirus > 1) nbVirus = 1;
     else if (nbJoueurs < 10 && nbVirus > 2) nbVirus = 2;
@@ -470,25 +472,39 @@ function lancerJeu() {
       showNotif(t('virusAdjusted', nbVirus, nbJoueurs), 'info');
     }
 
-    var roles = [];
-    for (var v = 0; v < nbVirus; v++) roles.push('virus');
-    if (hasJournaliste) roles.push('journaliste');
-    if (hasFanatique) roles.push('fanatique');
-    if (hasEspion) roles.push('espion');
-    while (roles.length < nbJoueurs) roles.push('innocent');
+    // Creer les roles pour les vrais joueurs (virus garanti parmi eux)
+    var rolesVrais = [];
+    for (var v = 0; v < nbVirus; v++) rolesVrais.push('virus');
+    if (hasJournaliste) rolesVrais.push('journaliste');
+    if (hasFanatique) rolesVrais.push('fanatique');
+    if (hasEspion) rolesVrais.push('espion');
+    while (rolesVrais.length < vraisJoueurs.length) rolesVrais.push('innocent');
+    // Si trop de roles speciaux pour les vrais joueurs, tronquer
+    if (rolesVrais.length > vraisJoueurs.length) rolesVrais.length = vraisJoueurs.length;
 
-    // Melanger les roles
-    for (var i = roles.length - 1; i > 0; i--) {
+    // Melanger les roles des vrais joueurs
+    for (var i = rolesVrais.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
-      var tmp = roles[i]; roles[i] = roles[j]; roles[j] = tmp;
+      var tmp = rolesVrais[i]; rolesVrais[i] = rolesVrais[j]; rolesVrais[j] = tmp;
     }
+
+    // Roles des bots : innocent (les bots recoivent leurs vrais roles localement)
+    var rolesBots = [];
+    for (var b = 0; b < botsJoueurs.length; b++) rolesBots.push('innocent');
 
     // Assigner a chaque joueur
     var batch = db.batch();
-    firebasePartyPlayers.forEach(function(p, idx) {
+    vraisJoueurs.forEach(function(p, idx) {
       if (p._docId) {
         batch.update(db.collection('partyPlayers').doc(p._docId), {
-          role: roles[idx], alive: true, x: 3800, y: 3050
+          role: rolesVrais[idx], alive: true, x: 3800, y: 3050
+        });
+      }
+    });
+    botsJoueurs.forEach(function(p, idx) {
+      if (p._docId) {
+        batch.update(db.collection('partyPlayers').doc(p._docId), {
+          role: rolesBots[idx], alive: true, x: 3800, y: 3050
         });
       }
     });

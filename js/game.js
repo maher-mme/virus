@@ -1,4 +1,64 @@
 // ============================
+// MODE SPECTATEUR
+// ============================
+var spectateurActif = false;
+var spectateurCible = null; // playerId du joueur spectate
+var spectateurIndex = 0;
+
+function getJoueursVivants() {
+  if (typeof firebasePartyPlayers === 'undefined') return [];
+  return firebasePartyPlayers.filter(function(p) {
+    return p.alive && p.playerId !== monPlayerId;
+  });
+}
+
+function activerSpectateur(playerId) {
+  if (!modeHorsLigne && typeof firebasePartyPlayers !== 'undefined') {
+    spectateurActif = true;
+    spectateurCible = playerId;
+    var bandeau = document.getElementById('spectateur-bandeau');
+    var pseudoEl = document.getElementById('spec-pseudo');
+    if (bandeau) bandeau.style.display = 'flex';
+    var vivants = getJoueursVivants();
+    for (var i = 0; i < vivants.length; i++) {
+      if (vivants[i].playerId === playerId) { spectateurIndex = i; break; }
+    }
+    var roleEl = document.getElementById('spec-role');
+    if (pseudoEl || roleEl) {
+      var joueurSpec = vivants[spectateurIndex];
+      if (pseudoEl) pseudoEl.textContent = 'Vous regardez : ' + (joueurSpec ? joueurSpec.pseudo : '???');
+      if (roleEl && joueurSpec) {
+        var role = joueurSpec.role || 'innocent';
+        var roleCouleurs = {virus:'#e74c3c', innocent:'#2ecc71', journaliste:'#3498db', fanatique:'#8e44ad', espion:'#9b59b6'};
+        roleEl.textContent = role.toUpperCase();
+        roleEl.style.color = roleCouleurs[role] || '#ecf0f1';
+      }
+    }
+  }
+}
+
+function desactiverSpectateur() {
+  spectateurActif = false;
+  spectateurCible = null;
+  var bandeau = document.getElementById('spectateur-bandeau');
+  if (bandeau) bandeau.style.display = 'none';
+}
+
+function specNext() {
+  var vivants = getJoueursVivants();
+  if (vivants.length === 0) return;
+  spectateurIndex = (spectateurIndex + 1) % vivants.length;
+  activerSpectateur(vivants[spectateurIndex].playerId);
+}
+
+function specPrev() {
+  var vivants = getJoueursVivants();
+  if (vivants.length === 0) return;
+  spectateurIndex = (spectateurIndex - 1 + vivants.length) % vivants.length;
+  activerSpectateur(vivants[spectateurIndex].playerId);
+}
+
+// ============================
 // CONFIG HORS LIGNE
 // ============================
 var hlConfigJournaliste = 0;
@@ -1030,8 +1090,17 @@ function updateJoueur() {
   var vw = viewport.clientWidth;
   var vh = viewport.clientHeight;
 
-  var camX = joueurX - vw / 2 + 14;
-  var camY = joueurY - vh / 2 + 14;
+  // Mode spectateur : camera suit le joueur spectate
+  var camTargetX = joueurX;
+  var camTargetY = joueurY;
+  if (spectateurActif && spectateurCible && remotePlayers[spectateurCible]) {
+    var rp = remotePlayers[spectateurCible];
+    camTargetX = rp.curX || rp.x || joueurX;
+    camTargetY = rp.curY || rp.y || joueurY;
+  }
+
+  var camX = camTargetX - vw / 2 + 14;
+  var camY = camTargetY - vh / 2 + 14;
 
   // Limiter la camera aux bords de la map
   if (camX < 0) camX = 0;
@@ -1056,6 +1125,7 @@ function quitterJeu() {
   jeuActif = false;
   keys = {};
   touchActif = false;
+  desactiverSpectateur();
   if (miniJeuOuvert) fermerMiniJeu();
   if (camerasOuvertes) fermerCameras();
   // Retirer le visuel fantome du joueur

@@ -147,6 +147,15 @@ function suivreJoueur() {
   if (btnArreter) btnArreter.style.display = 'block';
   showNotif(t('followingPlayer', suivreCible), 'info');
   majSuivreRoleInfo();
+  // Activer le mode spectateur en ligne
+  if (!modeHorsLigne && typeof remotePlayers !== 'undefined') {
+    for (var pid in remotePlayers) {
+      if (remotePlayers[pid].pseudo === suivreCible) {
+        if (typeof activerSpectateur === 'function') activerSpectateur(pid);
+        break;
+      }
+    }
+  }
 }
 
 function arreterSuivre() {
@@ -155,6 +164,8 @@ function arreterSuivre() {
   var roleInfo = document.getElementById('suivre-role-info');
   if (btnArreter) btnArreter.style.display = 'none';
   if (roleInfo) roleInfo.style.display = 'none';
+  // Desactiver le mode spectateur
+  if (typeof desactiverSpectateur === 'function') desactiverSpectateur();
 }
 
 function majSuivreRoleInfo() {

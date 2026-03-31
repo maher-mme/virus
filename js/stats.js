@@ -231,22 +231,51 @@ function chargerProfil(playerId) {
     var pfpHtml = pfp
       ? '<img class="profil-pfp" src="' + pfp + '" alt="PFP">'
       : '<div class="profil-pfp-placeholder">?</div>';
-    // Statut en ligne / hors ligne
+    // Statut en ligne / hors ligne + derniere connexion
     var isOnline = data.online && data.lastSeen && (Date.now() - data.lastSeen.toDate().getTime() < 120000);
     var statutHtml = isOnline
       ? '<span class="profil-statut profil-en-ligne">&#9679; En ligne</span>'
       : '<span class="profil-statut profil-hors-ligne">&#9679; Hors ligne</span>';
+    // Derniere connexion si hors ligne
+    var dernierVuHtml = '';
+    if (!isOnline && data.lastSeen) {
+      var lastDate = data.lastSeen.toDate();
+      var diff = Date.now() - lastDate.getTime();
+      var minutes = Math.floor(diff / 60000);
+      var heures = Math.floor(diff / 3600000);
+      var jours = Math.floor(diff / 86400000);
+      var dernierVuTexte = '';
+      if (minutes < 1) dernierVuTexte = 'il y a quelques secondes';
+      else if (minutes < 60) dernierVuTexte = 'il y a ' + minutes + ' min';
+      else if (heures < 24) dernierVuTexte = 'il y a ' + heures + 'h';
+      else dernierVuTexte = 'il y a ' + jours + 'j';
+      dernierVuHtml = '<span class="profil-dernier-vu">Vu ' + dernierVuTexte + '</span>';
+    }
+    // Date d'inscription
+    var inscriptionHtml = '';
+    if (data.createdAt) {
+      var dateInscr = data.createdAt.toDate();
+      var mois = ['jan', 'fev', 'mars', 'avr', 'mai', 'juin', 'juil', 'aout', 'sept', 'oct', 'nov', 'dec'];
+      inscriptionHtml = '<span class="profil-inscription">Membre depuis ' + mois[dateInscr.getMonth()] + ' ' + dateInscr.getFullYear() + '</span>';
+    }
+    // Skin equipe
+    var skinHtml = '';
+    if (data.skin) {
+      skinHtml = '<img class="profil-skin" src="' + data.skin + '" alt="skin">';
+    }
 
     var lienProfil = window.location.origin + window.location.pathname + '?profil=' + encodeURIComponent(pseudo);
     headerEl.innerHTML = pfpHtml +
       '<div class="profil-info">' +
       '<span class="profil-pseudo">' + escapeHtml(pseudo) + '</span>' +
-      statutHtml +
+      statutHtml + dernierVuHtml +
       '<span class="profil-niveau">' + t('level') + ' ' + niveauInfo.niveau + '</span>' +
       '<div class="profil-xp-bar"><div class="profil-xp-fill" style="width:' + pourcent + '%"></div></div>' +
       '<span class="profil-xp-text">' + niveauInfo.xpDansNiveau + ' / ' + niveauInfo.xpRequis + ' XP</span>' +
+      inscriptionHtml +
       '<button class="btn-copier-lien" onclick="copierLienProfil(\'' + lienProfil.replace(/'/g, "\\'") + '\')">Copier le lien du profil</button>' +
-      '</div>';
+      '</div>' +
+      skinHtml;
 
     var wins = data.wins || 0;
     var kills = data.kills || 0;

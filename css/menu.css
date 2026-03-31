@@ -561,6 +561,24 @@
 .profil-hors-ligne {
   color: #95a5a6;
 }
+.profil-dernier-vu {
+  font-size: 10px;
+  color: #7f8c8d;
+  font-style: italic;
+  font-family: Arial, sans-serif;
+}
+.profil-inscription {
+  font-size: 10px;
+  color: #7f8c8d;
+  font-family: Arial, sans-serif;
+  margin-top: 4px;
+}
+.profil-skin {
+  height: 70px;
+  width: auto;
+  margin-left: auto;
+  flex-shrink: 0;
+}
 .btn-copier-lien {
   margin-top: 6px;
   padding: 4px 10px;

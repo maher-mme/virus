@@ -1041,7 +1041,8 @@ function setCpLang(lang) {
 function creerPartie() {
   const pseudo = getPseudo();
   if (!pseudo) { showNotif(t('connectionError'), 'error'); return; }
-  const nom = document.getElementById('cp-nom').value.trim();
+  var nomBrut = document.getElementById('cp-nom').value.trim();
+  const nom = (typeof convertirEmojis === 'function') ? convertirEmojis(nomBrut) : nomBrut;
   const maxJoueurs = parseInt(document.getElementById('cp-max-joueurs').value);
   const mechants = parseInt(document.getElementById('cp-mechants').value);
 

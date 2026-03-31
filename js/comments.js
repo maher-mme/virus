@@ -243,10 +243,11 @@ function envoyerCommentaire() {
 
   var pfp = localStorage.getItem('virusPfp') || '';
 
+  var messageEmoji = (typeof convertirEmojis === 'function') ? convertirEmojis(message) : message;
   var commentData = {
     pseudo: pseudo,
     playerId: monPlayerId,
-    message: message,
+    message: messageEmoji,
     pfp: pfp,
     date: firebase.firestore.FieldValue.serverTimestamp()
   };

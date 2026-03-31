@@ -13,6 +13,34 @@ var MOTS_INTERDITS = [
   'negro', 'negre', 'sale', 'gros porc', 'grosse', 'pig'
 ];
 
+// Convertir les raccourcis texte en emojis
+var EMOJI_MAP = [
+  [':)', '😊'], [':D', '😄'], [':(', '😢'], [':-(', '😢'],
+  [';)', '😉'], [':P', '😛'], [':p', '😛'], ['XD', '😂'], ['xD', '😂'],
+  [':O', '😮'], [':o', '😮'], ['<3', '❤️'], ['</3', '💔'],
+  [':*', '😘'], ['B)', '😎'], ['>:(', '😡'], [':/','😕'],
+  [':\\', '😕'], [':|', '😐'], ['^_^', '😊'], ['-_-', '😑'],
+  ['T_T', '😭'], ['o_o', '😳'], ['O_O', '😳'], [':3', '😺'],
+  ['(y)', '👍'], ['(n)', '👎'], ['<o>', '⭐'], ['gg', '🏆'],
+  ['lol', '😂'], ['mdr', '🤣'], ['rip', '💀'], ['zzz', '😴'],
+  ['ok', '👌'], ['fire', '🔥'], ['sus', '🤨'], ['bruh', '💀']
+];
+
+function convertirEmojis(msg) {
+  var result = msg;
+  for (var i = 0; i < EMOJI_MAP.length; i++) {
+    var raccourci = EMOJI_MAP[i][0];
+    var emoji = EMOJI_MAP[i][1];
+    // Remplacer uniquement les mots complets ou les symboles exacts
+    var escaped = raccourci.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    var regex = new RegExp('(^|\\s|^)' + escaped + '(\\s|$|$)', 'g');
+    result = result.replace(regex, function(match, before, after) {
+      return before + emoji + after;
+    });
+  }
+  return result;
+}
+
 function filtrerMessage(msg) {
   var msgFiltre = msg;
   for (var i = 0; i < MOTS_INTERDITS.length; i++) {
@@ -54,7 +82,7 @@ function sendChat() {
     return;
   }
   if (!chatAntiSpam()) return;
-  var msgFiltre = filtrerMessage(msg);
+  var msgFiltre = convertirEmojis(filtrerMessage(msg));
   input.value = '';
 
   if (partieActuelleId && !modeHorsLigne) {

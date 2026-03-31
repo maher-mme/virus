@@ -123,23 +123,23 @@ function sendChat() {
 
 // Reponses des bots selon mots-cles
 var BOT_REPONSES = {
-  salut: ['Salut !', 'Hey !', 'Yo', 'Hello !', 'Coucou'],
-  bonjour: ['Bonjour !', 'Salut !', 'Bjr', 'Hey bonjour'],
-  hello: ['Hello !', 'Hey !', 'Hi !'],
-  coucou: ['Coucou !', 'Hey !', 'Salut'],
-  'qui est le virus': ['Je sais pas mais c\'est suspect...', 'Pas moi en tout cas', 'J\'ai mes doutes sur quelqu\'un', 'Aucune idee', 'Regardez qui n\'a pas fait ses missions'],
-  'c\'est qui': ['Bonne question...', 'J\'accuse personne pour l\'instant', 'Pas moi !'],
-  suspect: ['Ouais c\'est louche', 'J\'ai vu personne', 'Moi je dis c\'est pas moi', 'Faut voter'],
-  'c\'est toi': ['Non c\'est pas moi !', 'N\'importe quoi', 'Prouve-le', 'Arrete de m\'accuser !', 'Moi ? Jamais'],
-  vote: ['On vote qui ?', 'Faut voter maintenant', 'Je sais pas pour qui voter...', 'Votez pas pour moi svp'],
-  'ou': ['Je suis vers la fontaine', 'Je faisais mes missions', 'J\'etais au supermarche'],
-  mission: ['J\'ai fait 2 missions', 'Il me reste une mission', 'Je suis en train d\'en faire une'],
-  aide: ['Je peux rien faire dsl', 'Fais tes missions !', 'Reste pas tout seul'],
-  lol: ['haha', 'mdr', 'xD', 'ptdr'],
-  mdr: ['lol', 'haha', 'xD'],
-  gg: ['Bien joue !', 'GG !', 'Gg wp'],
-  non: ['Si si', 'Bah pourquoi ?', 'Ok...'],
-  oui: ['D\'accord', 'Ok !', 'Ah ouais ?']
+  salut: ['Salut ! 😊', 'Hey ! 👋', 'Yo', 'Hello !', 'Coucou 😄'],
+  bonjour: ['Bonjour ! 😊', 'Salut !', 'Bjr 👋', 'Hey bonjour'],
+  hello: ['Hello ! 👋', 'Hey !', 'Hi ! 😊'],
+  coucou: ['Coucou ! 😄', 'Hey !', 'Salut 👋'],
+  'qui est le virus': ['Je sais pas mais c\'est suspect... 🤨', 'Pas moi en tout cas 😇', 'J\'ai mes doutes sur quelqu\'un 🤔', 'Aucune idee', 'Regardez qui n\'a pas fait ses missions 👀'],
+  'c\'est qui': ['Bonne question... 🤔', 'J\'accuse personne pour l\'instant', 'Pas moi ! 😤'],
+  suspect: ['Ouais c\'est louche 🤨', 'J\'ai vu personne', 'Moi je dis c\'est pas moi 😇', 'Faut voter'],
+  'c\'est toi': ['Non c\'est pas moi ! 😤', 'N\'importe quoi 😡', 'Prouve-le', 'Arrete de m\'accuser ! 😠', 'Moi ? Jamais 😇'],
+  vote: ['On vote qui ? 🤔', 'Faut voter maintenant', 'Je sais pas pour qui voter... 😕', 'Votez pas pour moi svp 🙏'],
+  'ou': ['Je suis vers la fontaine', 'Je faisais mes missions 📋', 'J\'etais au supermarche'],
+  mission: ['J\'ai fait 2 missions ✅', 'Il me reste une mission', 'Je suis en train d\'en faire une 📋'],
+  aide: ['Je peux rien faire dsl 😕', 'Fais tes missions !', 'Reste pas tout seul 😬'],
+  lol: ['haha 😂', 'mdr 🤣', 'xD 😂', 'ptdr 💀'],
+  mdr: ['lol 😂', 'haha 😄', 'xD 🤣'],
+  gg: ['Bien joue ! 🏆', 'GG ! 👏', 'Gg wp 🎉'],
+  non: ['Si si 😤', 'Bah pourquoi ? 🤔', 'Ok... 😐'],
+  oui: ['D\'accord 👍', 'Ok ! 👌', 'Ah ouais ? 🤔']
 };
 
 function botRepondreChat(msg, container) {
@@ -158,7 +158,7 @@ function botRepondreChat(msg, container) {
   // Si aucun mot-cle, 30% de chance de repondre quand meme
   if (!reponses) {
     if (Math.random() > 0.3) return;
-    reponses = ['Ok', '...', 'Hmm', 'D\'accord', 'Ah', 'Ouais', 'Bon'];
+    reponses = ['Ok 👌', '...', 'Hmm 🤔', 'D\'accord 👍', 'Ah', 'Ouais', 'Bon 😐'];
   }
 
   // 1 a 2 bots repondent avec un delai

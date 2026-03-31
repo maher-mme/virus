@@ -31,12 +31,10 @@ function convertirEmojis(msg) {
   for (var i = 0; i < EMOJI_MAP.length; i++) {
     var raccourci = EMOJI_MAP[i][0];
     var emoji = EMOJI_MAP[i][1];
-    // Remplacer uniquement les mots complets ou les symboles exacts
-    var escaped = raccourci.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    var regex = new RegExp('(^|\\s|^)' + escaped + '(\\s|$|$)', 'g');
-    result = result.replace(regex, function(match, before, after) {
-      return before + emoji + after;
-    });
+    // Remplacement simple : chercher le raccourci exact dans le texte
+    while (result.indexOf(raccourci) >= 0) {
+      result = result.replace(raccourci, emoji);
+    }
   }
   return result;
 }

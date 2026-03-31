@@ -231,10 +231,17 @@ function chargerProfil(playerId) {
     var pfpHtml = pfp
       ? '<img class="profil-pfp" src="' + pfp + '" alt="PFP">'
       : '<div class="profil-pfp-placeholder">?</div>';
+    // Statut en ligne / hors ligne
+    var isOnline = data.online && data.lastSeen && (Date.now() - data.lastSeen.toDate().getTime() < 120000);
+    var statutHtml = isOnline
+      ? '<span class="profil-statut profil-en-ligne">&#9679; En ligne</span>'
+      : '<span class="profil-statut profil-hors-ligne">&#9679; Hors ligne</span>';
+
     var lienProfil = window.location.origin + window.location.pathname + '?profil=' + encodeURIComponent(pseudo);
     headerEl.innerHTML = pfpHtml +
       '<div class="profil-info">' +
       '<span class="profil-pseudo">' + escapeHtml(pseudo) + '</span>' +
+      statutHtml +
       '<span class="profil-niveau">' + t('level') + ' ' + niveauInfo.niveau + '</span>' +
       '<div class="profil-xp-bar"><div class="profil-xp-fill" style="width:' + pourcent + '%"></div></div>' +
       '<span class="profil-xp-text">' + niveauInfo.xpDansNiveau + ' / ' + niveauInfo.xpRequis + ' XP</span>' +

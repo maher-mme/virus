@@ -92,7 +92,8 @@ function creerCompte() {
       pin: pin,
       skin: getSkinFichier(skinAleatoire),
       online: true,
-      lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+      lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true }).then(function() {
       initAmisListeners();
       var btnAmis = document.getElementById('btn-amis');
@@ -435,6 +436,14 @@ function initFirebaseAuth() {
       pfp: localStorage.getItem('virusPfp') || '',
       lastSeen: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true }).then(function() {
+      // Ajouter createdAt pour les anciens comptes qui ne l'ont pas
+      db.collection('players').doc(monPlayerId).get().then(function(doc) {
+        if (doc.exists && !doc.data().createdAt) {
+          db.collection('players').doc(monPlayerId).update({
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          }).catch(function() {});
+        }
+      }).catch(function() {});
       initAmisListeners();
       var btnAmis = document.getElementById('btn-amis');
       if (btnAmis) btnAmis.style.display = 'flex';

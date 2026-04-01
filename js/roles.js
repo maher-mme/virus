@@ -535,6 +535,13 @@ function botsVirusTuent() {
             }
             var joueurEl = document.getElementById('joueur');
             if (joueurEl) joueurEl.classList.add('bot-mort');
+            // Activer le mode spectateur automatiquement en ligne
+            if (!modeHorsLigne && typeof activerSpectateur === 'function') {
+              var vivants = getJoueursVivants();
+              if (vivants.length > 0) {
+                activerSpectateur(vivants[0].playerId);
+              }
+            }
             // Creer cadavre joueur
             creerCadavre(joueurX, joueurY, pseudo, getSkinFichier(getSkin()));
             var gagnant = verifierVictoire();

@@ -49,10 +49,15 @@ function ouvrirReunion() {
   if (!modeHorsLigne && typeof remotePlayers !== 'undefined') {
     for (var rpId in remotePlayers) {
       var rp = remotePlayers[rpId];
+      var rpRole = '';
+      if (typeof firebasePartyPlayers !== 'undefined') {
+        var fpPlayer = firebasePartyPlayers.find(function(fp) { return fp.playerId === rpId; });
+        if (fpPlayer) rpRole = fpPlayer.role || '';
+      }
       joueursReunion.push({
         pseudo: rp.pseudo,
         skin: rp.skin,
-        role: '',
+        role: rpRole,
         estBot: false,
         elimine: joueursElimines.indexOf(rp.pseudo) >= 0,
         elementId: 'remote-' + rpId
@@ -621,6 +626,15 @@ function terminerVote() {
         }
         var joueurEl = document.getElementById('joueur');
         if (joueurEl) joueurEl.classList.add('bot-mort');
+        // Activer le mode spectateur automatiquement en ligne
+        if (!modeHorsLigne && typeof activerSpectateur === 'function') {
+          setTimeout(function() {
+            var vivants = typeof getJoueursVivants === 'function' ? getJoueursVivants() : [];
+            if (vivants.length > 0) {
+              activerSpectateur(vivants[0].playerId);
+            }
+          }, 2000);
+        }
       }
       if (elimine.estBot) {
         for (var b = 0; b < bots.length; b++) {

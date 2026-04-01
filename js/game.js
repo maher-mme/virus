@@ -1109,10 +1109,20 @@ function updateJoueur() {
   // Mode spectateur : camera suit le joueur spectate
   var camTargetX = joueurX;
   var camTargetY = joueurY;
-  if (spectateurActif && spectateurCible && remotePlayers[spectateurCible]) {
-    var rp = remotePlayers[spectateurCible];
-    camTargetX = rp.curX || rp.x || joueurX;
-    camTargetY = rp.curY || rp.y || joueurY;
+  if (spectateurActif && spectateurCible) {
+    if (!remotePlayers[spectateurCible]) {
+      // Target disconnected, switch to next or deactivate
+      var vivants = getJoueursVivants();
+      if (vivants.length > 0) {
+        specNext();
+      } else {
+        desactiverSpectateur();
+      }
+    } else {
+      var rp = remotePlayers[spectateurCible];
+      camTargetX = rp.curX || rp.x || joueurX;
+      camTargetY = rp.curY || rp.y || joueurY;
+    }
   }
 
   var camX = camTargetX - vw / 2 + 14;

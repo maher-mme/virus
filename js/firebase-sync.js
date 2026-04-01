@@ -6,6 +6,7 @@ var estHost = false;
 var partieActuelleId = null;
 var firebaseParties = [];
 var firebasePartyPlayers = [];
+var _voteConclusion = false;
 
 // Listener temps reel sur la liste des parties
 db.collection('parties').orderBy('createdAt', 'desc').onSnapshot(function(snapshot) {
@@ -581,6 +582,14 @@ function handleSinglePlayerUpdate(p) {
       rp.lastUpdate = now;
     }
     rp.direction = p.direction;
+    // Detecter la mort d'un joueur distant
+    if (rp.alive && !p.alive) {
+      var elMort = document.getElementById('remote-' + p.playerId);
+      if (elMort) elMort.classList.add('bot-mort');
+      if (typeof joueursElimines !== 'undefined' && p.pseudo && joueursElimines.indexOf(p.pseudo) < 0) {
+        joueursElimines.push(p.pseudo);
+      }
+    }
     rp.alive = p.alive;
   }
 }
@@ -655,14 +664,13 @@ function updateRemotePlayers() {
       rp.velocityY *= decay;
     }
 
-    var el = document.getElementById('remote-' + pid);
-    if (el) {
-      el.style.left = rp.x + 'px';
-      el.style.top = rp.y + 'px';
-      var img = el.querySelector('img');
-      if (img) img.style.transform = 'scaleX(' + rp.direction + ')';
-      if (!rp.alive) el.style.opacity = '0.3';
-    }
+    var el = rp.element || document.getElementById('remote-' + pid);
+    if (!el) continue;
+    el.style.left = rp.x + 'px';
+    el.style.top = rp.y + 'px';
+    var img = el.querySelector('img');
+    if (img) img.style.transform = 'scaleX(' + rp.direction + ')';
+    if (!rp.alive) el.style.opacity = '0.3';
     // Mettre a jour le pet du joueur distant
     if (rp.petObj) {
       var rpMoved = (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5);
@@ -713,6 +721,7 @@ function updateCadavresMultiplayer(cadavres) {
 function ouvrirReunionMultiplayer(meeting) {
   // Utiliser le systeme de reunion standard (meeting.js) qui gere tout :
   // teleportation fontaine, affichage joueurs, votes, bots, chat IA
+  _voteConclusion = false;
   reunionCreateur = meeting.callerPseudo || '';
   if (typeof ouvrirReunion === 'function') {
     ouvrirReunion();
@@ -721,10 +730,14 @@ function ouvrirReunionMultiplayer(meeting) {
 
 // Host verifie si tous les joueurs vivants ont vote
 function checkVotesComplete(meetingId) {
+  if (_voteConclusion) return;
   setTimeout(function() {
+    if (_voteConclusion) return;
     var aliveCount = firebasePartyPlayers.filter(function(p) { return p.alive; }).length;
     db.collection('votes').where('meetingId', '==', meetingId).get().then(function(snap) {
+      if (_voteConclusion) return;
       if (snap.size >= aliveCount) {
+        _voteConclusion = true;
         concludeVote(meetingId);
       }
     });

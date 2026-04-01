@@ -44,6 +44,15 @@
   background: linear-gradient(180deg, #3498db, #2980b9);
   border-color: #1a6fa0;
 }
+.btn-side-commentaires {
+  background: linear-gradient(180deg, #1a3a5c, #0d253f);
+  border-color: #2c5f8a;
+  display: none;
+}
+@media (max-width: 700px) {
+  .btn-side-commentaires { display: flex; }
+  .btn-commentaires { display: none !important; }
+}
 @media (max-width: 700px) {
   .menu-side-buttons {
     position: fixed;

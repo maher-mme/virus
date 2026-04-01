@@ -13,6 +13,74 @@ var MOTS_INTERDITS = [
   'negro', 'negre', 'sale', 'gros porc', 'grosse', 'pig'
 ];
 
+// ============================
+// EMOJI PICKER
+// ============================
+var EMOJI_LIST = [
+  '😊','😄','😂','🤣','😢','😭','😡','😠','😤','😎',
+  '😉','😛','😮','😳','😕','😐','😑','🤔','🤨','😇',
+  '😺','💀','😴','🔥','⭐','❤️','💔','👍','👎','👌',
+  '👋','👏','🙏','👀','🏆','🎉','📋','✅','🤡','👑',
+  '💪','🫡','🥳','😈','🤫','🫢','💯','⚡','🎮','🕹️'
+];
+var _emojiPickerTarget = null;
+
+function toggleEmojiPicker(inputId) {
+  var picker = document.getElementById('emoji-picker');
+  if (!picker) return;
+  var input = document.getElementById(inputId);
+  if (!input) return;
+
+  // Si deja ouvert pour le meme input, fermer
+  if (picker.style.display !== 'none' && _emojiPickerTarget === inputId) {
+    picker.style.display = 'none';
+    _emojiPickerTarget = null;
+    return;
+  }
+
+  _emojiPickerTarget = inputId;
+
+  // Remplir le picker si vide
+  if (!picker.innerHTML) {
+    var html = '';
+    for (var i = 0; i < EMOJI_LIST.length; i++) {
+      html += '<span class="emoji-item" onclick="insererEmoji(\'' + EMOJI_LIST[i] + '\')">' + EMOJI_LIST[i] + '</span>';
+    }
+    picker.innerHTML = html;
+  }
+
+  // Positionner le picker pres du bouton
+  var btn = event.target;
+  var rect = btn.getBoundingClientRect();
+  picker.style.position = 'fixed';
+  picker.style.left = Math.min(rect.left, window.innerWidth - 260) + 'px';
+  picker.style.bottom = (window.innerHeight - rect.top + 5) + 'px';
+  picker.style.display = 'grid';
+}
+
+function insererEmoji(emoji) {
+  var input = document.getElementById(_emojiPickerTarget);
+  if (!input) return;
+  if (input.tagName === 'TEXTAREA') {
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    input.value = input.value.substring(0, start) + emoji + input.value.substring(end);
+    input.selectionStart = input.selectionEnd = start + emoji.length;
+  } else {
+    input.value += emoji;
+  }
+  input.focus();
+}
+
+// Fermer le picker en cliquant ailleurs
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.emoji-picker') && !e.target.closest('.btn-emoji-picker')) {
+    var picker = document.getElementById('emoji-picker');
+    if (picker) picker.style.display = 'none';
+    _emojiPickerTarget = null;
+  }
+});
+
 // Convertir les raccourcis texte en emojis
 var EMOJI_MAP = [
   [':)', '😊'], [':D', '😄'], [':(', '😢'], [':-(', '😢'],

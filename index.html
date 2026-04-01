@@ -18,7 +18,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css?v=2">
-  <link rel="stylesheet" href="css/components.css?v=3">
+  <link rel="stylesheet" href="css/components.css?v=4">
   <link rel="stylesheet" href="css/menu.css?v=11">
   <link rel="stylesheet" href="css/lobby.css?v=20260322">
   <link rel="stylesheet" href="css/game.css?v=6">
@@ -29,6 +29,9 @@
   <link rel="stylesheet" href="css/minigames.css?v=1">
 </head>
 <body>
+
+  <!-- Emoji Picker -->
+  <div class="emoji-picker" id="emoji-picker" style="display:none;"></div>
 
   <!-- ============================== -->
   <!-- ECRAN 0 : CREATION DE COMPTE  -->
@@ -73,7 +76,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v1.8.2 - ALPHA</span>
+    <span class="version">VIRUS v1.8.3 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -143,7 +146,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v1.8.2 - ALPHA</span>
+    <span class="version">VIRUS v1.8.3 - ALPHA</span>
     </div>
   </div>
 
@@ -187,7 +190,7 @@
           <button class="btn-sauver-pseudo" data-i18n="logout" style="background:linear-gradient(180deg,#3498db,#2980b9); border-color:#3498db; width:100%; padding:10px; margin-bottom:8px;" onclick="deconnecterCompte()">SE DECONNECTER</button>
           <button class="btn-sauver-pseudo" data-i18n="deleteAccount" style="background:linear-gradient(180deg,#e74c3c,#c0392b); border-color:#e74c3c; width:100%; padding:10px;" onclick="supprimerCompte()">SUPPRIMER MON COMPTE</button>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v1.8.2 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v1.8.3 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -208,7 +211,10 @@
           <button onclick="annulerReponse()">&times;</button>
         </div>
         <div class="commentaire-form">
-          <textarea id="input-commentaire" maxlength="300" rows="2" placeholder="Votre avis sur le jeu..." data-i18n="phComment" data-i18n-attr="placeholder"></textarea>
+          <div style="position:relative;width:100%">
+            <textarea id="input-commentaire" maxlength="300" rows="2" placeholder="Votre avis sur le jeu..." data-i18n="phComment" data-i18n-attr="placeholder"></textarea>
+            <button class="btn-emoji-picker btn-emoji-comment" onclick="toggleEmojiPicker('input-commentaire')">😊</button>
+          </div>
           <button class="btn-envoyer-commentaire" onclick="envoyerCommentaire()" data-i18n="send">ENVOYER</button>
         </div>
       </div>
@@ -286,7 +292,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v1.8.2 - ALPHA</span>
+        <span class="version-inline">v1.8.3 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -485,7 +491,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v1.8.2 - ALPHA</span>
+    <span class="version">VIRUS v1.8.3 - ALPHA</span>
     </div>
   </div>
 
@@ -576,7 +582,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v1.8.2 - ALPHA</span>
+    <span class="version">VIRUS v1.8.3 - ALPHA</span>
     </div>
   </div>
 
@@ -622,7 +628,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v1.8.2 - ALPHA</span>
+    <span class="version">VIRUS v1.8.3 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -726,6 +732,7 @@
               </div>
               <div class="sa-chat-input">
                 <input type="text" id="chat-input" placeholder="Ecrire ici..." onkeydown="if(event.key==='Enter')sendChat()">
+                <button class="btn-emoji-picker" onclick="toggleEmojiPicker('chat-input')">😊</button>
                 <button onclick="sendChat()">&#9654;</button>
               </div>
             </div>
@@ -1538,6 +1545,7 @@
         <div class="reunion-chat-messages" id="reunion-chat-messages"></div>
         <div class="reunion-chat-input">
           <input type="text" id="reunion-chat-input" placeholder="Discutez ici..." onkeydown="if(event.key==='Enter')envoyerMsgReunion()" data-i18n="phChatReunion" data-i18n-attr="placeholder">
+          <button class="btn-emoji-picker" onclick="toggleEmojiPicker('reunion-chat-input')">😊</button>
           <button onclick="envoyerMsgReunion()">&#9654;</button>
         </div>
       </div>
@@ -1683,7 +1691,7 @@
 <script src="js/music.js?v=1"></script>
 <script src="js/account.js?v=11"></script>
 <script src="js/ui.js?v=20260327d"></script>
-<script src="js/chat.js?v=5"></script>
+<script src="js/chat.js?v=6"></script>
 <script src="js/comments.js?v=5"></script>
 <script src="js/translation.js?v=20260322c"></script>
 <script src="js/firebase-sync.js?v=28"></script>

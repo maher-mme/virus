@@ -347,8 +347,13 @@ function fermerParams() {
 
 function supprimerCompte() {
   if (confirm(t('vDeleteAccount'))) {
-    // Supprimer le document joueur de Firebase
-    db.collection('players').doc(monPlayerId).delete().catch(function() {});
+    // Supprimer le document joueur de Firebase (attendre la suppression)
+    var _deletePlayerId = monPlayerId;
+    db.collection('players').doc(_deletePlayerId).delete().then(function() {
+      console.log('Compte supprime avec succes');
+    }).catch(function(err) {
+      console.error('Erreur suppression compte:', err);
+    });
     // Supprimer les amis (les deux cotes)
     db.collection('friends').where('playerId', '==', monPlayerId).get().then(function(snap) {
       snap.forEach(function(d) { d.ref.delete(); });

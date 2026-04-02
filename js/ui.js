@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '1.8.4';
+var CURRENT_VERSION = '1.8.5';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 

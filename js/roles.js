@@ -347,6 +347,17 @@ function creerCadavre(x, y, pseudo, skin) {
     if (div.parentNode) div.parentNode.removeChild(div);
     cadavres.pop();
   }
+  // Sync cadavre en Firebase pour le mode en ligne
+  if (!modeHorsLigne && partieActuelleId && typeof db !== 'undefined') {
+    db.collection('cadavres').add({
+      partyId: partieActuelleId,
+      victimPseudo: pseudo,
+      victimSkin: skin,
+      x: x, y: y,
+      reported: false,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(function() {});
+  }
 }
 
 function eliminerBot(pseudoVictime) {
@@ -413,6 +424,13 @@ function tuerVictime() {
   setTimeout(function() {
     eliminerBot(pseudoVictime);
     showNotif(t('playerDied', pseudoVictime), 'warn');
+    // Sync bot alive=false en Firebase
+    if (!modeHorsLigne && partieActuelleId && typeof firebasePartyPlayers !== 'undefined') {
+      var botPP = firebasePartyPlayers.find(function(fp) { return fp.pseudo === pseudoVictime && fp.isBot; });
+      if (botPP && botPP._docId) {
+        db.collection('partyPlayers').doc(botPP._docId).update({ alive: false }).catch(function() {});
+      }
+    }
   }, 5000);
 
   var btnKill = document.getElementById('btn-kill');
@@ -465,6 +483,14 @@ function signalerCadavre() {
   var c = cadavres[cadavreProche];
   showNotif(t('bodyReported', c.pseudo), 'warn');
   reunionCreateur = getPseudo() || t('player');
+  // Marquer le cadavre comme reported en Firebase
+  if (!modeHorsLigne && partieActuelleId && typeof db !== 'undefined') {
+    db.collection('cadavres').where('partyId', '==', partieActuelleId)
+      .where('victimPseudo', '==', c.pseudo).where('reported', '==', false)
+      .limit(1).get().then(function(snap) {
+        snap.forEach(function(doc) { doc.ref.update({ reported: true }); });
+      }).catch(function() {});
+  }
   // Supprimer le cadavre signale
   if (c.element && c.element.parentNode) c.element.parentNode.removeChild(c.element);
   cadavres.splice(cadavreProche, 1);
@@ -541,6 +567,10 @@ function botsVirusTuent() {
               if (vivants.length > 0) {
                 activerSpectateur(vivants[0].playerId);
               }
+            }
+            // Sync alive=false en Firebase
+            if (!modeHorsLigne && typeof myPartyPlayerDocId !== 'undefined' && myPartyPlayerDocId) {
+              db.collection('partyPlayers').doc(myPartyPlayerDocId).update({ alive: false }).catch(function() {});
             }
             // Creer cadavre joueur
             creerCadavre(joueurX, joueurY, pseudo, getSkinFichier(getSkin()));
@@ -646,6 +676,15 @@ function verifierVictoire() {
   for (var vf = 0; vf < tousLesJoueursPartie.length; vf++) {
     if (tousLesJoueursPartie[vf].role === 'fanatique' && joueursElimines.indexOf(tousLesJoueursPartie[vf].pseudo) >= 0) {
       return 'fanatique';
+    }
+  }
+  // Verifier aussi dans firebasePartyPlayers (joueurs distants en ligne)
+  if (!modeHorsLigne && typeof firebasePartyPlayers !== 'undefined') {
+    for (var vfp = 0; vfp < firebasePartyPlayers.length; vfp++) {
+      var fp = firebasePartyPlayers[vfp];
+      if (fp.role === 'fanatique' && fp.alive === false) {
+        return 'fanatique';
+      }
     }
   }
   if (!modeHorsLigne) {

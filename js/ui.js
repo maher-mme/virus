@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '1.8.6';
+var CURRENT_VERSION = '1.8.7';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -513,4 +513,95 @@ function autoScale() {
 }
 
 window.addEventListener('resize', autoScale);
+
+// === TUTORIEL ===
+var _tutoSlideActuel = 0;
+var _tutoNbSlides = 7;
+var tutoGuide = false;
+
+function ouvrirTuto() {
+  var popup = document.getElementById('popup-tuto');
+  if (!popup) return;
+  popup.style.display = 'flex';
+  _tutoSlideActuel = 0;
+  _initTutoDots();
+  tutoSlide(0);
+}
+
+function fermerTuto() {
+  var popup = document.getElementById('popup-tuto');
+  if (popup) popup.style.display = 'none';
+  localStorage.setItem('virusTutoVu', '1');
+}
+
+function _initTutoDots() {
+  var dotsContainer = document.getElementById('tuto-dots');
+  if (!dotsContainer) return;
+  dotsContainer.innerHTML = '';
+  for (var i = 0; i < _tutoNbSlides; i++) {
+    var dot = document.createElement('span');
+    dot.className = 'tuto-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('data-dot', i);
+    dot.onclick = (function(idx) { return function() { tutoSlide(idx); }; })(i);
+    dotsContainer.appendChild(dot);
+  }
+}
+
+function tutoSlide(n) {
+  if (n < 0 || n >= _tutoNbSlides) return;
+  _tutoSlideActuel = n;
+
+  // Show/hide slides
+  var slides = document.querySelectorAll('#tuto-slides-container .tuto-slide');
+  for (var i = 0; i < slides.length; i++) {
+    slides[i].classList.remove('active');
+  }
+  if (slides[n]) slides[n].classList.add('active');
+
+  // Update dots
+  var dots = document.querySelectorAll('#tuto-dots .tuto-dot');
+  for (var j = 0; j < dots.length; j++) {
+    dots[j].classList.toggle('active', j === n);
+  }
+
+  // Prev/Next buttons
+  var btnPrev = document.getElementById('tuto-btn-prev');
+  var btnNext = document.getElementById('tuto-btn-next');
+  if (btnPrev) btnPrev.disabled = (n === 0);
+  if (btnNext) btnNext.style.display = (n === _tutoNbSlides - 1) ? 'none' : '';
+
+  // Passer / Essayer buttons
+  var btnPasser = document.getElementById('tuto-btn-passer');
+  var btnEssayer = document.getElementById('tuto-btn-essayer');
+  if (n === _tutoNbSlides - 1) {
+    if (btnPasser) btnPasser.style.display = '';
+    if (btnEssayer) btnEssayer.style.display = '';
+  } else {
+    if (btnPasser) btnPasser.style.display = '';
+    if (btnEssayer) btnEssayer.style.display = 'none';
+  }
+}
+
+function tutoSuivant() {
+  if (_tutoSlideActuel < _tutoNbSlides - 1) {
+    tutoSlide(_tutoSlideActuel + 1);
+  }
+}
+
+function tutoPrecedent() {
+  if (_tutoSlideActuel > 0) {
+    tutoSlide(_tutoSlideActuel - 1);
+  }
+}
+
+function lancerTutoPartie() {
+  fermerTuto();
+  tutoGuide = true;
+  // Lance une partie hors-ligne avec 3 bots, pas de roles speciaux
+  if (typeof lancerHorsLigne === 'function') {
+    lancerHorsLigne(3, 1, 0, 0, 0);
+  }
+}
+
+// Le tutoriel se declenche a la creation du compte (appele depuis account.js)
 

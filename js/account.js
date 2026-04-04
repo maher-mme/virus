@@ -98,6 +98,10 @@ function creerCompte() {
       initAmisListeners();
       var btnAmis = document.getElementById('btn-amis');
       if (btnAmis) btnAmis.style.display = 'flex';
+      // Ouvrir le tutoriel pour les nouveaux joueurs
+      if (typeof ouvrirTuto === 'function') {
+        setTimeout(function() { ouvrirTuto(); }, 500);
+      }
     }).catch(function() {});
     showScreen('menu-principal');
   }).catch(function() {

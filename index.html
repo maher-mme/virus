@@ -19,7 +19,7 @@
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css?v=2">
   <link rel="stylesheet" href="css/components.css?v=4">
-  <link rel="stylesheet" href="css/menu.css?v=12">
+  <link rel="stylesheet" href="css/menu.css?v=13">
   <link rel="stylesheet" href="css/lobby.css?v=20260322">
   <link rel="stylesheet" href="css/game.css?v=6">
   <link rel="stylesheet" href="css/hud.css?v=2">
@@ -76,7 +76,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v1.8.6 - ALPHA</span>
+    <span class="version">VIRUS v1.8.7 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -146,7 +146,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v1.8.6 - ALPHA</span>
+    <span class="version">VIRUS v1.8.7 - ALPHA</span>
     </div>
   </div>
 
@@ -190,7 +190,7 @@
           <button class="btn-sauver-pseudo" data-i18n="logout" style="background:linear-gradient(180deg,#3498db,#2980b9); border-color:#3498db; width:100%; padding:10px; margin-bottom:8px;" onclick="deconnecterCompte()">SE DECONNECTER</button>
           <button class="btn-sauver-pseudo" data-i18n="deleteAccount" style="background:linear-gradient(180deg,#e74c3c,#c0392b); border-color:#e74c3c; width:100%; padding:10px;" onclick="supprimerCompte()">SUPPRIMER MON COMPTE</button>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v1.8.6 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v1.8.7 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -292,7 +292,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v1.8.6 - ALPHA</span>
+        <span class="version-inline">v1.8.7 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -341,6 +341,10 @@
         <span class="btn-sub" data-i18n="changeSkin">Changer de skin</span>
       </button>
       <button class="btn btn-param" onclick="ouvrirParams()" data-i18n="settings">PARAMETRES</button>
+      <button class="btn btn-tuto" onclick="ouvrirTuto()">
+        <span>TUTORIEL</span>
+        <span class="btn-sub">Apprendre a jouer</span>
+      </button>
     </div>
 
     <button class="btn-commentaires" onclick="ouvrirCommentaires()">
@@ -494,7 +498,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v1.8.6 - ALPHA</span>
+    <span class="version">VIRUS v1.8.7 - ALPHA</span>
     </div>
   </div>
 
@@ -585,7 +589,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v1.8.6 - ALPHA</span>
+    <span class="version">VIRUS v1.8.7 - ALPHA</span>
     </div>
   </div>
 
@@ -631,7 +635,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v1.8.6 - ALPHA</span>
+    <span class="version">VIRUS v1.8.7 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -1688,6 +1692,66 @@
   </div>
 </div>
 
+<!-- ============================== -->
+<!-- POPUP TUTORIEL                -->
+<!-- ============================== -->
+<div class="popup-overlay" id="popup-tuto" style="display:none;">
+  <div class="popup-box popup-box-tuto">
+    <div class="popup-header" style="background:#8e44ad;">
+      <h3>TUTORIEL</h3>
+      <button class="popup-close" onclick="fermerTuto()">&times;</button>
+    </div>
+    <div class="tuto-slideshow">
+      <div class="tuto-slides-container" id="tuto-slides-container">
+        <div class="tuto-slide" data-slide="0">
+          <div class="tuto-slide-icon">&#129440;</div>
+          <h3 class="tuto-slide-titre">Bienvenue dans VIRUS !</h3>
+          <p class="tuto-slide-desc">Un joueur est infecte et doit contaminer les autres dans le centre commercial. Les innocents doivent completer leurs missions pour gagner.</p>
+        </div>
+        <div class="tuto-slide" data-slide="1">
+          <div class="tuto-slide-icon">&#127917;</div>
+          <h3 class="tuto-slide-titre">Les Roles</h3>
+          <p class="tuto-slide-desc">VIRUS: Eliminez tous les joueurs. INNOCENT: Completez vos missions. JOURNALISTE: Enquetez sur un joueur. FANATIQUE: Faites-vous eliminer. ESPION: Jouez double jeu.</p>
+        </div>
+        <div class="tuto-slide" data-slide="2">
+          <div class="tuto-slide-icon">&#128221;</div>
+          <h3 class="tuto-slide-titre">Les Missions</h3>
+          <p class="tuto-slide-desc">Chaque joueur a 4 missions a accomplir dans les boutiques du centre commercial. Approchez-vous d'une caisse et cliquez sur 'Faire la tache'.</p>
+        </div>
+        <div class="tuto-slide" data-slide="3">
+          <div class="tuto-slide-icon">&#128128;</div>
+          <h3 class="tuto-slide-titre">Eliminer</h3>
+          <p class="tuto-slide-desc">Le Virus peut eliminer les joueurs en s'approchant d'eux. Apres un kill, un temps de recharge s'active.</p>
+        </div>
+        <div class="tuto-slide" data-slide="4">
+          <div class="tuto-slide-icon">&#128227;</div>
+          <h3 class="tuto-slide-titre">La Reunion</h3>
+          <p class="tuto-slide-desc">Signalez un corps ou appuyez sur le bouton reunion pour rassembler tout le monde a la fontaine.</p>
+        </div>
+        <div class="tuto-slide" data-slide="5">
+          <div class="tuto-slide-icon">&#9995;</div>
+          <h3 class="tuto-slide-titre">Le Vote</h3>
+          <p class="tuto-slide-desc">Pendant la reunion, discutez et votez pour eliminer le suspect. Le joueur avec le plus de votes est elimine.</p>
+        </div>
+        <div class="tuto-slide" data-slide="6">
+          <div class="tuto-slide-icon">&#127942;</div>
+          <h3 class="tuto-slide-titre">La Victoire</h3>
+          <p class="tuto-slide-desc">Innocents: finissez toutes les missions. Virus: eliminez tout le monde. Bonne chance !</p>
+        </div>
+      </div>
+      <div class="tuto-nav">
+        <button class="tuto-btn-nav" id="tuto-btn-prev" onclick="tutoPrecedent()">&#9664; Precedent</button>
+        <div class="tuto-dots" id="tuto-dots"></div>
+        <button class="tuto-btn-nav" id="tuto-btn-next" onclick="tutoSuivant()">Suivant &#9654;</button>
+      </div>
+      <div class="tuto-actions">
+        <button class="tuto-btn-passer" id="tuto-btn-passer" onclick="fermerTuto()">Passer</button>
+        <button class="tuto-btn-essayer" id="tuto-btn-essayer" onclick="lancerTutoPartie()" style="display:none;">Essayer !</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="notif-container" id="notif-container"></div>
 
 <!-- JS -->
@@ -1696,7 +1760,7 @@
 <script src="js/skins.js?v=5"></script>
 <script src="js/music.js?v=1"></script>
 <script src="js/account.js?v=12"></script>
-<script src="js/ui.js?v=20260327d"></script>
+<script src="js/ui.js?v=20260402"></script>
 <script src="js/chat.js?v=6"></script>
 <script src="js/comments.js?v=5"></script>
 <script src="js/translation.js?v=20260322c"></script>

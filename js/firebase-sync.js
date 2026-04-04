@@ -722,6 +722,7 @@ function ouvrirReunionMultiplayer(meeting) {
   // Utiliser le systeme de reunion standard (meeting.js) qui gere tout :
   // teleportation fontaine, affichage joueurs, votes, bots, chat IA
   _voteConclusion = false;
+  currentMeetingId = meeting._id;
   reunionCreateur = meeting.callerPseudo || '';
   if (typeof ouvrirReunion === 'function') {
     ouvrirReunion();

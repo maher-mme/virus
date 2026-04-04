@@ -8,6 +8,7 @@ var positionsAvantReunion = {}; // sauvegarder les positions avant teleportation
 var joueurAVote = false;
 var nbVotesTotal = 0;
 var votesParJoueur = []; // votes[i] = nombre de votes recus par joueur i
+var currentMeetingId = null; // ID du meeting en cours (Firebase)
 
 function ouvrirReunion() {
   if (reunionEnCours) return;
@@ -417,6 +418,26 @@ function voterPour(index) {
 
   ajouterMsgReunion(getPseudo() || t('player'), t('meetVoted'), '#e74c3c');
 
+  // Envoyer le vote a Firebase en mode en ligne
+  if (!modeHorsLigne && partieActuelleId && currentMeetingId && typeof db !== 'undefined') {
+    var targetPseudo = joueursReunion[index].pseudo;
+    var targetPlayerId = '';
+    if (typeof firebasePartyPlayers !== 'undefined') {
+      var fp = firebasePartyPlayers.find(function(p) { return p.pseudo === targetPseudo; });
+      if (fp) targetPlayerId = fp.playerId;
+    }
+    db.collection('votes').add({
+      partyId: partieActuelleId,
+      meetingId: currentMeetingId,
+      voterId: monPlayerId,
+      voterPseudo: getPseudo() || '',
+      targetPlayerId: targetPlayerId,
+      targetPseudo: targetPseudo,
+      isSkip: false,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(function() {});
+  }
+
   // Retirer cliquable
   for (var i = 0; i < joueursReunion.length; i++) {
     var elem = document.getElementById(joueursReunion[i].elementId);
@@ -443,6 +464,20 @@ function skipVote() {
 
   document.getElementById('reunion-btn-skip').classList.remove('visible');
   ajouterMsgReunion(getPseudo() || t('player'), t('meetSkipped'), '#95a5a6');
+
+  // Envoyer le skip a Firebase en mode en ligne
+  if (!modeHorsLigne && partieActuelleId && currentMeetingId && typeof db !== 'undefined') {
+    db.collection('votes').add({
+      partyId: partieActuelleId,
+      meetingId: currentMeetingId,
+      voterId: monPlayerId,
+      voterPseudo: getPseudo() || '',
+      targetPlayerId: '',
+      targetPseudo: '',
+      isSkip: true,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(function() {});
+  }
 
   // Retirer cliquable
   for (var i = 0; i < joueursReunion.length; i++) {

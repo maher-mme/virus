@@ -949,6 +949,17 @@ function envoyerMsgReunion() {
     // Les fantomes peuvent parler, mais seuls les autres fantomes voient
     ajouterMsgReunion(pseudo, msgFiltre, '#7f8c8d', true);
     input.value = '';
+    // Envoyer message fantome a Firebase en mode en ligne
+    if (!modeHorsLigne && partieActuelleId && typeof db !== 'undefined') {
+      db.collection('chatMessages').add({
+        partyId: partieActuelleId,
+        pseudo: pseudo,
+        message: msgFiltre,
+        context: 'meeting',
+        isGhost: true,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).catch(function() {});
+    }
     // Bots fantomes reagissent
     if (modeHorsLigne && botsMorts.length > 0 && Math.random() < 0.4) {
       var botFantome = botsMorts[Math.floor(Math.random() * botsMorts.length)];
@@ -962,6 +973,18 @@ function envoyerMsgReunion() {
   }
   ajouterMsgReunion(pseudo, msgFiltre, isAdmin() ? '#f39c12' : '#e74c3c');
   input.value = '';
+
+  // Envoyer le message a Firebase en mode en ligne
+  if (!modeHorsLigne && partieActuelleId && typeof db !== 'undefined') {
+    db.collection('chatMessages').add({
+      partyId: partieActuelleId,
+      pseudo: pseudo,
+      message: msgFiltre,
+      context: 'meeting',
+      isGhost: false,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(function() {});
+  }
 
   // Bots reagissent au message du joueur
   if (modeHorsLigne && Math.random() < 0.5) {

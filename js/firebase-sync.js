@@ -441,6 +441,8 @@ function handleGameStateUpdate(state) {
 }
 
 // Lancer le jeu en mode multiplayer
+var _lancerMultiTentatives = 0;
+
 function lancerJeuMultiplayer(state) {
   // Nettoyer les joueurs distants precedents
   for (var pid in remotePlayers) {
@@ -448,20 +450,35 @@ function lancerJeuMultiplayer(state) {
     if (el) el.remove();
   }
   remotePlayers = {};
+  _lancerMultiTentatives = 0;
+  _attendreRolesEtLancer(state);
+}
 
-  // Re-lire les roles depuis Firebase (le batch peut ne pas etre arrive dans le listener)
+function _attendreRolesEtLancer(state) {
+  _lancerMultiTentatives++;
   db.collection('partyPlayers').where('partyId', '==', partieActuelleId).get().then(function(snap) {
+    var rolesOk = false;
     snap.forEach(function(doc) {
       var data = doc.data();
       var fp = firebasePartyPlayers.find(function(p) { return p.playerId === data.playerId; });
       if (fp) {
-        fp.role = data.role || fp.role;
+        if (data.role && data.role !== '') fp.role = data.role;
         fp.alive = data.alive !== undefined ? data.alive : fp.alive;
       }
+      if (data.role && data.role !== '') rolesOk = true;
     });
-    _demarrerJeuMultiplayer(state);
+    // Si aucun role n'est assigne et qu'on a pas atteint le max de tentatives, reessayer
+    if (!rolesOk && _lancerMultiTentatives < 10) {
+      setTimeout(function() { _attendreRolesEtLancer(state); }, 500);
+    } else {
+      _demarrerJeuMultiplayer(state);
+    }
   }).catch(function() {
-    _demarrerJeuMultiplayer(state);
+    if (_lancerMultiTentatives < 10) {
+      setTimeout(function() { _attendreRolesEtLancer(state); }, 500);
+    } else {
+      _demarrerJeuMultiplayer(state);
+    }
   });
 }
 

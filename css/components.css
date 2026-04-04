@@ -96,7 +96,7 @@
 .btn-casier {
   width: clamp(250px, 35vw, 370px);
   height: 60px;
-  background: linear-gradient(180deg, #8e44ad, #7d3c98, #6c3483);
+  background: linear-gradient(180deg, #2ecc71, #27ae60, #1e8449);
   color: white;
   font-size: clamp(16px, 2.5vw, 24px);
   font-weight: bold;
@@ -109,13 +109,13 @@
   align-items: center;
   justify-content: center;
   gap: 2px;
-  box-shadow: 0 4px 15px rgba(142,68,173,0.4);
+  box-shadow: 0 4px 15px rgba(46,204,113,0.4);
 }
 .btn-casier::before { display: none; }
 .btn-casier .btn-sub {
   font-family: Arial, sans-serif;
   font-size: 10px;
-  color: #d7bde2;
+  color: #a9dfbf;
   letter-spacing: 1px;
   font-weight: normal;
 }

@@ -1346,11 +1346,30 @@
 /* TUTORIEL                       */
 /* ============================== */
 .btn-tuto {
+  width: 220px;
+  height: 50px;
   background: linear-gradient(180deg, #8e44ad, #6c3483) !important;
-  border-color: #a569bd !important;
+  border: 1.5px solid #a569bd !important;
+  border-radius: 10px;
+  color: #ecf0f1;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
 }
+.btn-tuto .btn-sub {
+  font-size: 10px;
+  color: #d2b4de;
+  font-weight: normal;
+  letter-spacing: 1px;
+}
+.btn-tuto::before { display: none; }
 .btn-tuto:hover {
   filter: brightness(1.15);
+  transform: scale(1.03);
 }
 .popup-box-tuto {
   width: clamp(340px, 55vw, 550px) !important;

@@ -472,6 +472,17 @@ function _demarrerJeuMultiplayer(state) {
   modeHorsLigne = false;
   showScreen('jeu');
   jeuActif = true;
+
+  // Mettre a jour le HUD role
+  var roleEl = document.getElementById('hud-role');
+  if (roleEl) {
+    roleEl.className = 'hud-role hud-role-' + monRole;
+    if (monRole === 'virus') { roleEl.textContent = t('roleVirus'); }
+    else if (monRole === 'journaliste') { roleEl.textContent = t('roleJournalist'); }
+    else if (monRole === 'fanatique') { roleEl.textContent = t('roleFanatic'); }
+    else if (monRole === 'espion') { roleEl.textContent = t('roleSpy'); }
+    else { roleEl.textContent = t('roleInnocent'); }
+  }
   joueurX = 3800;
   joueurY = 3050;
   joueursElimines = [];

@@ -411,12 +411,38 @@ function subscribeToGameState(partyId) {
         if (!reunionEnCours) {
           ouvrirReunionMultiplayer(meeting);
         }
-        // Mettre a jour le compteur de votes
-        db.collection('votes').where('meetingId', '==', meeting._id).get().then(function(voteSnap) {
-          var voteInfo = document.getElementById('reunion-vote-info');
-          var aliveCount = firebasePartyPlayers.filter(function(p) { return p.alive; }).length;
-          if (voteInfo) voteInfo.textContent = voteSnap.size + '/' + aliveCount;
-        });
+        // Ecouter les votes en temps reel
+        var meetId = meeting._id;
+        gameUnsubscribers.push(
+          db.collection('votes').where('meetingId', '==', meetId).onSnapshot(function(voteSnap) {
+            var voteInfo = document.getElementById('reunion-vote-info');
+            var aliveCount = firebasePartyPlayers.filter(function(p) { return p.alive; }).length;
+            if (voteInfo) voteInfo.textContent = voteSnap.size + '/' + aliveCount;
+            // Mettre a jour les bulles de votes
+            var voteCounts = {};
+            voteSnap.forEach(function(vDoc) {
+              var vData = vDoc.data();
+              if (!vData.isSkip && vData.targetPseudo) {
+                voteCounts[vData.targetPseudo] = (voteCounts[vData.targetPseudo] || 0) + 1;
+              }
+            });
+            if (typeof joueursReunion !== 'undefined') {
+              for (var vi = 0; vi < joueursReunion.length; vi++) {
+                var bulle = document.getElementById('vote-bulle-' + vi);
+                var count = voteCounts[joueursReunion[vi].pseudo] || 0;
+                if (bulle) {
+                  bulle.textContent = count;
+                  if (count > 0) bulle.classList.add('has-votes');
+                  else bulle.classList.remove('has-votes');
+                }
+              }
+            }
+            // Verifier si tous ont vote (host seulement)
+            if (estHost && voteSnap.size >= aliveCount && aliveCount > 0) {
+              checkVotesComplete(meetId);
+            }
+          })
+        );
       }
     })
   );
@@ -615,7 +641,20 @@ function handleSinglePlayerUpdate(p) {
     }
     return;
   }
-  if (p.isBot) return; // Les bots tournent en local, pas besoin de les afficher comme joueurs distants
+  // Sync mort des bots depuis Firebase (un autre joueur a tue ce bot)
+  if (p.isBot) {
+    if (p.alive === false && typeof eliminerBot === 'function') {
+      if (joueursElimines.indexOf(p.pseudo) < 0) {
+        eliminerBot(p.pseudo);
+        // Verifier victoire apres elimination
+        if (typeof verifierVictoire === 'function') {
+          var gagnant = verifierVictoire();
+          if (gagnant && typeof afficherFinPartie === 'function') afficherFinPartie(gagnant);
+        }
+      }
+    }
+    return; // Les bots tournent en local pour le mouvement
+  }
   var now = Date.now();
   if (!remotePlayers[p.playerId]) {
     remotePlayers[p.playerId] = {

@@ -449,7 +449,24 @@ function lancerJeuMultiplayer(state) {
   }
   remotePlayers = {};
 
-  // Trouver mon role depuis les partyPlayers
+  // Re-lire les roles depuis Firebase (le batch peut ne pas etre arrive dans le listener)
+  db.collection('partyPlayers').where('partyId', '==', partieActuelleId).get().then(function(snap) {
+    snap.forEach(function(doc) {
+      var data = doc.data();
+      var fp = firebasePartyPlayers.find(function(p) { return p.playerId === data.playerId; });
+      if (fp) {
+        fp.role = data.role || fp.role;
+        fp.alive = data.alive !== undefined ? data.alive : fp.alive;
+      }
+    });
+    _demarrerJeuMultiplayer(state);
+  }).catch(function() {
+    _demarrerJeuMultiplayer(state);
+  });
+}
+
+function _demarrerJeuMultiplayer(state) {
+  // Trouver mon role depuis les partyPlayers (maintenant a jour)
   var myPlayer = firebasePartyPlayers.find(function(p) { return p.playerId === monPlayerId; });
   monRole = (myPlayer && myPlayer.role) || 'innocent';
   modeHorsLigne = false;
@@ -550,7 +567,26 @@ function lancerJeuMultiplayer(state) {
 
 // Gestion d'un joueur distant individuel (velocite + lissage)
 function handleSinglePlayerUpdate(p) {
-  if (p.playerId === monPlayerId) return;
+  // Detecter la mort du joueur local (tue par un virus distant)
+  if (p.playerId === monPlayerId) {
+    if (p.alive === false && jeuActif) {
+      var pseudo = getPseudo() || '';
+      if (joueursElimines.indexOf(pseudo) < 0) {
+        joueursElimines.push(pseudo);
+        showNotif(t('youDiedGhost'), 'warn');
+        var joueurEl = document.getElementById('joueur');
+        if (joueurEl) joueurEl.classList.add('bot-mort');
+        // Activer le mode spectateur
+        if (typeof activerSpectateur === 'function') {
+          var vivants = getJoueursVivants();
+          if (vivants.length > 0) {
+            activerSpectateur(vivants[0].playerId);
+          }
+        }
+      }
+    }
+    return;
+  }
   if (p.isBot) return; // Les bots tournent en local, pas besoin de les afficher comme joueurs distants
   var now = Date.now();
   if (!remotePlayers[p.playerId]) {

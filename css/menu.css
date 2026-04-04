@@ -1342,3 +1342,171 @@
   transform: translateY(-2px);
 }
 
+/* ============================== */
+/* TUTORIEL                       */
+/* ============================== */
+.btn-tuto {
+  background: linear-gradient(180deg, #8e44ad, #6c3483) !important;
+  border-color: #a569bd !important;
+}
+.btn-tuto:hover {
+  filter: brightness(1.15);
+}
+.popup-box-tuto {
+  width: clamp(340px, 55vw, 550px) !important;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+.tuto-slideshow {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tuto-slides-container {
+  width: 100%;
+  position: relative;
+  min-height: 220px;
+}
+.tuto-slide {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px 15px;
+  animation: tutoFadeIn 0.35s ease;
+}
+.tuto-slide.active {
+  display: flex;
+}
+@keyframes tutoFadeIn {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.tuto-slide-icon {
+  font-size: 52px;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+.tuto-slide-titre {
+  color: #a569bd;
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  margin: 0 0 10px;
+}
+.tuto-slide-desc {
+  color: #ccc;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 420px;
+}
+.tuto-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 18px;
+  width: 100%;
+}
+.tuto-btn-nav {
+  background: linear-gradient(180deg, #34495e, #2c3e50);
+  color: #ecf0f1;
+  border: 2px solid #4a6a8a;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tuto-btn-nav:hover {
+  filter: brightness(1.2);
+}
+.tuto-btn-nav:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.tuto-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.tuto-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #34495e;
+  border: 2px solid #4a6a8a;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tuto-dot.active {
+  background: #8e44ad;
+  border-color: #a569bd;
+  transform: scale(1.2);
+}
+.tuto-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+.tuto-btn-passer {
+  background: none;
+  border: 2px solid #7f8c8d;
+  color: #7f8c8d;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tuto-btn-passer:hover {
+  border-color: #ecf0f1;
+  color: #ecf0f1;
+}
+.tuto-btn-essayer {
+  background: linear-gradient(180deg, #27ae60, #1e8449);
+  border: 2px solid #2ecc71;
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tuto-btn-essayer:hover {
+  filter: brightness(1.15);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 700px) {
+  .popup-box-tuto {
+    width: 95vw !important;
+  }
+  .tuto-slide-icon {
+    font-size: 40px;
+  }
+  .tuto-slide-titre {
+    font-size: 18px;
+  }
+  .tuto-slide-desc {
+    font-size: 13px;
+  }
+  .tuto-btn-nav {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  .tuto-slides-container {
+    min-height: 190px;
+  }
+}
+

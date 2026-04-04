@@ -7,6 +7,7 @@ var partieActuelleId = null;
 var firebaseParties = [];
 var firebasePartyPlayers = [];
 var _voteConclusion = false;
+var _voteListenerUnsub = null;
 
 // Listener temps reel sur la liste des parties
 db.collection('parties').orderBy('createdAt', 'desc').onSnapshot(function(snapshot) {
@@ -341,6 +342,7 @@ function unsubscribeFromParty() {
   firebaseUnsubscribers = [];
   gameUnsubscribers.forEach(function(unsub) { if (unsub) unsub(); });
   gameUnsubscribers = [];
+  if (_voteListenerUnsub) { _voteListenerUnsub(); _voteListenerUnsub = null; }
   firebasePartyPlayers = [];
   // Nettoyer les elements DOM des joueurs distants
   for (var pid in remotePlayers) {
@@ -411,10 +413,10 @@ function subscribeToGameState(partyId) {
         if (!reunionEnCours) {
           ouvrirReunionMultiplayer(meeting);
         }
-        // Ecouter les votes en temps reel
+        // Ecouter les votes en temps reel (un seul listener a la fois)
         var meetId = meeting._id;
-        gameUnsubscribers.push(
-          db.collection('votes').where('meetingId', '==', meetId).onSnapshot(function(voteSnap) {
+        if (_voteListenerUnsub) { _voteListenerUnsub(); _voteListenerUnsub = null; }
+        _voteListenerUnsub = db.collection('votes').where('meetingId', '==', meetId).onSnapshot(function(voteSnap) {
             var voteInfo = document.getElementById('reunion-vote-info');
             var aliveCount = firebasePartyPlayers.filter(function(p) { return p.alive; }).length;
             if (voteInfo) voteInfo.textContent = voteSnap.size + '/' + aliveCount;
@@ -441,8 +443,7 @@ function subscribeToGameState(partyId) {
             if (estHost && voteSnap.size >= aliveCount && aliveCount > 0) {
               checkVotesComplete(meetId);
             }
-          })
-        );
+          });
       }
     })
   );

@@ -401,24 +401,10 @@ function voterPour(index) {
   // Son de vote
   try { new Audio('Audio/i-voted.mp3').play(); } catch(e) {}
 
-  // Confirmer le vote immediatement
+  // Confirmer le vote
   joueurAVote = true;
-  nbVotesTotal++;
-  votesParJoueur[index]++;
 
-  // Mettre a jour la bulle
-  var bulle = document.getElementById('vote-bulle-' + index);
-  if (bulle) {
-    bulle.textContent = votesParJoueur[index];
-    bulle.classList.add('has-votes');
-  }
-
-  // Masquer le skip
-  document.getElementById('reunion-btn-skip').classList.remove('visible');
-
-  ajouterMsgReunion(getPseudo() || t('player'), t('meetVoted'), '#e74c3c');
-
-  // Envoyer le vote a Firebase en mode en ligne
+  // En mode en ligne : envoyer a Firebase (les bulles seront mises a jour par le listener)
   if (!modeHorsLigne && partieActuelleId && currentMeetingId && typeof db !== 'undefined') {
     var targetPseudo = joueursReunion[index].pseudo;
     var targetPlayerId = '';
@@ -436,7 +422,21 @@ function voterPour(index) {
       isSkip: false,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).catch(function() {});
+  } else {
+    // Mode hors ligne : comptage local
+    nbVotesTotal++;
+    votesParJoueur[index]++;
+    var bulle = document.getElementById('vote-bulle-' + index);
+    if (bulle) {
+      bulle.textContent = votesParJoueur[index];
+      bulle.classList.add('has-votes');
+    }
   }
+
+  // Masquer le skip
+  document.getElementById('reunion-btn-skip').classList.remove('visible');
+
+  ajouterMsgReunion(getPseudo() || t('player'), t('meetVoted'), '#e74c3c');
 
   // Retirer cliquable
   for (var i = 0; i < joueursReunion.length; i++) {
@@ -447,7 +447,8 @@ function voterPour(index) {
     }
   }
 
-  verifierTousOntVote();
+  // Mode hors ligne uniquement : verifier si tous ont vote
+  if (modeHorsLigne) verifierTousOntVote();
 }
 
 function skipVote() {
@@ -460,12 +461,11 @@ function skipVote() {
   // Son de vote
   try { new Audio('Audio/i-voted.mp3').play(); } catch(e) {}
   joueurAVote = true;
-  nbVotesTotal++;
 
   document.getElementById('reunion-btn-skip').classList.remove('visible');
   ajouterMsgReunion(getPseudo() || t('player'), t('meetSkipped'), '#95a5a6');
 
-  // Envoyer le skip a Firebase en mode en ligne
+  // En mode en ligne : envoyer a Firebase
   if (!modeHorsLigne && partieActuelleId && currentMeetingId && typeof db !== 'undefined') {
     db.collection('votes').add({
       partyId: partieActuelleId,
@@ -477,6 +477,9 @@ function skipVote() {
       isSkip: true,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).catch(function() {});
+  } else {
+    // Mode hors ligne : comptage local
+    nbVotesTotal++;
   }
 
   // Retirer cliquable
@@ -488,7 +491,8 @@ function skipVote() {
     }
   }
 
-  verifierTousOntVote();
+  // Mode hors ligne uniquement
+  if (modeHorsLigne) verifierTousOntVote();
 }
 
 function botVoter(botIdx) {

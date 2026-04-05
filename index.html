@@ -76,7 +76,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v1.9.4 - ALPHA</span>
+    <span class="version">VIRUS v1.9.5 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -146,7 +146,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v1.9.4 - ALPHA</span>
+    <span class="version">VIRUS v1.9.5 - ALPHA</span>
     </div>
   </div>
 
@@ -190,7 +190,7 @@
           <button class="btn-sauver-pseudo" data-i18n="logout" style="background:linear-gradient(180deg,#3498db,#2980b9); border-color:#3498db; width:100%; padding:10px; margin-bottom:8px;" onclick="deconnecterCompte()">SE DECONNECTER</button>
           <button class="btn-sauver-pseudo" data-i18n="deleteAccount" style="background:linear-gradient(180deg,#e74c3c,#c0392b); border-color:#e74c3c; width:100%; padding:10px;" onclick="supprimerCompte()">SUPPRIMER MON COMPTE</button>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v1.9.4 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v1.9.5 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -292,7 +292,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v1.9.4 - ALPHA</span>
+        <span class="version-inline">v1.9.5 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -498,7 +498,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v1.9.4 - ALPHA</span>
+    <span class="version">VIRUS v1.9.5 - ALPHA</span>
     </div>
   </div>
 
@@ -589,7 +589,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v1.9.4 - ALPHA</span>
+    <span class="version">VIRUS v1.9.5 - ALPHA</span>
     </div>
   </div>
 
@@ -635,7 +635,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v1.9.4 - ALPHA</span>
+    <span class="version">VIRUS v1.9.5 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -850,8 +850,61 @@
     <div class="jeu-viewport" id="jeu-viewport">
       <div class="mall-map" id="mall-map">
 
-        <!-- Sol carrelage -->
+        <!-- Sol carrelage (cache, remplace par les couloirs) -->
         <div class="mall-sol"></div>
+
+        <!-- COULOIRS (zones praticables) -->
+        <!-- Place centrale (grand espace pour les reunions) -->
+        <div class="corridor-place" style="left:2800px; top:1900px; width:2400px; height:2000px;"></div>
+
+        <!-- Couloir gauche vertical (relie toutes les boutiques gauche) -->
+        <div class="corridor" style="left:560px; top:60px; width:250px; height:5100px;"></div>
+
+        <!-- Couloir droite vertical (relie toutes les boutiques droite) -->
+        <div class="corridor" style="left:7100px; top:60px; width:250px; height:5100px;"></div>
+
+        <!-- Couloir haut horizontal (MODE → SECURITE → WC → CAFE → BIJOUTERIE) -->
+        <div class="corridor" style="left:560px; top:200px; width:6790px; height:250px;"></div>
+
+        <!-- Couloir haut → fontaine (descend vers la place) -->
+        <div class="corridor" style="left:3750px; top:450px; width:250px; height:1450px;"></div>
+
+        <!-- Couloir gauche → fontaine (entre SPORT et ANIMALERIE) -->
+        <div class="corridor" style="left:560px; top:1850px; width:700px; height:250px;"></div>
+        <div class="corridor" style="left:1260px; top:1850px; width:250px; height:1050px;"></div>
+
+        <!-- Couloir droite → fontaine (entre RESTAURANT et BIO) -->
+        <div class="corridor" style="left:7100px; top:1900px; width:250px; height:250px;"></div>
+        <div class="corridor" style="left:5200px; top:1900px; width:2150px; height:250px;"></div>
+
+        <!-- Couloir KIOSQUE (contourne par le haut) -->
+        <div class="corridor" style="left:1260px; top:1200px; width:250px; height:650px;"></div>
+        <div class="corridor" style="left:1260px; top:1200px; width:1240px; height:250px;"></div>
+
+        <!-- Couloir OPTICIEN (contourne par le haut) -->
+        <div class="corridor" style="left:5100px; top:1200px; width:250px; height:700px;"></div>
+        <div class="corridor" style="left:5100px; top:1200px; width:2000px; height:250px;"></div>
+
+        <!-- Couloir fontaine → bas -->
+        <div class="corridor" style="left:3750px; top:3900px; width:250px; height:800px;"></div>
+
+        <!-- Couloir gauche bas → fontaine bas -->
+        <div class="corridor" style="left:560px; top:3800px; width:700px; height:250px;"></div>
+        <div class="corridor" style="left:1260px; top:2900px; width:250px; height:1150px;"></div>
+
+        <!-- Couloir ARCADE → fontaine bas -->
+        <div class="corridor" style="left:1510px; top:3800px; width:2240px; height:250px;"></div>
+
+        <!-- Couloir BOWLING → droite → FOOD COURT -->
+        <div class="corridor" style="left:5100px; top:3800px; width:2000px; height:250px;"></div>
+        <div class="corridor" style="left:5100px; top:2900px; width:250px; height:1150px;"></div>
+
+        <!-- Couloir bas horizontal (JEUX VIDEO → MEUBLES → VOYAGE) -->
+        <div class="corridor" style="left:560px; top:4700px; width:1440px; height:250px;"></div>
+        <div class="corridor" style="left:2000px; top:4700px; width:250px; height:400px;"></div>
+        <div class="corridor" style="left:2000px; top:4850px; width:4000px; height:250px;"></div>
+        <div class="corridor" style="left:6000px; top:4700px; width:250px; height:400px;"></div>
+        <div class="corridor" style="left:6000px; top:4700px; width:1350px; height:250px;"></div>
 
         <!-- Murs exterieurs -->
         <div class="mall-mur-ext mall-mur-ext-h" style="top:0; left:0;"></div>

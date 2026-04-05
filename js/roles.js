@@ -769,6 +769,25 @@ function verifierVictoire() {
   if (!modeHorsLigne) {
     // Mode en ligne : victoire quand TOUTES les missions collectives sont faites
     if (totalMissionsCollectives > 0 && missionsCollectivesCompletees >= totalMissionsCollectives) return 'missions';
+    // Compter les roles restants (inclut les joueurs distants)
+    var onlineVirus = 0, onlineGentils = 0;
+    if (typeof firebasePartyPlayers !== 'undefined') {
+      for (var oi = 0; oi < firebasePartyPlayers.length; oi++) {
+        var op = firebasePartyPlayers[oi];
+        if (op.alive === false) continue;
+        if (joueursElimines.indexOf(op.pseudo) >= 0) continue;
+        if (op.role === 'virus') onlineVirus++;
+        else if (op.role !== 'fanatique' && op.role !== 'espion') onlineGentils++;
+      }
+    }
+    // Aussi compter les bots locaux
+    for (var bi = 0; bi < bots.length; bi++) {
+      if (joueursElimines.indexOf(bots[bi].pseudo) >= 0) continue;
+      if (bots[bi].role === 'virus') onlineVirus++;
+      else if (bots[bi].role !== 'fanatique' && bots[bi].role !== 'espion') onlineGentils++;
+    }
+    if (onlineGentils <= onlineVirus && onlineVirus > 0) return 'virus';
+    if (onlineVirus === 0) return 'innocents';
     return null;
   }
   // Mode hors ligne : victoire quand le joueur a fini ses missions

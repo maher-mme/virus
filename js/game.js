@@ -404,6 +404,9 @@ function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion) 
     if (cadavres[ci].element && cadavres[ci].element.parentNode) cadavres[ci].element.parentNode.removeChild(cadavres[ci].element);
   }
   cadavres = [];
+  // Nettoyer les cadavres orphelins dans le DOM
+  var _mm = document.getElementById('mall-map');
+  if (_mm) _mm.querySelectorAll('.cadavre').forEach(function(c) { c.remove(); });
   killCooldown = false;
   if (killCountdownInterval) { clearInterval(killCountdownInterval); killCountdownInterval = null; }
   var cdElReset = document.getElementById('kill-countdown');
@@ -581,6 +584,9 @@ function lancerJeu() {
     if (cadavres[ci].element && cadavres[ci].element.parentNode) cadavres[ci].element.parentNode.removeChild(cadavres[ci].element);
   }
   cadavres = [];
+  // Nettoyer les cadavres orphelins dans le DOM
+  var _mm = document.getElementById('mall-map');
+  if (_mm) _mm.querySelectorAll('.cadavre').forEach(function(c) { c.remove(); });
   killCooldown = false;
   if (killCountdownInterval) { clearInterval(killCountdownInterval); killCountdownInterval = null; }
   botKillCooldowns = {};

@@ -4,21 +4,44 @@
 var bots = [];
 var botsMorts = []; // bots elimines (fantomes sur la map)
 var BOT_VITESSE = 4;
+// Waypoints dans les couloirs uniquement
 var BOT_WAYPOINTS = [
-  {x:800, y:1200}, {x:2000, y:1200}, {x:3800, y:1200}, {x:5500, y:1200}, {x:7200, y:1200},
-  {x:800, y:2800}, {x:2000, y:2800}, {x:3800, y:2800}, {x:5500, y:2800}, {x:7200, y:2800},
-  {x:800, y:4200}, {x:2000, y:4200}, {x:3800, y:4200}, {x:5500, y:4200}, {x:7200, y:4200},
-  {x:1000, y:2000}, {x:7000, y:2000},
-  {x:1000, y:4000}, {x:7000, y:4000},
-  {x:3800, y:5500}, {x:2000, y:5500}, {x:5500, y:5500}
+  // Couloir gauche vertical
+  {x:680, y:300}, {x:680, y:800}, {x:680, y:1300}, {x:680, y:1900}, {x:680, y:2500}, {x:680, y:3000}, {x:680, y:3500}, {x:680, y:4200}, {x:680, y:4700},
+  // Couloir droite vertical
+  {x:7310, y:300}, {x:7310, y:800}, {x:7310, y:1300}, {x:7310, y:1900}, {x:7310, y:2500}, {x:7310, y:3000}, {x:7310, y:3500}, {x:7310, y:4200}, {x:7310, y:4700},
+  // Couloir haut horizontal
+  {x:1500, y:580}, {x:2500, y:580}, {x:3500, y:580}, {x:4500, y:580}, {x:5500, y:580}, {x:6500, y:580},
+  // Place centrale (fontaine)
+  {x:3500, y:2500}, {x:3800, y:2800}, {x:4200, y:2500}, {x:4500, y:2800}, {x:3800, y:3200}, {x:4200, y:3200},
+  // Couloir gauche → fontaine
+  {x:1130, y:1950}, {x:1130, y:2500}, {x:1130, y:3000},
+  // Couloir droite → fontaine
+  {x:6860, y:2000}, {x:6000, y:2000},
+  // Couloir KIOSQUE
+  {x:1130, y:1300}, {x:1800, y:1300},
+  // Couloir OPTICIEN
+  {x:5220, y:1300}, {x:6000, y:1300},
+  // Couloir bas
+  {x:1130, y:4000}, {x:2600, y:3900}, {x:5220, y:3900}, {x:6000, y:3900},
+  // Couloir tout en bas
+  {x:1500, y:4950}, {x:3000, y:5200}, {x:5000, y:5200}, {x:6500, y:4950}
 ];
-// Positions devant les boutiques (pour les bots innocents qui "font des missions")
+// Positions devant les boutiques (dans les couloirs, pres des portes)
 var BOT_BOUTIQUES = [
-  {x:335, y:1322, nom:'LIBRAIRIE'}, {x:2790, y:1472, nom:'KIOSQUE'},
-  {x:3075, y:322, nom:'SECURITE'}, {x:705, y:3657, nom:'SUPERMARCHE'},
-  {x:3025, y:4122, nom:'ARCADE'}, {x:3525, y:277, nom:'TOILETTES'},
-  {x:355, y:1817, nom:'SPORT'}, {x:7745, y:422, nom:'BIJOUTERIE'},
-  {x:7725, y:4572, nom:'PARFUMERIE'}, {x:3840, y:132, nom:'CAFE'}
+  {x:580, y:460, nom:'MODE'}, {x:580, y:700, nom:'PHARMACIE'},
+  {x:580, y:1170, nom:'LIBRAIRIE'}, {x:580, y:1650, nom:'SPORT'},
+  {x:580, y:2300, nom:'ANIMALERIE'}, {x:580, y:2800, nom:'PATISSERIE'},
+  {x:760, y:3200, nom:'SUPERMARCHE'}, {x:580, y:3950, nom:'JEUX VIDEO'},
+  {x:580, y:4900, nom:'MEUBLES'},
+  {x:3000, y:580, nom:'SECURITE'}, {x:3500, y:580, nom:'TOILETTES'}, {x:4000, y:580, nom:'CAFE'},
+  {x:2500, y:1550, nom:'KIOSQUE'}, {x:5100, y:1550, nom:'OPTICIEN'},
+  {x:2500, y:3800, nom:'ARCADE'}, {x:5100, y:3800, nom:'BOWLING'},
+  {x:7420, y:460, nom:'BIJOUTERIE'}, {x:7420, y:700, nom:'TECH'},
+  {x:7420, y:1200, nom:'CINEMA'}, {x:7420, y:1700, nom:'RESTAURANT'},
+  {x:7420, y:2300, nom:'BIO'}, {x:7420, y:2800, nom:'THE'},
+  {x:7240, y:3200, nom:'FOOD COURT'}, {x:7420, y:3950, nom:'SPORT ART.'},
+  {x:7420, y:4400, nom:'PARFUMERIE'}, {x:7420, y:4900, nom:'VOYAGE'}
 ];
 
 function nettoyerBots() {
@@ -438,9 +461,21 @@ function updateBots() {
         bot.blockedTimer++;
       }
 
-      // Si bloque trop longtemps, changer de cible
-      if (bot.blockedTimer > 60) {
-        botChoisirCible(bot);
+      // Si bloque trop longtemps, changer de cible (plus rapide avec les couloirs)
+      if (bot.blockedTimer > 20) {
+        // Choisir un waypoint proche dans un couloir au lieu d'une cible aleatoire
+        var wpProche = null;
+        var wpDist = Infinity;
+        for (var wi = 0; wi < BOT_WAYPOINTS.length; wi++) {
+          var wd = Math.abs(bot.x - BOT_WAYPOINTS[wi].x) + Math.abs(bot.y - BOT_WAYPOINTS[wi].y);
+          if (wd > 100 && wd < wpDist) { wpDist = wd; wpProche = BOT_WAYPOINTS[wi]; }
+        }
+        if (wpProche && bot.blockedTimer < 40) {
+          bot.cibleX = wpProche.x;
+          bot.cibleY = wpProche.y;
+        } else {
+          botChoisirCible(bot);
+        }
         bot.blockedTimer = 0;
       }
 

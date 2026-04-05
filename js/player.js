@@ -27,8 +27,50 @@ var PJ_OX = 4;
 var PJ_OY = 8;
 var WALL_THICK = 6;
 
+// Zones praticables (couloirs + boutiques)
+var walkableRects = [];
+
+function buildWalkableData() {
+  walkableRects = [];
+  var map = document.getElementById('mall-map');
+  if (!map) return;
+  // Ajouter les couloirs
+  map.querySelectorAll('.corridor, .corridor-place').forEach(function(c) {
+    walkableRects.push({ x: c.offsetLeft, y: c.offsetTop, w: c.offsetWidth, h: c.offsetHeight });
+  });
+  // Ajouter les boutiques comme zones praticables
+  map.querySelectorAll('.boutique').forEach(function(b) {
+    walkableRects.push({ x: b.offsetLeft, y: b.offsetTop, w: b.offsetWidth, h: b.offsetHeight });
+  });
+}
+
+function isInWalkable(px, py) {
+  var x1 = px + PJ_OX;
+  var y1 = py + PJ_OY;
+  var x2 = x1 + PJ_W;
+  var y2 = y1 + PJ_H;
+  // Le joueur doit etre ENTIEREMENT dans au moins une zone praticable
+  for (var i = 0; i < walkableRects.length; i++) {
+    var r = walkableRects[i];
+    if (x1 >= r.x && x2 <= r.x + r.w && y1 >= r.y && y2 <= r.y + r.h) {
+      return true;
+    }
+  }
+  // Verification partielle : le centre du joueur est dans une zone praticable
+  var cx = px + PJ_OX + PJ_W / 2;
+  var cy = py + PJ_OY + PJ_H / 2;
+  for (var j = 0; j < walkableRects.length; j++) {
+    var r2 = walkableRects[j];
+    if (cx >= r2.x && cx <= r2.x + r2.w && cy >= r2.y && cy <= r2.y + r2.h) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function buildCollisionData() {
   collisionRects = [];
+  buildWalkableData();
   var map = document.getElementById('mall-map');
   if (!map) return;
   var boutiques = map.querySelectorAll('.boutique');
@@ -161,6 +203,11 @@ function buildWall(wx, wy, ww, wh, doors, horizontal) {
 }
 
 function checkCollision(px, py) {
+  // Verifier d'abord si on est dans une zone praticable
+  if (walkableRects.length > 0 && !isInWalkable(px, py)) {
+    return true; // Hors zone = collision
+  }
+  // Verifier les collisions avec les objets (murs de boutiques, meubles, fontaine)
   var x1 = px + PJ_OX;
   var y1 = py + PJ_OY;
   var x2 = x1 + PJ_W;

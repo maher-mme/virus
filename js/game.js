@@ -16,6 +16,12 @@ function activerSpectateur(playerId) {
   if (!modeHorsLigne && typeof firebasePartyPlayers !== 'undefined') {
     spectateurActif = true;
     spectateurCible = playerId;
+    // Cacher le joueur mort (fantome)
+    var joueurEl = document.getElementById('joueur');
+    if (joueurEl) joueurEl.style.display = 'none';
+    // Cacher le pet
+    var monPet = document.getElementById('mon-pet');
+    if (monPet) monPet.style.display = 'none';
     var bandeau = document.getElementById('spectateur-bandeau');
     var pseudoEl = document.getElementById('spec-pseudo');
     if (bandeau) bandeau.style.display = 'flex';

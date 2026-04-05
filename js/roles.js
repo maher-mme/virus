@@ -255,24 +255,52 @@ function detecterVirusProches() {
   }
 }
 
+var killCibleIsRemote = false; // true si la cible est un joueur distant
+
 function detecterCibleKill() {
   var pseudo = getPseudo() || t('player');
-  if (bots.length === 0 || monRole !== 'virus' || killCooldown || reunionEnCours || joueursElimines.indexOf(pseudo) >= 0) {
+  if (monRole !== 'virus' || killCooldown || reunionEnCours || joueursElimines.indexOf(pseudo) >= 0) {
     killCiblePseudo = null;
+    killCibleIsRemote = false;
     return;
   }
   var minDist = Infinity;
   killCiblePseudo = null;
+  killCibleIsRemote = false;
+
+  // Verifier les bots
   for (var i = 0; i < bots.length; i++) {
     if (joueursElimines.indexOf(bots[i].pseudo) >= 0) continue;
-    if (bots[i].role === 'virus') continue; // ne pas tuer un autre virus
-    if (bots[i].role === 'espion' && bots[i].espionCamp === 'virus') continue; // ne pas tuer l'espion allie
+    if (bots[i].role === 'virus') continue;
+    if (bots[i].role === 'espion' && bots[i].espionCamp === 'virus') continue;
     var dx = joueurX - bots[i].x;
     var dy = joueurY - bots[i].y;
     var dist = Math.sqrt(dx * dx + dy * dy);
     if (dist < KILL_DISTANCE && dist < minDist) {
       minDist = dist;
       killCiblePseudo = bots[i].pseudo;
+      killCibleIsRemote = false;
+    }
+  }
+
+  // Verifier les joueurs distants (mode en ligne)
+  if (!modeHorsLigne && typeof remotePlayers !== 'undefined') {
+    for (var pid in remotePlayers) {
+      var rp = remotePlayers[pid];
+      if (!rp.alive || !rp.pseudo) continue;
+      if (joueursElimines.indexOf(rp.pseudo) >= 0) continue;
+      // Ne pas tuer un autre virus
+      var fpData = (typeof firebasePartyPlayers !== 'undefined') ? firebasePartyPlayers.find(function(p) { return p.playerId === pid; }) : null;
+      if (fpData && fpData.role === 'virus') continue;
+      if (fpData && fpData.role === 'espion') continue; // a gerer plus tard
+      var rdx = joueurX - rp.x;
+      var rdy = joueurY - rp.y;
+      var rdist = Math.sqrt(rdx * rdx + rdy * rdy);
+      if (rdist < KILL_DISTANCE && rdist < minDist) {
+        minDist = rdist;
+        killCiblePseudo = rp.pseudo;
+        killCibleIsRemote = true;
+      }
     }
   }
 }
@@ -400,7 +428,58 @@ function eliminerBot(pseudoVictime) {
 function tuerVictime() {
   if (!killCiblePseudo || killCooldown || killProtection) return;
   var pseudoVictime = killCiblePseudo;
-  // Verifier que la victime existe encore et est vivante
+
+  // Si c'est un joueur distant (humain)
+  if (killCibleIsRemote) {
+    if (joueursElimines.indexOf(pseudoVictime) >= 0) return;
+    killCooldown = true;
+    incrementerStat('kills');
+    ajouterXP(XP_PAR_KILL);
+    showNotif(t('youInfected', pseudoVictime), 'warn');
+    // Mettre alive=false dans Firebase pour le joueur distant
+    if (typeof firebasePartyPlayers !== 'undefined') {
+      var fpVictime = firebasePartyPlayers.find(function(p) { return p.pseudo === pseudoVictime; });
+      if (fpVictime && fpVictime._docId) {
+        db.collection('partyPlayers').doc(fpVictime._docId).update({ alive: false }).catch(function() {});
+      }
+    }
+    // Creer cadavre a la position du joueur distant
+    var rpVictime = null;
+    for (var pid in remotePlayers) {
+      if (remotePlayers[pid].pseudo === pseudoVictime) { rpVictime = remotePlayers[pid]; break; }
+    }
+    if (rpVictime) {
+      setTimeout(function() {
+        creerCadavre(rpVictime.x, rpVictime.y, pseudoVictime, rpVictime.skin || 'skin/gratuit/skin-de-base-garcon.svg');
+      }, 5000);
+    }
+    // Cooldown
+    var btnKill = document.getElementById('btn-kill');
+    if (btnKill) btnKill.style.display = 'none';
+    var cdEl = document.getElementById('kill-countdown');
+    if (cdEl) {
+      var secCd = Math.ceil(KILL_COOLDOWN_MS / 1000);
+      cdEl.textContent = secCd;
+      cdEl.style.display = 'flex';
+      if (killCountdownInterval) clearInterval(killCountdownInterval);
+      killCountdownInterval = setInterval(function() {
+        secCd--;
+        if (secCd <= 0) {
+          clearInterval(killCountdownInterval);
+          killCountdownInterval = null;
+          cdEl.style.display = 'none';
+          killCooldown = false;
+        } else {
+          cdEl.textContent = secCd;
+        }
+      }, 1000);
+    } else {
+      setTimeout(function() { killCooldown = false; }, KILL_COOLDOWN_MS);
+    }
+    return;
+  }
+
+  // Sinon c'est un bot
   var victime = null;
   for (var vi = 0; vi < bots.length; vi++) {
     if (bots[vi].pseudo === pseudoVictime) { victime = bots[vi]; break; }

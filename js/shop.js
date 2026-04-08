@@ -277,7 +277,8 @@ function genererBoutiqueMusique() {
 var PETS_BOUTIQUE = [
   { id: 'chien-spatial', nom: 'Chien Spatial', idle: 'pets/chien_de_l\'espsace1.svg', walk1: 'pets/chien_de_l\'espsace2.svg', walk2: 'pets/chien_de_l\'espsace3.svg', prix: 50, rarete: 'typique' },
   { id: 'lapin', nom: 'Lapin', idle: 'pets/Rabbit-a.svg', walk1: 'pets/Rabbit-a.svg', walk2: 'pets/Rabbit-b.svg', prix: 100, rarete: 'commun' },
-  { id: 'bubble', nom: 'Bubble', idle: 'pets/buble.svg', walk1: 'pets/buble.svg', walk2: 'pets/buble2.svg', prix: 150, rarete: 'rare' }
+  { id: 'bubble', nom: 'Bubble', idle: 'pets/buble.svg', walk1: 'pets/buble.svg', walk2: 'pets/buble2.svg', prix: 150, rarete: 'rare' },
+  { id: 'dragon-feu', nom: 'Dragon de Feu', idle: 'pets/dragon_de_feu.gif', walk1: 'pets/dragon_de_feu.gif', walk2: 'pets/dragon_de_feu.gif', prix: 150, rarete: 'epic' }
 ];
 
 var petEquipe = localStorage.getItem('virusPet') || '';

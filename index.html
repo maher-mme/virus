@@ -76,7 +76,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v2.0.3 - ALPHA</span>
+    <span class="version">VIRUS v2.0.4 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -146,7 +146,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.0.3 - ALPHA</span>
+    <span class="version">VIRUS v2.0.4 - ALPHA</span>
     </div>
   </div>
 
@@ -190,7 +190,7 @@
           <button class="btn-sauver-pseudo" data-i18n="logout" style="background:linear-gradient(180deg,#3498db,#2980b9); border-color:#3498db; width:100%; padding:10px; margin-bottom:8px;" onclick="deconnecterCompte()">SE DECONNECTER</button>
           <button class="btn-sauver-pseudo" data-i18n="deleteAccount" style="background:linear-gradient(180deg,#e74c3c,#c0392b); border-color:#e74c3c; width:100%; padding:10px;" onclick="supprimerCompte()">SUPPRIMER MON COMPTE</button>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.0.3 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.0.4 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -292,7 +292,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v2.0.3 - ALPHA</span>
+        <span class="version-inline">v2.0.4 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -498,7 +498,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v2.0.3 - ALPHA</span>
+    <span class="version">VIRUS v2.0.4 - ALPHA</span>
     </div>
   </div>
 
@@ -589,7 +589,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.0.3 - ALPHA</span>
+    <span class="version">VIRUS v2.0.4 - ALPHA</span>
     </div>
   </div>
 
@@ -635,7 +635,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v2.0.3 - ALPHA</span>
+    <span class="version">VIRUS v2.0.4 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -855,77 +855,52 @@
 
         <!-- COULOIRS (zones praticables) -->
 
-        <!-- === ARTERES PRINCIPALES === -->
-        <!-- Couloir gauche vertical (x=560, w=300, longe portes droites des boutiques gauche) -->
+        <!-- === 1. GRANDE ARTERE VERTICALE GAUCHE (toutes les boutiques gauche) === -->
         <div class="corridor" style="left:560px; top:0px; width:300px; height:5600px;"></div>
-        <!-- Couloir droite vertical (x=7140, w=300, longe portes gauches des boutiques droite) -->
+
+        <!-- === 2. GRANDE ARTERE VERTICALE DROITE === -->
         <div class="corridor" style="left:7140px; top:0px; width:300px; height:5600px;"></div>
-        <!-- Couloir haut horizontal (y=360, h=300, relie gauche a droite, passe sous SECURITE/CAFE) -->
+
+        <!-- === 3. GRANDE ARTERE HORIZONTALE HAUT (y=360) === -->
         <div class="corridor" style="left:560px; top:360px; width:6880px; height:300px;"></div>
 
-        <!-- === CONNECTEUR TOILETTES NORD (porte a y=310, au-dessus du couloir haut) === -->
+        <!-- === 4. GRANDE ARTERE HORIZONTALE BAS (y=4900) === -->
+        <div class="corridor" style="left:560px; top:4900px; width:6880px; height:300px;"></div>
+
+        <!-- === 5. COULOIR VERTICAL CENTRE (du haut a la fontaine jusqu'au bas) === -->
+        <div class="corridor" style="left:3850px; top:360px; width:300px; height:4800px;"></div>
+
+        <!-- === 6. COULOIR TRANSVERSAL y=1850 (entre SPORT et ANIMALERIE) === -->
+        <div class="corridor" style="left:560px; top:1850px; width:6880px; height:300px;"></div>
+
+        <!-- === 7. COULOIR TRANSVERSAL y=3700 (entre SUPERMARCHE et JEUX VIDEO) === -->
+        <div class="corridor" style="left:560px; top:3700px; width:6880px; height:300px;"></div>
+
+        <!-- === 8. PLACE CENTRALE (grande zone ouverte autour de la fontaine) === -->
+        <div class="corridor-place" style="left:2500px; top:2300px; width:3000px; height:2200px;"></div>
+
+        <!-- === 9. CONNECTEUR VERTICAL KIOSQUE (porte bas 2780,1550) === -->
+        <div class="corridor" style="left:2780px; top:1550px; width:300px; height:750px;"></div>
+
+        <!-- === 10. CONNECTEUR VERTICAL OPTICIEN (porte bas 4780,1550) === -->
+        <div class="corridor" style="left:4780px; top:1550px; width:300px; height:750px;"></div>
+
+        <!-- === 11. CONNECTEURS VERTICAUX ARCADE/BOWLING (portes hautes) === -->
+        <div class="corridor" style="left:2780px; top:3550px; width:300px; height:250px;"></div>
+        <div class="corridor" style="left:4780px; top:3550px; width:300px; height:250px;"></div>
+
+        <!-- === 12. PETITS COULOIRS PORTES BAS MODE & BIJOUTERIE === -->
+        <div class="corridor" style="left:200px; top:460px; width:360px; height:200px;"></div>
+        <div class="corridor" style="left:7640px; top:460px; width:300px; height:200px;"></div>
+
+        <!-- === 13. CONNECTEUR SUPERMARCHE PORTE HAUT (360,3200) === -->
+        <div class="corridor" style="left:200px; top:3000px; width:560px; height:300px;"></div>
+
+        <!-- === 14. CONNECTEUR FOOD COURT PORTE HAUT (7540,3200) === -->
+        <div class="corridor" style="left:7440px; top:3000px; width:300px; height:300px;"></div>
+
+        <!-- === CONNECTEUR TOILETTES NORD (porte a y=310) === -->
         <div class="corridor" style="left:3350px; top:310px; width:300px; height:100px;"></div>
-
-        <!-- === PLACE CENTRALE (grand espace reunions, entoure la fontaine) === -->
-        <div class="corridor-place" style="left:2200px; top:1550px; width:3600px; height:2250px;"></div>
-
-        <!-- === COULOIR VERTICAL CENTRE HAUT (du couloir haut vers la place) === -->
-        <div class="corridor" style="left:3700px; top:360px; width:300px; height:1240px;"></div>
-
-        <!-- === COULOIRS HORIZONTAUX NIVEAU KIOSQUE/OPTICIEN (y=1200) === -->
-        <!-- Gauche: du couloir vertical gauche au KIOSQUE gauche (2500) -->
-        <div class="corridor" style="left:810px; top:1200px; width:1690px; height:300px;"></div>
-        <!-- Vertical de jonction: du couloir kiosque (y=1500) a la place (y=1550) -->
-        <div class="corridor" style="left:2350px; top:1350px; width:300px; height:250px;"></div>
-        <!-- KIOSQUE porte droite (3100,1350) vers place -->
-        <div class="corridor" style="left:3100px; top:1200px; width:300px; height:400px;"></div>
-        <!-- OPTICIEN porte gauche (4500,1350) depuis place -->
-        <div class="corridor" style="left:4500px; top:1200px; width:300px; height:400px;"></div>
-        <!-- OPTICIEN porte droite (5100,1350) vers droite -->
-        <div class="corridor" style="left:5100px; top:1200px; width:2090px; height:300px;"></div>
-        <!-- Vertical de jonction droite: du couloir opticien (y=1500) a la place (y=1550) -->
-        <div class="corridor" style="left:5350px; top:1350px; width:300px; height:250px;"></div>
-
-        <!-- === COULOIRS HORIZONTAUX GAUCHE → PLACE (entre SPORT/ANIMALERIE, y=1850) === -->
-        <div class="corridor" style="left:560px; top:1850px; width:1690px; height:300px;"></div>
-
-        <!-- === COULOIRS HORIZONTAUX DROITE → PLACE (entre RESTAURANT/BIO, y=1900) === -->
-        <div class="corridor" style="left:5750px; top:1900px; width:1440px; height:300px;"></div>
-
-        <!-- === COULOIRS HORIZONTAUX BAS GAUCHE → PLACE (entre SUPERMARCHE/JEUX VIDEO, y=3700) === -->
-        <div class="corridor" style="left:560px; top:3700px; width:1690px; height:300px;"></div>
-
-        <!-- === COULOIRS HORIZONTAUX BAS DROITE → PLACE (entre FOOD COURT/ARTICLES SPORT, y=3700) === -->
-        <div class="corridor" style="left:5750px; top:3700px; width:1440px; height:300px;"></div>
-
-        <!-- === COULOIR VERTICAL CENTRE BAS (de la place vers le bas du mall) === -->
-        <div class="corridor" style="left:3700px; top:3750px; width:300px; height:1150px;"></div>
-
-        <!-- === COULOIR HORIZONTAL BAS (relie gauche a droite, y=4750) === -->
-        <div class="corridor" style="left:560px; top:4750px; width:6880px; height:300px;"></div>
-
-        <!-- === CONNECTEURS ARCADE === -->
-        <!-- ARCADE porte gauche (2500,3980): connecteur vers la place -->
-        <div class="corridor" style="left:2200px; top:3750px; width:300px; height:350px;"></div>
-        <!-- ARCADE porte droite (3100,3980): connecteur vers la place -->
-        <div class="corridor" style="left:3100px; top:3750px; width:300px; height:350px;"></div>
-        <!-- ARCADE porte haut (2780,3800): deja couverte par la place -->
-
-        <!-- === CONNECTEUR BOWLING porte haut (4780,3800): deja couvert par la place === -->
-
-        <!-- === PETITS COULOIRS VERS PORTES SPECIFIQUES === -->
-        <!-- MODE porte bas (280,460): connecteur du bas de MODE au couloir haut horizontal -->
-        <div class="corridor" style="left:130px; top:360px; width:480px; height:300px;"></div>
-        <!-- BIJOUTERIE porte bas (7660,460): connecteur vers couloir haut horizontal -->
-        <div class="corridor" style="left:7390px; top:360px; width:470px; height:300px;"></div>
-        <!-- SUPERMARCHE porte haut (360,3200): connecteur vers couloir gauche vertical -->
-        <div class="corridor" style="left:210px; top:3050px; width:450px; height:300px;"></div>
-        <!-- FOOD COURT porte haut (7540,3200): connecteur vers couloir droite vertical -->
-        <div class="corridor" style="left:7390px; top:3050px; width:350px; height:300px;"></div>
-        <!-- TOILETTES SUD porte droite (460,5320): connecteur vers couloir gauche vertical -->
-        <div class="corridor" style="left:460px; top:5170px; width:400px; height:300px;"></div>
-        <!-- TOILETTES SUD-EST porte gauche (7540,5320): connecteur vers couloir droite vertical -->
-        <div class="corridor" style="left:7140px; top:5170px; width:400px; height:300px;"></div>
 
         <!-- Murs exterieurs -->
         <div class="mall-mur-ext mall-mur-ext-h" style="top:0; left:0;"></div>

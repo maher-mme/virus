@@ -833,10 +833,18 @@ function creerPetElement(petId, parentEl) {
   if (!pet) return null;
   var div = document.createElement('div');
   div.className = 'pet-element';
+  if (pet.sizePx) {
+    div.style.width = pet.sizePx + 'px';
+    div.style.height = pet.sizePx + 'px';
+  }
   var img = document.createElement('img');
-  var petCacheBust = (typeof CURRENT_VERSION !== 'undefined') ? '?v=' + CURRENT_VERSION : '';
+  var petCacheBust = pet.isGif ? '' : ((typeof CURRENT_VERSION !== 'undefined') ? '?v=' + CURRENT_VERSION : '');
   img.src = pet.idle + petCacheBust;
   img.alt = 'pet';
+  if (pet.sizePx) {
+    img.style.width = pet.sizePx + 'px';
+    img.style.height = pet.sizePx + 'px';
+  }
   div.appendChild(img);
   parentEl.appendChild(div);
   return { element: div, img: img, petData: pet, animFrame: 0, animTimer: 0, lastX: 0, lastY: 0, curX: 0, curY: 0, init: false };
@@ -873,6 +881,12 @@ function updatePetSuivi(petObj, ownerX, ownerY, ownerMoved) {
     }
   }
 
+  // GIF anime : ne pas swap les frames (laisse le GIF jouer)
+  if (petObj.petData.isGif) {
+    petObj.lastX = ownerX;
+    petObj.lastY = ownerY;
+    return;
+  }
   var now = Date.now();
   if (ownerMoved) {
     if (now - petObj.animTimer > PET_ANIM_INTERVAL) {

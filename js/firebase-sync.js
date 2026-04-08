@@ -343,6 +343,7 @@ function unsubscribeFromParty() {
   gameUnsubscribers.forEach(function(unsub) { if (unsub) unsub(); });
   gameUnsubscribers = [];
   if (_voteListenerUnsub) { _voteListenerUnsub(); _voteListenerUnsub = null; }
+  _displayedMsgs = { lobby: {}, meeting: {} };
   firebasePartyPlayers = [];
   // Nettoyer les elements DOM des joueurs distants
   for (var pid in remotePlayers) {
@@ -1055,13 +1056,18 @@ function renderWaitingRoomPlayers(players) {
 // Mettre a jour le chat depuis Firebase
 var _lastChatCount = { lobby: -1, meeting: -1 };
 
+var _displayedMsgs = { lobby: {}, meeting: {} };
 function updateChatUI(messages, context) {
   var chatId = context === 'lobby' ? 'chat-messages' : 'reunion-chat-messages';
   var chatDiv = document.getElementById(chatId);
   if (!chatDiv) return;
-  chatDiv.innerHTML = '';
   if (!messages) return;
+  var key = context === 'lobby' ? 'lobby' : 'meeting';
+  // Append uniquement les nouveaux messages (preserve les messages locaux)
   messages.forEach(function(msg) {
+    var msgKey = (msg.pseudo || '') + '|' + (msg.message || '') + '|' + (msg.timestamp ? msg.timestamp.toMillis() : 0);
+    if (_displayedMsgs[key][msgKey]) return;
+    _displayedMsgs[key][msgKey] = true;
     var div = document.createElement('div');
     div.className = 'chat-message' + (msg.isSystem ? ' system' : '');
     var chatAdminClass = isAdmin(msg.pseudo) ? ' pseudo-admin-text' : '';

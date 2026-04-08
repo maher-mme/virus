@@ -638,6 +638,11 @@ function handleSinglePlayerUpdate(p) {
             activerSpectateur(vivants[0].playerId);
           }
         }
+        // Verifier la victoire
+        if (typeof verifierVictoire === 'function') {
+          var gagnant = verifierVictoire();
+          if (gagnant && typeof afficherFinPartie === 'function') afficherFinPartie(gagnant);
+        }
       }
     }
     return;
@@ -692,6 +697,11 @@ function handleSinglePlayerUpdate(p) {
       if (elMort) elMort.classList.add('bot-mort');
       if (typeof joueursElimines !== 'undefined' && p.pseudo && joueursElimines.indexOf(p.pseudo) < 0) {
         joueursElimines.push(p.pseudo);
+      }
+      // Verifier la victoire
+      if (typeof verifierVictoire === 'function') {
+        var gagnantR = verifierVictoire();
+        if (gagnantR && typeof afficherFinPartie === 'function') afficherFinPartie(gagnantR);
       }
     }
     rp.alive = p.alive;

@@ -461,21 +461,9 @@ function updateBots() {
         bot.blockedTimer++;
       }
 
-      // Si bloque trop longtemps, changer de cible (plus rapide avec les couloirs)
-      if (bot.blockedTimer > 20) {
-        // Choisir un waypoint proche dans un couloir au lieu d'une cible aleatoire
-        var wpProche = null;
-        var wpDist = Infinity;
-        for (var wi = 0; wi < BOT_WAYPOINTS.length; wi++) {
-          var wd = Math.abs(bot.x - BOT_WAYPOINTS[wi].x) + Math.abs(bot.y - BOT_WAYPOINTS[wi].y);
-          if (wd > 100 && wd < wpDist) { wpDist = wd; wpProche = BOT_WAYPOINTS[wi]; }
-        }
-        if (wpProche && bot.blockedTimer < 40) {
-          bot.cibleX = wpProche.x;
-          bot.cibleY = wpProche.y;
-        } else {
-          botChoisirCible(bot);
-        }
+      // Si bloque trop longtemps, changer de cible
+      if (bot.blockedTimer > 60) {
+        botChoisirCible(bot);
         bot.blockedTimer = 0;
       }
 

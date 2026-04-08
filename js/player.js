@@ -203,11 +203,6 @@ function buildWall(wx, wy, ww, wh, doors, horizontal) {
 }
 
 function checkCollision(px, py) {
-  // Verifier d'abord si on est dans une zone praticable
-  if (walkableRects.length > 0 && !isInWalkable(px, py)) {
-    return true; // Hors zone = collision
-  }
-  // Verifier les collisions avec les objets (murs de boutiques, meubles, fontaine)
   var x1 = px + PJ_OX;
   var y1 = py + PJ_OY;
   var x2 = x1 + PJ_W;

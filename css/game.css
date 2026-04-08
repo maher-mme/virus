@@ -22,15 +22,19 @@
   width: 8000px;
   height: 6000px;
   position: absolute;
-  background: #3d3428;
+  background: #c9c1b3;
 }
 
-/* Sol du centre commercial - cache par les murs, visible uniquement dans les couloirs */
+/* Sol du centre commercial - carrelage realiste */
 .mall-sol {
   width: 100%;
   height: 100%;
   position: absolute;
-  display: none;
+  background:
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px),
+    repeating-conic-gradient(#e6ddd0 0% 25%, #ded5c7 0% 50%) 0 0 / 60px 60px;
+  background-size: 60px 60px, 60px 60px, 60px 60px;
 }
 
 /* Corridors (zones praticables) */

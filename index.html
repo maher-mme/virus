@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="css/components.css?v=4">
   <link rel="stylesheet" href="css/menu.css?v=14">
   <link rel="stylesheet" href="css/lobby.css?v=20260322">
-  <link rel="stylesheet" href="css/game.css?v=9">
+  <link rel="stylesheet" href="css/game.css?v=10">
   <link rel="stylesheet" href="css/hud.css?v=2">
   <link rel="stylesheet" href="css/meeting.css?v=6">
   <link rel="stylesheet" href="css/friends.css?v=5">
@@ -76,7 +76,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v2.0.6 - ALPHA</span>
+    <span class="version">VIRUS v2.0.7 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -146,7 +146,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.0.6 - ALPHA</span>
+    <span class="version">VIRUS v2.0.7 - ALPHA</span>
     </div>
   </div>
 
@@ -190,7 +190,7 @@
           <button class="btn-sauver-pseudo" data-i18n="logout" style="background:linear-gradient(180deg,#3498db,#2980b9); border-color:#3498db; width:100%; padding:10px; margin-bottom:8px;" onclick="deconnecterCompte()">SE DECONNECTER</button>
           <button class="btn-sauver-pseudo" data-i18n="deleteAccount" style="background:linear-gradient(180deg,#e74c3c,#c0392b); border-color:#e74c3c; width:100%; padding:10px;" onclick="supprimerCompte()">SUPPRIMER MON COMPTE</button>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.0.6 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.0.7 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -292,7 +292,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v2.0.6 - ALPHA</span>
+        <span class="version-inline">v2.0.7 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -498,7 +498,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v2.0.6 - ALPHA</span>
+    <span class="version">VIRUS v2.0.7 - ALPHA</span>
     </div>
   </div>
 
@@ -589,7 +589,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.0.6 - ALPHA</span>
+    <span class="version">VIRUS v2.0.7 - ALPHA</span>
     </div>
   </div>
 
@@ -635,7 +635,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v2.0.6 - ALPHA</span>
+    <span class="version">VIRUS v2.0.7 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -852,55 +852,6 @@
 
         <!-- Sol carrelage (cache, remplace par les couloirs) -->
         <div class="mall-sol"></div>
-
-        <!-- COULOIRS (zones praticables) -->
-
-        <!-- === 1. GRANDE ARTERE VERTICALE GAUCHE (toutes les boutiques gauche) === -->
-        <div class="corridor" style="left:560px; top:0px; width:300px; height:5600px;"></div>
-
-        <!-- === 2. GRANDE ARTERE VERTICALE DROITE === -->
-        <div class="corridor" style="left:7140px; top:0px; width:300px; height:5600px;"></div>
-
-        <!-- === 3. GRANDE ARTERE HORIZONTALE HAUT (y=360) === -->
-        <div class="corridor" style="left:560px; top:360px; width:6880px; height:300px;"></div>
-
-        <!-- === 4. GRANDE ARTERE HORIZONTALE BAS (y=4900) === -->
-        <div class="corridor" style="left:560px; top:4900px; width:6880px; height:300px;"></div>
-
-        <!-- === 5. COULOIR VERTICAL CENTRE (du haut a la fontaine jusqu'au bas) === -->
-        <div class="corridor" style="left:3850px; top:360px; width:300px; height:4800px;"></div>
-
-        <!-- === 6. COULOIR TRANSVERSAL y=1850 (entre SPORT et ANIMALERIE) === -->
-        <div class="corridor" style="left:560px; top:1850px; width:6880px; height:300px;"></div>
-
-        <!-- === 7. COULOIR TRANSVERSAL y=3700 (entre SUPERMARCHE et JEUX VIDEO) === -->
-        <div class="corridor" style="left:560px; top:3700px; width:6880px; height:300px;"></div>
-
-        <!-- === 8. PLACE CENTRALE (grande zone ouverte autour de la fontaine) === -->
-        <div class="corridor-place" style="left:2500px; top:2300px; width:3000px; height:2200px;"></div>
-
-        <!-- === 9. CONNECTEUR VERTICAL KIOSQUE (porte bas 2780,1550) === -->
-        <div class="corridor" style="left:2780px; top:1550px; width:300px; height:750px;"></div>
-
-        <!-- === 10. CONNECTEUR VERTICAL OPTICIEN (porte bas 4780,1550) === -->
-        <div class="corridor" style="left:4780px; top:1550px; width:300px; height:750px;"></div>
-
-        <!-- === 11. CONNECTEURS VERTICAUX ARCADE/BOWLING (portes hautes) === -->
-        <div class="corridor" style="left:2780px; top:3550px; width:300px; height:250px;"></div>
-        <div class="corridor" style="left:4780px; top:3550px; width:300px; height:250px;"></div>
-
-        <!-- === 12. PETITS COULOIRS PORTES BAS MODE & BIJOUTERIE === -->
-        <div class="corridor" style="left:200px; top:460px; width:360px; height:200px;"></div>
-        <div class="corridor" style="left:7640px; top:460px; width:300px; height:200px;"></div>
-
-        <!-- === 13. CONNECTEUR SUPERMARCHE PORTE HAUT (360,3200) === -->
-        <div class="corridor" style="left:200px; top:3000px; width:560px; height:300px;"></div>
-
-        <!-- === 14. CONNECTEUR FOOD COURT PORTE HAUT (7540,3200) === -->
-        <div class="corridor" style="left:7440px; top:3000px; width:300px; height:300px;"></div>
-
-        <!-- === CONNECTEUR TOILETTES NORD (porte a y=310) === -->
-        <div class="corridor" style="left:3350px; top:310px; width:300px; height:100px;"></div>
 
         <!-- Murs exterieurs -->
         <div class="mall-mur-ext mall-mur-ext-h" style="top:0; left:0;"></div>
@@ -1814,9 +1765,9 @@
 <script src="js/comments.js?v=5"></script>
 <script src="js/translation.js?v=20260322c"></script>
 <script src="js/firebase-sync.js?v=33"></script>
-<script src="js/player.js?v=6"></script>
+<script src="js/player.js?v=7"></script>
 <script src="js/shop.js?v=10"></script>
-<script src="js/bots.js?v=8"></script>
+<script src="js/bots.js?v=9"></script>
 <script src="js/game.js?v=20260406"></script>
 <script src="js/roles.js?v=16"></script>
 <script src="js/meeting.js?v=13"></script>

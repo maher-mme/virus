@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.2.9';
+var CURRENT_VERSION = '2.3.0';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -28,8 +28,12 @@ setTimeout(initVersionCheck, 2000);
 
 function afficherPopupMiseAJour(newVersion) {
   if (_updateDismissed) return;
-  // Si une partie est en cours, attendre la fin pour afficher le popup
-  if (typeof jeuActif !== 'undefined' && jeuActif) {
+  // Si une partie est en cours OU dans la salle d'attente OU en reunion, attendre
+  var enPartie = (typeof jeuActif !== 'undefined' && jeuActif);
+  var enReunion = (typeof reunionEnCours !== 'undefined' && reunionEnCours);
+  var enSalleAttente = !!document.querySelector('#salle-attente.active');
+  var enJeu = !!document.querySelector('#jeu.active');
+  if (enPartie || enReunion || enSalleAttente || enJeu) {
     setTimeout(function() { afficherPopupMiseAJour(newVersion); }, 5000);
     return;
   }

@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.2.1';
+var CURRENT_VERSION = '2.2.2';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -28,6 +28,11 @@ setTimeout(initVersionCheck, 2000);
 
 function afficherPopupMiseAJour(newVersion) {
   if (_updateDismissed) return;
+  // Si une partie est en cours, attendre la fin pour afficher le popup
+  if (typeof jeuActif !== 'undefined' && jeuActif) {
+    setTimeout(function() { afficherPopupMiseAJour(newVersion); }, 5000);
+    return;
+  }
   _updateDismissed = true;
   // Verifier si le popup existe deja
   if (document.getElementById('popup-update')) return;

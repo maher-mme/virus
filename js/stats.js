@@ -99,7 +99,7 @@ function chargerClassement(champ) {
         }
       });
       joueurs.sort(function(a, b) { return b.count - a.count; });
-      joueurs = joueurs.slice(0, 20);
+      joueurs = joueurs.slice(0, 100);
       if (joueurs.length === 0) {
         liste.innerHTML = '<div class="classement-vide">' + t('noLeaderboard') + '</div>';
         return;
@@ -122,7 +122,7 @@ function chargerClassement(champ) {
   db.collection('players')
     .where(champ, '>', 0)
     .orderBy(champ, 'desc')
-    .limit(20)
+    .limit(100)
     .get({ source: 'server' })
     .then(function(snap) {
       if (snap.empty) {

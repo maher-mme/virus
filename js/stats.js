@@ -231,14 +231,15 @@ function construireGrapheXP(xpParMois) {
   }
   var max = Math.max.apply(null, data.map(function(d) { return d.value; }));
   if (max === 0) max = 1;
+  var BAR_AREA = 100; // hauteur en pixels de la zone de barres
   var html = '<div style="grid-column:1/-1;background:rgba(44,62,80,0.5);border:1px solid #34495e;border-radius:10px;padding:12px;margin-top:6px;">' +
     '<div style="color:#f39c12;font-size:11px;font-weight:bold;letter-spacing:1px;margin-bottom:8px;text-align:center;">XP DES 6 DERNIERS MOIS</div>' +
-    '<div style="display:flex;align-items:flex-end;justify-content:space-around;height:90px;gap:6px;">';
+    '<div style="display:flex;align-items:flex-end;justify-content:space-around;gap:6px;">';
   for (var b = 0; b < data.length; b++) {
-    var pct = Math.max(2, Math.round((data[b].value / max) * 100));
+    var hauteur = Math.max(3, Math.round((data[b].value / max) * BAR_AREA));
     html += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;">' +
-      '<div style="color:#f39c12;font-size:9px;margin-bottom:2px;">' + data[b].value + '</div>' +
-      '<div style="width:100%;height:' + pct + '%;background:linear-gradient(180deg,#f39c12,#e67e22);border-radius:4px 4px 0 0;min-height:2px;"></div>' +
+      '<div style="color:#f39c12;font-size:9px;margin-bottom:2px;font-weight:bold;">' + data[b].value + '</div>' +
+      '<div style="width:80%;height:' + hauteur + 'px;background:linear-gradient(180deg,#f39c12,#e67e22);border-radius:4px 4px 0 0;"></div>' +
       '<div style="color:#bdc3c7;font-size:10px;margin-top:4px;">' + data[b].label + '</div>' +
     '</div>';
   }

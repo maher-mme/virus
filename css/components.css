@@ -423,7 +423,7 @@
   gap: 2px;
 }
 .skin-option:hover { transform: scale(1.1); border-color: #95a5a6; }
-.skin-option.skin-selected { border-color: #f1c40f; box-shadow: 0 0 12px rgba(241,196,15,0.5); }
+.skin-option.skin-selected { border-color: #f1c40f !important; box-shadow: 0 0 12px rgba(241,196,15,0.5) !important; }
 .skin-option img {
   height: 46px;
   width: 46px;

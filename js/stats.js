@@ -20,6 +20,7 @@ function calculerNiveau(xpTotal) {
 
 function ajouterXP(xpGagne) {
   if (!monPlayerId) return;
+  if (typeof tutoGuide !== 'undefined' && tutoGuide) return; // pas de XP en entrainement
   db.collection('players').doc(monPlayerId).get().then(function(doc) {
     if (!doc.exists) return;
     var data = doc.data();
@@ -375,12 +376,18 @@ setTimeout(checkProfilURL, 3500);
 // ============================
 function incrementerStat(champ, valeur) {
   if (!monPlayerId) return;
+  if (typeof tutoGuide !== 'undefined' && tutoGuide) return; // pas de stats en entrainement
   var update = {};
   update[champ] = firebase.firestore.FieldValue.increment(valeur || 1);
   db.collection('players').doc(monPlayerId).update(update).catch(function() {});
 }
 
 function enregistrerStatsFinPartie(gagnant) {
+  // Mode entrainement : pas de stats / XP / gold
+  if (typeof tutoGuide !== 'undefined' && tutoGuide) {
+    if (typeof fermerTutoGuide === 'function') fermerTutoGuide();
+    return;
+  }
   // Mort ?
   var pseudo = getPseudo() || '';
   var estMort = joueursElimines.indexOf(pseudo) >= 0;

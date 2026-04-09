@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.1.5';
+var CURRENT_VERSION = '2.1.6';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -602,10 +602,60 @@ function tutoPrecedent() {
 function lancerTutoPartie() {
   fermerTuto();
   tutoGuide = true;
-  // Lance une partie hors-ligne avec 3 bots, pas de roles speciaux
+  tutoEtapeActuelle = 0;
+  // Lance une partie hors-ligne avec 3 bots
   if (typeof lancerHorsLigne === 'function') {
     lancerHorsLigne(3, 1, 0, 0, 0);
   }
+  // Demarrer le guide apres un court delai (le temps que la partie se charge)
+  setTimeout(function() { afficherTutoGuideEtape(0); }, 1500);
+}
+
+// === GUIDE ENTRAINEMENT (etapes pendant la partie) ===
+var tutoEtapeActuelle = 0;
+var TUTO_GUIDE_ETAPES = [
+  { texte: 'Bienvenue dans l\'entrainement ! ' + (('ontouchstart' in window || navigator.maxTouchPoints > 0) ? 'Touche l\'ecran pour deplacer ton personnage.' : 'Utilise ZQSD ou les fleches pour te deplacer.') },
+  { texte: 'Approche-toi d\'une boutique pour commencer une mission.' },
+  { texte: 'Clique sur le bouton "Faire la tache" pour lancer le mini-jeu.' },
+  { texte: 'Termine le mini-jeu pour completer la mission.' },
+  { texte: 'Va vers une autre boutique pour une nouvelle mission.' },
+  { texte: 'Tu peux voir la carte avec la mini-map en bas a droite.' },
+  { texte: 'Si tu vois un cadavre, clique sur "Signaler" pour lancer une reunion.' },
+  { texte: 'Pendant la reunion, vote pour eliminer le suspect. Bonne chance !' }
+];
+
+function afficherTutoGuideEtape(idx) {
+  if (!tutoGuide) return;
+  if (idx >= TUTO_GUIDE_ETAPES.length) {
+    fermerTutoGuide();
+    return;
+  }
+  tutoEtapeActuelle = idx;
+  var existing = document.getElementById('tuto-guide-popup');
+  if (existing) existing.remove();
+  var etape = TUTO_GUIDE_ETAPES[idx];
+  var div = document.createElement('div');
+  div.id = 'tuto-guide-popup';
+  div.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:linear-gradient(180deg,#8e44ad,#6c3483);color:white;padding:14px 20px;border-radius:14px;border:2px solid #a569bd;box-shadow:0 4px 20px rgba(0,0,0,0.5);max-width:90%;width:420px;z-index:99998;font-family:Arial,sans-serif;';
+  div.innerHTML =
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">' +
+      '<span style="background:#fff;color:#8e44ad;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;">' + (idx + 1) + '</span>' +
+      '<span style="font-weight:bold;font-size:12px;letter-spacing:1px;">ETAPE ' + (idx + 1) + ' / ' + TUTO_GUIDE_ETAPES.length + '</span>' +
+      '<button onclick="fermerTutoGuide()" style="margin-left:auto;background:transparent;border:none;color:white;font-size:18px;cursor:pointer;">&times;</button>' +
+    '</div>' +
+    '<p style="margin:0 0 10px;font-size:13px;line-height:1.4;">' + etape.texte + '</p>' +
+    '<button onclick="tutoGuideSuivant()" style="background:white;color:#8e44ad;border:none;border-radius:8px;padding:6px 16px;font-size:12px;font-weight:bold;cursor:pointer;width:100%;">' + (idx + 1 >= TUTO_GUIDE_ETAPES.length ? 'TERMINER' : 'SUIVANT \u25b6') + '</button>';
+  document.body.appendChild(div);
+}
+
+function tutoGuideSuivant() {
+  afficherTutoGuideEtape(tutoEtapeActuelle + 1);
+}
+
+function fermerTutoGuide() {
+  tutoGuide = false;
+  var existing = document.getElementById('tuto-guide-popup');
+  if (existing) existing.remove();
 }
 
 // Le tutoriel se declenche a la creation du compte (appele depuis account.js)
@@ -757,6 +807,7 @@ function reclamerQuete(queteId) {
 // Incrementer la progression d'une stat (appele depuis enregistrerStatsFinPartie ou autres)
 function incrementerQueteStat(stat, valeur) {
   if (!monPlayerId) return;
+  if (typeof tutoGuide !== 'undefined' && tutoGuide) return; // pas de quetes en entrainement
   valeur = valeur || 1;
   db.collection('players').doc(monPlayerId).get().then(function(doc) {
     if (!doc.exists) return;

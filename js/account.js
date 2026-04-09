@@ -347,6 +347,70 @@ function ouvrirParams() {
 
 function fermerParams() {
   document.getElementById('popup-params').classList.remove('visible');
+  // Fermer aussi le formulaire de changement mdp
+  var sec = document.getElementById('section-changer-mdp');
+  if (sec) sec.style.display = 'none';
+}
+
+function ouvrirChangerMotDePasse() {
+  var sec = document.getElementById('section-changer-mdp');
+  if (!sec) return;
+  sec.style.display = '';
+  document.getElementById('input-ancien-mdp').value = '';
+  document.getElementById('input-nouveau-mdp').value = '';
+  document.getElementById('input-confirm-mdp').value = '';
+  document.getElementById('input-ancien-mdp').focus();
+}
+
+function annulerChangerMotDePasse() {
+  var sec = document.getElementById('section-changer-mdp');
+  if (sec) sec.style.display = 'none';
+}
+
+function changerMotDePasse() {
+  var ancien = document.getElementById('input-ancien-mdp').value.trim();
+  var nouveau = document.getElementById('input-nouveau-mdp').value.trim();
+  var confirm = document.getElementById('input-confirm-mdp').value.trim();
+  if (!ancien || !nouveau || !confirm) {
+    showNotif('Remplis tous les champs.', 'warn');
+    return;
+  }
+  if (nouveau.length < 5 || nouveau.length > 10) {
+    showNotif('Le nouveau mot de passe doit faire 5 a 10 caracteres.', 'warn');
+    return;
+  }
+  if (nouveau !== confirm) {
+    showNotif('Les nouveaux mots de passe ne correspondent pas.', 'warn');
+    return;
+  }
+  if (!monPlayerId) {
+    showNotif('Erreur : aucun compte connecte.', 'warn');
+    return;
+  }
+  // Verifier l'ancien mot de passe puis update Firebase
+  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+    if (!doc.exists) {
+      showNotif('Compte introuvable.', 'warn');
+      return;
+    }
+    var data = doc.data();
+    if (data.pin !== ancien) {
+      showNotif('Ancien mot de passe incorrect !', 'warn');
+      return;
+    }
+    if (nouveau === ancien) {
+      showNotif('Le nouveau mot de passe est identique a l\'ancien.', 'warn');
+      return;
+    }
+    db.collection('players').doc(monPlayerId).update({ pin: nouveau }).then(function() {
+      showNotif('Mot de passe change avec succes !', 'success');
+      annulerChangerMotDePasse();
+    }).catch(function(err) {
+      showNotif('Erreur lors de la sauvegarde : ' + (err && err.message ? err.message : 'inconnue'), 'warn');
+    });
+  }).catch(function(err) {
+    showNotif('Erreur de connexion : ' + (err && err.message ? err.message : 'inconnue'), 'warn');
+  });
 }
 
 function supprimerCompte() {

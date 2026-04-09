@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.3.0';
+var CURRENT_VERSION = '2.3.1';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -671,22 +671,22 @@ function fermerTutoGuide() {
 
 // === SYSTEME DE QUETES HEBDOMADAIRES ===
 var QUETE_TEMPLATES = [
-  { id:'win1', titreKey:'qTitleWin1', icone:'🏆', objectif:1, stat:'wins', recompense:20 },
-  { id:'win3', titreKey:'qTitleWin3', icone:'🏆', objectif:3, stat:'wins', recompense:60 },
-  { id:'win5', titreKey:'qTitleWin5', icone:'🏆', objectif:5, stat:'wins', recompense:120 },
-  { id:'kill2', titreKey:'qTitleKill2', icone:'☠️', objectif:2, stat:'kills', recompense:25 },
-  { id:'kill5', titreKey:'qTitleKill5', icone:'☠️', objectif:5, stat:'kills', recompense:70 },
-  { id:'kill10', titreKey:'qTitleKill10', icone:'☠️', objectif:10, stat:'kills', recompense:150 },
-  { id:'play3', titreKey:'qTitlePlay3', icone:'🎮', objectif:3, stat:'gamesPlayed', recompense:15 },
-  { id:'play5', titreKey:'qTitlePlay5', icone:'🎮', objectif:5, stat:'gamesPlayed', recompense:30 },
-  { id:'play10', titreKey:'qTitlePlay10', icone:'🎮', objectif:10, stat:'gamesPlayed', recompense:60 },
-  { id:'mission5', titreKey:'qTitleMission5', icone:'📝', objectif:5, stat:'missions', recompense:20 },
-  { id:'mission15', titreKey:'qTitleMission15', icone:'📝', objectif:15, stat:'missions', recompense:55 },
-  { id:'mission30', titreKey:'qTitleMission30', icone:'📝', objectif:30, stat:'missions', recompense:120 },
-  { id:'winVirus', titreKey:'qTitleWinVirus', icone:'🦠', objectif:1, stat:'winsVirus', recompense:50 },
-  { id:'winInno', titreKey:'qTitleWinInno', icone:'😇', objectif:1, stat:'winsInnocent', recompense:30 },
-  { id:'signaler3', titreKey:'qTitleSignaler3', icone:'🚨', objectif:3, stat:'signalements', recompense:30 },
-  { id:'survie', titreKey:'qTitleSurvie', icone:'🛡️', objectif:1, stat:'survies', recompense:30 }
+  { id:'win1', titreKey:'qTitleWin1', icone:'🏆', objectif:1, stat:'wins', recompense:50 },
+  { id:'win3', titreKey:'qTitleWin3', icone:'🏆', objectif:3, stat:'wins', recompense:100 },
+  { id:'win5', titreKey:'qTitleWin5', icone:'🏆', objectif:5, stat:'wins', recompense:200 },
+  { id:'kill2', titreKey:'qTitleKill2', icone:'☠️', objectif:2, stat:'kills', recompense:50 },
+  { id:'kill5', titreKey:'qTitleKill5', icone:'☠️', objectif:5, stat:'kills', recompense:100 },
+  { id:'kill10', titreKey:'qTitleKill10', icone:'☠️', objectif:10, stat:'kills', recompense:200 },
+  { id:'play3', titreKey:'qTitlePlay3', icone:'🎮', objectif:3, stat:'gamesPlayed', recompense:50 },
+  { id:'play5', titreKey:'qTitlePlay5', icone:'🎮', objectif:5, stat:'gamesPlayed', recompense:100 },
+  { id:'play10', titreKey:'qTitlePlay10', icone:'🎮', objectif:10, stat:'gamesPlayed', recompense:200 },
+  { id:'mission5', titreKey:'qTitleMission5', icone:'📝', objectif:5, stat:'missions', recompense:50 },
+  { id:'mission15', titreKey:'qTitleMission15', icone:'📝', objectif:15, stat:'missions', recompense:100 },
+  { id:'mission30', titreKey:'qTitleMission30', icone:'📝', objectif:30, stat:'missions', recompense:200 },
+  { id:'winVirus', titreKey:'qTitleWinVirus', icone:'🦠', objectif:1, stat:'winsVirus', recompense:150 },
+  { id:'winInno', titreKey:'qTitleWinInno', icone:'😇', objectif:1, stat:'winsInnocent', recompense:100 },
+  { id:'signaler3', titreKey:'qTitleSignaler3', icone:'🚨', objectif:3, stat:'signalements', recompense:75 },
+  { id:'survie', titreKey:'qTitleSurvie', icone:'🛡️', objectif:1, stat:'survies', recompense:100 }
 ];
 
 function getLundiCourant() {
@@ -769,7 +769,7 @@ function afficherQuetes(data) {
       '</div>' +
       '<button class="quete-recompense" ' + ((!complete || q.prise) ? 'disabled' : '') +
       ' onclick="reclamerQuete(\'' + q.id + '\')">' +
-      (q.prise ? 'PRIS' : '+' + tpl.recompense + ' 🪙') +
+      (q.prise ? 'PRIS' : '+' + tpl.recompense + ' XP') +
       '</button>';
     liste.appendChild(div);
   });
@@ -806,14 +806,12 @@ function reclamerQuete(queteId) {
       if (q.progres < tpl.objectif) throw new Error('Pas terminee');
       q.prise = true;
       recompenseGagnee = tpl.recompense;
-      var nouveauGold = (data.gold || 0) + tpl.recompense;
-      transaction.update(ref, { questsHebdo: qd, gold: nouveauGold });
+      // Marquer comme prise (le XP sera ajoute via ajouterXP apres la transaction)
+      transaction.update(ref, { questsHebdo: qd });
     });
   }).then(function() {
-    playerGold = (playerGold || 0) + recompenseGagnee;
-    if (typeof sauvegarderGold === 'function') sauvegarderGold();
-    var goldEl = document.getElementById('player-gold');
-    if (goldEl) goldEl.textContent = playerGold;
+    // Ajouter l'XP via la fonction standard (gere les level ups + gold bonus de niveau)
+    if (typeof ajouterXP === 'function') ajouterXP(recompenseGagnee);
     showNotif(t('questsGoldEarned', recompenseGagnee), 'success');
     chargerQuetes();
   }).catch(function(err) {

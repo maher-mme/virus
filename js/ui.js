@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.2.6';
+var CURRENT_VERSION = '2.2.7';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -885,8 +885,15 @@ function analyserMdp() {
     'jessica','asshole','696969','amanda','access'
   ];
   if (motsCommuns.indexOf(mdp.toLowerCase()) >= 0) {
-    afficherResultatMdp(0, 'INSTANTANE', 'Mot de passe tres commun !', '#e74c3c', '💀',
+    afficherResultatMdp(0, 'INSTANTANE', 'TRES FAIBLE', '#e74c3c', '💀',
       ['Fait partie du top 50 des mots de passe les plus utilises', 'Crackable en moins d\'une seconde', 'A changer immediatement !']);
+    return;
+  }
+  // Verifier si c'est le pseudo du joueur
+  var monPseudo = (typeof getPseudo === 'function') ? (getPseudo() || '') : '';
+  if (monPseudo && mdp.toLowerCase() === monPseudo.toLowerCase()) {
+    afficherResultatMdp(0, 'INSTANTANE', 'TRES FAIBLE', '#e74c3c', '💀',
+      ['C\'est votre pseudo !', 'Tres facile a deviner', 'A changer immediatement !']);
     return;
   }
 

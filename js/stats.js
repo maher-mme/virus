@@ -107,7 +107,7 @@ function chargerClassement(champ) {
       liste.innerHTML = '';
       var info = document.createElement('div');
       info.className = 'classement-info-skins';
-      info.textContent = totalCosmetiques + ' cosmetiques (' + (nbSkinsBase + nbSkinsBoutique) + ' skins + ' + nbPetsBoutique + ' pets + ' + nbMusiquesBoutique + ' musiques)';
+      info.textContent = t('totalCosmetics', totalCosmetiques, (nbSkinsBase + nbSkinsBoutique), nbPetsBoutique, nbMusiquesBoutique);
       liste.appendChild(info);
       joueurs.forEach(function(j, idx) {
         liste.appendChild(creerClassementItem(j.data, idx + 1, j.count + '/' + totalCosmetiques));
@@ -220,7 +220,7 @@ function ouvrirProfilJoueur(playerId) {
 
 // Construire un graphique en barres de l'XP par mois (6 derniers mois)
 function construireGrapheXP(xpParMois) {
-  var moisLabels = ['Jan','Fev','Mar','Avr','Mai','Juin','Juil','Aou','Sep','Oct','Nov','Dec'];
+  var moisLabels = [t('monthJan'),t('monthFeb'),t('monthMar'),t('monthApr'),t('monthMay'),t('monthJun'),t('monthJul'),t('monthAug'),t('monthSep'),t('monthOct'),t('monthNov'),t('monthDec')];
   var now = new Date();
   var data = [];
   for (var i = 5; i >= 0; i--) {
@@ -233,7 +233,7 @@ function construireGrapheXP(xpParMois) {
   if (max === 0) max = 1;
   var BAR_AREA = 100; // hauteur en pixels de la zone de barres
   var html = '<div style="grid-column:1/-1;background:rgba(44,62,80,0.5);border:1px solid #34495e;border-radius:10px;padding:12px;margin-top:6px;">' +
-    '<div style="color:#f39c12;font-size:11px;font-weight:bold;letter-spacing:1px;margin-bottom:8px;text-align:center;">XP DES 6 DERNIERS MOIS</div>' +
+    '<div style="color:#f39c12;font-size:11px;font-weight:bold;letter-spacing:1px;margin-bottom:8px;text-align:center;">' + t('graphXP6Months') + '</div>' +
     '<div style="display:flex;align-items:flex-end;justify-content:space-around;gap:6px;">';
   for (var b = 0; b < data.length; b++) {
     var hauteur = Math.max(3, Math.round((data[b].value / max) * BAR_AREA));
@@ -278,8 +278,8 @@ function chargerProfil(playerId) {
     // Statut en ligne / hors ligne + derniere connexion
     var isOnline = data.online && data.lastSeen && (Date.now() - data.lastSeen.toDate().getTime() < 120000);
     var statutHtml = isOnline
-      ? '<span class="profil-statut profil-en-ligne">&#9679; En ligne</span>'
-      : '<span class="profil-statut profil-hors-ligne">&#9679; Hors ligne</span>';
+      ? '<span class="profil-statut profil-en-ligne">&#9679; ' + t('profilOnline') + '</span>'
+      : '<span class="profil-statut profil-hors-ligne">&#9679; ' + t('profilOffline') + '</span>';
     // Derniere connexion si hors ligne
     var dernierVuHtml = '';
     if (!isOnline && data.lastSeen) {
@@ -289,18 +289,18 @@ function chargerProfil(playerId) {
       var heures = Math.floor(diff / 3600000);
       var jours = Math.floor(diff / 86400000);
       var dernierVuTexte = '';
-      if (minutes < 1) dernierVuTexte = 'il y a quelques secondes';
-      else if (minutes < 60) dernierVuTexte = 'il y a ' + minutes + ' min';
-      else if (heures < 24) dernierVuTexte = 'il y a ' + heures + 'h';
-      else dernierVuTexte = 'il y a ' + jours + 'j';
-      dernierVuHtml = '<span class="profil-dernier-vu">Vu ' + dernierVuTexte + '</span>';
+      if (minutes < 1) dernierVuTexte = t('profilSecondsAgo');
+      else if (minutes < 60) dernierVuTexte = t('profilMinAgo', minutes);
+      else if (heures < 24) dernierVuTexte = t('profilHoursAgo', heures);
+      else dernierVuTexte = t('profilDaysAgo', jours);
+      dernierVuHtml = '<span class="profil-dernier-vu">' + t('profilSeen') + ' ' + dernierVuTexte + '</span>';
     }
     // Date d'inscription
     var inscriptionHtml = '';
     if (data.createdAt) {
       var dateInscr = data.createdAt.toDate();
       var mois = ['jan', 'fev', 'mars', 'avr', 'mai', 'juin', 'juil', 'aout', 'sept', 'oct', 'nov', 'dec'];
-      inscriptionHtml = '<span class="profil-inscription">Membre depuis ' + mois[dateInscr.getMonth()] + ' ' + dateInscr.getFullYear() + '</span>';
+      inscriptionHtml = '<span class="profil-inscription">' + t('profilMemberSince') + ' ' + mois[dateInscr.getMonth()] + ' ' + dateInscr.getFullYear() + '</span>';
     }
     // Skin equipe
     var skinHtml = '';
@@ -317,7 +317,7 @@ function chargerProfil(playerId) {
       '<div class="profil-xp-bar"><div class="profil-xp-fill" style="width:' + pourcent + '%"></div></div>' +
       '<span class="profil-xp-text">' + niveauInfo.xpDansNiveau + ' / ' + niveauInfo.xpRequis + ' XP</span>' +
       inscriptionHtml +
-      '<button class="btn-copier-lien" onclick="copierLienProfil(\'' + lienProfil.replace(/'/g, "\\'") + '\')">Copier le lien du profil</button>' +
+      '<button class="btn-copier-lien" onclick="copierLienProfil(\'' + lienProfil.replace(/'/g, "\\'") + '\')">' + t('profilCopyLink') + '</button>' +
       '</div>' +
       skinHtml;
 
@@ -344,9 +344,9 @@ function chargerProfil(playerId) {
 // ============================
 function copierLienProfil(lien) {
   navigator.clipboard.writeText(lien).then(function() {
-    showNotif('Lien copie !', 'info');
+    showNotif(t('profilLinkCopied'), 'info');
   }).catch(function() {
-    showNotif('Erreur copie', 'warn');
+    showNotif(t('profilCopyError'), 'warn');
   });
 }
 
@@ -370,7 +370,7 @@ function checkProfilURL() {
     if (snap && !snap.empty) {
       ouvrirProfil(snap.docs[0].id);
     } else {
-      showNotif('Joueur "' + profilPseudo + '" introuvable', 'warn');
+      showNotif(t('profilNotFound', profilPseudo), 'warn');
     }
     // Nettoyer l'URL sans recharger
     window.history.replaceState({}, '', window.location.pathname);

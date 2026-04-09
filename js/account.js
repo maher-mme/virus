@@ -372,44 +372,44 @@ function changerMotDePasse() {
   var nouveau = document.getElementById('input-nouveau-mdp').value.trim();
   var confirm = document.getElementById('input-confirm-mdp').value.trim();
   if (!ancien || !nouveau || !confirm) {
-    showNotif('Remplis tous les champs.', 'warn');
+    showNotif(t('mdpFillFields'), 'warn');
     return;
   }
   if (nouveau.length < 5 || nouveau.length > 10) {
-    showNotif('Le nouveau mot de passe doit faire 5 a 10 caracteres.', 'warn');
+    showNotif(t('mdpLength5to10'), 'warn');
     return;
   }
   if (nouveau !== confirm) {
-    showNotif('Les nouveaux mots de passe ne correspondent pas.', 'warn');
+    showNotif(t('mdpDontMatch'), 'warn');
     return;
   }
   if (!monPlayerId) {
-    showNotif('Erreur : aucun compte connecte.', 'warn');
+    showNotif(t('mdpNoAccount'), 'warn');
     return;
   }
   // Verifier l'ancien mot de passe puis update Firebase
   db.collection('players').doc(monPlayerId).get().then(function(doc) {
     if (!doc.exists) {
-      showNotif('Compte introuvable.', 'warn');
+      showNotif(t('mdpAccountNotFound'), 'warn');
       return;
     }
     var data = doc.data();
     if (data.pin !== ancien) {
-      showNotif('Ancien mot de passe incorrect !', 'warn');
+      showNotif(t('mdpOldWrong'), 'warn');
       return;
     }
     if (nouveau === ancien) {
-      showNotif('Le nouveau mot de passe est identique a l\'ancien.', 'warn');
+      showNotif(t('mdpSameAsOld'), 'warn');
       return;
     }
     db.collection('players').doc(monPlayerId).update({ pin: nouveau }).then(function() {
-      showNotif('Mot de passe change avec succes !', 'success');
+      showNotif(t('mdpChanged'), 'success');
       annulerChangerMotDePasse();
     }).catch(function(err) {
-      showNotif('Erreur lors de la sauvegarde : ' + (err && err.message ? err.message : 'inconnue'), 'warn');
+      showNotif(t('mdpSaveError') + ' : ' + (err && err.message ? err.message : 'inconnue'), 'warn');
     });
   }).catch(function(err) {
-    showNotif('Erreur de connexion : ' + (err && err.message ? err.message : 'inconnue'), 'warn');
+    showNotif(t('mdpConnError') + ' : ' + (err && err.message ? err.message : 'inconnue'), 'warn');
   });
 }
 

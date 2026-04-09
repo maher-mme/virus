@@ -99,17 +99,17 @@ function updateBotControlsUI() {
   // Afficher retirer seulement s'il y a des bots
   if (btnRemove) btnRemove.style.display = nbBots > 0 ? 'inline-block' : 'none';
 
-  if (info) info.textContent = nbBots > 0 ? 'Bots : ' + nbBots + '/' + MAX_BOTS_ONLINE : '';
+  if (info) info.textContent = nbBots > 0 ? t('botsCount', nbBots, MAX_BOTS_ONLINE) : '';
 }
 
 function ajouterBotEnLigne() {
   if (!estHost || !partieActuelleId) return;
   var nbBots = getNbBotsEnLigne();
-  if (nbBots >= MAX_BOTS_ONLINE) { showNotif('Maximum ' + MAX_BOTS_ONLINE + ' bots', 'warn'); return; }
+  if (nbBots >= MAX_BOTS_ONLINE) { showNotif(t('botsMax', MAX_BOTS_ONLINE), 'warn'); return; }
 
   var currentParty = firebaseParties.find(function(p) { return p._id === partieActuelleId; });
   var maxJ = currentParty ? currentParty.maxJoueurs : 10;
-  if (firebasePartyPlayers.length >= maxJ) { showNotif('Partie pleine', 'warn'); return; }
+  if (firebasePartyPlayers.length >= maxJ) { showNotif(t('partyFull'), 'warn'); return; }
 
   // Skin unique (pas deja utilise dans la partie)
   var tousLesSkins = (typeof SKINS !== 'undefined' ? SKINS : []).concat(typeof SKINS_BOUTIQUE !== 'undefined' ? SKINS_BOUTIQUE : []);
@@ -144,7 +144,7 @@ function ajouterBotEnLigne() {
       joueurs: firebase.firestore.FieldValue.increment(1),
       listeJoueurs: firebase.firestore.FieldValue.arrayUnion(pseudo)
     });
-    showNotif('Bot ' + pseudo + ' ajoute', 'info');
+    showNotif(t('botAdded', pseudo), 'info');
   });
 }
 
@@ -159,7 +159,7 @@ function retirerBotEnLigne() {
       joueurs: firebase.firestore.FieldValue.increment(-1),
       listeJoueurs: firebase.firestore.FieldValue.arrayRemove(lastBot.pseudo)
     });
-    showNotif('Bot ' + lastBot.pseudo + ' retire', 'info');
+    showNotif(t('botRemoved', lastBot.pseudo), 'info');
   });
 }
 
@@ -1266,7 +1266,7 @@ function rejoindrePartie(partieId) {
     // Bloquer si partie privee et pas ami du host
     if (party.private && party.hostPlayerId !== monPlayerId) {
       var amisIds = (typeof mesAmis !== 'undefined') ? mesAmis.map(function(a) { return a.uid; }) : [];
-      if (amisIds.indexOf(party.hostPlayerId) < 0) { showNotif('Partie privee - amis du host uniquement', 'warn'); return; }
+      if (amisIds.indexOf(party.hostPlayerId) < 0) { showNotif(t('partyPrivateOnly'), 'warn'); return; }
     }
     // Enregistrer le joueur
     return db.collection('players').doc(monPlayerId).set({

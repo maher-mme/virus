@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.2.7';
+var CURRENT_VERSION = '2.2.8';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -667,22 +667,22 @@ function fermerTutoGuide() {
 
 // === SYSTEME DE QUETES HEBDOMADAIRES ===
 var QUETE_TEMPLATES = [
-  { id:'win1', titre:'Gagne 1 partie', icone:'🏆', objectif:1, stat:'wins', recompense:20 },
-  { id:'win3', titre:'Gagne 3 parties', icone:'🏆', objectif:3, stat:'wins', recompense:60 },
-  { id:'win5', titre:'Gagne 5 parties', icone:'🏆', objectif:5, stat:'wins', recompense:120 },
-  { id:'kill2', titre:'Tue 2 joueurs', icone:'☠️', objectif:2, stat:'kills', recompense:25 },
-  { id:'kill5', titre:'Tue 5 joueurs', icone:'☠️', objectif:5, stat:'kills', recompense:70 },
-  { id:'kill10', titre:'Tue 10 joueurs', icone:'☠️', objectif:10, stat:'kills', recompense:150 },
-  { id:'play3', titre:'Joue 3 parties', icone:'🎮', objectif:3, stat:'gamesPlayed', recompense:15 },
-  { id:'play5', titre:'Joue 5 parties', icone:'🎮', objectif:5, stat:'gamesPlayed', recompense:30 },
-  { id:'play10', titre:'Joue 10 parties', icone:'🎮', objectif:10, stat:'gamesPlayed', recompense:60 },
-  { id:'mission5', titre:'Fais 5 missions', icone:'📝', objectif:5, stat:'missions', recompense:20 },
-  { id:'mission15', titre:'Fais 15 missions', icone:'📝', objectif:15, stat:'missions', recompense:55 },
-  { id:'mission30', titre:'Fais 30 missions', icone:'📝', objectif:30, stat:'missions', recompense:120 },
-  { id:'winVirus', titre:'Gagne en tant que VIRUS', icone:'🦠', objectif:1, stat:'winsVirus', recompense:50 },
-  { id:'winInno', titre:'Gagne en tant qu\'INNOCENT', icone:'😇', objectif:1, stat:'winsInnocent', recompense:30 },
-  { id:'signaler3', titre:'Signale 3 cadavres', icone:'🚨', objectif:3, stat:'signalements', recompense:30 },
-  { id:'survie', titre:'Survis a 1 partie sans mourir', icone:'🛡️', objectif:1, stat:'survies', recompense:30 }
+  { id:'win1', titreKey:'qTitleWin1', icone:'🏆', objectif:1, stat:'wins', recompense:20 },
+  { id:'win3', titreKey:'qTitleWin3', icone:'🏆', objectif:3, stat:'wins', recompense:60 },
+  { id:'win5', titreKey:'qTitleWin5', icone:'🏆', objectif:5, stat:'wins', recompense:120 },
+  { id:'kill2', titreKey:'qTitleKill2', icone:'☠️', objectif:2, stat:'kills', recompense:25 },
+  { id:'kill5', titreKey:'qTitleKill5', icone:'☠️', objectif:5, stat:'kills', recompense:70 },
+  { id:'kill10', titreKey:'qTitleKill10', icone:'☠️', objectif:10, stat:'kills', recompense:150 },
+  { id:'play3', titreKey:'qTitlePlay3', icone:'🎮', objectif:3, stat:'gamesPlayed', recompense:15 },
+  { id:'play5', titreKey:'qTitlePlay5', icone:'🎮', objectif:5, stat:'gamesPlayed', recompense:30 },
+  { id:'play10', titreKey:'qTitlePlay10', icone:'🎮', objectif:10, stat:'gamesPlayed', recompense:60 },
+  { id:'mission5', titreKey:'qTitleMission5', icone:'📝', objectif:5, stat:'missions', recompense:20 },
+  { id:'mission15', titreKey:'qTitleMission15', icone:'📝', objectif:15, stat:'missions', recompense:55 },
+  { id:'mission30', titreKey:'qTitleMission30', icone:'📝', objectif:30, stat:'missions', recompense:120 },
+  { id:'winVirus', titreKey:'qTitleWinVirus', icone:'🦠', objectif:1, stat:'winsVirus', recompense:50 },
+  { id:'winInno', titreKey:'qTitleWinInno', icone:'😇', objectif:1, stat:'winsInnocent', recompense:30 },
+  { id:'signaler3', titreKey:'qTitleSignaler3', icone:'🚨', objectif:3, stat:'signalements', recompense:30 },
+  { id:'survie', titreKey:'qTitleSurvie', icone:'🛡️', objectif:1, stat:'survies', recompense:30 }
 ];
 
 function getLundiCourant() {
@@ -759,7 +759,7 @@ function afficherQuetes(data) {
     div.innerHTML =
       '<span class="quete-icone">' + tpl.icone + '</span>' +
       '<div class="quete-content">' +
-        '<div class="quete-titre">' + tpl.titre + '</div>' +
+        '<div class="quete-titre">' + t(tpl.titreKey) + '</div>' +
         '<div class="quete-progress-bar"><div class="quete-progress-fill" style="width:' + pct + '%"></div></div>' +
         '<div class="quete-progress-text">' + Math.min(q.progres, tpl.objectif) + ' / ' + tpl.objectif + '</div>' +
       '</div>' +
@@ -782,7 +782,7 @@ function afficherTempsRestant(lundi) {
   if (diff < 0) { el.textContent = ''; return; }
   var jours = Math.floor(diff / (24 * 3600 * 1000));
   var heures = Math.floor((diff % (24 * 3600 * 1000)) / (3600 * 1000));
-  el.textContent = 'Reset dans ' + jours + 'j ' + heures + 'h';
+  el.textContent = t('questsResetIn', jours, heures);
 }
 
 function reclamerQuete(queteId) {
@@ -810,10 +810,10 @@ function reclamerQuete(queteId) {
     if (typeof sauvegarderGold === 'function') sauvegarderGold();
     var goldEl = document.getElementById('player-gold');
     if (goldEl) goldEl.textContent = playerGold;
-    showNotif('+' + recompenseGagnee + ' gold !', 'success');
+    showNotif(t('questsGoldEarned', recompenseGagnee), 'success');
     chargerQuetes();
   }).catch(function(err) {
-    showNotif('Erreur : ' + (err && err.message ? err.message : 'inconnue'), 'warn');
+    showNotif(t('questsError') + ' : ' + (err && err.message ? err.message : 'inconnue'), 'warn');
   });
 }
 
@@ -885,15 +885,15 @@ function analyserMdp() {
     'jessica','asshole','696969','amanda','access'
   ];
   if (motsCommuns.indexOf(mdp.toLowerCase()) >= 0) {
-    afficherResultatMdp(0, 'INSTANTANE', 'TRES FAIBLE', '#e74c3c', '💀',
-      ['Fait partie du top 50 des mots de passe les plus utilises', 'Crackable en moins d\'une seconde', 'A changer immediatement !']);
+    afficherResultatMdp(0, t('mdpInstant').toUpperCase(), t('mdpVeryWeak'), '#e74c3c', '💀',
+      [t('mdpTopCommon'), t('mdpCrackInstant'), t('mdpChangeNow')]);
     return;
   }
   // Verifier si c'est le pseudo du joueur
   var monPseudo = (typeof getPseudo === 'function') ? (getPseudo() || '') : '';
   if (monPseudo && mdp.toLowerCase() === monPseudo.toLowerCase()) {
-    afficherResultatMdp(0, 'INSTANTANE', 'TRES FAIBLE', '#e74c3c', '💀',
-      ['C\'est votre pseudo !', 'Tres facile a deviner', 'A changer immediatement !']);
+    afficherResultatMdp(0, t('mdpInstant').toUpperCase(), t('mdpVeryWeak'), '#e74c3c', '💀',
+      [t('mdpItsYourPseudo'), t('mdpEasyGuess'), t('mdpChangeNow')]);
     return;
   }
 
@@ -912,44 +912,44 @@ function analyserMdp() {
 
   // Penalites
   var conseils = [];
-  if (mdp.length < 6) conseils.push('Trop court (< 6 caracteres)');
-  if (!/[A-Z]/.test(mdp)) conseils.push('Ajoute des majuscules');
-  if (!/[0-9]/.test(mdp)) conseils.push('Ajoute des chiffres');
-  if (!/[^a-zA-Z0-9]/.test(mdp)) conseils.push('Ajoute des symboles (!@#$...)');
-  if (/^(.)\1+$/.test(mdp)) { secondes = 0.001; conseils.push('Caracteres tous identiques !'); }
-  if (/^(0123|1234|abcd|qwer|azer)/i.test(mdp)) { secondes = 0.01; conseils.push('Sequence trop simple'); }
+  if (mdp.length < 6) conseils.push(t('mdpTooShort'));
+  if (!/[A-Z]/.test(mdp)) conseils.push(t('mdpAddUppercase'));
+  if (!/[0-9]/.test(mdp)) conseils.push(t('mdpAddNumbers'));
+  if (!/[^a-zA-Z0-9]/.test(mdp)) conseils.push(t('mdpAddSymbols'));
+  if (/^(.)\1+$/.test(mdp)) { secondes = 0.001; conseils.push(t('mdpAllSame')); }
+  if (/^(0123|1234|abcd|qwer|azer)/i.test(mdp)) { secondes = 0.01; conseils.push(t('mdpSimpleSeq')); }
 
   var temps = formaterDuree(secondes);
   var niveau, couleur, emoji, pct;
-  if (secondes < 1) { niveau = 'TRES FAIBLE'; couleur = '#e74c3c'; emoji = '💀'; pct = 5; }
-  else if (secondes < 60) { niveau = 'FAIBLE'; couleur = '#e67e22'; emoji = '😟'; pct = 20; }
-  else if (secondes < 3600) { niveau = 'MOYEN'; couleur = '#f39c12'; emoji = '🤔'; pct = 40; }
-  else if (secondes < 86400 * 30) { niveau = 'BON'; couleur = '#f1c40f'; emoji = '🙂'; pct = 60; }
-  else if (secondes < 86400 * 365 * 10) { niveau = 'FORT'; couleur = '#2ecc71'; emoji = '😎'; pct = 80; }
-  else { niveau = 'EXTREMEMENT FORT'; couleur = '#27ae60'; emoji = '🛡️'; pct = 100; }
+  if (secondes < 1) { niveau = t('mdpVeryWeak'); couleur = '#e74c3c'; emoji = '💀'; pct = 5; }
+  else if (secondes < 60) { niveau = t('mdpWeak'); couleur = '#e67e22'; emoji = '😟'; pct = 20; }
+  else if (secondes < 3600) { niveau = t('mdpMedium'); couleur = '#f39c12'; emoji = '🤔'; pct = 40; }
+  else if (secondes < 86400 * 30) { niveau = t('mdpGood'); couleur = '#f1c40f'; emoji = '🙂'; pct = 60; }
+  else if (secondes < 86400 * 365 * 10) { niveau = t('mdpStrong'); couleur = '#2ecc71'; emoji = '😎'; pct = 80; }
+  else { niveau = t('mdpVeryStrong'); couleur = '#27ae60'; emoji = '🛡️'; pct = 100; }
 
-  if (conseils.length === 0) conseils.push('Excellent mot de passe !');
+  if (conseils.length === 0) conseils.push(t('mdpExcellent'));
   afficherResultatMdp(pct, temps, niveau, couleur, emoji, conseils);
 }
 
 function formaterDuree(s) {
-  if (s < 0.001) return 'instantane';
-  if (s < 1) return 'moins d\'une seconde';
-  if (s < 60) return Math.round(s) + ' secondes';
-  if (s < 3600) return Math.round(s / 60) + ' minutes';
-  if (s < 86400) return Math.round(s / 3600) + ' heures';
-  if (s < 86400 * 30) return Math.round(s / 86400) + ' jours';
-  if (s < 86400 * 365) return Math.round(s / (86400 * 30)) + ' mois';
-  if (s < 86400 * 365 * 1000) return Math.round(s / (86400 * 365)) + ' ans';
-  if (s < 86400 * 365 * 1e6) return Math.round(s / (86400 * 365 * 1000)) + ' milliers d\'annees';
-  if (s < 86400 * 365 * 1e9) return Math.round(s / (86400 * 365 * 1e6)) + ' millions d\'annees';
-  return 'milliards d\'annees';
+  if (s < 0.001) return t('mdpInstant');
+  if (s < 1) return t('mdpLessThan1Sec');
+  if (s < 60) return t('mdpSeconds', Math.round(s));
+  if (s < 3600) return t('mdpMinutes', Math.round(s / 60));
+  if (s < 86400) return t('mdpHours', Math.round(s / 3600));
+  if (s < 86400 * 30) return t('mdpDays', Math.round(s / 86400));
+  if (s < 86400 * 365) return t('mdpMonths', Math.round(s / (86400 * 30)));
+  if (s < 86400 * 365 * 1000) return t('mdpYears', Math.round(s / (86400 * 365)));
+  if (s < 86400 * 365 * 1e6) return t('mdpThousandsYears', Math.round(s / (86400 * 365 * 1000)));
+  if (s < 86400 * 365 * 1e9) return t('mdpMillionsYears', Math.round(s / (86400 * 365 * 1e6)));
+  return t('mdpBillionsYears');
 }
 
 function afficherResultatMdp(pct, temps, niveau, couleur, emoji, conseils) {
   document.getElementById('mdp-niveau').textContent = niveau;
   document.getElementById('mdp-niveau').style.color = couleur;
-  document.getElementById('mdp-temps').textContent = 'Crack minimum : ' + temps;
+  document.getElementById('mdp-temps').textContent = t('mdpCrackTime') + ' ' + temps;
   document.getElementById('mdp-emoji').textContent = emoji;
   var barre = document.getElementById('mdp-barre');
   barre.style.width = pct + '%';

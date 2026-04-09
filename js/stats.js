@@ -160,11 +160,22 @@ function creerClassementItem(data, rang, valeur) {
   var img = document.createElement('img');
   img.className = 'classement-pfp';
   img.src = data.pfp || (typeof PFP_DE_BASE !== 'undefined' ? PFP_DE_BASE : 'assets/pfp_de_base.png');
+  img.style.cursor = 'pointer';
+  img.title = 'Voir le profil';
+  img.onclick = function() {
+    fermerClassement();
+    ouvrirProfil(data._id);
+  };
   item.appendChild(img);
 
   var pseudo = document.createElement('span');
   pseudo.className = 'classement-pseudo';
   pseudo.textContent = escapeHtml(data.pseudo || '???');
+  pseudo.style.cursor = 'pointer';
+  pseudo.onclick = function() {
+    fermerClassement();
+    ouvrirProfil(data._id);
+  };
   item.appendChild(pseudo);
 
   var val = document.createElement('span');

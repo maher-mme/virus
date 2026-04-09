@@ -434,7 +434,7 @@ function tuerVictime() {
     if (joueursElimines.indexOf(pseudoVictime) >= 0) return;
     killCooldown = true;
     incrementerStat('kills');
-    if (typeof incrementerQueteStat === 'function') incrementerQueteStat('kills', 1);
+    if (!modeHorsLigne && typeof incrementerQueteStat === 'function') incrementerQueteStat('kills', 1);
     ajouterXP(XP_PAR_KILL);
     showNotif(t('youInfected', pseudoVictime), 'warn');
     // Mettre alive=false dans Firebase pour le joueur distant
@@ -499,7 +499,7 @@ function tuerVictime() {
     incrementerStat('kills');
     ajouterXP(XP_PAR_KILL);
   }
-  if (typeof incrementerQueteStat === 'function') incrementerQueteStat('kills', 1);
+  if (!modeHorsLigne && typeof incrementerQueteStat === 'function') incrementerQueteStat('kills', 1);
   showNotif(t('youInfected', pseudoVictime), 'warn');
 
   setTimeout(function() {
@@ -564,7 +564,7 @@ function signalerCadavre() {
   var c = cadavres[cadavreProche];
   showNotif(t('bodyReported', c.pseudo), 'warn');
   reunionCreateur = getPseudo() || t('player');
-  if (typeof incrementerQueteStat === 'function') incrementerQueteStat('signalements', 1);
+  if (!modeHorsLigne && typeof incrementerQueteStat === 'function') incrementerQueteStat('signalements', 1);
   // Marquer le cadavre comme reported en Firebase
   if (!modeHorsLigne && partieActuelleId && typeof db !== 'undefined') {
     db.collection('cadavres').where('partyId', '==', partieActuelleId)

@@ -421,8 +421,8 @@ function enregistrerStatsFinPartie(gagnant) {
   if (estMort) incrementerStat('deaths');
   if (aGagne) incrementerStat('wins');
 
-  // Mise a jour des quetes hebdomadaires
-  if (typeof incrementerQueteStat === 'function') {
+  // Mise a jour des quetes hebdomadaires (uniquement en mode en ligne)
+  if (!modeHorsLigne && typeof incrementerQueteStat === 'function') {
     incrementerQueteStat('gamesPlayed', 1);
     if (aGagne) {
       incrementerQueteStat('wins', 1);

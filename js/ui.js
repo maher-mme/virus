@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.1.6';
+var CURRENT_VERSION = '2.1.7';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -662,22 +662,22 @@ function fermerTutoGuide() {
 
 // === SYSTEME DE QUETES HEBDOMADAIRES ===
 var QUETE_TEMPLATES = [
-  { id:'win1', titre:'Gagne 1 partie', icone:'🏆', objectif:1, stat:'wins', recompense:50 },
-  { id:'win3', titre:'Gagne 3 parties', icone:'🏆', objectif:3, stat:'wins', recompense:100 },
-  { id:'win5', titre:'Gagne 5 parties', icone:'🏆', objectif:5, stat:'wins', recompense:200 },
-  { id:'kill2', titre:'Tue 2 joueurs', icone:'☠️', objectif:2, stat:'kills', recompense:50 },
-  { id:'kill5', titre:'Tue 5 joueurs', icone:'☠️', objectif:5, stat:'kills', recompense:100 },
-  { id:'kill10', titre:'Tue 10 joueurs', icone:'☠️', objectif:10, stat:'kills', recompense:200 },
-  { id:'play3', titre:'Joue 3 parties', icone:'🎮', objectif:3, stat:'gamesPlayed', recompense:50 },
-  { id:'play5', titre:'Joue 5 parties', icone:'🎮', objectif:5, stat:'gamesPlayed', recompense:100 },
-  { id:'play10', titre:'Joue 10 parties', icone:'🎮', objectif:10, stat:'gamesPlayed', recompense:200 },
-  { id:'mission5', titre:'Fais 5 missions', icone:'📝', objectif:5, stat:'missions', recompense:50 },
-  { id:'mission15', titre:'Fais 15 missions', icone:'📝', objectif:15, stat:'missions', recompense:100 },
-  { id:'mission30', titre:'Fais 30 missions', icone:'📝', objectif:30, stat:'missions', recompense:200 },
-  { id:'winVirus', titre:'Gagne en tant que VIRUS', icone:'🦠', objectif:1, stat:'winsVirus', recompense:150 },
-  { id:'winInno', titre:'Gagne en tant qu\'INNOCENT', icone:'😇', objectif:1, stat:'winsInnocent', recompense:100 },
-  { id:'signaler3', titre:'Signale 3 cadavres', icone:'🚨', objectif:3, stat:'signalements', recompense:75 },
-  { id:'survie', titre:'Survis a 1 partie sans mourir', icone:'🛡️', objectif:1, stat:'survies', recompense:100 }
+  { id:'win1', titre:'Gagne 1 partie', icone:'🏆', objectif:1, stat:'wins', recompense:20 },
+  { id:'win3', titre:'Gagne 3 parties', icone:'🏆', objectif:3, stat:'wins', recompense:60 },
+  { id:'win5', titre:'Gagne 5 parties', icone:'🏆', objectif:5, stat:'wins', recompense:120 },
+  { id:'kill2', titre:'Tue 2 joueurs', icone:'☠️', objectif:2, stat:'kills', recompense:25 },
+  { id:'kill5', titre:'Tue 5 joueurs', icone:'☠️', objectif:5, stat:'kills', recompense:70 },
+  { id:'kill10', titre:'Tue 10 joueurs', icone:'☠️', objectif:10, stat:'kills', recompense:150 },
+  { id:'play3', titre:'Joue 3 parties', icone:'🎮', objectif:3, stat:'gamesPlayed', recompense:15 },
+  { id:'play5', titre:'Joue 5 parties', icone:'🎮', objectif:5, stat:'gamesPlayed', recompense:30 },
+  { id:'play10', titre:'Joue 10 parties', icone:'🎮', objectif:10, stat:'gamesPlayed', recompense:60 },
+  { id:'mission5', titre:'Fais 5 missions', icone:'📝', objectif:5, stat:'missions', recompense:20 },
+  { id:'mission15', titre:'Fais 15 missions', icone:'📝', objectif:15, stat:'missions', recompense:55 },
+  { id:'mission30', titre:'Fais 30 missions', icone:'📝', objectif:30, stat:'missions', recompense:120 },
+  { id:'winVirus', titre:'Gagne en tant que VIRUS', icone:'🦠', objectif:1, stat:'winsVirus', recompense:50 },
+  { id:'winInno', titre:'Gagne en tant qu\'INNOCENT', icone:'😇', objectif:1, stat:'winsInnocent', recompense:30 },
+  { id:'signaler3', titre:'Signale 3 cadavres', icone:'🚨', objectif:3, stat:'signalements', recompense:30 },
+  { id:'survie', titre:'Survis a 1 partie sans mourir', icone:'🛡️', objectif:1, stat:'survies', recompense:30 }
 ];
 
 function getLundiCourant() {

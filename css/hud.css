@@ -521,9 +521,9 @@
 }
 .cameras-grille {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  max-width: 750px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  max-width: 900px;
   width: 95%;
 }
 .camera-panel {

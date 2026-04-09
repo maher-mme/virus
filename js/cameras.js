@@ -7,7 +7,13 @@ var CAMERAS = [
   { nom: 'CAM 3 - ARCADE', x: 2300, y: 3600, w: 800, h: 600 },
   { nom: 'CAM 4 - SUPERMARCHE', x: 0, y: 3000, w: 900, h: 700 },
   { nom: 'CAM 5 - LIBRAIRIE', x: 0, y: 800, w: 700, h: 600 },
-  { nom: 'CAM 6 - CAFE', x: 3600, y: 0, w: 650, h: 400 }
+  { nom: 'CAM 6 - CAFE', x: 3600, y: 0, w: 650, h: 400 },
+  { nom: 'CAM 7 - PHARMACIE', x: 0, y: 400, w: 700, h: 500 },
+  { nom: 'CAM 8 - AGENCE DE VOYAGE', x: 7300, y: 4500, w: 700, h: 600 },
+  { nom: 'CAM 9 - JEUX VIDEO', x: 0, y: 3700, w: 700, h: 500 },
+  { nom: 'CAM 10 - TECH & ELECTRONIQUE', x: 7300, y: 400, w: 700, h: 500 },
+  { nom: 'CAM 11 - KIOSQUE', x: 2300, y: 1100, w: 800, h: 500 },
+  { nom: 'CAM 12 - BOWLING', x: 4300, y: 3700, w: 800, h: 500 }
 ];
 var camerasOuvertes = false;
 var camerasInterval = null;

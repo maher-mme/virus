@@ -411,8 +411,8 @@ function enregistrerStatsFinPartie(gagnant) {
   if ((gagnant === 'innocents' || gagnant === 'missions') && monRole === 'espion' && espionCamp === 'innocent') aGagne = true;
   if (gagnant === 'fanatique' && monRole === 'fanatique') aGagne = true;
 
-  // Mise a jour des quetes hebdomadaires (uniquement en mode en ligne) - AVANT le return API
-  if (!modeHorsLigne && typeof incrementerQueteStat === 'function') {
+  // Mise a jour des quetes hebdomadaires (online + hors ligne)
+  if (typeof incrementerQueteStat === 'function') {
     incrementerQueteStat('gamesPlayed', 1);
     if (aGagne) {
       incrementerQueteStat('wins', 1);

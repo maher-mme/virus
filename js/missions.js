@@ -48,6 +48,28 @@ function updateJaugeMissions() {
   texte.textContent = t('missionsLabel', missionsCollectivesCompletees, totalMissionsCollectives, pct);
 }
 
+// Recalculer le total de missions en fonction des joueurs vivants (mode en ligne)
+function recalculerTotalMissions() {
+  if (modeHorsLigne || typeof firebasePartyPlayers === 'undefined') return;
+  var nbVraisVivants = 0;
+  for (var i = 0; i < firebasePartyPlayers.length; i++) {
+    var p = firebasePartyPlayers[i];
+    if (p.isBot) continue;
+    if (p.alive === false) continue;
+    if (typeof joueursElimines !== 'undefined' && joueursElimines.indexOf(p.pseudo) >= 0) continue;
+    nbVraisVivants++;
+  }
+  totalMissionsCollectives = nbVraisVivants * 4;
+  updateJaugeMissions();
+  // Verifier victoire si la jauge est pleine
+  if (totalMissionsCollectives > 0 && missionsCollectivesCompletees >= totalMissionsCollectives) {
+    if (typeof verifierVictoire === 'function') {
+      var g = verifierVictoire();
+      if (g && typeof afficherFinPartie === 'function') afficherFinPartie(g);
+    }
+  }
+}
+
 function demarrerSimulationMissions(nbAutresJoueurs) {
   if (simulationMissionsTimer) clearInterval(simulationMissionsTimer);
   var missionsRestantesAutres = nbAutresJoueurs * 4;

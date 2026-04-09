@@ -654,6 +654,8 @@ function handleSinglePlayerUpdate(p) {
             activerSpectateur(vivants[0].playerId);
           }
         }
+        // Recalculer la jauge de missions (un joueur en moins)
+        if (typeof recalculerTotalMissions === 'function') recalculerTotalMissions();
         // Verifier la victoire
         if (typeof verifierVictoire === 'function') {
           var gagnant = verifierVictoire();
@@ -714,6 +716,8 @@ function handleSinglePlayerUpdate(p) {
       if (typeof joueursElimines !== 'undefined' && p.pseudo && joueursElimines.indexOf(p.pseudo) < 0) {
         joueursElimines.push(p.pseudo);
       }
+      // Recalculer la jauge de missions (un joueur en moins)
+      if (typeof recalculerTotalMissions === 'function') recalculerTotalMissions();
       // Verifier la victoire
       if (typeof verifierVictoire === 'function') {
         var gagnantR = verifierVictoire();

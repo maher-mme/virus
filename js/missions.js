@@ -26,7 +26,7 @@ var POOL_MISSIONS = [
   { nom: 'Realigner les quilles', boutiqueNom: 'BOWLING', rect: {x:4500, y:3800, w:600, h:400}, caisseX: 5025, caisseY: 4122, miniJeu: 'quilles' },
   { nom: 'Gonfler les ballons', boutiqueNom: 'ARTICLES DE SPORT', rect: {x:7440, y:3800, w:500, h:350}, caisseX: 7725, caisseY: 4122, miniJeu: 'ballons' },
   { nom: 'Scanner d\'identite', boutiqueNom: 'AGENCE DE VOYAGE', rect: {x:7440, y:4700, w:500, h:400}, caisseX: 7725, caisseY: 5072, miniJeu: 'scan' },
-  { nom: 'Trier les dechets', boutiqueNom: 'FOOD COURT', rect: {x:7240, y:3200, w:700, h:500}, caisseX: 7555, caisseY: 3657, miniJeu: 'dechets' },
+  { nom: 'Trier les dechets', boutiqueNom: 'FOOD COURT', rect: {x:7240, y:3200, w:700, h:500}, caisseX: 7860, caisseY: 3650, miniJeu: 'dechets' },
   { nom: 'Deverrouiller le coffre', boutiqueNom: 'MEUBLES & DECO', rect: {x:60, y:4700, w:500, h:400}, caisseX: 355, caisseY: 5072, miniJeu: 'coffre' }
 ];
 var mesMissions = [];

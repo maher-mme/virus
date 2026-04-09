@@ -74,11 +74,13 @@ function chargerClassement(champ) {
   if (!liste) return;
   liste.innerHTML = '<div class="spinner"></div>';
 
-  // Skins : compter depuis le tableau skinsAchetes + skins de base
+  // Cosmetiques : compter skins + pets + musiques
   if (champ === 'skins') {
     var nbSkinsBase = (typeof SKINS !== 'undefined') ? SKINS.filter(function(s) { return !SKINS_BOUTIQUE.find(function(sb) { return sb.id === s.id; }); }).length : 2;
     var nbSkinsBoutique = (typeof SKINS_BOUTIQUE !== 'undefined') ? SKINS_BOUTIQUE.length : 0;
-    var totalSkinsExistants = nbSkinsBase + nbSkinsBoutique;
+    var nbPetsBoutique = (typeof PETS_BOUTIQUE !== 'undefined') ? PETS_BOUTIQUE.length : 0;
+    var nbMusiquesBoutique = (typeof MUSIQUES_BOUTIQUE !== 'undefined') ? MUSIQUES_BOUTIQUE.length : 0;
+    var totalCosmetiques = nbSkinsBase + nbSkinsBoutique + nbPetsBoutique + nbMusiquesBoutique;
 
     db.collection('players').get({ source: 'server' }).then(function(snap) {
       var joueurs = [];
@@ -87,15 +89,13 @@ function chargerClassement(champ) {
         data._id = doc.id;
         var pseudoLower = (data.pseudo || '').trim().toLowerCase();
         var estAdmin = pseudoLower === 'obstinate' || pseudoLower === 'obstinate2.0' || pseudoLower === 'chrikidd77';
-        if (estAdmin) return; // Exclure les admins du classement skins
-        var nbSkins = nbSkinsBase; // Tout le monde a les skins de base
-        if (data.skinsAchetes && Array.isArray(data.skinsAchetes)) {
-          nbSkins += data.skinsAchetes.length;
-        } else if (data.skinsCount) {
-          nbSkins += data.skinsCount;
-        }
+        if (estAdmin) return;
+        var nb = nbSkinsBase; // skins de base inclus pour tous
+        if (data.skinsAchetes && Array.isArray(data.skinsAchetes)) nb += data.skinsAchetes.length;
+        if (data.petsAchetes && Array.isArray(data.petsAchetes)) nb += data.petsAchetes.length;
+        if (data.musiquesAchetees && Array.isArray(data.musiquesAchetees)) nb += data.musiquesAchetees.length;
         if (data.pseudo && data.pseudo.trim()) {
-          joueurs.push({ data: data, count: nbSkins });
+          joueurs.push({ data: data, count: nb });
         }
       });
       joueurs.sort(function(a, b) { return b.count - a.count; });
@@ -105,16 +105,15 @@ function chargerClassement(champ) {
         return;
       }
       liste.innerHTML = '';
-      // Info total skins au-dessus du classement
       var info = document.createElement('div');
       info.className = 'classement-info-skins';
-      info.textContent = totalSkinsExistants + ' skins disponibles (' + nbSkinsBase + ' gratuits + ' + nbSkinsBoutique + ' boutique)';
+      info.textContent = totalCosmetiques + ' cosmetiques (' + (nbSkinsBase + nbSkinsBoutique) + ' skins + ' + nbPetsBoutique + ' pets + ' + nbMusiquesBoutique + ' musiques)';
       liste.appendChild(info);
       joueurs.forEach(function(j, idx) {
-        liste.appendChild(creerClassementItem(j.data, idx + 1, j.count + '/' + totalSkinsExistants));
+        liste.appendChild(creerClassementItem(j.data, idx + 1, j.count + '/' + totalCosmetiques));
       });
     }).catch(function(err) {
-      console.error('Erreur classement skins:', err);
+      console.error('Erreur classement cosmetiques:', err);
       liste.innerHTML = '<div class="classement-vide">' + t('connectionError') + '</div>';
     });
     return;

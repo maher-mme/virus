@@ -414,6 +414,17 @@ function enregistrerStatsFinPartie(gagnant) {
   if (estMort) incrementerStat('deaths');
   if (aGagne) incrementerStat('wins');
 
+  // Mise a jour des quetes hebdomadaires
+  if (typeof incrementerQueteStat === 'function') {
+    incrementerQueteStat('gamesPlayed', 1);
+    if (aGagne) {
+      incrementerQueteStat('wins', 1);
+      if (monRole === 'virus') incrementerQueteStat('winsVirus', 1);
+      if (monRole === 'innocent' || monRole === 'journaliste') incrementerQueteStat('winsInnocent', 1);
+    }
+    if (!estMort) incrementerQueteStat('survies', 1);
+  }
+
   // XP : defaite 10-100, victoire 100-250
   var xpGagne;
   if (aGagne) {

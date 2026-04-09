@@ -324,6 +324,7 @@ function terminerMission(missionIdx) {
   }
 
   showNotif(t('missionDone', m.nom), 'info');
+  if (typeof incrementerQueteStat === 'function') incrementerQueteStat('missions', 1);
 
   var btn = document.getElementById('btn-mission');
   if (btn) {

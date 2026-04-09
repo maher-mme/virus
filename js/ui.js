@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.1.4';
+var CURRENT_VERSION = '2.1.5';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -609,6 +609,177 @@ function lancerTutoPartie() {
 }
 
 // Le tutoriel se declenche a la creation du compte (appele depuis account.js)
+
+// === SYSTEME DE QUETES HEBDOMADAIRES ===
+var QUETE_TEMPLATES = [
+  { id:'win1', titre:'Gagne 1 partie', icone:'🏆', objectif:1, stat:'wins', recompense:50 },
+  { id:'win3', titre:'Gagne 3 parties', icone:'🏆', objectif:3, stat:'wins', recompense:100 },
+  { id:'win5', titre:'Gagne 5 parties', icone:'🏆', objectif:5, stat:'wins', recompense:200 },
+  { id:'kill2', titre:'Tue 2 joueurs', icone:'☠️', objectif:2, stat:'kills', recompense:50 },
+  { id:'kill5', titre:'Tue 5 joueurs', icone:'☠️', objectif:5, stat:'kills', recompense:100 },
+  { id:'kill10', titre:'Tue 10 joueurs', icone:'☠️', objectif:10, stat:'kills', recompense:200 },
+  { id:'play3', titre:'Joue 3 parties', icone:'🎮', objectif:3, stat:'gamesPlayed', recompense:50 },
+  { id:'play5', titre:'Joue 5 parties', icone:'🎮', objectif:5, stat:'gamesPlayed', recompense:100 },
+  { id:'play10', titre:'Joue 10 parties', icone:'🎮', objectif:10, stat:'gamesPlayed', recompense:200 },
+  { id:'mission5', titre:'Fais 5 missions', icone:'📝', objectif:5, stat:'missions', recompense:50 },
+  { id:'mission15', titre:'Fais 15 missions', icone:'📝', objectif:15, stat:'missions', recompense:100 },
+  { id:'mission30', titre:'Fais 30 missions', icone:'📝', objectif:30, stat:'missions', recompense:200 },
+  { id:'winVirus', titre:'Gagne en tant que VIRUS', icone:'🦠', objectif:1, stat:'winsVirus', recompense:150 },
+  { id:'winInno', titre:'Gagne en tant qu\'INNOCENT', icone:'😇', objectif:1, stat:'winsInnocent', recompense:100 },
+  { id:'signaler3', titre:'Signale 3 cadavres', icone:'🚨', objectif:3, stat:'signalements', recompense:75 },
+  { id:'survie', titre:'Survis a 1 partie sans mourir', icone:'🛡️', objectif:1, stat:'survies', recompense:100 }
+];
+
+function getLundiCourant() {
+  var d = new Date();
+  var jour = d.getDay() || 7; // dimanche = 7
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - (jour - 1));
+  return d.getTime();
+}
+
+function ouvrirQuetes() {
+  var popup = document.getElementById('popup-quetes');
+  if (!popup) return;
+  popup.classList.add('visible');
+  chargerQuetes();
+}
+
+function fermerQuetes() {
+  var popup = document.getElementById('popup-quetes');
+  if (popup) popup.classList.remove('visible');
+}
+
+function chargerQuetes() {
+  var liste = document.getElementById('quetes-liste');
+  if (!liste) return;
+  liste.innerHTML = '<div class="spinner"></div>';
+  if (!monPlayerId) {
+    liste.innerHTML = '<div style="color:#95a5a6;text-align:center;padding:20px;">Connecte-toi pour voir tes quetes.</div>';
+    return;
+  }
+  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+    if (!doc.exists) { liste.innerHTML = ''; return; }
+    var data = doc.data();
+    var quetes = data.questsHebdo || null;
+    var lundiCourant = getLundiCourant();
+    // Generer de nouvelles quetes si necessaire (premiere fois ou nouvelle semaine)
+    if (!quetes || !quetes.semaine || quetes.semaine !== lundiCourant) {
+      quetes = genererNouvellesQuetes(lundiCourant);
+      db.collection('players').doc(monPlayerId).update({ questsHebdo: quetes }).catch(function() {});
+    }
+    afficherQuetes(quetes);
+    afficherTempsRestant(lundiCourant);
+  }).catch(function() {
+    liste.innerHTML = '<div style="color:#e74c3c;text-align:center;padding:20px;">Erreur de chargement.</div>';
+  });
+}
+
+function genererNouvellesQuetes(lundi) {
+  var pool = QUETE_TEMPLATES.slice();
+  var choisies = [];
+  while (choisies.length < 10 && pool.length > 0) {
+    var idx = Math.floor(Math.random() * pool.length);
+    var q = pool[idx];
+    pool.splice(idx, 1);
+    choisies.push({ id: q.id, progres: 0, prise: false });
+  }
+  return { semaine: lundi, quetes: choisies };
+}
+
+function afficherQuetes(data) {
+  var liste = document.getElementById('quetes-liste');
+  if (!liste) return;
+  liste.innerHTML = '';
+  var qs = data.quetes || [];
+  var aRecompense = false;
+  qs.forEach(function(q) {
+    var tpl = QUETE_TEMPLATES.find(function(t) { return t.id === q.id; });
+    if (!tpl) return;
+    var pct = Math.min(100, Math.round((q.progres / tpl.objectif) * 100));
+    var complete = q.progres >= tpl.objectif;
+    if (complete && !q.prise) aRecompense = true;
+    var div = document.createElement('div');
+    div.className = 'quete-item' + (complete ? ' completee' : '') + (q.prise ? ' recompense-prise' : '');
+    div.innerHTML =
+      '<span class="quete-icone">' + tpl.icone + '</span>' +
+      '<div class="quete-content">' +
+        '<div class="quete-titre">' + tpl.titre + '</div>' +
+        '<div class="quete-progress-bar"><div class="quete-progress-fill" style="width:' + pct + '%"></div></div>' +
+        '<div class="quete-progress-text">' + Math.min(q.progres, tpl.objectif) + ' / ' + tpl.objectif + '</div>' +
+      '</div>' +
+      '<button class="quete-recompense" ' + ((!complete || q.prise) ? 'disabled' : '') +
+      ' onclick="reclamerQuete(\'' + q.id + '\')">' +
+      (q.prise ? 'PRIS' : '+' + tpl.recompense + ' 🪙') +
+      '</button>';
+    liste.appendChild(div);
+  });
+  // Mettre a jour le badge
+  var badge = document.getElementById('quetes-badge');
+  if (badge) badge.style.display = aRecompense ? 'flex' : 'none';
+}
+
+function afficherTempsRestant(lundi) {
+  var el = document.getElementById('quetes-temps-restant');
+  if (!el) return;
+  var prochainLundi = lundi + 7 * 24 * 3600 * 1000;
+  var diff = prochainLundi - Date.now();
+  if (diff < 0) { el.textContent = ''; return; }
+  var jours = Math.floor(diff / (24 * 3600 * 1000));
+  var heures = Math.floor((diff % (24 * 3600 * 1000)) / (3600 * 1000));
+  el.textContent = 'Reset dans ' + jours + 'j ' + heures + 'h';
+}
+
+function reclamerQuete(queteId) {
+  if (!monPlayerId) return;
+  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+    if (!doc.exists) return;
+    var data = doc.data();
+    var qd = data.questsHebdo;
+    if (!qd || !qd.quetes) return;
+    var q = qd.quetes.find(function(x) { return x.id === queteId; });
+    var tpl = QUETE_TEMPLATES.find(function(t) { return t.id === queteId; });
+    if (!q || !tpl) return;
+    if (q.prise || q.progres < tpl.objectif) return;
+    q.prise = true;
+    var nouveauGold = (data.gold || 0) + tpl.recompense;
+    db.collection('players').doc(monPlayerId).update({ questsHebdo: qd, gold: nouveauGold }).then(function() {
+      playerGold = nouveauGold;
+      if (typeof sauvegarderGold === 'function') sauvegarderGold();
+      var goldEl = document.getElementById('player-gold');
+      if (goldEl) goldEl.textContent = playerGold;
+      showNotif('+' + tpl.recompense + ' gold !', 'success');
+      chargerQuetes();
+    }).catch(function() { showNotif('Erreur', 'warn'); });
+  });
+}
+
+// Incrementer la progression d'une stat (appele depuis enregistrerStatsFinPartie ou autres)
+function incrementerQueteStat(stat, valeur) {
+  if (!monPlayerId) return;
+  valeur = valeur || 1;
+  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+    if (!doc.exists) return;
+    var data = doc.data();
+    var qd = data.questsHebdo;
+    var lundiCourant = getLundiCourant();
+    if (!qd || qd.semaine !== lundiCourant) {
+      qd = genererNouvellesQuetes(lundiCourant);
+    }
+    var modifie = false;
+    qd.quetes.forEach(function(q) {
+      var tpl = QUETE_TEMPLATES.find(function(t) { return t.id === q.id; });
+      if (!tpl || tpl.stat !== stat) return;
+      if (q.progres < tpl.objectif) {
+        q.progres = Math.min(tpl.objectif, q.progres + valeur);
+        modifie = true;
+      }
+    });
+    if (modifie) {
+      db.collection('players').doc(monPlayerId).update({ questsHebdo: qd }).catch(function() {});
+    }
+  }).catch(function() {});
+}
 
 // === IA VERIFICATEUR DE MOT DE PASSE ===
 function ouvrirMdpCheck() {

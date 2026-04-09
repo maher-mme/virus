@@ -68,30 +68,38 @@ function initBots(nbBots) {
   var mallMap = document.getElementById('mall-map');
   if (!mallMap) return;
 
-  // Tous les skins sans doublons (dedupliques par id)
+  // Tous les skins sans doublons (dedupliques par id ET par fichier)
   var tousLesSkins = SKINS.concat(SKINS_BOUTIQUE);
   var skinsUniques = [];
   var idsVus = {};
+  var fichiersVus = {};
   for (var su = 0; su < tousLesSkins.length; su++) {
-    if (!idsVus[tousLesSkins[su].id]) {
-      idsVus[tousLesSkins[su].id] = true;
-      skinsUniques.push(tousLesSkins[su]);
+    var s = tousLesSkins[su];
+    if (!idsVus[s.id] && !fichiersVus[s.fichier]) {
+      idsVus[s.id] = true;
+      fichiersVus[s.fichier] = true;
+      skinsUniques.push(s);
     }
   }
-  // Exclure le skin du joueur
-  var monSkin = (typeof getSkin === 'function') ? getSkin() : '';
-  skinsUniques = skinsUniques.filter(function(s) { return s.id !== monSkin; });
-  // Melanger pour garantir des skins differents
+  // Exclure le skin du joueur (par id ET par fichier)
+  var monSkinId = (typeof getSkin === 'function') ? getSkin() : '';
+  var monSkinFichier = (typeof getSkinFichier === 'function') ? getSkinFichier(monSkinId) : '';
+  skinsUniques = skinsUniques.filter(function(sk) {
+    return sk.id !== monSkinId && sk.fichier !== monSkinFichier;
+  });
+  // Melanger
   for (var sh = skinsUniques.length - 1; sh > 0; sh--) {
     var sj = Math.floor(Math.random() * (sh + 1));
     var tmp = skinsUniques[sh];
     skinsUniques[sh] = skinsUniques[sj];
     skinsUniques[sj] = tmp;
   }
+  // Limiter le nombre de bots au nombre de skins disponibles (pas de doublons possibles)
+  if (nbBots > skinsUniques.length) nbBots = skinsUniques.length;
 
   for (var i = 0; i < nbBots; i++) {
-    // Skin unique par bot
-    var skinObj = skinsUniques[i % skinsUniques.length];
+    // Skin unique par bot (pas de modulo : un skin par bot maximum)
+    var skinObj = skinsUniques[i];
     var skinFichier = skinObj.fichier;
     // Pseudo = nom du skin
     var pseudo = skinObj.nom;

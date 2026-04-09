@@ -411,6 +411,17 @@ function enregistrerStatsFinPartie(gagnant) {
   if ((gagnant === 'innocents' || gagnant === 'missions') && monRole === 'espion' && espionCamp === 'innocent') aGagne = true;
   if (gagnant === 'fanatique' && monRole === 'fanatique') aGagne = true;
 
+  // Mise a jour des quetes hebdomadaires (uniquement en mode en ligne) - AVANT le return API
+  if (!modeHorsLigne && typeof incrementerQueteStat === 'function') {
+    incrementerQueteStat('gamesPlayed', 1);
+    if (aGagne) {
+      incrementerQueteStat('wins', 1);
+      if (monRole === 'virus') incrementerQueteStat('winsVirus', 1);
+      if (monRole === 'innocent' || monRole === 'journaliste') incrementerQueteStat('winsInnocent', 1);
+    }
+    if (!estMort) incrementerQueteStat('survies', 1);
+  }
+
   // Mode API : le serveur gere tout
   if (typeof apiDisponible !== 'undefined' && apiDisponible && partieActuelleId) {
     var killsCount = typeof playerKills !== 'undefined' ? playerKills : 0;
@@ -431,17 +442,6 @@ function enregistrerStatsFinPartie(gagnant) {
   incrementerStat('gamesPlayed');
   if (estMort) incrementerStat('deaths');
   if (aGagne) incrementerStat('wins');
-
-  // Mise a jour des quetes hebdomadaires (uniquement en mode en ligne)
-  if (!modeHorsLigne && typeof incrementerQueteStat === 'function') {
-    incrementerQueteStat('gamesPlayed', 1);
-    if (aGagne) {
-      incrementerQueteStat('wins', 1);
-      if (monRole === 'virus') incrementerQueteStat('winsVirus', 1);
-      if (monRole === 'innocent' || monRole === 'journaliste') incrementerQueteStat('winsInnocent', 1);
-    }
-    if (!estMort) incrementerQueteStat('survies', 1);
-  }
 
   // XP : defaite 10-100, victoire 100-250
   var xpGagne;

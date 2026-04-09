@@ -30,6 +30,10 @@ function ajouterXP(xpGagne) {
     var niveauxGagnes = nouveauNiveau - ancienNiveau;
 
     var updateData = { xp: nouveauXP, level: nouveauNiveau };
+    // Tracker l'XP gagnee par mois (cle YYYY-MM)
+    var now = new Date();
+    var moisCle = 'xpParMois.' + now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    updateData[moisCle] = firebase.firestore.FieldValue.increment(xpGagne);
     if (niveauxGagnes > 0) {
       // Donner 50 gold par niveau gagne
       var goldBonus = niveauxGagnes * GOLD_PAR_NIVEAU;
@@ -203,6 +207,34 @@ function ouvrirProfilJoueur(playerId) {
   ouvrirProfil(playerId);
 }
 
+// Construire un graphique en barres de l'XP par mois (6 derniers mois)
+function construireGrapheXP(xpParMois) {
+  var moisLabels = ['Jan','Fev','Mar','Avr','Mai','Juin','Juil','Aou','Sep','Oct','Nov','Dec'];
+  var now = new Date();
+  var data = [];
+  for (var i = 5; i >= 0; i--) {
+    var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    var cle = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    var label = moisLabels[d.getMonth()];
+    data.push({ label: label, value: xpParMois[cle] || 0 });
+  }
+  var max = Math.max.apply(null, data.map(function(d) { return d.value; }));
+  if (max === 0) max = 1;
+  var html = '<div style="grid-column:1/-1;background:rgba(44,62,80,0.5);border:1px solid #34495e;border-radius:10px;padding:12px;margin-top:6px;">' +
+    '<div style="color:#f39c12;font-size:11px;font-weight:bold;letter-spacing:1px;margin-bottom:8px;text-align:center;">XP DES 6 DERNIERS MOIS</div>' +
+    '<div style="display:flex;align-items:flex-end;justify-content:space-around;height:90px;gap:6px;">';
+  for (var b = 0; b < data.length; b++) {
+    var pct = Math.max(2, Math.round((data[b].value / max) * 100));
+    html += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;">' +
+      '<div style="color:#f39c12;font-size:9px;margin-bottom:2px;">' + data[b].value + '</div>' +
+      '<div style="width:100%;height:' + pct + '%;background:linear-gradient(180deg,#f39c12,#e67e22);border-radius:4px 4px 0 0;min-height:2px;"></div>' +
+      '<div style="color:#bdc3c7;font-size:10px;margin-top:4px;">' + data[b].label + '</div>' +
+    '</div>';
+  }
+  html += '</div></div>';
+  return html;
+}
+
 function chargerProfil(playerId) {
   var headerEl = document.getElementById('profil-header');
   var statsEl = document.getElementById('profil-stats');
@@ -288,7 +320,8 @@ function chargerProfil(playerId) {
       '<div class="profil-stat"><span class="profil-stat-val">' + wins + '</span><span class="profil-stat-label">' + t('victories') + '</span></div>' +
       '<div class="profil-stat"><span class="profil-stat-val">' + kills + '</span><span class="profil-stat-label">KILLS</span></div>' +
       '<div class="profil-stat"><span class="profil-stat-val">' + deaths + '</span><span class="profil-stat-label">' + t('deaths') + '</span></div>' +
-      '<div class="profil-stat" style="grid-column:1/-1"><span class="profil-stat-val">' + winRate + '%</span><span class="profil-stat-label">' + t('winRate') + '</span></div>';
+      '<div class="profil-stat" style="grid-column:1/-1"><span class="profil-stat-val">' + winRate + '%</span><span class="profil-stat-label">' + t('winRate') + '</span></div>' +
+      construireGrapheXP(data.xpParMois || {});
   }).catch(function() {
     statsEl.innerHTML = '<div class="classement-vide">' + t('connectionError') + '</div>';
   });
@@ -309,19 +342,33 @@ function checkProfilURL() {
   var params = new URLSearchParams(window.location.search);
   var profilPseudo = params.get('profil');
   if (!profilPseudo) return;
-  // Chercher le joueur par pseudo dans Firebase
-  if (typeof db === 'undefined') { setTimeout(checkProfilURL, 1000); return; }
-  db.collection('players').where('pseudo', '==', profilPseudo).limit(1).get().then(function(snap) {
-    if (!snap.empty) {
+  // Attendre que Firebase soit dispo
+  if (typeof db === 'undefined') { setTimeout(checkProfilURL, 500); return; }
+  // Attendre que le DOM soit pret (popup-profil existe)
+  if (!document.getElementById('popup-profil')) { setTimeout(checkProfilURL, 500); return; }
+  // Recherche insensible a la casse
+  var pseudoLower = profilPseudo.toLowerCase();
+  db.collection('players').where('pseudoLower', '==', pseudoLower).limit(1).get().then(function(snap) {
+    if (snap.empty) {
+      // Fallback : chercher par pseudo exact
+      return db.collection('players').where('pseudo', '==', profilPseudo).limit(1).get();
+    }
+    return snap;
+  }).then(function(snap) {
+    if (snap && !snap.empty) {
       ouvrirProfil(snap.docs[0].id);
     } else {
       showNotif('Joueur "' + profilPseudo + '" introuvable', 'warn');
     }
     // Nettoyer l'URL sans recharger
     window.history.replaceState({}, '', window.location.pathname);
-  }).catch(function() {});
+  }).catch(function(err) {
+    console.error('Erreur checkProfilURL:', err);
+  });
 }
-setTimeout(checkProfilURL, 2500);
+// Lancer plusieurs fois au cas ou le DOM/Firebase ne sont pas prets
+setTimeout(checkProfilURL, 1500);
+setTimeout(checkProfilURL, 3500);
 
 // ============================
 // MISE A JOUR DES STATS EN FIN DE PARTIE

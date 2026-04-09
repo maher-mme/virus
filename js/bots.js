@@ -128,12 +128,8 @@ function initBots(nbBots) {
 
     mallMap.appendChild(div);
 
-    // Pet aleatoire (50% de chance)
+    // Pas de pet pour les bots
     var botPetObj = null;
-    if (Math.random() < 0.5 && typeof PETS_BOUTIQUE !== 'undefined' && PETS_BOUTIQUE.length > 0 && typeof creerPetElement === 'function') {
-      var randomPet = PETS_BOUTIQUE[Math.floor(Math.random() * PETS_BOUTIQUE.length)];
-      botPetObj = creerPetElement(randomPet.id, mallMap);
-    }
 
     bots.push({
       id: 'bot-' + i,

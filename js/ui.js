@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.2.2';
+var CURRENT_VERSION = '2.2.3';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -787,54 +787,65 @@ function afficherTempsRestant(lundi) {
 
 function reclamerQuete(queteId) {
   if (!monPlayerId) return;
-  db.collection('players').doc(monPlayerId).get().then(function(doc) {
-    if (!doc.exists) return;
-    var data = doc.data();
-    var qd = data.questsHebdo;
-    if (!qd || !qd.quetes) return;
-    var q = qd.quetes.find(function(x) { return x.id === queteId; });
-    var tpl = QUETE_TEMPLATES.find(function(t) { return t.id === queteId; });
-    if (!q || !tpl) return;
-    if (q.prise || q.progres < tpl.objectif) return;
-    q.prise = true;
-    var nouveauGold = (data.gold || 0) + tpl.recompense;
-    db.collection('players').doc(monPlayerId).update({ questsHebdo: qd, gold: nouveauGold }).then(function() {
-      playerGold = nouveauGold;
-      if (typeof sauvegarderGold === 'function') sauvegarderGold();
-      var goldEl = document.getElementById('player-gold');
-      if (goldEl) goldEl.textContent = playerGold;
-      showNotif('+' + tpl.recompense + ' gold !', 'success');
-      chargerQuetes();
-    }).catch(function() { showNotif('Erreur', 'warn'); });
+  var ref = db.collection('players').doc(monPlayerId);
+  var recompenseGagnee = 0;
+  db.runTransaction(function(transaction) {
+    return transaction.get(ref).then(function(doc) {
+      if (!doc.exists) throw new Error('Compte introuvable');
+      var data = doc.data();
+      var qd = data.questsHebdo;
+      if (!qd || !qd.quetes) throw new Error('Pas de quetes');
+      var q = qd.quetes.find(function(x) { return x.id === queteId; });
+      var tpl = QUETE_TEMPLATES.find(function(t) { return t.id === queteId; });
+      if (!q || !tpl) throw new Error('Quete introuvable');
+      if (q.prise) throw new Error('Deja reclamee');
+      if (q.progres < tpl.objectif) throw new Error('Pas terminee');
+      q.prise = true;
+      recompenseGagnee = tpl.recompense;
+      var nouveauGold = (data.gold || 0) + tpl.recompense;
+      transaction.update(ref, { questsHebdo: qd, gold: nouveauGold });
+    });
+  }).then(function() {
+    playerGold = (playerGold || 0) + recompenseGagnee;
+    if (typeof sauvegarderGold === 'function') sauvegarderGold();
+    var goldEl = document.getElementById('player-gold');
+    if (goldEl) goldEl.textContent = playerGold;
+    showNotif('+' + recompenseGagnee + ' gold !', 'success');
+    chargerQuetes();
+  }).catch(function(err) {
+    showNotif('Erreur : ' + (err && err.message ? err.message : 'inconnue'), 'warn');
   });
 }
 
-// Incrementer la progression d'une stat (appele depuis enregistrerStatsFinPartie ou autres)
+// Incrementer la progression d'une stat avec transaction Firebase (evite race conditions)
 function incrementerQueteStat(stat, valeur) {
   if (!monPlayerId) return;
   if (typeof tutoGuide !== 'undefined' && tutoGuide) return; // pas de quetes en entrainement
   valeur = valeur || 1;
-  db.collection('players').doc(monPlayerId).get().then(function(doc) {
-    if (!doc.exists) return;
-    var data = doc.data();
-    var qd = data.questsHebdo;
-    var lundiCourant = getLundiCourant();
-    if (!qd || qd.semaine !== lundiCourant) {
-      qd = genererNouvellesQuetes(lundiCourant);
-    }
-    var modifie = false;
-    qd.quetes.forEach(function(q) {
-      var tpl = QUETE_TEMPLATES.find(function(t) { return t.id === q.id; });
-      if (!tpl || tpl.stat !== stat) return;
-      if (q.progres < tpl.objectif) {
-        q.progres = Math.min(tpl.objectif, q.progres + valeur);
-        modifie = true;
+  var ref = db.collection('players').doc(monPlayerId);
+  db.runTransaction(function(transaction) {
+    return transaction.get(ref).then(function(doc) {
+      if (!doc.exists) return;
+      var data = doc.data();
+      var qd = data.questsHebdo;
+      var lundiCourant = getLundiCourant();
+      if (!qd || qd.semaine !== lundiCourant) {
+        qd = genererNouvellesQuetes(lundiCourant);
+      }
+      var modifie = false;
+      qd.quetes.forEach(function(q) {
+        var tpl = QUETE_TEMPLATES.find(function(t) { return t.id === q.id; });
+        if (!tpl || tpl.stat !== stat) return;
+        if (q.progres < tpl.objectif) {
+          q.progres = Math.min(tpl.objectif, q.progres + valeur);
+          modifie = true;
+        }
+      });
+      if (modifie) {
+        transaction.update(ref, { questsHebdo: qd });
       }
     });
-    if (modifie) {
-      db.collection('players').doc(monPlayerId).update({ questsHebdo: qd }).catch(function() {});
-    }
-  }).catch(function() {});
+  }).catch(function(err) { console.error('Erreur incrementerQueteStat:', err); });
 }
 
 // === IA VERIFICATEUR DE MOT DE PASSE ===

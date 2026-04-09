@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.0.8';
+var CURRENT_VERSION = '2.0.9';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -604,4 +604,106 @@ function lancerTutoPartie() {
 }
 
 // Le tutoriel se declenche a la creation du compte (appele depuis account.js)
+
+// === IA VERIFICATEUR DE MOT DE PASSE ===
+function ouvrirMdpCheck() {
+  var popup = document.getElementById('popup-mdp-check');
+  if (!popup) return;
+  popup.classList.add('visible');
+  document.getElementById('input-mdp-check').value = '';
+  document.getElementById('mdp-resultat').style.display = 'none';
+  setTimeout(function() {
+    var inp = document.getElementById('input-mdp-check');
+    if (inp) inp.focus();
+  }, 100);
+}
+
+function fermerMdpCheck() {
+  var popup = document.getElementById('popup-mdp-check');
+  if (popup) popup.classList.remove('visible');
+}
+
+function analyserMdp() {
+  var mdp = document.getElementById('input-mdp-check').value;
+  var resDiv = document.getElementById('mdp-resultat');
+  if (!mdp) {
+    resDiv.style.display = 'none';
+    return;
+  }
+  resDiv.style.display = '';
+
+  // Listes de mots de passe communs (top 50 mondial)
+  var motsCommuns = [
+    '123456','password','123456789','12345','12345678','qwerty','1234567','111111','1234567890',
+    '123123','azerty','admin','000000','iloveyou','aaaaaa','dragon','password1','qwerty123',
+    'abc123','letmein','monkey','welcome','login','starwars','passw0rd','master','hello',
+    'freedom','whatever','qazwsx','trustno1','jordan23','harley','ranger','iwantu','jennifer',
+    'hunter','buster','soccer','baseball','tigger','charlie','andrew','michelle','love','sunshine',
+    'jessica','asshole','696969','amanda','access'
+  ];
+  if (motsCommuns.indexOf(mdp.toLowerCase()) >= 0) {
+    afficherResultatMdp(0, 'INSTANTANE', 'Mot de passe tres commun !', '#e74c3c', '💀',
+      ['Fait partie du top 50 des mots de passe les plus utilises', 'Crackable en moins d\'une seconde', 'A changer immediatement !']);
+    return;
+  }
+
+  // Calcul de l'entropie
+  var pool = 0;
+  if (/[a-z]/.test(mdp)) pool += 26;
+  if (/[A-Z]/.test(mdp)) pool += 26;
+  if (/[0-9]/.test(mdp)) pool += 10;
+  if (/[^a-zA-Z0-9]/.test(mdp)) pool += 33;
+  var combinations = Math.pow(pool, mdp.length);
+
+  // Vitesse minimum estimee : un attaquant avec un GPU puissant teste 10 milliards de mots/sec
+  // Pour le minimum (cas le pire), on prend 100 milliards/sec
+  var vitesse = 100000000000;
+  var secondes = combinations / vitesse;
+
+  // Penalites
+  var conseils = [];
+  if (mdp.length < 6) conseils.push('Trop court (< 6 caracteres)');
+  if (!/[A-Z]/.test(mdp)) conseils.push('Ajoute des majuscules');
+  if (!/[0-9]/.test(mdp)) conseils.push('Ajoute des chiffres');
+  if (!/[^a-zA-Z0-9]/.test(mdp)) conseils.push('Ajoute des symboles (!@#$...)');
+  if (/^(.)\1+$/.test(mdp)) { secondes = 0.001; conseils.push('Caracteres tous identiques !'); }
+  if (/^(0123|1234|abcd|qwer|azer)/i.test(mdp)) { secondes = 0.01; conseils.push('Sequence trop simple'); }
+
+  var temps = formaterDuree(secondes);
+  var niveau, couleur, emoji, pct;
+  if (secondes < 1) { niveau = 'TRES FAIBLE'; couleur = '#e74c3c'; emoji = '💀'; pct = 5; }
+  else if (secondes < 60) { niveau = 'FAIBLE'; couleur = '#e67e22'; emoji = '😟'; pct = 20; }
+  else if (secondes < 3600) { niveau = 'MOYEN'; couleur = '#f39c12'; emoji = '🤔'; pct = 40; }
+  else if (secondes < 86400 * 30) { niveau = 'BON'; couleur = '#f1c40f'; emoji = '🙂'; pct = 60; }
+  else if (secondes < 86400 * 365 * 10) { niveau = 'FORT'; couleur = '#2ecc71'; emoji = '😎'; pct = 80; }
+  else { niveau = 'EXTREMEMENT FORT'; couleur = '#27ae60'; emoji = '🛡️'; pct = 100; }
+
+  if (conseils.length === 0) conseils.push('Excellent mot de passe !');
+  afficherResultatMdp(pct, temps, niveau, couleur, emoji, conseils);
+}
+
+function formaterDuree(s) {
+  if (s < 0.001) return 'instantane';
+  if (s < 1) return 'moins d\'une seconde';
+  if (s < 60) return Math.round(s) + ' secondes';
+  if (s < 3600) return Math.round(s / 60) + ' minutes';
+  if (s < 86400) return Math.round(s / 3600) + ' heures';
+  if (s < 86400 * 30) return Math.round(s / 86400) + ' jours';
+  if (s < 86400 * 365) return Math.round(s / (86400 * 30)) + ' mois';
+  if (s < 86400 * 365 * 1000) return Math.round(s / (86400 * 365)) + ' ans';
+  if (s < 86400 * 365 * 1e6) return Math.round(s / (86400 * 365 * 1000)) + ' milliers d\'annees';
+  if (s < 86400 * 365 * 1e9) return Math.round(s / (86400 * 365 * 1e6)) + ' millions d\'annees';
+  return 'milliards d\'annees';
+}
+
+function afficherResultatMdp(pct, temps, niveau, couleur, emoji, conseils) {
+  document.getElementById('mdp-niveau').textContent = niveau;
+  document.getElementById('mdp-niveau').style.color = couleur;
+  document.getElementById('mdp-temps').textContent = 'Crack minimum : ' + temps;
+  document.getElementById('mdp-emoji').textContent = emoji;
+  var barre = document.getElementById('mdp-barre');
+  barre.style.width = pct + '%';
+  barre.style.background = couleur;
+  document.getElementById('mdp-conseils').innerHTML = conseils.map(function(c) { return '• ' + c; }).join('<br>');
+}
 

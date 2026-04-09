@@ -40,6 +40,11 @@
   background: linear-gradient(180deg, #f39c12, #e67e22);
   border-color: #d35400;
 }
+.btn-side-mdp-check {
+  background: linear-gradient(180deg, #16a085, #0e6655);
+  border-color: #0a4d44;
+  color: #ecf0f1;
+}
 .btn-side-profil {
   background: linear-gradient(180deg, #3498db, #2980b9);
   border-color: #1a6fa0;

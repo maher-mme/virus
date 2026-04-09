@@ -536,9 +536,33 @@ function botVoter(botIdx) {
   }
 
   if (cibleIdx < 0 || cibleIdx >= joueursReunion.length) return;
+
+  // En mode en ligne : envoyer le vote bot a Firebase (seulement le host pour eviter doublons)
+  if (!modeHorsLigne && partieActuelleId && currentMeetingId && estHost && typeof db !== 'undefined') {
+    var ciblePseudo = joueursReunion[cibleIdx].pseudo;
+    var ciblePlayerId = '';
+    if (typeof firebasePartyPlayers !== 'undefined') {
+      var fp = firebasePartyPlayers.find(function(p) { return p.pseudo === ciblePseudo; });
+      if (fp) ciblePlayerId = fp.playerId;
+    }
+    db.collection('votes').add({
+      partyId: partieActuelleId,
+      meetingId: currentMeetingId,
+      voterId: 'bot-' + bot.pseudo,
+      voterPseudo: bot.pseudo,
+      targetPlayerId: ciblePlayerId,
+      targetPseudo: ciblePseudo,
+      isSkip: false,
+      isBot: true,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(function() {});
+    ajouterMsgReunion(bot.pseudo, t('meetBotVotedFor', ciblePseudo), '#95a5a6');
+    return;
+  }
+
+  // Mode hors ligne : comptage local
   nbVotesTotal++;
   votesParJoueur[cibleIdx]++;
-
   var bulle = document.getElementById('vote-bulle-' + cibleIdx);
   if (bulle) {
     bulle.textContent = votesParJoueur[cibleIdx];

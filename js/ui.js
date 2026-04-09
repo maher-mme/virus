@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.0.9';
+var CURRENT_VERSION = '2.1.0';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -295,6 +295,11 @@ function choisirCampEspion(camp) {
   espionCamp = camp;
   var overlay = document.getElementById('espion-choix-overlay');
   if (overlay) overlay.style.display = 'none';
+
+  // Sync le choix du camp en mode en ligne
+  if (!modeHorsLigne && typeof myPartyPlayerDocId !== 'undefined' && myPartyPlayerDocId && typeof db !== 'undefined') {
+    db.collection('partyPlayers').doc(myPartyPlayerDocId).update({ espionCamp: camp }).catch(function() {});
+  }
 
   if (camp === 'virus') {
     showNotif(t('joinedVirus'), 'warn');

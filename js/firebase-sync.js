@@ -404,6 +404,21 @@ function subscribeToGameState(partyId) {
       if (lastGamePhase === 'playing') updateCadavresMultiplayer(cadavres);
     })
   );
+  // Missions completees (sync compteur entre les joueurs)
+  gameUnsubscribers.push(
+    db.collection('missionsCompletees').where('partyId', '==', partyId).onSnapshot(function(snapshot) {
+      if (typeof missionsCollectivesCompletees === 'undefined') return;
+      missionsCollectivesCompletees = snapshot.size;
+      if (typeof updateJaugeMissions === 'function') updateJaugeMissions();
+      // Verifier victoire
+      if (totalMissionsCollectives > 0 && missionsCollectivesCompletees >= totalMissionsCollectives) {
+        if (typeof verifierVictoire === 'function') {
+          var gM = verifierVictoire();
+          if (gM && typeof afficherFinPartie === 'function') afficherFinPartie(gM);
+        }
+      }
+    })
+  );
   // Chat reunion gere par le listener unique dans subscribeToParty
   // Reunions actives
   gameUnsubscribers.push(
@@ -593,15 +608,15 @@ function _demarrerJeuMultiplayer(state) {
   // Initialiser les missions
   initMissions();
 
-  // Jauge collective de missions
+  // Jauge collective de missions (seulement les vrais joueurs)
   var nbTotalJoueurs = firebasePartyPlayers.length;
   var nbBotsOnline = firebasePartyPlayers.filter(function(p) { return p.isBot; }).length;
   var nbVraisJoueurs = nbTotalJoueurs - nbBotsOnline;
-  totalMissionsCollectives = nbTotalJoueurs * 4;
+  totalMissionsCollectives = nbVraisJoueurs * 4;
   missionsCollectivesCompletees = 0;
   updateJaugeMissions();
-  // Simuler les missions des autres vrais joueurs seulement (les bots font les leurs localement)
-  if (nbVraisJoueurs > 1) demarrerSimulationMissions(nbVraisJoueurs - 1);
+  // Pas de simulation : les missions sont synchronisees via Firebase (collection missionsCompletees)
+  // Les bots ne completent pas de missions, seuls les vrais joueurs comptent dans la jauge collective
 
   // Initialiser le pet du joueur
   if (typeof initMonPet === 'function') {

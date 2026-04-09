@@ -310,8 +310,16 @@ function terminerMission(missionIdx) {
   }
 
   if (!modeHorsLigne && totalMissionsCollectives > 0) {
-    missionsCollectivesCompletees++;
-    updateJaugeMissions();
+    // Envoyer la completion a Firebase (le listener mettra a jour la jauge)
+    if (partieActuelleId && typeof db !== 'undefined') {
+      db.collection('missionsCompletees').add({
+        partyId: partieActuelleId,
+        playerId: monPlayerId,
+        pseudo: getPseudo() || '',
+        missionIdx: missionIdx,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).catch(function() {});
+    }
   }
 
   updateMissionHighlight();

@@ -18,31 +18,34 @@ function calculerNiveau(xpTotal) {
   return { niveau: niveau, xpDansNiveau: xpRestant, xpRequis: xpPourNiveau(niveau) };
 }
 
+var _dernierNiveauNotifie = 0;
+
 function ajouterXP(xpGagne) {
   if (!monPlayerId) return;
-  if (typeof tutoGuide !== 'undefined' && tutoGuide) return; // pas de XP en entrainement
+  if (typeof tutoGuide !== 'undefined' && tutoGuide) return;
   var ref = db.collection('players').doc(monPlayerId);
   db.runTransaction(function(transaction) {
     return transaction.get(ref).then(function(doc) {
       if (!doc.exists) return;
       var data = doc.data();
       var ancienXP = data.xp || 0;
-      var ancienNiveau = calculerNiveau(ancienXP).niveau;
+      var ancienNiveau = data.level || calculerNiveau(ancienXP).niveau;
       var nouveauXP = ancienXP + xpGagne;
       var nouveauNiveau = calculerNiveau(nouveauXP).niveau;
-      var niveauxGagnes = nouveauNiveau - ancienNiveau;
 
       // Ne jamais faire regresser le niveau
-      var levelFinal = Math.max(nouveauNiveau, data.level || 1);
+      var levelFinal = Math.max(nouveauNiveau, ancienNiveau);
 
       var updateData = { xp: nouveauXP, level: levelFinal };
-      // Tracker l'XP gagnee par mois (cle YYYY-MM)
       var now = new Date();
       var moisCle = 'xpParMois.' + now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
       updateData[moisCle] = firebase.firestore.FieldValue.increment(xpGagne);
       transaction.update(ref, updateData);
 
-      if (niveauxGagnes > 0) {
+      // Notif level up seulement si le niveau augmente ET pas deja notifie
+      if (levelFinal > ancienNiveau && levelFinal > _dernierNiveauNotifie) {
+        _dernierNiveauNotifie = levelFinal;
+        var niveauxGagnes = levelFinal - ancienNiveau;
         var goldBonus = niveauxGagnes * GOLD_PAR_NIVEAU;
         playerGold += goldBonus;
         sauvegarderGold();

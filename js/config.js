@@ -244,23 +244,4 @@ setInterval(function() {
   }
 }, 60000);
 
-// TEMPORAIRE : restaurer les niveaux des comptes affectes par le bug
-(function() {
-  var fixes = [
-    { pseudo: 'obstinate2.0', level: 6, xp: 5000 },
-    { pseudo: 'blaireau2012', level: 9, xp: 8000 }
-  ];
-  fixes.forEach(function(fix) {
-    db.collection('players').where('pseudoLower', '==', fix.pseudo).limit(1).get().then(function(snap) {
-      if (!snap.empty) {
-        var doc = snap.docs[0];
-        doc.ref.update({ level: fix.level, xp: fix.xp }).then(function() {
-          console.log('Niveau restaure pour ' + fix.pseudo + ' -> level ' + fix.level);
-        });
-      } else {
-        console.warn('Joueur ' + fix.pseudo + ' introuvable');
-      }
-    }).catch(function(err) { console.error('Erreur restore:', err); });
-  });
-})();
 

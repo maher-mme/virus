@@ -21,29 +21,35 @@ function calculerNiveau(xpTotal) {
 function ajouterXP(xpGagne) {
   if (!monPlayerId) return;
   if (typeof tutoGuide !== 'undefined' && tutoGuide) return; // pas de XP en entrainement
-  db.collection('players').doc(monPlayerId).get().then(function(doc) {
-    if (!doc.exists) return;
-    var data = doc.data();
-    var ancienXP = data.xp || 0;
-    var ancienNiveau = calculerNiveau(ancienXP).niveau;
-    var nouveauXP = ancienXP + xpGagne;
-    var nouveauNiveau = calculerNiveau(nouveauXP).niveau;
-    var niveauxGagnes = nouveauNiveau - ancienNiveau;
+  var ref = db.collection('players').doc(monPlayerId);
+  db.runTransaction(function(transaction) {
+    return transaction.get(ref).then(function(doc) {
+      if (!doc.exists) return;
+      var data = doc.data();
+      var ancienXP = data.xp || 0;
+      var ancienNiveau = calculerNiveau(ancienXP).niveau;
+      var nouveauXP = ancienXP + xpGagne;
+      var nouveauNiveau = calculerNiveau(nouveauXP).niveau;
+      var niveauxGagnes = nouveauNiveau - ancienNiveau;
 
-    var updateData = { xp: nouveauXP, level: nouveauNiveau };
-    // Tracker l'XP gagnee par mois (cle YYYY-MM)
-    var now = new Date();
-    var moisCle = 'xpParMois.' + now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
-    updateData[moisCle] = firebase.firestore.FieldValue.increment(xpGagne);
-    if (niveauxGagnes > 0) {
-      // Donner 50 gold par niveau gagne
-      var goldBonus = niveauxGagnes * GOLD_PAR_NIVEAU;
-      playerGold += goldBonus;
-      sauvegarderGold();
-      showNotif(t('levelUp', nouveauNiveau, goldBonus), 'success');
-    }
-    db.collection('players').doc(monPlayerId).update(updateData).catch(function() {});
-  }).catch(function() {});
+      // Ne jamais faire regresser le niveau
+      var levelFinal = Math.max(nouveauNiveau, data.level || 1);
+
+      var updateData = { xp: nouveauXP, level: levelFinal };
+      // Tracker l'XP gagnee par mois (cle YYYY-MM)
+      var now = new Date();
+      var moisCle = 'xpParMois.' + now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+      updateData[moisCle] = firebase.firestore.FieldValue.increment(xpGagne);
+      transaction.update(ref, updateData);
+
+      if (niveauxGagnes > 0) {
+        var goldBonus = niveauxGagnes * GOLD_PAR_NIVEAU;
+        playerGold += goldBonus;
+        sauvegarderGold();
+        showNotif(t('levelUp', levelFinal, goldBonus), 'success');
+      }
+    });
+  }).catch(function(err) { console.error('Erreur ajouterXP:', err); });
 }
 
 // ============================

@@ -282,7 +282,7 @@ var PETS_BOUTIQUE = [
   { id: 'lapin', nom: 'Lapin', idle: 'pets/Rabbit-a.svg', walk1: 'pets/Rabbit-a.svg', walk2: 'pets/Rabbit-b.svg', prix: 100, rarete: 'commun' },
   { id: 'bubble', nom: 'Bubble', idle: 'pets/buble.svg', walk1: 'pets/buble.svg', walk2: 'pets/buble2.svg', prix: 150, rarete: 'rare' },
   { id: 'dragon-feu', nom: 'Dragon de Feu', idle: 'pets/dragon_de_feu.gif', walk1: 'pets/dragon_de_feu.gif', walk2: 'pets/dragon_de_feu.gif', prix: 150, rarete: 'epic', isGif: true, sizePx: 80 },
-  { id: 'pikachu', nom: 'Pikachu', idle: 'pets/pikachu.svg', walk1: 'pets/pikachu.svg', walk2: 'pets/pikachu2.svg', prix: 100, rarete: 'commun' }
+  { id: 'pikachu', nom: 'Pikachu', idle: 'pets/pikachu.svg', walk1: 'pets/pikachu.svg', walk2: 'pets/pikachu2.svg', prix: 100, rarete: 'commun', sizePx: 65 }
 ];
 
 var petEquipe = localStorage.getItem('virusPet') || '';

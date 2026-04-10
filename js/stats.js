@@ -128,8 +128,9 @@ function chargerClassement(champ) {
     return;
   }
 
+  var seuilMin = (champ === 'level') ? 1 : 0;
   db.collection('players')
-    .where(champ, '>', 0)
+    .where(champ, '>', seuilMin)
     .orderBy(champ, 'desc')
     .limit(100)
     .get({ source: 'server' })

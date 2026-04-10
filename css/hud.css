@@ -33,6 +33,18 @@
   font-size: 11px;
   letter-spacing: 1px;
 }
+.hud-quetes-btn {
+  background: rgba(155,89,182,0.3);
+  border: 1.5px solid #9b59b6;
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  padding: 2px 6px;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.2s;
+}
+.hud-quetes-btn:hover { background: rgba(155,89,182,0.6); }
 .hud-role-innocent { background: #27ae60; color: white; }
 .hud-role-virus { background: #e74c3c; color: white; }
 .hud-role-journaliste { background: #3498db; color: white; }

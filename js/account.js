@@ -127,7 +127,7 @@ function connecterCompte() {
       var banExpire = new Date(data.banExpire).getTime();
       if (Date.now() < banExpire) {
         var restant = Math.ceil((banExpire - Date.now()) / 60000);
-        showNotif('Compte banni pour encore ' + restant + ' minutes (' + (data.banRaison || '') + ')', 'error');
+        showNotif(t('reportBannedLogin', restant, (data.banRaison || '')), 'error');
         return;
       } else {
         // Ban expire, le lever

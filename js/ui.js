@@ -889,7 +889,7 @@ function remplirListeSignalement() {
     }
   }
   if (joueurs.length === 0) {
-    liste.innerHTML = '<div style="color:#95a5a6;text-align:center;padding:20px;">Aucun joueur a signaler.</div>';
+    liste.innerHTML = '<div style="color:#95a5a6;text-align:center;padding:20px;">' + t('reportNoPlayers') + '</div>';
     return;
   }
   joueurs.forEach(function(j) {
@@ -905,10 +905,10 @@ function remplirListeSignalement() {
 
 function signalerJoueur(pseudoCible, isBot, playerId) {
   if (isBot) {
-    showNotif('Les bots ne peuvent pas etre signales.', 'warn');
+    showNotif(t('reportCantBot'), 'warn');
     return;
   }
-  if (!confirm('Signaler ' + pseudoCible + ' ? Le systeme va analyser ses messages et son pseudo.')) return;
+  if (!confirm(t('reportConfirm', pseudoCible))) return;
 
   // Analyser le pseudo
   var pseudoClean = pseudoCible.toLowerCase().replace(/[^a-z]/g, '');
@@ -946,8 +946,8 @@ function signalerJoueur(pseudoCible, isBot, playerId) {
 
 function traiterSignalement(pseudoCible, playerId, pseudoToxique, chatToxique) {
   var raison = [];
-  if (pseudoToxique) raison.push('pseudo inapproprie');
-  if (chatToxique) raison.push('messages toxiques');
+  if (pseudoToxique) raison.push(t('reportReasonPseudo'));
+  if (chatToxique) raison.push(t('reportReasonChat'));
 
   // Enregistrer le signalement dans Firebase
   db.collection('signalements').add({
@@ -969,11 +969,11 @@ function traiterSignalement(pseudoCible, playerId, pseudoToxique, chatToxique) {
         banExpire: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
         banRaison: raison.join(', ')
       }).then(function() {
-        showNotif(pseudoCible + ' a ete banni 5 minutes (' + raison.join(', ') + ')', 'success');
+        showNotif(t('reportBanned', pseudoCible, raison.join(', ')), 'success');
       }).catch(function() {});
     }
   } else {
-    showNotif('Signalement enregistre. Aucune infraction detectee automatiquement.', 'info');
+    showNotif(t('reportNoInfraction'), 'info');
   }
   fermerPanelSignalement();
 }

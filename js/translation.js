@@ -633,7 +633,15 @@ var TR = {
     mdpStrong: 'FORT',
     mdpVeryStrong: 'EXTREMEMENT FORT',
     totalCosmetics: '{0} cosmetiques ({1} skins + {2} pets + {3} musiques)',
-    monthJan: 'Jan', monthFeb: 'Fev', monthMar: 'Mar', monthApr: 'Avr', monthMay: 'Mai', monthJun: 'Juin', monthJul: 'Juil', monthAug: 'Aou', monthSep: 'Sep', monthOct: 'Oct', monthNov: 'Nov', monthDec: 'Dec'
+    monthJan: 'Jan', monthFeb: 'Fev', monthMar: 'Mar', monthApr: 'Avr', monthMay: 'Mai', monthJun: 'Juin', monthJul: 'Juil', monthAug: 'Aou', monthSep: 'Sep', monthOct: 'Oct', monthNov: 'Nov', monthDec: 'Dec',
+    reportCantBot: 'Les bots ne peuvent pas etre signales.',
+    reportConfirm: 'Signaler {0} ? Le systeme va analyser ses messages et son pseudo.',
+    reportBanned: '{0} a ete banni 5 minutes ({1})',
+    reportNoInfraction: 'Signalement enregistre. Aucune infraction detectee automatiquement.',
+    reportNoPlayers: 'Aucun joueur a signaler.',
+    reportBannedLogin: 'Compte banni pour encore {0} minutes ({1})',
+    reportReasonPseudo: 'pseudo inapproprie',
+    reportReasonChat: 'messages toxiques'
   },
 
   en: {
@@ -1267,7 +1275,15 @@ var TR = {
     mdpStrong: 'STRONG',
     mdpVeryStrong: 'EXTREMELY STRONG',
     totalCosmetics: '{0} cosmetics ({1} skins + {2} pets + {3} musics)',
-    monthJan: 'Jan', monthFeb: 'Feb', monthMar: 'Mar', monthApr: 'Apr', monthMay: 'May', monthJun: 'Jun', monthJul: 'Jul', monthAug: 'Aug', monthSep: 'Sep', monthOct: 'Oct', monthNov: 'Nov', monthDec: 'Dec'
+    monthJan: 'Jan', monthFeb: 'Feb', monthMar: 'Mar', monthApr: 'Apr', monthMay: 'May', monthJun: 'Jun', monthJul: 'Jul', monthAug: 'Aug', monthSep: 'Sep', monthOct: 'Oct', monthNov: 'Nov', monthDec: 'Dec',
+    reportCantBot: 'Bots cannot be reported.',
+    reportConfirm: 'Report {0}? The system will analyze their messages and nickname.',
+    reportBanned: '{0} has been banned for 5 minutes ({1})',
+    reportNoInfraction: 'Report saved. No infraction detected automatically.',
+    reportNoPlayers: 'No players to report.',
+    reportBannedLogin: 'Account banned for {0} more minutes ({1})',
+    reportReasonPseudo: 'inappropriate nickname',
+    reportReasonChat: 'toxic messages'
   },
 
   es: {

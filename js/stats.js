@@ -259,7 +259,7 @@ function construireBadges(kills, wins, niveau) {
       html += '<div style="text-align:center;width:90px;">' +
         '<div style="position:relative;width:80px;height:80px;margin:0 auto;">' +
         '<img src="' + palier.fichier + '" style="width:100%;height:100%;object-fit:contain;" alt="' + palier.nom + '">' +
-        '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;">' + cat.emoji + '</div>' +
+        '<div style="position:absolute;top:55%;left:50%;transform:translate(-50%,-50%);font-size:22px;">' + cat.emoji + '</div>' +
         '</div>' +
         '<div style="color:' + palier.couleur + ';font-size:10px;font-weight:bold;letter-spacing:1px;margin-top:4px;">' + palier.nom.toUpperCase() + '</div>' +
         '<div style="color:#ecf0f1;font-size:13px;font-weight:bold;">' + cat.valeur + '</div>' +

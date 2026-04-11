@@ -228,6 +228,56 @@ function ouvrirProfilJoueur(playerId) {
   ouvrirProfil(playerId);
 }
 
+// Systeme de badges
+var BADGE_PALIERS = [
+  { nom: 'Maitre', min: 200, fichier: 'assets/badges/Badges_maître.svg', couleur: '#9b59b6' },
+  { nom: 'Champion', min: 125, fichier: 'assets/badges/Badges_Chaimpion.svg', couleur: '#e74c3c' },
+  { nom: 'Diamant', min: 75, fichier: 'assets/badges/Badges_diament.svg', couleur: '#2962ff' },
+  { nom: 'Platine', min: 50, fichier: 'assets/badges/Badges_Platine.svg', couleur: '#00e5ff' },
+  { nom: 'Or', min: 25, fichier: 'assets/badges/Bages_or.svg', couleur: '#fdd835' },
+  { nom: 'Argent', min: 10, fichier: 'assets/badges/Badges_argent.svg', couleur: '#bdbdbd' },
+  { nom: 'Bronze', min: 1, fichier: 'assets/badges/Badges_bronze.svg', couleur: '#b8860b' }
+];
+
+function getBadgePalier(valeur) {
+  for (var i = 0; i < BADGE_PALIERS.length; i++) {
+    if (valeur >= BADGE_PALIERS[i].min) return BADGE_PALIERS[i];
+  }
+  return null;
+}
+
+function construireBadges(kills, wins, niveau) {
+  var categories = [
+    { label: 'KILLS', valeur: kills, emoji: '🦠' },
+    { label: 'VICTOIRES', valeur: wins, emoji: '🏆' },
+    { label: 'NIVEAU', valeur: niveau, emoji: '<span style="color:#9b59b6;font-weight:bold;">XP</span>' }
+  ];
+  var html = '<div style="display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin-bottom:10px;">';
+  categories.forEach(function(cat) {
+    var palier = getBadgePalier(cat.valeur);
+    if (palier) {
+      html += '<div style="text-align:center;width:90px;">' +
+        '<div style="position:relative;width:80px;height:80px;margin:0 auto;">' +
+        '<img src="' + palier.fichier + '" style="width:100%;height:100%;object-fit:contain;" alt="' + palier.nom + '">' +
+        '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;">' + cat.emoji + '</div>' +
+        '</div>' +
+        '<div style="color:' + palier.couleur + ';font-size:10px;font-weight:bold;letter-spacing:1px;margin-top:4px;">' + palier.nom.toUpperCase() + '</div>' +
+        '<div style="color:#ecf0f1;font-size:13px;font-weight:bold;">' + cat.valeur + '</div>' +
+        '<div style="color:#95a5a6;font-size:9px;">' + cat.label + '</div>' +
+        '</div>';
+    } else {
+      html += '<div style="text-align:center;width:90px;">' +
+        '<div style="width:80px;height:80px;margin:0 auto;border:2px dashed #34495e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;opacity:0.4;">' + cat.emoji + '</div>' +
+        '<div style="color:#566573;font-size:10px;margin-top:4px;">---</div>' +
+        '<div style="color:#566573;font-size:13px;">0</div>' +
+        '<div style="color:#566573;font-size:9px;">' + cat.label + '</div>' +
+        '</div>';
+    }
+  });
+  html += '</div>';
+  return html;
+}
+
 // Construire un graphique en barres de l'XP par mois (6 derniers mois)
 function construireGrapheXP(xpParMois) {
   var moisLabels = [t('monthJan'),t('monthFeb'),t('monthMar'),t('monthApr'),t('monthMay'),t('monthJun'),t('monthJul'),t('monthAug'),t('monthSep'),t('monthOct'),t('monthNov'),t('monthDec')];
@@ -336,13 +386,11 @@ function chargerProfil(playerId) {
     var games = data.gamesPlayed || 0;
     var deaths = data.deaths || 0;
     var winRate = games > 0 ? Math.round((wins / games) * 100) : 0;
+    var niveau = data.level || niveauInfo.niveau;
 
     statsEl.innerHTML =
-      '<div class="profil-stat"><span class="profil-stat-val">' + games + '</span><span class="profil-stat-label">' + t('gamesPlayed') + '</span></div>' +
-      '<div class="profil-stat"><span class="profil-stat-val">' + wins + '</span><span class="profil-stat-label">' + t('victories') + '</span></div>' +
-      '<div class="profil-stat"><span class="profil-stat-val">' + kills + '</span><span class="profil-stat-label">KILLS</span></div>' +
-      '<div class="profil-stat"><span class="profil-stat-val">' + deaths + '</span><span class="profil-stat-label">' + t('deaths') + '</span></div>' +
-      '<div class="profil-stat" style="grid-column:1/-1"><span class="profil-stat-val">' + winRate + '%</span><span class="profil-stat-label">' + t('winRate') + '</span></div>' +
+      construireBadges(kills, wins, niveau) +
+      '<div class="profil-stat" style="grid-column:1/-1"><span class="profil-stat-val">' + winRate + '%</span><span class="profil-stat-label">' + t('winRate') + ' (' + wins + '/' + games + ')</span></div>' +
       construireGrapheXP(data.xpParMois || {});
   }).catch(function() {
     statsEl.innerHTML = '<div class="classement-vide">' + t('connectionError') + '</div>';
@@ -397,10 +445,32 @@ setTimeout(checkProfilURL, 3500);
 // ============================
 function incrementerStat(champ, valeur) {
   if (!monPlayerId) return;
-  if (typeof tutoGuide !== 'undefined' && tutoGuide) return; // pas de stats en entrainement
+  if (typeof tutoGuide !== 'undefined' && tutoGuide) return;
   var update = {};
   update[champ] = firebase.firestore.FieldValue.increment(valeur || 1);
-  db.collection('players').doc(monPlayerId).update(update).catch(function() {});
+  db.collection('players').doc(monPlayerId).update(update).then(function() {
+    // Verifier si un nouveau palier de badge est atteint
+    if (champ === 'kills' || champ === 'wins') verifierNouveauBadge(champ);
+  }).catch(function() {});
+}
+
+function verifierNouveauBadge(champ) {
+  if (!monPlayerId) return;
+  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+    if (!doc.exists) return;
+    var data = doc.data();
+    var valeur = data[champ] || 0;
+    var palier = getBadgePalier(valeur);
+    if (!palier) return;
+    var badgesDebloque = data.badgesDebloques || {};
+    var cle = champ + '_' + palier.nom;
+    if (!badgesDebloque[cle]) {
+      badgesDebloque[cle] = true;
+      db.collection('players').doc(monPlayerId).update({ badgesDebloques: badgesDebloque }).catch(function() {});
+      showNotif('Badge ' + palier.nom + ' debloque ! +100 XP', 'success');
+      ajouterXP(100);
+    }
+  }).catch(function() {});
 }
 
 function enregistrerStatsFinPartie(gagnant) {

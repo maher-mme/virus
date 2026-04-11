@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="css/game.css?v=10">
   <link rel="stylesheet" href="css/hud.css?v=5">
   <link rel="stylesheet" href="css/meeting.css?v=6">
-  <link rel="stylesheet" href="css/friends.css?v=5">
+  <link rel="stylesheet" href="css/friends.css?v=6">
   <link rel="stylesheet" href="css/responsive.css?v=20260323">
   <link rel="stylesheet" href="css/minigames.css?v=1">
 </head>
@@ -76,7 +76,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v2.4.3 - ALPHA</span>
+    <span class="version">VIRUS v2.4.4 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -146,7 +146,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.4.3 - ALPHA</span>
+    <span class="version">VIRUS v2.4.4 - ALPHA</span>
     </div>
   </div>
 
@@ -186,6 +186,13 @@
           <span class="pin-counter" id="set-pin-counter">0 / 10</span>
         </div>
         <div class="popup-section">
+          <label>REJOINDRE MES PARTIES</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="btn-sauver-pseudo" id="btn-join-mode" style="flex:1;padding:8px;" onclick="toggleJoinMode()">AVEC DEMANDE</button>
+          </div>
+          <p style="color:#7f8c8d;font-size:11px;margin:4px 0 0;" id="join-mode-desc">Tes amis doivent demander pour rejoindre ta partie.</p>
+        </div>
+        <div class="popup-section">
           <label data-i18n="account">COMPTE</label>
           <button class="btn-sauver-pseudo" style="background:linear-gradient(180deg,#f39c12,#e67e22); border-color:#f39c12; width:100%; padding:10px; margin-bottom:8px;" onclick="ouvrirChangerMotDePasse()">CHANGER LE MOT DE PASSE</button>
           <button class="btn-sauver-pseudo" data-i18n="logout" style="background:linear-gradient(180deg,#3498db,#2980b9); border-color:#3498db; width:100%; padding:10px; margin-bottom:8px;" onclick="deconnecterCompte()">SE DECONNECTER</button>
@@ -201,7 +208,7 @@
             <button class="btn-sauver-pseudo" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.4.3 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.4.4 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -348,7 +355,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v2.4.3 - ALPHA</span>
+        <span class="version-inline">v2.4.4 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -562,7 +569,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v2.4.3 - ALPHA</span>
+    <span class="version">VIRUS v2.4.4 - ALPHA</span>
     </div>
   </div>
 
@@ -653,7 +660,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.4.3 - ALPHA</span>
+    <span class="version">VIRUS v2.4.4 - ALPHA</span>
     </div>
   </div>
 
@@ -699,7 +706,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v2.4.3 - ALPHA</span>
+    <span class="version">VIRUS v2.4.4 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -1824,12 +1831,12 @@
 <script src="js/api.js?v=1"></script>
 <script src="js/skins.js?v=5"></script>
 <script src="js/music.js?v=2"></script>
-<script src="js/account.js?v=14"></script>
+<script src="js/account.js?v=15"></script>
 <script src="js/ui.js?v=20260409j"></script>
 <script src="js/chat.js?v=6"></script>
 <script src="js/comments.js?v=5"></script>
 <script src="js/translation.js?v=20260409b"></script>
-<script src="js/firebase-sync.js?v=36"></script>
+<script src="js/firebase-sync.js?v=37"></script>
 <script src="js/player.js?v=7"></script>
 <script src="js/shop.js?v=14"></script>
 <script src="js/bots.js?v=11"></script>
@@ -1840,7 +1847,7 @@
 <script src="js/minigames.js?v=2"></script>
 <script src="js/cameras.js?v=2"></script>
 <script src="js/stats.js?v=27"></script>
-<script src="js/friends.js?v=11"></script>
+<script src="js/friends.js?v=12"></script>
 
 <script>
 // Protection anti-copie (desactive en local pour le dev)

@@ -218,6 +218,18 @@
   transition: background 0.2s;
 }
 .ami-btn-inviter:hover { background: #2980b9; }
+.ami-btn-rejoindre {
+  background: linear-gradient(180deg, #27ae60, #229954);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 9px;
+  font-weight: bold;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+.ami-btn-rejoindre:hover { filter: brightness(1.15); }
 .ami-btn-supprimer {
   width: 26px;
   height: 26px;

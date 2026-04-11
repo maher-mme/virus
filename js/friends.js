@@ -62,6 +62,11 @@ function afficherAmis() {
         }
       }
       html += '<button class="ami-btn-profil" onclick="ouvrirProfil(\'' + escapeOnclick(ami.uid) + '\')" title="Voir le profil">&#128100;</button>';
+      // Bouton REJOINDRE si l'ami est dans un lobby
+      var amiPartyId = (amisStatuts[ami.uid] && amisStatuts[ami.uid].currentPartyId) || '';
+      if (isOnline && amiPartyId) {
+        html += '<button class="ami-btn-rejoindre" onclick="rejoindrePartiAmi(\'' + escapeOnclick(ami.uid) + '\', \'' + escapeOnclick(amiPartyId) + '\')" title="Rejoindre la partie">REJOINDRE</button>';
+      }
       if (isOnline) {
         html += '<button class="ami-btn-inviter" onclick="inviterAmi(\'' + escapeOnclick(ami.uid) + '\', \'' + escapeOnclick(ami.pseudo) + '\')">' + t('invite') + '</button>';
       }
@@ -295,7 +300,7 @@ function initAmisListeners() {
               if (diff > 2 * 60 * 1000) estEnLigne = false;
             }
             if (ami) ami.online = estEnLigne;
-            amisStatuts[fid] = { online: estEnLigne, pseudo: pData.pseudo, lastSeen: pData.lastSeen || null, pfp: pData.pfp || '' };
+            amisStatuts[fid] = { online: estEnLigne, pseudo: pData.pseudo, lastSeen: pData.lastSeen || null, pfp: pData.pfp || '', currentPartyId: pData.currentPartyId || '', joinMode: pData.joinMode || 'demande' };
           }
           if (panelAmisOuvert && tabAmiActif !== 'demandes') afficherAmis();
         });
@@ -322,6 +327,35 @@ function initAmisListeners() {
       console.error('Erreur listener invitations:', err);
     })
   );
+}
+
+// ============================
+// REJOINDRE LA PARTIE D'UN AMI
+// ============================
+function rejoindrePartiAmi(amiUid, partyId) {
+  if (!partyId) { showNotif('Cet ami n\'est pas dans une partie.', 'warn'); return; }
+  // Verifier le mode de join de l'ami (demande ou sans demande)
+  var amiStatut = amisStatuts[amiUid];
+  var joinMode = (amiStatut && amiStatut.joinMode) || 'demande';
+  if (joinMode === 'libre') {
+    // Rejoindre directement
+    if (typeof rejoindrePartie === 'function') rejoindrePartie(partyId);
+  } else {
+    // Envoyer une demande de join
+    db.collection('gameInvites').add({
+      fromPlayerId: monPlayerId,
+      fromPseudo: getPseudo(),
+      toPlayerId: amiUid,
+      partyId: partyId,
+      type: 'joinRequest',
+      status: 'pending',
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function() {
+      showNotif('Demande envoyee !', 'info');
+    }).catch(function() {
+      showNotif('Erreur', 'warn');
+    });
+  }
 }
 
 // ============================

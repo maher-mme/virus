@@ -165,6 +165,8 @@ function retirerBotEnLigne() {
 
 function quitterPartie() {
   jouerSonSalle('Audio/quitter.mp3');
+  // Effacer la partie actuelle pour les amis
+  if (monPlayerId) db.collection('players').doc(monPlayerId).update({ currentPartyId: '' }).catch(function() {});
   if (partieActuelleId) {
     // Supprimer le joueur de la partie
     if (myPartyPlayerDocId) {
@@ -1245,6 +1247,8 @@ function creerPartie() {
       modeHorsLigne = false;
       estHost = true;
       partieActuelleId = partyId;
+      // Tracker la partie actuelle pour les amis
+      db.collection('players').doc(monPlayerId).update({ currentPartyId: partyId }).catch(function() {});
       showScreen('salle-attente');
       subscribeToParty(partyId);
       updateSalleAttente();
@@ -1291,6 +1295,8 @@ function rejoindrePartie(partieId) {
       modeHorsLigne = false;
       estHost = false;
       partieActuelleId = partieId;
+      // Tracker la partie actuelle pour les amis
+      db.collection('players').doc(monPlayerId).update({ currentPartyId: partieId }).catch(function() {});
       showScreen('salle-attente');
       subscribeToParty(partieId);
       updateSalleAttente();

@@ -331,6 +331,7 @@ function ouvrirParams() {
   document.getElementById('popup-params').classList.add('visible');
   var display = document.getElementById('input-edit-pseudo-display');
   if (display) display.textContent = getPseudo();
+  chargerJoinMode();
   // Verifier si le joueur a un PIN, sinon afficher la section set-pin
   var sectionPin = document.getElementById('section-set-pin');
   if (sectionPin) {
@@ -350,6 +351,49 @@ function fermerParams() {
   // Fermer aussi le formulaire de changement mdp
   var sec = document.getElementById('section-changer-mdp');
   if (sec) sec.style.display = 'none';
+}
+
+// Toggle mode de join (avec demande / sans demande)
+function toggleJoinMode() {
+  if (!monPlayerId) return;
+  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+    if (!doc.exists) return;
+    var data = doc.data();
+    var current = data.joinMode || 'demande';
+    var nouveau = (current === 'demande') ? 'libre' : 'demande';
+    db.collection('players').doc(monPlayerId).update({ joinMode: nouveau }).then(function() {
+      majJoinModeUI(nouveau);
+    });
+  });
+}
+
+function majJoinModeUI(mode) {
+  var btn = document.getElementById('btn-join-mode');
+  var desc = document.getElementById('join-mode-desc');
+  if (btn) {
+    if (mode === 'libre') {
+      btn.textContent = 'SANS DEMANDE';
+      btn.style.background = 'linear-gradient(180deg,#27ae60,#229954)';
+      btn.style.borderColor = '#27ae60';
+    } else {
+      btn.textContent = 'AVEC DEMANDE';
+      btn.style.background = 'linear-gradient(180deg,#3498db,#2980b9)';
+      btn.style.borderColor = '#3498db';
+    }
+  }
+  if (desc) {
+    desc.textContent = (mode === 'libre')
+      ? 'Tes amis peuvent rejoindre ta partie directement.'
+      : 'Tes amis doivent demander pour rejoindre ta partie.';
+  }
+}
+
+function chargerJoinMode() {
+  if (!monPlayerId) return;
+  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+    if (!doc.exists) return;
+    majJoinModeUI(doc.data().joinMode || 'demande');
+  });
 }
 
 function ouvrirChangerMotDePasse() {

@@ -126,11 +126,9 @@ function connecterCompte() {
     if (data.banned && data.banExpire) {
       var banExpire = new Date(data.banExpire).getTime();
       if (Date.now() < banExpire) {
-        var restant = Math.ceil((banExpire - Date.now()) / 60000);
-        showNotif(t('reportBannedLogin', restant, (data.banRaison || '')), 'error');
+        afficherEcranBan(banExpire, data.banRaison || '', doc.ref);
         return;
       } else {
-        // Ban expire, le lever
         doc.ref.update({ banned: false, banExpire: '', banRaison: '' });
       }
     }
@@ -365,6 +363,34 @@ function fermerParams() {
   if (sec) sec.style.display = 'none';
 }
 
+// Ecran de ban avec compteur a rebours
+var _banInterval = null;
+function afficherEcranBan(banExpire, raison, docRef) {
+  var popup = document.getElementById('popup-ban');
+  if (!popup) { showNotif(t('reportBannedLogin', Math.ceil((banExpire - Date.now()) / 60000), raison), 'error'); return; }
+  popup.style.display = 'flex';
+  var raisonEl = document.getElementById('ban-raison');
+  if (raisonEl) raisonEl.textContent = raison ? 'Raison : ' + raison : '';
+  var countdownEl = document.getElementById('ban-countdown');
+  if (_banInterval) clearInterval(_banInterval);
+  function majBanCountdown() {
+    var diff = banExpire - Date.now();
+    if (diff <= 0) {
+      clearInterval(_banInterval);
+      _banInterval = null;
+      popup.style.display = 'none';
+      if (docRef) docRef.update({ banned: false, banExpire: '', banRaison: '' });
+      showNotif('Ban termine ! Tu peux te reconnecter.', 'success');
+      return;
+    }
+    var min = Math.floor(diff / 60000);
+    var sec = Math.floor((diff % 60000) / 1000);
+    if (countdownEl) countdownEl.textContent = min + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+  majBanCountdown();
+  _banInterval = setInterval(majBanCountdown, 1000);
+}
+
 // Toggle mode de join (avec demande / sans demande)
 function toggleJoinMode() {
   if (!monPlayerId) return;
@@ -595,11 +621,24 @@ function initCompteEtFirebase() {
     afficherPfpPartout();
     if (typeof debloquerToutAdmin === 'function') debloquerToutAdmin();
     showScreen('menu-principal');
-    // Verifier si le joueur a un PIN, sinon notifier
+    // Verifier ban + PIN
     setTimeout(function() {
       db.collection('players').doc(monPlayerId).get().then(function(doc) {
-        var pin = doc.exists ? doc.data().pin : null;
-        if (doc.exists && (pin === undefined || pin === null || pin === '')) {
+        if (!doc.exists) return;
+        var data = doc.data();
+        // Verifier ban
+        if (data.banned && data.banExpire) {
+          var banExpire = new Date(data.banExpire).getTime();
+          if (Date.now() < banExpire) {
+            afficherEcranBan(banExpire, data.banRaison || '', doc.ref);
+            return;
+          } else {
+            doc.ref.update({ banned: false, banExpire: '', banRaison: '' });
+          }
+        }
+        // Verifier PIN
+        var pin = data.pin;
+        if (pin === undefined || pin === null || pin === '') {
           showNotif(t('setPinNotif'), 'warn');
         }
       }).catch(function() {});

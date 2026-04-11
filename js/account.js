@@ -122,6 +122,18 @@ function connecterCompte() {
     var doc = snap.docs[0];
     var data = doc.data();
     if (String(data.pin) !== String(pin)) { showNotif(t('wrongCredentials'), 'error'); return; }
+    // Verifier si le joueur est banni
+    if (data.banned && data.banExpire) {
+      var banExpire = new Date(data.banExpire).getTime();
+      if (Date.now() < banExpire) {
+        var restant = Math.ceil((banExpire - Date.now()) / 60000);
+        showNotif('Compte banni pour encore ' + restant + ' minutes (' + (data.banRaison || '') + ')', 'error');
+        return;
+      } else {
+        // Ban expire, le lever
+        doc.ref.update({ banned: false, banExpire: '', banRaison: '' });
+      }
+    }
     // Restaurer la session
     monPlayerId = data.playerId;
     localStorage.setItem('virus_player_id', monPlayerId);

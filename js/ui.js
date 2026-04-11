@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.4.4';
+var CURRENT_VERSION = '2.4.5';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -848,6 +848,134 @@ function incrementerQueteStat(stat, valeur) {
       }
     });
   }).catch(function(err) { console.error('Erreur incrementerQueteStat:', err); });
+}
+
+// === SYSTEME DE SIGNALEMENT ===
+var panelSignalementOuvert = false;
+
+function ouvrirPanelSignalement() {
+  var panel = document.getElementById('panel-signalement');
+  if (!panel) return;
+  panel.style.display = 'flex';
+  panelSignalementOuvert = true;
+  remplirListeSignalement();
+}
+
+function fermerPanelSignalement() {
+  var panel = document.getElementById('panel-signalement');
+  if (panel) panel.style.display = 'none';
+  panelSignalementOuvert = false;
+}
+
+function remplirListeSignalement() {
+  var liste = document.getElementById('panel-signalement-liste');
+  if (!liste) return;
+  liste.innerHTML = '';
+  var pseudo = getPseudo() || '';
+  // Joueurs de la partie (bots + joueurs distants)
+  var joueurs = [];
+  // Bots
+  for (var i = 0; i < bots.length; i++) {
+    if (joueursElimines.indexOf(bots[i].pseudo) >= 0) continue;
+    joueurs.push({ pseudo: bots[i].pseudo, skin: bots[i].skin, isBot: true });
+  }
+  // Joueurs distants (en ligne)
+  if (!modeHorsLigne && typeof firebasePartyPlayers !== 'undefined') {
+    for (var j = 0; j < firebasePartyPlayers.length; j++) {
+      var fp = firebasePartyPlayers[j];
+      if (fp.isBot) continue;
+      if (fp.playerId === monPlayerId) continue;
+      joueurs.push({ pseudo: fp.pseudo, skin: fp.skin, isBot: false, playerId: fp.playerId });
+    }
+  }
+  if (joueurs.length === 0) {
+    liste.innerHTML = '<div style="color:#95a5a6;text-align:center;padding:20px;">Aucun joueur a signaler.</div>';
+    return;
+  }
+  joueurs.forEach(function(j) {
+    var div = document.createElement('div');
+    div.className = 'signalement-joueur';
+    div.innerHTML =
+      '<img src="' + (j.skin || 'skin/gratuit/skin-de-base-garcon.svg') + '" alt="skin">' +
+      '<span class="signalement-pseudo">' + escapeHtml(j.pseudo) + (j.isBot ? ' (bot)' : '') + '</span>' +
+      '<button class="signalement-btn" onclick="signalerJoueur(\'' + escapeHtml(j.pseudo).replace(/'/g, "\\'") + '\', ' + j.isBot + ', \'' + (j.playerId || '') + '\')">SIGNALER</button>';
+    liste.appendChild(div);
+  });
+}
+
+function signalerJoueur(pseudoCible, isBot, playerId) {
+  if (isBot) {
+    showNotif('Les bots ne peuvent pas etre signales.', 'warn');
+    return;
+  }
+  if (!confirm('Signaler ' + pseudoCible + ' ? Le systeme va analyser ses messages et son pseudo.')) return;
+
+  // Analyser le pseudo
+  var pseudoClean = pseudoCible.toLowerCase().replace(/[^a-z]/g, '');
+  var pseudoToxique = false;
+  for (var mi = 0; mi < MOTS_INTERDITS.length; mi++) {
+    var motClean = MOTS_INTERDITS[mi].replace(/[^a-z]/g, '');
+    if (pseudoClean.indexOf(motClean) >= 0) {
+      pseudoToxique = true;
+      break;
+    }
+  }
+
+  // Analyser les messages du chat de la partie
+  var chatToxique = false;
+  if (partieActuelleId) {
+    db.collection('chatMessages').where('partyId', '==', partieActuelleId).where('pseudo', '==', pseudoCible).get().then(function(snap) {
+      snap.forEach(function(doc) {
+        var msg = (doc.data().message || '').toLowerCase().replace(/[^a-z]/g, '');
+        for (var ci = 0; ci < MOTS_INTERDITS.length; ci++) {
+          var motC = MOTS_INTERDITS[ci].replace(/[^a-z]/g, '');
+          if (msg.indexOf(motC) >= 0) {
+            chatToxique = true;
+            break;
+          }
+        }
+      });
+      traiterSignalement(pseudoCible, playerId, pseudoToxique, chatToxique);
+    }).catch(function() {
+      traiterSignalement(pseudoCible, playerId, pseudoToxique, false);
+    });
+  } else {
+    traiterSignalement(pseudoCible, playerId, pseudoToxique, false);
+  }
+}
+
+function traiterSignalement(pseudoCible, playerId, pseudoToxique, chatToxique) {
+  var raison = [];
+  if (pseudoToxique) raison.push('pseudo inapproprie');
+  if (chatToxique) raison.push('messages toxiques');
+
+  // Enregistrer le signalement dans Firebase
+  db.collection('signalements').add({
+    reporterPlayerId: monPlayerId,
+    reporterPseudo: getPseudo() || '',
+    targetPlayerId: playerId,
+    targetPseudo: pseudoCible,
+    raisons: raison,
+    autoDetected: pseudoToxique || chatToxique,
+    partyId: partieActuelleId || '',
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(function() {});
+
+  if (pseudoToxique || chatToxique) {
+    // Ban de 5 minutes
+    if (playerId) {
+      db.collection('players').doc(playerId).update({
+        banned: true,
+        banExpire: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
+        banRaison: raison.join(', ')
+      }).then(function() {
+        showNotif(pseudoCible + ' a ete banni 5 minutes (' + raison.join(', ') + ')', 'success');
+      }).catch(function() {});
+    }
+  } else {
+    showNotif('Signalement enregistre. Aucune infraction detectee automatiquement.', 'info');
+  }
+  fermerPanelSignalement();
 }
 
 // === IA VERIFICATEUR DE MOT DE PASSE ===

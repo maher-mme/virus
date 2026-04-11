@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="css/components.css?v=5">
   <link rel="stylesheet" href="css/menu.css?v=16">
   <link rel="stylesheet" href="css/lobby.css?v=20260322">
-  <link rel="stylesheet" href="css/game.css?v=10">
+  <link rel="stylesheet" href="css/game.css?v=11">
   <link rel="stylesheet" href="css/hud.css?v=5">
   <link rel="stylesheet" href="css/meeting.css?v=6">
   <link rel="stylesheet" href="css/friends.css?v=6">
@@ -76,7 +76,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v2.4.4 - ALPHA</span>
+    <span class="version">VIRUS v2.4.5 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -146,7 +146,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.4.4 - ALPHA</span>
+    <span class="version">VIRUS v2.4.5 - ALPHA</span>
     </div>
   </div>
 
@@ -208,7 +208,7 @@
             <button class="btn-sauver-pseudo" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.4.4 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.4.5 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -355,7 +355,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v2.4.4 - ALPHA</span>
+        <span class="version-inline">v2.4.5 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -569,7 +569,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v2.4.4 - ALPHA</span>
+    <span class="version">VIRUS v2.4.5 - ALPHA</span>
     </div>
   </div>
 
@@ -660,7 +660,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.4.4 - ALPHA</span>
+    <span class="version">VIRUS v2.4.5 - ALPHA</span>
     </div>
   </div>
 
@@ -706,7 +706,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v2.4.4 - ALPHA</span>
+    <span class="version">VIRUS v2.4.5 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -1560,6 +1560,17 @@
       </div>
 
       <button class="hud-btn-quitter" onclick="quitterJeu()" data-i18n="quit">QUITTER</button>
+      <button class="hud-btn-signaler" onclick="ouvrirPanelSignalement()">&#9888;</button>
+
+      <!-- Panneau signalement (lateral comme amis) -->
+      <div class="panel-signalement" id="panel-signalement" style="display:none;">
+        <div class="panel-signalement-header">
+          <h3>SIGNALER</h3>
+          <button class="popup-close" onclick="fermerPanelSignalement()">&times;</button>
+        </div>
+        <p style="color:#bdc3c7;font-size:11px;padding:0 10px;">Selectionne le joueur a signaler :</p>
+        <div class="panel-signalement-liste" id="panel-signalement-liste"></div>
+      </div>
 
       <button class="btn-reunion" id="btn-reunion" onclick="demanderReunion()" data-i18n="callMeeting">APPELER UNE REUNION</button>
       <button class="btn-mission" id="btn-mission" onclick="faireMission()" data-i18n="doTask">FAIRE LA TACHE</button>
@@ -1831,8 +1842,8 @@
 <script src="js/api.js?v=1"></script>
 <script src="js/skins.js?v=5"></script>
 <script src="js/music.js?v=2"></script>
-<script src="js/account.js?v=15"></script>
-<script src="js/ui.js?v=20260409j"></script>
+<script src="js/account.js?v=16"></script>
+<script src="js/ui.js?v=20260411a"></script>
 <script src="js/chat.js?v=6"></script>
 <script src="js/comments.js?v=5"></script>
 <script src="js/translation.js?v=20260409b"></script>

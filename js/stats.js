@@ -229,7 +229,16 @@ function ouvrirProfilJoueur(playerId) {
 }
 
 // Systeme de badges
-var BADGE_PALIERS = [
+var BADGE_PALIERS_COMBAT = [
+  { nom: 'Maitre', min: 5000, fichier: 'assets/badges/Badges_maître.svg', couleur: '#9b59b6' },
+  { nom: 'Champion', min: 1000, fichier: 'assets/badges/Badges_Chaimpion.svg', couleur: '#e74c3c' },
+  { nom: 'Diamant', min: 500, fichier: 'assets/badges/Badges_diament.svg', couleur: '#2962ff' },
+  { nom: 'Platine', min: 250, fichier: 'assets/badges/Badges_Platine.svg', couleur: '#00e5ff' },
+  { nom: 'Or', min: 100, fichier: 'assets/badges/Bages_or.svg', couleur: '#fdd835' },
+  { nom: 'Argent', min: 50, fichier: 'assets/badges/Badges_argent.svg', couleur: '#bdbdbd' },
+  { nom: 'Bronze', min: 1, fichier: 'assets/badges/Badges_bronze.svg', couleur: '#b8860b' }
+];
+var BADGE_PALIERS_NIVEAU = [
   { nom: 'Maitre', min: 200, fichier: 'assets/badges/Badges_maître.svg', couleur: '#9b59b6' },
   { nom: 'Champion', min: 125, fichier: 'assets/badges/Badges_Chaimpion.svg', couleur: '#e74c3c' },
   { nom: 'Diamant', min: 75, fichier: 'assets/badges/Badges_diament.svg', couleur: '#2962ff' },
@@ -239,22 +248,23 @@ var BADGE_PALIERS = [
   { nom: 'Bronze', min: 1, fichier: 'assets/badges/Badges_bronze.svg', couleur: '#b8860b' }
 ];
 
-function getBadgePalier(valeur) {
-  for (var i = 0; i < BADGE_PALIERS.length; i++) {
-    if (valeur >= BADGE_PALIERS[i].min) return BADGE_PALIERS[i];
+function getBadgePalier(valeur, type) {
+  var paliers = (type === 'niveau') ? BADGE_PALIERS_NIVEAU : BADGE_PALIERS_COMBAT;
+  for (var i = 0; i < paliers.length; i++) {
+    if (valeur >= paliers[i].min) return paliers[i];
   }
   return null;
 }
 
 function construireBadges(kills, wins, niveau) {
   var categories = [
-    { label: 'KILLS', valeur: kills, emoji: '🦠' },
-    { label: 'VICTOIRES', valeur: wins, emoji: '🏆' },
-    { label: 'NIVEAU', valeur: niveau, emoji: '<span style="color:#9b59b6;font-weight:bold;">XP</span>' }
+    { label: 'KILLS', valeur: kills, emoji: '🦠', type: 'combat' },
+    { label: 'VICTOIRES', valeur: wins, emoji: '🏆', type: 'combat' },
+    { label: 'NIVEAU', valeur: niveau, emoji: '<span style="color:#9b59b6;font-weight:bold;">XP</span>', type: 'niveau' }
   ];
   var html = '<div style="display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin-bottom:10px;">';
   categories.forEach(function(cat) {
-    var palier = getBadgePalier(cat.valeur);
+    var palier = getBadgePalier(cat.valeur, cat.type);
     if (palier) {
       html += '<div style="text-align:center;width:90px;">' +
         '<div style="position:relative;width:80px;height:80px;margin:0 auto;">' +
@@ -460,7 +470,8 @@ function verifierNouveauBadge(champ) {
     if (!doc.exists) return;
     var data = doc.data();
     var valeur = data[champ] || 0;
-    var palier = getBadgePalier(valeur);
+    var type = (champ === 'level') ? 'niveau' : 'combat';
+    var palier = getBadgePalier(valeur, type);
     if (!palier) return;
     var badgesDebloque = data.badgesDebloques || {};
     var cle = champ + '_' + palier.nom;

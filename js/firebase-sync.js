@@ -163,6 +163,20 @@ function retirerBotEnLigne() {
   });
 }
 
+function kickJoueur(docId, pseudo) {
+  if (!estHost || !partieActuelleId) return;
+  if (!confirm('Expulser ' + pseudo + ' de la partie ?')) return;
+  db.collection('partyPlayers').doc(docId).delete().then(function() {
+    db.collection('parties').doc(partieActuelleId).update({
+      joueurs: firebase.firestore.FieldValue.increment(-1),
+      listeJoueurs: firebase.firestore.FieldValue.arrayRemove(pseudo)
+    });
+    showNotif(pseudo + ' a ete expulse', 'info');
+  }).catch(function() {
+    showNotif('Erreur', 'warn');
+  });
+}
+
 function quitterPartie() {
   jouerSonSalle('Audio/quitter.mp3');
   // Effacer la partie actuelle pour les amis
@@ -988,8 +1002,12 @@ function updateSalleAttenteUI(players) {
     players.forEach(function(p) {
       var hostLabel = p.isHost ? ' (Host)' : '';
       var listAdminClass = isAdmin(p.pseudo) ? ' pseudo-admin-text' : '';
-      html += '<div class="sa-joueur-item connecte">&#9679; <span class="' + listAdminClass.trim() + '">' +
-        escapeHtml(p.pseudo) + '</span>' + hostLabel + '</div>';
+      var kickBtn = '';
+      if (estHost && !p.isHost && p.playerId !== monPlayerId) {
+        kickBtn = '<button class="sa-kick-btn" onclick="kickJoueur(\'' + p._docId + '\', \'' + escapeHtml(p.pseudo).replace(/'/g, "\\'") + '\')" title="Expulser">&#10005;</button>';
+      }
+      html += '<div class="sa-joueur-item connecte" style="display:flex;align-items:center;gap:6px;">&#9679; <span class="' + listAdminClass.trim() + '" style="flex:1;">' +
+        escapeHtml(p.pseudo) + '</span>' + hostLabel + kickBtn + '</div>';
     });
     for (var i = players.length; i < maxJ; i++) {
       html += '<div class="sa-joueur-item attente">&#9675; ' + t('waiting') + '</div>';

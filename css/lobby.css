@@ -239,6 +239,21 @@
 }
 .sa-joueur-item.connecte { color: #2ecc71; }
 .sa-joueur-item.attente { color: #7f8c8d; }
+.sa-kick-btn {
+  background: rgba(231,76,60,0.3);
+  border: 1px solid #e74c3c;
+  color: #e74c3c;
+  border-radius: 4px;
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.sa-kick-btn:hover { background: #e74c3c; color: white; }
 
 /* Chat */
 .sa-chat {

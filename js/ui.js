@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.5.2';
+var CURRENT_VERSION = '2.5.3';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -690,15 +690,21 @@ var QUETE_TEMPLATES = [
 ];
 
 function getLundiCourant() {
-  // 8h heure de France = 6h UTC (heure d'ete CEST = UTC+2)
-  var now = Date.now();
-  var d = new Date(now);
-  var jour = d.getUTCDay() || 7; // dimanche = 7
-  d.setUTCHours(6, 0, 0, 0); // 6h UTC = 8h France
-  d.setUTCDate(d.getUTCDate() - (jour - 1)); // Reculer au lundi
-  // Si ce lundi 8h France est dans le futur, prendre le lundi precedent
-  if (d.getTime() > now) d.setUTCDate(d.getUTCDate() - 7);
-  return d.getTime();
+  // Reset chaque lundi a 8h heure de France (UTC+2 en ete)
+  // On calcule en minutes depuis epoch pour eviter les bugs de fuseau
+  var RESET_HOUR_UTC = 6; // 8h France = 6h UTC
+  var now = new Date();
+  // Trouver le lundi de cette semaine en UTC
+  var dayOfWeek = now.getUTCDay(); // 0=dimanche, 1=lundi...
+  var diffToMonday = (dayOfWeek === 0) ? 6 : (dayOfWeek - 1);
+  var lundi = new Date(now);
+  lundi.setUTCDate(lundi.getUTCDate() - diffToMonday);
+  lundi.setUTCHours(RESET_HOUR_UTC, 0, 0, 0);
+  // Si ce lundi est dans le futur (on est avant lundi 8h France), reculer d'une semaine
+  if (lundi.getTime() > now.getTime()) {
+    lundi.setUTCDate(lundi.getUTCDate() - 7);
+  }
+  return lundi.getTime();
 }
 
 function ouvrirQuetes() {

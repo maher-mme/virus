@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.5.3';
+var CURRENT_VERSION = '2.5.4';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -689,22 +689,28 @@ var QUETE_TEMPLATES = [
   { id:'survie', titreKey:'qTitleSurvie', icone:'🛡️', objectif:1, stat:'survies', recompense:100 }
 ];
 
-function getLundiCourant() {
-  // Reset chaque lundi a 8h heure de France (UTC+2 en ete)
-  // On calcule en minutes depuis epoch pour eviter les bugs de fuseau
-  var RESET_HOUR_UTC = 6; // 8h France = 6h UTC
-  var now = new Date();
-  // Trouver le lundi de cette semaine en UTC
-  var dayOfWeek = now.getUTCDay(); // 0=dimanche, 1=lundi...
-  var diffToMonday = (dayOfWeek === 0) ? 6 : (dayOfWeek - 1);
-  var lundi = new Date(now);
-  lundi.setUTCDate(lundi.getUTCDate() - diffToMonday);
-  lundi.setUTCHours(RESET_HOUR_UTC, 0, 0, 0);
-  // Si ce lundi est dans le futur (on est avant lundi 8h France), reculer d'une semaine
-  if (lundi.getTime() > now.getTime()) {
-    lundi.setUTCDate(lundi.getUTCDate() - 7);
-  }
-  return lundi.getTime();
+function getSemaineId() {
+  // Retourne un string "YYYY-WW" pour identifier la semaine
+  // La semaine change chaque lundi
+  var d = new Date();
+  var jour = d.getDay() || 7;
+  d.setDate(d.getDate() - (jour - 1)); // Reculer au lundi
+  d.setHours(0, 0, 0, 0);
+  var debut = new Date(d.getFullYear(), 0, 1);
+  var semaine = Math.ceil(((d - debut) / 86400000 + debut.getDay() + 1) / 7);
+  return d.getFullYear() + '-W' + (semaine < 10 ? '0' : '') + semaine;
+}
+
+function getProchainLundiTimestamp() {
+  // Prochain lundi 8h heure locale
+  var d = new Date();
+  var jour = d.getDay() || 7;
+  var joursRestants = 8 - jour; // jours jusqu'a prochain lundi
+  if (joursRestants >= 7) joursRestants = 0;
+  d.setDate(d.getDate() + joursRestants);
+  d.setHours(8, 0, 0, 0);
+  if (d.getTime() <= Date.now()) d.setDate(d.getDate() + 7);
+  return d.getTime();
 }
 
 function ouvrirQuetes() {
@@ -731,14 +737,14 @@ function chargerQuetes() {
     if (!doc.exists) { liste.innerHTML = ''; return; }
     var data = doc.data();
     var quetes = data.questsHebdo || null;
-    var lundiCourant = getLundiCourant();
+    var lundiCourant = getSemaineId();
     // Generer de nouvelles quetes si necessaire (premiere fois ou nouvelle semaine)
     if (!quetes || !quetes.semaine || quetes.semaine !== lundiCourant) {
       quetes = genererNouvellesQuetes(lundiCourant);
       db.collection('players').doc(monPlayerId).update({ questsHebdo: quetes }).catch(function() {});
     }
     afficherQuetes(quetes);
-    afficherTempsRestant(lundiCourant);
+    afficherTempsRestant();
   }).catch(function() {
     liste.innerHTML = '<div style="color:#e74c3c;text-align:center;padding:20px;">Erreur de chargement.</div>';
   });
@@ -788,10 +794,10 @@ function afficherQuetes(data) {
   if (badge) badge.style.display = aRecompense ? 'flex' : 'none';
 }
 
-function afficherTempsRestant(lundi) {
+function afficherTempsRestant() {
   var el = document.getElementById('quetes-temps-restant');
   if (!el) return;
-  var prochainLundi = lundi + 7 * 24 * 3600 * 1000;
+  var prochainLundi = getProchainLundiTimestamp();
   var diff = prochainLundi - Date.now();
   if (diff < 0) { el.textContent = ''; return; }
   var jours = Math.floor(diff / (24 * 3600 * 1000));
@@ -840,7 +846,7 @@ function incrementerQueteStat(stat, valeur) {
       if (!doc.exists) return;
       var data = doc.data();
       var qd = data.questsHebdo;
-      var lundiCourant = getLundiCourant();
+      var lundiCourant = getSemaineId();
       if (!qd || qd.semaine !== lundiCourant) {
         qd = genererNouvellesQuetes(lundiCourant);
       }

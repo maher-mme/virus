@@ -187,6 +187,8 @@ function connecterCompte() {
       lastSeen: firebase.firestore.FieldValue.serverTimestamp()
     }).catch(function() {});
     initAmisListeners();
+    if (typeof initEchangeListener === 'function') initEchangeListener();
+    if (typeof initEchangeAccepteListener === 'function') initEchangeAccepteListener();
     var btnAmis = document.getElementById('btn-amis');
     if (btnAmis) btnAmis.style.display = 'flex';
     appliquerSkinPartout();
@@ -632,6 +634,8 @@ function initCompteEtFirebase() {
     appliquerSkinPartout();
     afficherPfpPartout();
     if (typeof debloquerToutAdmin === 'function') debloquerToutAdmin();
+    if (typeof initEchangeListener === 'function') initEchangeListener();
+    if (typeof initEchangeAccepteListener === 'function') initEchangeAccepteListener();
     showScreen('menu-principal');
     // Verifier ban + PIN
     setTimeout(function() {

@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.6.0';
+var CURRENT_VERSION = '2.6.1';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -864,6 +864,229 @@ function incrementerQueteStat(stat, valeur) {
       }
     });
   }).catch(function(err) { console.error('Erreur incrementerQueteStat:', err); });
+}
+
+// === SYSTEME D'ECHANGE DE SKINS ===
+var ECHANGE_COOLDOWN = 2 * 3600 * 1000; // 2 heures en ms
+var _echangeAmiUid = '';
+var _echangeAmiPseudo = '';
+var _echangeSkinChoisi = '';
+
+function proposerEchange(amiUid, amiPseudo) {
+  // Verifier cooldown
+  var lastEchange = parseInt(localStorage.getItem('virusLastEchange') || '0');
+  if (Date.now() - lastEchange < ECHANGE_COOLDOWN) {
+    var restant = Math.ceil((ECHANGE_COOLDOWN - (Date.now() - lastEchange)) / 60000);
+    showNotif('Attends encore ' + restant + ' min avant un nouvel echange.', 'warn');
+    return;
+  }
+  _echangeAmiUid = amiUid;
+  _echangeAmiPseudo = amiPseudo;
+  _echangeSkinChoisi = '';
+  var popup = document.getElementById('popup-echange');
+  if (!popup) return;
+  popup.classList.add('visible');
+  document.getElementById('echange-info').textContent = 'Choisis un skin a proposer a ' + amiPseudo + ' :';
+  afficherMesSkinsEchange();
+}
+
+function fermerEchange() {
+  var popup = document.getElementById('popup-echange');
+  if (popup) popup.classList.remove('visible');
+}
+
+function afficherMesSkinsEchange() {
+  var contenu = document.getElementById('echange-contenu');
+  if (!contenu) return;
+  var skinEquipe = getSkin();
+  var achetes = getSkinsAchetes();
+  var tousLesSkins = SKINS.concat(SKINS_BOUTIQUE.filter(function(sb) { return achetes.indexOf(sb.id) >= 0; }));
+  // Exclure le skin equipe
+  tousLesSkins = tousLesSkins.filter(function(s) { return s.id !== skinEquipe; });
+  if (tousLesSkins.length === 0) {
+    contenu.innerHTML = '<div style="color:#95a5a6;text-align:center;padding:20px;">Tu n\'as aucun skin a echanger (desequipe ton skin actuel d\'abord).</div>';
+    return;
+  }
+  var html = '<div class="echange-skin-grid">';
+  tousLesSkins.forEach(function(s) {
+    html += '<div class="echange-skin-item" onclick="selectionnerSkinEchange(\'' + s.id + '\', this)">' +
+      '<img src="' + s.fichier + '" alt="' + s.nom + '">' +
+      '<span>' + s.nom + '</span></div>';
+  });
+  html += '</div>';
+  html += '<button class="btn-sauver-pseudo" id="btn-envoyer-echange" style="background:linear-gradient(180deg,#e67e22,#d35400);border-color:#e67e22;width:100%;padding:10px;margin-top:10px;" onclick="envoyerDemandeEchange()" disabled>PROPOSER L\'ECHANGE</button>';
+  contenu.innerHTML = html;
+}
+
+function selectionnerSkinEchange(skinId, el) {
+  _echangeSkinChoisi = skinId;
+  document.querySelectorAll('.echange-skin-item').forEach(function(e) { e.classList.remove('selected'); });
+  if (el) el.classList.add('selected');
+  var btn = document.getElementById('btn-envoyer-echange');
+  if (btn) btn.disabled = false;
+}
+
+function envoyerDemandeEchange() {
+  if (!_echangeSkinChoisi || !_echangeAmiUid) return;
+  var skinObj = SKINS.concat(SKINS_BOUTIQUE).find(function(s) { return s.id === _echangeSkinChoisi; });
+  if (!skinObj) return;
+  db.collection('skinTrades').add({
+    fromPlayerId: monPlayerId,
+    fromPseudo: getPseudo() || '',
+    fromSkinId: _echangeSkinChoisi,
+    fromSkinNom: skinObj.nom,
+    fromSkinFichier: skinObj.fichier,
+    toPlayerId: _echangeAmiUid,
+    toPseudo: _echangeAmiPseudo,
+    toSkinId: '',
+    toSkinNom: '',
+    toSkinFichier: '',
+    status: 'pending',
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(function() {
+    showNotif('Demande d\'echange envoyee a ' + _echangeAmiPseudo + ' !', 'success');
+    fermerEchange();
+  }).catch(function() {
+    showNotif('Erreur', 'warn');
+  });
+}
+
+// Ecouter les demandes d'echange recues
+function initEchangeListener() {
+  if (!monPlayerId) return;
+  db.collection('skinTrades').where('toPlayerId', '==', monPlayerId).where('status', '==', 'pending').onSnapshot(function(snap) {
+    snap.docChanges().forEach(function(change) {
+      if (change.type === 'added') {
+        var data = change.doc.data();
+        data._id = change.doc.id;
+        afficherDemandeEchange(data);
+      }
+    });
+  });
+}
+
+function afficherDemandeEchange(trade) {
+  var popup = document.getElementById('popup-echange');
+  if (!popup) return;
+  popup.classList.add('visible');
+  document.getElementById('echange-info').textContent = trade.fromPseudo + ' veut echanger ce skin avec toi :';
+  var contenu = document.getElementById('echange-contenu');
+  var html = '<div class="echange-preview">' +
+    '<div class="echange-preview-skin"><img src="' + trade.fromSkinFichier + '"><span>' + trade.fromSkinNom + '</span></div>' +
+    '<span class="echange-fleche">&#128260;</span>' +
+    '<div class="echange-preview-skin"><span style="font-size:20px;">?</span><span>Ton skin</span></div>' +
+    '</div>';
+  html += '<p style="color:#bdc3c7;font-size:12px;text-align:center;">Choisis un skin en echange :</p>';
+  // Mes skins disponibles
+  var skinEquipe = getSkin();
+  var achetes = getSkinsAchetes();
+  var tousLesSkins = SKINS.concat(SKINS_BOUTIQUE.filter(function(sb) { return achetes.indexOf(sb.id) >= 0; }));
+  tousLesSkins = tousLesSkins.filter(function(s) { return s.id !== skinEquipe; });
+  html += '<div class="echange-skin-grid">';
+  tousLesSkins.forEach(function(s) {
+    html += '<div class="echange-skin-item" onclick="selectionnerSkinReponse(\'' + s.id + '\', this)">' +
+      '<img src="' + s.fichier + '" alt="' + s.nom + '">' +
+      '<span>' + s.nom + '</span></div>';
+  });
+  html += '</div>';
+  html += '<div style="display:flex;gap:8px;margin-top:10px;">' +
+    '<button class="btn-sauver-pseudo" id="btn-accepter-echange" style="background:linear-gradient(180deg,#27ae60,#229954);border-color:#27ae60;flex:1;padding:10px;" onclick="accepterEchange(\'' + trade._id + '\')" disabled>ACCEPTER</button>' +
+    '<button class="btn-sauver-pseudo" style="background:linear-gradient(180deg,#e74c3c,#c0392b);border-color:#e74c3c;flex:1;padding:10px;" onclick="refuserEchange(\'' + trade._id + '\')">REFUSER</button>' +
+    '</div>';
+  contenu.innerHTML = html;
+}
+
+var _echangeReponseSkin = '';
+function selectionnerSkinReponse(skinId, el) {
+  _echangeReponseSkin = skinId;
+  document.querySelectorAll('.echange-skin-item').forEach(function(e) { e.classList.remove('selected'); });
+  if (el) el.classList.add('selected');
+  var btn = document.getElementById('btn-accepter-echange');
+  if (btn) btn.disabled = false;
+}
+
+function accepterEchange(tradeId) {
+  if (!_echangeReponseSkin) return;
+  var skinObj = SKINS.concat(SKINS_BOUTIQUE).find(function(s) { return s.id === _echangeReponseSkin; });
+  if (!skinObj) return;
+  // Mettre a jour la demande avec le skin choisi
+  db.collection('skinTrades').doc(tradeId).update({
+    toSkinId: _echangeReponseSkin,
+    toSkinNom: skinObj.nom,
+    toSkinFichier: skinObj.fichier,
+    status: 'accepted'
+  }).then(function() {
+    // Lire le trade pour faire l'echange
+    return db.collection('skinTrades').doc(tradeId).get();
+  }).then(function(doc) {
+    if (!doc.exists) return;
+    var trade = doc.data();
+    // Echanger les skins dans les comptes
+    executerEchange(trade);
+    showNotif('Echange accepte !', 'success');
+    localStorage.setItem('virusLastEchange', String(Date.now()));
+    fermerEchange();
+  }).catch(function() { showNotif('Erreur', 'warn'); });
+}
+
+function refuserEchange(tradeId) {
+  db.collection('skinTrades').doc(tradeId).update({ status: 'declined' }).catch(function() {});
+  showNotif('Echange refuse.', 'info');
+  fermerEchange();
+}
+
+function executerEchange(trade) {
+  // Joueur local recoit le skin de l'autre
+  var mesAchats = getSkinsAchetes();
+  // Ajouter le skin recu
+  if (mesAchats.indexOf(trade.fromSkinId) < 0 && !SKINS.find(function(s) { return s.id === trade.fromSkinId; })) {
+    mesAchats.push(trade.fromSkinId);
+  }
+  // Retirer le skin donne (sauf si c'est un skin de base)
+  var idxDonne = mesAchats.indexOf(trade.toSkinId);
+  if (idxDonne >= 0) mesAchats.splice(idxDonne, 1);
+  sauvegarderSkinsAchetes(mesAchats);
+
+  // Mettre a jour l'autre joueur via Firebase
+  db.collection('players').doc(trade.fromPlayerId).get().then(function(doc) {
+    if (!doc.exists) return;
+    var data = doc.data();
+    var autreAchats = data.skinsAchetes || [];
+    // Ajouter le skin recu
+    if (autreAchats.indexOf(trade.toSkinId) < 0 && !SKINS.find(function(s) { return s.id === trade.toSkinId; })) {
+      autreAchats.push(trade.toSkinId);
+    }
+    // Retirer le skin donne
+    var idxAutre = autreAchats.indexOf(trade.fromSkinId);
+    if (idxAutre >= 0) autreAchats.splice(idxAutre, 1);
+    db.collection('players').doc(trade.fromPlayerId).update({ skinsAchetes: autreAchats, skinsCount: autreAchats.length }).catch(function() {});
+  });
+}
+
+// Ecouter les echanges acceptes (pour l'initiateur)
+function initEchangeAccepteListener() {
+  if (!monPlayerId) return;
+  db.collection('skinTrades').where('fromPlayerId', '==', monPlayerId).where('status', '==', 'accepted').onSnapshot(function(snap) {
+    snap.docChanges().forEach(function(change) {
+      if (change.type === 'added' || change.type === 'modified') {
+        var data = change.doc.data();
+        if (data.toSkinId) {
+          // L'autre a accepte, faire l'echange cote initiateur
+          var mesAchats = getSkinsAchetes();
+          if (mesAchats.indexOf(data.toSkinId) < 0 && !SKINS.find(function(s) { return s.id === data.toSkinId; })) {
+            mesAchats.push(data.toSkinId);
+          }
+          var idx = mesAchats.indexOf(data.fromSkinId);
+          if (idx >= 0) mesAchats.splice(idx, 1);
+          sauvegarderSkinsAchetes(mesAchats);
+          showNotif(data.toPseudo + ' a accepte l\'echange ! Tu as recu ' + data.toSkinNom, 'success');
+          localStorage.setItem('virusLastEchange', String(Date.now()));
+          // Marquer comme complete
+          db.collection('skinTrades').doc(change.doc.id).update({ status: 'completed' }).catch(function() {});
+        }
+      }
+    });
+  });
 }
 
 // === TOGGLE REGLES DU JEU ===

@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="css/game.css?v=11">
   <link rel="stylesheet" href="css/hud.css?v=6">
   <link rel="stylesheet" href="css/meeting.css?v=6">
-  <link rel="stylesheet" href="css/friends.css?v=6">
+  <link rel="stylesheet" href="css/friends.css?v=7">
   <link rel="stylesheet" href="css/responsive.css?v=20260323">
   <link rel="stylesheet" href="css/minigames.css?v=1">
 </head>
@@ -76,7 +76,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v2.6.0 - ALPHA</span>
+    <span class="version">VIRUS v2.6.1 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -146,7 +146,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.6.0 - ALPHA</span>
+    <span class="version">VIRUS v2.6.1 - ALPHA</span>
     </div>
   </div>
 
@@ -217,7 +217,23 @@
             <button class="btn-sauver-pseudo" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.6.0 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.6.1 - ALPHA</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- POPUP ECHANGE DE SKINS         -->
+  <!-- ============================== -->
+  <div class="popup-overlay" id="popup-echange">
+    <div class="popup-box" style="max-width:450px;max-height:85vh;display:flex;flex-direction:column;">
+      <div class="popup-header" style="background:linear-gradient(180deg,#e67e22,#d35400);">
+        <h3>ECHANGE DE SKINS</h3>
+        <button class="popup-close" onclick="fermerEchange()">&times;</button>
+      </div>
+      <div class="popup-body" style="overflow-y:auto;flex:1;">
+        <p style="color:#bdc3c7;font-size:12px;text-align:center;margin:0 0 10px;" id="echange-info"></p>
+        <div id="echange-contenu"></div>
       </div>
     </div>
   </div>
@@ -385,7 +401,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v2.6.0 - ALPHA</span>
+        <span class="version-inline">v2.6.1 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -600,7 +616,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v2.6.0 - ALPHA</span>
+    <span class="version">VIRUS v2.6.1 - ALPHA</span>
     </div>
   </div>
 
@@ -691,7 +707,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.6.0 - ALPHA</span>
+    <span class="version">VIRUS v2.6.1 - ALPHA</span>
     </div>
   </div>
 
@@ -737,7 +753,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v2.6.0 - ALPHA</span>
+    <span class="version">VIRUS v2.6.1 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -1878,8 +1894,8 @@
 <script src="js/api.js?v=1"></script>
 <script src="js/skins.js?v=5"></script>
 <script src="js/music.js?v=2"></script>
-<script src="js/account.js?v=18"></script>
-<script src="js/ui.js?v=20260412e"></script>
+<script src="js/account.js?v=19"></script>
+<script src="js/ui.js?v=20260412f"></script>
 <script src="js/chat.js?v=6"></script>
 <script src="js/comments.js?v=5"></script>
 <script src="js/translation.js?v=20260409b"></script>
@@ -1894,7 +1910,7 @@
 <script src="js/minigames.js?v=2"></script>
 <script src="js/cameras.js?v=2"></script>
 <script src="js/stats.js?v=29"></script>
-<script src="js/friends.js?v=12"></script>
+<script src="js/friends.js?v=13"></script>
 
 <script>
 // Protection anti-copie (desactive en local pour le dev)

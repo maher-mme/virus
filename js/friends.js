@@ -62,6 +62,9 @@ function afficherAmis() {
         }
       }
       html += '<button class="ami-btn-profil" onclick="ouvrirProfil(\'' + escapeOnclick(ami.uid) + '\')" title="Voir le profil">&#128100;</button>';
+      if (isOnline) {
+        html += '<button class="ami-btn-echange" onclick="proposerEchange(\'' + escapeOnclick(ami.uid) + '\', \'' + escapeOnclick(ami.pseudo) + '\')" title="Echanger un skin">&#128260;</button>';
+      }
       // Bouton REJOINDRE si l'ami est dans un lobby
       var amiPartyId = (amisStatuts[ami.uid] && amisStatuts[ami.uid].currentPartyId) || '';
       if (isOnline && amiPartyId) {

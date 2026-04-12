@@ -218,6 +218,57 @@
   transition: background 0.2s;
 }
 .ami-btn-inviter:hover { background: #2980b9; }
+.ami-btn-echange {
+  background: linear-gradient(180deg, #e67e22, #d35400);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.ami-btn-echange:hover { filter: brightness(1.15); }
+.echange-skin-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 10px 0;
+}
+.echange-skin-item {
+  width: 65px;
+  height: 80px;
+  background: rgba(44,62,80,0.5);
+  border: 2px solid #34495e;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  transition: all 0.2s;
+}
+.echange-skin-item:hover { border-color: #f39c12; transform: scale(1.05); }
+.echange-skin-item.selected { border-color: #f39c12; box-shadow: 0 0 10px rgba(243,156,18,0.5); }
+.echange-skin-item img { width: 40px; height: 40px; object-fit: contain; }
+.echange-skin-item span { font-size: 8px; color: #bdc3c7; text-align: center; }
+.echange-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 15px 0;
+  padding: 12px;
+  background: rgba(44,62,80,0.3);
+  border-radius: 10px;
+}
+.echange-preview-skin {
+  text-align: center;
+}
+.echange-preview-skin img { width: 50px; height: 50px; object-fit: contain; }
+.echange-preview-skin span { display: block; font-size: 10px; color: #bdc3c7; margin-top: 3px; }
+.echange-fleche { font-size: 24px; color: #f39c12; }
 .ami-btn-rejoindre {
   background: linear-gradient(180deg, #27ae60, #229954);
   color: white;

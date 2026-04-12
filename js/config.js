@@ -87,7 +87,7 @@ function enregistrerActivite() {
   dernierActivite = Date.now();
   if (afkAverti) {
     afkAverti = false;
-    if (monPlayerId) {
+    if (monPlayerId && typeof getPseudo === 'function' && getPseudo()) {
       db.collection('players').doc(monPlayerId).update({
         online: true,
         lastSeen: firebase.firestore.FieldValue.serverTimestamp()
@@ -100,16 +100,16 @@ function enregistrerActivite() {
   document.addEventListener(evt, enregistrerActivite, { passive: true });
 });
 
-// Heartbeat toutes les 30 secondes (conditionnel sur activite)
+// Heartbeat toutes les 30 secondes (conditionnel sur activite + pseudo)
 setInterval(function() {
-  if (!monPlayerId) return;
+  if (!monPlayerId || typeof getPseudo !== 'function' || !getPseudo()) return;
   var inactif = Date.now() - dernierActivite;
   if (inactif < 180000) {
-    // Actif : mettre en ligne
-    db.collection('players').doc(monPlayerId).set({
+    // Actif : mettre en ligne (update seulement, pas set)
+    db.collection('players').doc(monPlayerId).update({
       lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
       online: true
-    }, { merge: true }).catch(function() {});
+    }).catch(function() {});
   }
 }, 30000);
 
@@ -203,7 +203,7 @@ function quitterPartieSilencieux() {
 
 // Passer hors ligne et quitter quand on ferme la page
 window.addEventListener('beforeunload', function() {
-  if (monPlayerId) {
+  if (monPlayerId && typeof getPseudo === 'function' && getPseudo()) {
     db.collection('players').doc(monPlayerId).update({ online: false }).catch(function() {});
   }
   quitterPartieSilencieux();
@@ -213,7 +213,7 @@ window.addEventListener('beforeunload', function() {
 var visibilityTimeout = null;
 document.addEventListener('visibilitychange', function() {
   if (document.visibilityState === 'hidden') {
-    if (monPlayerId) {
+    if (monPlayerId && typeof getPseudo === 'function' && getPseudo()) {
       db.collection('players').doc(monPlayerId).update({ online: false }).catch(function() {});
     }
     // Attendre 20s avant de quitter (laisser le temps de revenir)
@@ -226,7 +226,7 @@ document.addEventListener('visibilitychange', function() {
       clearTimeout(visibilityTimeout);
       visibilityTimeout = null;
     }
-    if (monPlayerId) {
+    if (monPlayerId && typeof getPseudo === 'function' && getPseudo()) {
       db.collection('players').doc(monPlayerId).update({
         online: true,
         lastSeen: firebase.firestore.FieldValue.serverTimestamp()
@@ -241,9 +241,9 @@ document.addEventListener('visibilitychange', function() {
   }
 });
 
-// Heartbeat : mettre a jour lastSeen toutes les 60s pour detecter les deconnexions
+// Heartbeat : mettre a jour lastSeen toutes les 60s (seulement si le joueur a un pseudo)
 setInterval(function() {
-  if (monPlayerId && document.visibilityState === 'visible') {
+  if (monPlayerId && document.visibilityState === 'visible' && typeof getPseudo === 'function' && getPseudo()) {
     db.collection('players').doc(monPlayerId).update({
       lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
       online: true

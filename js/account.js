@@ -434,6 +434,18 @@ function chargerJoinMode() {
   });
 }
 
+function toggleVoirMdp(inputId, btn) {
+  var input = document.getElementById(inputId);
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.style.color = '#f39c12';
+  } else {
+    input.type = 'password';
+    btn.style.color = '#7f8c8d';
+  }
+}
+
 function ouvrirChangerMotDePasse() {
   var sec = document.getElementById('section-changer-mdp');
   if (!sec) return;

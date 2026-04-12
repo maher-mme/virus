@@ -19,7 +19,7 @@
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css?v=3">
   <link rel="stylesheet" href="css/components.css?v=5">
-  <link rel="stylesheet" href="css/menu.css?v=17">
+  <link rel="stylesheet" href="css/menu.css?v=18">
   <link rel="stylesheet" href="css/lobby.css?v=20260322">
   <link rel="stylesheet" href="css/game.css?v=11">
   <link rel="stylesheet" href="css/hud.css?v=5">
@@ -76,7 +76,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v2.5.4 - ALPHA</span>
+    <span class="version">VIRUS v2.5.5 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -146,7 +146,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.5.4 - ALPHA</span>
+    <span class="version">VIRUS v2.5.5 - ALPHA</span>
     </div>
   </div>
 
@@ -200,15 +200,24 @@
         </div>
         <div class="popup-section" id="section-changer-mdp" style="display:none;">
           <label>CHANGER LE MOT DE PASSE</label>
-          <input type="password" id="input-ancien-mdp" maxlength="10" placeholder="Ancien mot de passe" style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px 12px;color:#ecf0f1;font-size:14px;text-align:center;letter-spacing:3px;font-family:Arial,sans-serif;outline:none;margin-bottom:6px;">
-          <input type="password" id="input-nouveau-mdp" maxlength="10" placeholder="Nouveau mot de passe (5-10)" style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px 12px;color:#ecf0f1;font-size:14px;text-align:center;letter-spacing:3px;font-family:Arial,sans-serif;outline:none;margin-bottom:6px;">
-          <input type="password" id="input-confirm-mdp" maxlength="10" placeholder="Confirmer le nouveau mot de passe" style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px 12px;color:#ecf0f1;font-size:14px;text-align:center;letter-spacing:3px;font-family:Arial,sans-serif;outline:none;margin-bottom:8px;">
+          <div style="position:relative;margin-bottom:6px;">
+            <input type="password" id="input-ancien-mdp" maxlength="10" placeholder="Ancien mot de passe" style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px 35px 8px 12px;color:#ecf0f1;font-size:14px;text-align:center;letter-spacing:3px;font-family:Arial,sans-serif;outline:none;">
+            <button type="button" class="btn-oeil-mdp" onclick="toggleVoirMdp('input-ancien-mdp', this)">&#128065;</button>
+          </div>
+          <div style="position:relative;margin-bottom:6px;">
+            <input type="password" id="input-nouveau-mdp" maxlength="10" placeholder="Nouveau mot de passe (5-10)" style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px 35px 8px 12px;color:#ecf0f1;font-size:14px;text-align:center;letter-spacing:3px;font-family:Arial,sans-serif;outline:none;">
+            <button type="button" class="btn-oeil-mdp" onclick="toggleVoirMdp('input-nouveau-mdp', this)">&#128065;</button>
+          </div>
+          <div style="position:relative;margin-bottom:8px;">
+            <input type="password" id="input-confirm-mdp" maxlength="10" placeholder="Confirmer le nouveau mot de passe" style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px 35px 8px 12px;color:#ecf0f1;font-size:14px;text-align:center;letter-spacing:3px;font-family:Arial,sans-serif;outline:none;">
+            <button type="button" class="btn-oeil-mdp" onclick="toggleVoirMdp('input-confirm-mdp', this)">&#128065;</button>
+          </div>
           <div style="display:flex;gap:6px;">
             <button class="btn-sauver-pseudo" style="background:linear-gradient(180deg,#27ae60,#229954);border-color:#27ae60;flex:1;padding:8px;" onclick="changerMotDePasse()">VALIDER</button>
             <button class="btn-sauver-pseudo" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.5.4 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.5.5 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -376,7 +385,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v2.5.4 - ALPHA</span>
+        <span class="version-inline">v2.5.5 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -591,7 +600,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v2.5.4 - ALPHA</span>
+    <span class="version">VIRUS v2.5.5 - ALPHA</span>
     </div>
   </div>
 
@@ -682,7 +691,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.5.4 - ALPHA</span>
+    <span class="version">VIRUS v2.5.5 - ALPHA</span>
     </div>
   </div>
 
@@ -728,7 +737,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v2.5.4 - ALPHA</span>
+    <span class="version">VIRUS v2.5.5 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -1863,7 +1872,7 @@
 <script src="js/api.js?v=1"></script>
 <script src="js/skins.js?v=5"></script>
 <script src="js/music.js?v=2"></script>
-<script src="js/account.js?v=17"></script>
+<script src="js/account.js?v=18"></script>
 <script src="js/ui.js?v=20260412e"></script>
 <script src="js/chat.js?v=6"></script>
 <script src="js/comments.js?v=5"></script>

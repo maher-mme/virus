@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.4.9';
+var CURRENT_VERSION = '2.5.0';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -692,8 +692,10 @@ var QUETE_TEMPLATES = [
 function getLundiCourant() {
   var d = new Date();
   var jour = d.getDay() || 7; // dimanche = 7
-  d.setHours(0, 0, 0, 0);
+  d.setHours(8, 0, 0, 0); // Reset a 8h heure de France
   d.setDate(d.getDate() - (jour - 1));
+  // Si on est lundi avant 8h, prendre le lundi precedent
+  if (d.getTime() > Date.now()) d.setDate(d.getDate() - 7);
   return d.getTime();
 }
 

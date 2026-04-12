@@ -109,6 +109,26 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Echanges de skins
+    match /skinTrades/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Signalements
+    match /signalements/{docId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if false;
+    }
+
+    // Missions completees
+    match /missionsCompletees/{docId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if false;
+    }
+
     // Commentaires sur le jeu
     match /comments/{docId} {
       allow read: if true;

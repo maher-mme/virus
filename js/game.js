@@ -1049,7 +1049,7 @@ function gameLoop() {
     btnCam.style.display = (dansSecurite && !camerasOuvertes && !reunionEnCours) ? 'block' : 'none';
   }
 
-  // Indicateur de direction vers la mission la plus proche
+  // Indicateur de direction vers la mission la plus proche (fleche au bord de l'ecran)
   var indicateur = document.getElementById('mission-indicator');
   if (indicateur && typeof mesMissions !== 'undefined') {
     var missionPlusProche = null;
@@ -1061,7 +1061,7 @@ function gameLoop() {
       var dm = Math.sqrt(dmx * dmx + dmy * dmy);
       if (dm < distMin) { distMin = dm; missionPlusProche = mesMissions[im]; }
     }
-    if (missionPlusProche && !reunionEnCours && !miniJeuOuvert) {
+    if (missionPlusProche && !reunionEnCours && !miniJeuOuvert && distMin > 150) {
       indicateur.style.display = 'flex';
       var angle = Math.atan2(missionPlusProche.caisseY - joueurY, missionPlusProche.caisseX - joueurX);
       var deg = angle * (180 / Math.PI);
@@ -1069,6 +1069,19 @@ function gameLoop() {
       if (arrow) arrow.style.transform = 'rotate(' + deg + 'deg)';
       var distEl = document.getElementById('mission-indicator-dist');
       if (distEl) distEl.textContent = Math.round(distMin / 100) + 'm';
+      // Positionner au bord de l'ecran
+      var vw = window.innerWidth;
+      var vh = window.innerHeight;
+      var cx = vw / 2;
+      var cy = vh / 2;
+      var margin = 40;
+      var edgeX = cx + Math.cos(angle) * (vw / 2 - margin);
+      var edgeY = cy + Math.sin(angle) * (vh / 2 - margin);
+      // Clamper aux bords de l'ecran
+      edgeX = Math.max(margin, Math.min(vw - margin, edgeX));
+      edgeY = Math.max(margin, Math.min(vh - margin, edgeY));
+      indicateur.style.left = edgeX + 'px';
+      indicateur.style.top = edgeY + 'px';
     } else {
       indicateur.style.display = 'none';
     }

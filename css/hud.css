@@ -51,36 +51,36 @@
 .hud-role-fanatique { background: #8e44ad; color: white; }
 .hud-role-espion { background: #9b59b6; color: white; }
 
-/* Indicateur de direction mission */
+/* Indicateur de direction mission (fleche au bord de l'ecran) */
 .mission-indicator {
-  position: absolute;
-  bottom: 150px;
-  right: 20px;
+  position: fixed;
   display: flex;
   flex-direction: column;
   align-items: center;
   pointer-events: none;
   z-index: 201;
+  transition: top 0.1s, left 0.1s;
 }
 .mission-indicator-arrow {
-  width: 40px;
-  height: 40px;
-  background: rgba(243,156,18,0.8);
+  width: 30px;
+  height: 30px;
+  background: rgba(243,156,18,0.9);
   border: 2px solid #f39c12;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 14px;
   color: white;
-  transition: transform 0.15s ease;
+  box-shadow: 0 0 10px rgba(243,156,18,0.5);
 }
 .mission-indicator-dist {
   color: #f39c12;
-  font-size: 10px;
+  font-size: 9px;
   font-family: Arial, sans-serif;
   font-weight: bold;
-  margin-top: 3px;
+  margin-top: 2px;
+  text-shadow: 0 0 3px rgba(0,0,0,0.8);
 }
 
 .hud-minimap {

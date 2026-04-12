@@ -17,9 +17,9 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <!-- CSS -->
-  <link rel="stylesheet" href="css/base.css?v=2">
+  <link rel="stylesheet" href="css/base.css?v=3">
   <link rel="stylesheet" href="css/components.css?v=5">
-  <link rel="stylesheet" href="css/menu.css?v=16">
+  <link rel="stylesheet" href="css/menu.css?v=17">
   <link rel="stylesheet" href="css/lobby.css?v=20260322">
   <link rel="stylesheet" href="css/game.css?v=11">
   <link rel="stylesheet" href="css/hud.css?v=5">
@@ -76,7 +76,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v2.5.0 - ALPHA</span>
+    <span class="version">VIRUS v2.5.1 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -146,7 +146,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.5.0 - ALPHA</span>
+    <span class="version">VIRUS v2.5.1 - ALPHA</span>
     </div>
   </div>
 
@@ -208,7 +208,7 @@
             <button class="btn-sauver-pseudo" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.5.0 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.5.1 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -376,7 +376,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v2.5.0 - ALPHA</span>
+        <span class="version-inline">v2.5.1 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -417,24 +417,24 @@
 
     <div class="menu-buttons">
       <button class="btn btn-online" onclick="showScreen('menu-online')">
-        <span data-i18n="online">ONLINE</span>
+        <span>&#127760; <span data-i18n="online">ONLINE</span></span>
         <span class="btn-sub" data-i18n="joinOrCreate">Rejoindre ou creer une partie</span>
       </button>
       <button class="btn btn-horsline" onclick="showScreen('config-horsline')">
-        <span data-i18n="offline">HORS LIGNE</span>
+        <span>&#129302; <span data-i18n="offline">HORS LIGNE</span></span>
         <span class="btn-sub" data-i18n="playWithBots">Jouer avec des bots</span>
       </button>
       <button class="btn btn-boutique" onclick="showScreen('boutique-skins')">
-        <span data-i18n="shop">BOUTIQUE</span>
+        <span>&#128722; <span data-i18n="shop">BOUTIQUE</span></span>
         <span class="btn-sub" data-i18n="skinsAccs">Skins et accessoires</span>
       </button>
       <button class="btn btn-casier" onclick="ouvrirCabine()">
-        <span data-i18n="locker">CASIER</span>
+        <span>&#128085; <span data-i18n="locker">CASIER</span></span>
         <span class="btn-sub" data-i18n="changeSkin">Changer de skin</span>
       </button>
-      <button class="btn btn-param" onclick="ouvrirParams()" data-i18n="settings">PARAMETRES</button>
+      <button class="btn btn-param" onclick="ouvrirParams()">&#9881; <span data-i18n="settings">PARAMETRES</span></button>
       <button class="btn btn-tuto" onclick="ouvrirTuto()">
-        <span>TUTORIEL</span>
+        <span>&#128218; TUTORIEL</span>
         <span class="btn-sub">Apprendre a jouer</span>
       </button>
     </div>
@@ -443,7 +443,8 @@
       &#9998; <span data-i18n="comments">COMMENTAIRES</span>
     </button>
 
-    <div class="regles-panneau">
+    <button class="btn-voir-regles" onclick="toggleRegles()" id="btn-voir-regles">&#128214; REGLES DU JEU &#9660;</button>
+    <div class="regles-panneau" id="regles-panneau" style="display:none;">
       <div class="regles-header"><h3 data-i18n="rules">REGLES DU JEU</h3></div>
       <div class="regles-liste">
         <div class="regle-item">
@@ -590,7 +591,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v2.5.0 - ALPHA</span>
+    <span class="version">VIRUS v2.5.1 - ALPHA</span>
     </div>
   </div>
 
@@ -681,7 +682,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.5.0 - ALPHA</span>
+    <span class="version">VIRUS v2.5.1 - ALPHA</span>
     </div>
   </div>
 
@@ -727,7 +728,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v2.5.0 - ALPHA</span>
+    <span class="version">VIRUS v2.5.1 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -1863,7 +1864,7 @@
 <script src="js/skins.js?v=5"></script>
 <script src="js/music.js?v=2"></script>
 <script src="js/account.js?v=17"></script>
-<script src="js/ui.js?v=20260412a"></script>
+<script src="js/ui.js?v=20260412b"></script>
 <script src="js/chat.js?v=6"></script>
 <script src="js/comments.js?v=5"></script>
 <script src="js/translation.js?v=20260409b"></script>

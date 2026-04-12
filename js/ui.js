@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.5.0';
+var CURRENT_VERSION = '2.5.1';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -850,6 +850,20 @@ function incrementerQueteStat(stat, valeur) {
       }
     });
   }).catch(function(err) { console.error('Erreur incrementerQueteStat:', err); });
+}
+
+// === TOGGLE REGLES DU JEU ===
+function toggleRegles() {
+  var panneau = document.getElementById('regles-panneau');
+  var btn = document.getElementById('btn-voir-regles');
+  if (!panneau) return;
+  if (panneau.style.display === 'none') {
+    panneau.style.display = '';
+    if (btn) btn.innerHTML = '&#128214; REGLES DU JEU &#9650;';
+  } else {
+    panneau.style.display = 'none';
+    if (btn) btn.innerHTML = '&#128214; REGLES DU JEU &#9660;';
+  }
 }
 
 // === SYSTEME DE SIGNALEMENT ===

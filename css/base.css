@@ -41,6 +41,32 @@ input, textarea { user-select: text; -webkit-user-select: text; }
     repeating-conic-gradient(#18223a 0% 25%, #141b2d 0% 50%) 0 0 / 60px 60px,
     linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
   background-blend-mode: overlay;
+  position: relative;
+  overflow: hidden;
+}
+/* Particules virus flottantes */
+.bg-mall::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background:
+    radial-gradient(2px 2px at 10% 20%, rgba(231,76,60,0.4), transparent),
+    radial-gradient(2px 2px at 30% 70%, rgba(231,76,60,0.3), transparent),
+    radial-gradient(3px 3px at 50% 10%, rgba(231,76,60,0.2), transparent),
+    radial-gradient(2px 2px at 70% 60%, rgba(231,76,60,0.3), transparent),
+    radial-gradient(2px 2px at 90% 30%, rgba(231,76,60,0.4), transparent),
+    radial-gradient(3px 3px at 20% 90%, rgba(231,76,60,0.2), transparent),
+    radial-gradient(2px 2px at 80% 80%, rgba(231,76,60,0.3), transparent),
+    radial-gradient(2px 2px at 60% 40%, rgba(231,76,60,0.2), transparent);
+  animation: floatParticles 20s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes floatParticles {
+  0% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-30px) translateX(15px); }
+  100% { transform: translateY(0) translateX(0); }
 }
 
 /* ============================== */

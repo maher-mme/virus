@@ -220,6 +220,7 @@ function quitterPartie() {
 function ejecterDeLaPartie(raison) {
   showNotif(raison || t('partyDeleted') || 'La partie a ete supprimee', 'warn');
   unsubscribeFromParty();
+  if (monPlayerId) db.collection('players').doc(monPlayerId).update({ currentPartyId: '' }).catch(function() {});
   partieActuelleId = null;
   myPartyPlayerDocId = null;
   estHost = false;
@@ -503,6 +504,8 @@ function handleGameStateUpdate(state) {
 var _lancerMultiTentatives = 0;
 
 function lancerJeuMultiplayer(state) {
+  // La partie a demarre, plus dans le lobby
+  if (monPlayerId) db.collection('players').doc(monPlayerId).update({ currentPartyId: '' }).catch(function() {});
   // Nettoyer les joueurs distants precedents
   for (var pid in remotePlayers) {
     var el = document.getElementById('remote-' + pid);

@@ -199,6 +199,7 @@ function quitterPartieSilencieux() {
     joueurs: firebase.firestore.FieldValue.increment(-1),
     listeJoueurs: firebase.firestore.FieldValue.arrayRemove(pseudo)
   }).catch(function() {});
+  db.collection('players').doc(monPlayerId).update({ currentPartyId: '' }).catch(function() {});
 }
 
 // Passer hors ligne et quitter quand on ferme la page

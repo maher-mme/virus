@@ -13,6 +13,13 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 
+// Detection serveur Firebase desactive
+setTimeout(function() {
+  db.collection('version').doc('version').get({ source: 'server' }).catch(function() {
+    if (typeof showNotif === 'function') showNotif('Serveur desactive', 'error');
+  });
+}, 3000);
+
 // Identite persistante du joueur (UUID local)
 var monPlayerId = localStorage.getItem('virus_player_id');
 if (!monPlayerId) {

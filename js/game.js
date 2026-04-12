@@ -1049,6 +1049,31 @@ function gameLoop() {
     btnCam.style.display = (dansSecurite && !camerasOuvertes && !reunionEnCours) ? 'block' : 'none';
   }
 
+  // Indicateur de direction vers la mission la plus proche
+  var indicateur = document.getElementById('mission-indicator');
+  if (indicateur && typeof mesMissions !== 'undefined') {
+    var missionPlusProche = null;
+    var distMin = Infinity;
+    for (var im = 0; im < mesMissions.length; im++) {
+      if (mesMissions[im].faite) continue;
+      var dmx = mesMissions[im].caisseX - joueurX;
+      var dmy = mesMissions[im].caisseY - joueurY;
+      var dm = Math.sqrt(dmx * dmx + dmy * dmy);
+      if (dm < distMin) { distMin = dm; missionPlusProche = mesMissions[im]; }
+    }
+    if (missionPlusProche && !reunionEnCours && !miniJeuOuvert) {
+      indicateur.style.display = 'flex';
+      var angle = Math.atan2(missionPlusProche.caisseY - joueurY, missionPlusProche.caisseX - joueurX);
+      var deg = angle * (180 / Math.PI);
+      var arrow = document.getElementById('mission-indicator-arrow');
+      if (arrow) arrow.style.transform = 'rotate(' + deg + 'deg)';
+      var distEl = document.getElementById('mission-indicator-dist');
+      if (distEl) distEl.textContent = Math.round(distMin / 100) + 'm';
+    } else {
+      indicateur.style.display = 'none';
+    }
+  }
+
   // Mise a jour des bots
   if (bots.length > 0) {
     updateBots();

@@ -928,10 +928,15 @@ function retourMenuFinPartie() {
   document.getElementById('reunion-resultat').classList.remove('visible');
   document.getElementById('reunion-resultat').style.display = 'none';
   nettoyerBots();
-  modeHorsLigne = false;
   joueursElimines = [];
   botsMorts = [];
-  showScreen('menu-principal');
+  // En mode en ligne : retour au lobby au lieu du menu
+  if (!modeHorsLigne && partieActuelleId && typeof retourLobbyApresPartie === 'function') {
+    retourLobbyApresPartie();
+  } else {
+    modeHorsLigne = false;
+    showScreen('menu-principal');
+  }
 }
 
 function fermerReunion() {

@@ -163,6 +163,33 @@ function retirerBotEnLigne() {
   });
 }
 
+function retourLobbyApresPartie() {
+  if (!partieActuelleId) { showScreen('menu-principal'); return; }
+  // Remettre la partie en phase lobby
+  if (estHost) {
+    db.collection('parties').doc(partieActuelleId).update({ phase: 'lobby' }).catch(function() {});
+  }
+  // Reset le joueur dans partyPlayers (alive, position)
+  if (myPartyPlayerDocId) {
+    db.collection('partyPlayers').doc(myPartyPlayerDocId).update({
+      alive: true, role: '', x: 0, y: 0
+    }).catch(function() {});
+  }
+  // Tracker qu'on est dans le lobby
+  if (monPlayerId) db.collection('players').doc(monPlayerId).update({ currentPartyId: partieActuelleId }).catch(function() {});
+  // Nettoyer les joueurs distants
+  for (var pid in remotePlayers) {
+    var el = document.getElementById('remote-' + pid);
+    if (el) el.remove();
+  }
+  remotePlayers = {};
+  // Retour a la salle d'attente
+  jeuActif = false;
+  modeHorsLigne = false;
+  showScreen('salle-attente');
+  updateSalleAttente();
+}
+
 function kickJoueur(docId, pseudo) {
   if (!estHost || !partieActuelleId) return;
   if (!confirm('Expulser ' + pseudo + ' de la partie ?')) return;

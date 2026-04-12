@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.5.1';
+var CURRENT_VERSION = '2.5.2';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -690,12 +690,14 @@ var QUETE_TEMPLATES = [
 ];
 
 function getLundiCourant() {
-  var d = new Date();
-  var jour = d.getDay() || 7; // dimanche = 7
-  d.setHours(8, 0, 0, 0); // Reset a 8h heure de France
-  d.setDate(d.getDate() - (jour - 1));
-  // Si on est lundi avant 8h, prendre le lundi precedent
-  if (d.getTime() > Date.now()) d.setDate(d.getDate() - 7);
+  // 8h heure de France = 6h UTC (heure d'ete CEST = UTC+2)
+  var now = Date.now();
+  var d = new Date(now);
+  var jour = d.getUTCDay() || 7; // dimanche = 7
+  d.setUTCHours(6, 0, 0, 0); // 6h UTC = 8h France
+  d.setUTCDate(d.getUTCDate() - (jour - 1)); // Reculer au lundi
+  // Si ce lundi 8h France est dans le futur, prendre le lundi precedent
+  if (d.getTime() > now) d.setUTCDate(d.getUTCDate() - 7);
   return d.getTime();
 }
 

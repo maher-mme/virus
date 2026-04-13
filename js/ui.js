@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.6.6';
+var CURRENT_VERSION = '2.6.7';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -1156,7 +1156,7 @@ function afficherFlecheAlarme(capteur) {
   var div = document.createElement('div');
   div.id = 'alarme-fleche';
   div.style.cssText = 'position:fixed;display:flex;flex-direction:column;align-items:center;pointer-events:none;z-index:202;transition:top 0.1s,left 0.1s;';
-  div.innerHTML = '<div style="width:35px;height:35px;background:rgba(231,76,60,0.9);border:2px solid #e74c3c;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:white;box-shadow:0 0 15px rgba(231,76,60,0.7);animation:alarmePulse 0.5s infinite alternate;">&#9888;</div>' +
+  div.innerHTML = '<div style="width:35px;height:35px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 8px rgba(231,76,60,0.8));animation:alarmePulse 0.5s infinite alternate;"><svg viewBox="0 0 40 50" width="35" height="35"><path d="M20 0 L38 45 L20 35 L2 45 Z" fill="#e74c3c"/></svg></div>' +
     '<div style="color:#e74c3c;font-size:9px;font-weight:bold;margin-top:2px;text-shadow:0 0 3px rgba(0,0,0,0.8);">' + capteur.nom + '</div>';
   document.body.appendChild(div);
   // Animer la position pendant 8 secondes

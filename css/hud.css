@@ -59,20 +59,18 @@
   align-items: center;
   pointer-events: none;
   z-index: 201;
-  transition: top 0.1s, left 0.1s;
 }
 .mission-indicator-arrow {
   width: 30px;
   height: 30px;
-  background: rgba(243,156,18,0.9);
-  border: 2px solid #f39c12;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  color: white;
-  box-shadow: 0 0 10px rgba(243,156,18,0.5);
+  filter: drop-shadow(0 0 6px rgba(243,156,18,0.7));
+}
+.mission-indicator-arrow svg {
+  width: 30px;
+  height: 30px;
 }
 .mission-indicator-dist {
   color: #f39c12;

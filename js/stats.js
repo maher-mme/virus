@@ -24,6 +24,7 @@ function ajouterXP(xpGagne) {
   if (!monPlayerId) return;
   if (typeof tutoGuide !== 'undefined' && tutoGuide) return;
   var ref = db.collection('players').doc(monPlayerId);
+  var _levelUpInfo = null;
   db.runTransaction(function(transaction) {
     return transaction.get(ref).then(function(doc) {
       if (!doc.exists) return;
@@ -33,7 +34,6 @@ function ajouterXP(xpGagne) {
       var nouveauXP = ancienXP + xpGagne;
       var nouveauNiveau = calculerNiveau(nouveauXP).niveau;
 
-      // Ne jamais faire regresser le niveau
       var levelFinal = Math.max(nouveauNiveau, ancienNiveau);
 
       var updateData = { xp: nouveauXP, level: levelFinal };
@@ -42,16 +42,19 @@ function ajouterXP(xpGagne) {
       updateData[moisCle] = firebase.firestore.FieldValue.increment(xpGagne);
       transaction.update(ref, updateData);
 
-      // Notif level up seulement si le niveau augmente ET pas deja notifie
       if (levelFinal > ancienNiveau && levelFinal > _dernierNiveauNotifie) {
-        _dernierNiveauNotifie = levelFinal;
-        var niveauxGagnes = levelFinal - ancienNiveau;
-        var goldBonus = niveauxGagnes * GOLD_PAR_NIVEAU;
-        playerGold += goldBonus;
-        sauvegarderGold();
-        showNotif(t('levelUp', levelFinal, goldBonus), 'success');
+        _levelUpInfo = { level: levelFinal, niveaux: levelFinal - ancienNiveau };
       }
     });
+  }).then(function() {
+    // Gold et notif APRES la transaction reussie
+    if (_levelUpInfo) {
+      _dernierNiveauNotifie = _levelUpInfo.level;
+      var goldBonus = _levelUpInfo.niveaux * GOLD_PAR_NIVEAU;
+      playerGold += goldBonus;
+      sauvegarderGold();
+      showNotif(t('levelUp', _levelUpInfo.level, goldBonus), 'success');
+    }
   }).catch(function(err) { console.error('Erreur ajouterXP:', err); });
 }
 

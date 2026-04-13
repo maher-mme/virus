@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.6.2';
+var CURRENT_VERSION = '2.6.3';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -966,6 +966,7 @@ function initEchangeListener() {
 }
 
 function afficherDemandeEchange(trade) {
+  _echangeReponseSkin = '';
   var popup = document.getElementById('popup-echange');
   if (!popup) return;
   popup.classList.add('visible');

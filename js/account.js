@@ -490,7 +490,7 @@ function changerMotDePasse() {
       return;
     }
     var data = doc.data();
-    if (data.pin !== ancien) {
+    if (String(data.pin) !== String(ancien)) {
       showNotif(t('mdpOldWrong'), 'warn');
       return;
     }

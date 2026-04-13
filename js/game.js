@@ -1087,6 +1087,9 @@ function gameLoop() {
     }
   }
 
+  // Systeme d'alarme - detection capteurs
+  if (typeof verifierCapteurs === 'function') verifierCapteurs();
+
   // Mise a jour des bots
   if (bots.length > 0) {
     updateBots();

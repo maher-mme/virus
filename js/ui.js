@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.6.3';
+var CURRENT_VERSION = '2.6.4';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -1088,6 +1088,97 @@ function initEchangeAccepteListener() {
       }
     });
   });
+}
+
+// === SYSTEME D'ALARME (capteurs) ===
+var CAPTEURS = [
+  { nom: 'KIOSQUE', x: 2800, y: 1375, rayon: 200, cooldown: 0 },
+  { nom: 'OPTICIEN', x: 4800, y: 1375, rayon: 200, cooldown: 0 },
+  { nom: 'ARCADE', x: 2800, y: 4000, rayon: 200, cooldown: 0 },
+  { nom: 'BOWLING', x: 4800, y: 4000, rayon: 200, cooldown: 0 }
+];
+var CAPTEUR_COOLDOWN = 3 * 60 * 1000; // 3 minutes
+var _alarmeAffichee = false;
+var _alarmeTimer = null;
+
+function verifierCapteurs() {
+  if (!jeuActif || reunionEnCours) return;
+  // Seuls virus, espion, fanatique declenchent l'alarme
+  if (monRole !== 'virus' && monRole !== 'espion' && monRole !== 'fanatique') return;
+  var now = Date.now();
+  for (var ci = 0; ci < CAPTEURS.length; ci++) {
+    var cap = CAPTEURS[ci];
+    if (now < cap.cooldown) continue;
+    var dx = joueurX - cap.x;
+    var dy = joueurY - cap.y;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < cap.rayon) {
+      cap.cooldown = now + CAPTEUR_COOLDOWN;
+      declencherAlarme(cap);
+      break;
+    }
+  }
+  // Verifier aussi les bots virus/espion/fanatique
+  for (var bi = 0; bi < bots.length; bi++) {
+    var bot = bots[bi];
+    if (bot.role !== 'virus' && bot.role !== 'espion' && bot.role !== 'fanatique') continue;
+    if (joueursElimines.indexOf(bot.pseudo) >= 0) continue;
+    for (var cj = 0; cj < CAPTEURS.length; cj++) {
+      var cap2 = CAPTEURS[cj];
+      if (now < cap2.cooldown) continue;
+      var dbx = bot.x - cap2.x;
+      var dby = bot.y - cap2.y;
+      var distB = Math.sqrt(dbx * dbx + dby * dby);
+      if (distB < cap2.rayon) {
+        cap2.cooldown = now + CAPTEUR_COOLDOWN;
+        declencherAlarme(cap2);
+        break;
+      }
+    }
+  }
+}
+
+function declencherAlarme(capteur) {
+  // Son d'alarme
+  try { var sAlarme = new Audio('Audio/reunion-urgence.mp3'); sAlarme.volume = 0.7; sAlarme.play(); } catch(e) {}
+  // Notification
+  showNotif('ALARME ! Zone ' + capteur.nom, 'warn');
+  // Afficher fleche vers la zone
+  afficherFlecheAlarme(capteur);
+}
+
+function afficherFlecheAlarme(capteur) {
+  // Retirer l'ancienne fleche
+  var old = document.getElementById('alarme-fleche');
+  if (old) old.remove();
+  if (_alarmeTimer) clearTimeout(_alarmeTimer);
+  // Creer la fleche
+  var div = document.createElement('div');
+  div.id = 'alarme-fleche';
+  div.style.cssText = 'position:fixed;display:flex;flex-direction:column;align-items:center;pointer-events:none;z-index:202;transition:top 0.1s,left 0.1s;';
+  div.innerHTML = '<div style="width:35px;height:35px;background:rgba(231,76,60,0.9);border:2px solid #e74c3c;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:white;box-shadow:0 0 15px rgba(231,76,60,0.7);animation:alarmePulse 0.5s infinite alternate;">&#9888;</div>' +
+    '<div style="color:#e74c3c;font-size:9px;font-weight:bold;margin-top:2px;text-shadow:0 0 3px rgba(0,0,0,0.8);">' + capteur.nom + '</div>';
+  document.body.appendChild(div);
+  // Animer la position pendant 8 secondes
+  var duree = 8000;
+  var start = Date.now();
+  function majFleche() {
+    var elapsed = Date.now() - start;
+    if (elapsed > duree || !jeuActif) { div.remove(); return; }
+    var angle = Math.atan2(capteur.y - joueurY, capteur.x - joueurX);
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var margin = 45;
+    var edgeX = vw / 2 + Math.cos(angle) * (vw / 2 - margin);
+    var edgeY = vh / 2 + Math.sin(angle) * (vh / 2 - margin);
+    edgeX = Math.max(margin, Math.min(vw - margin, edgeX));
+    edgeY = Math.max(margin, Math.min(vh - margin, edgeY));
+    div.style.left = edgeX + 'px';
+    div.style.top = edgeY + 'px';
+    requestAnimationFrame(majFleche);
+  }
+  majFleche();
+  _alarmeTimer = setTimeout(function() { if (div.parentNode) div.remove(); }, duree);
 }
 
 // === TOGGLE REGLES DU JEU ===

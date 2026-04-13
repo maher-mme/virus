@@ -83,6 +83,11 @@
   text-shadow: 0 0 3px rgba(0,0,0,0.8);
 }
 
+@keyframes alarmePulse {
+  from { transform: scale(1); box-shadow: 0 0 10px rgba(231,76,60,0.5); }
+  to { transform: scale(1.15); box-shadow: 0 0 20px rgba(231,76,60,0.9); }
+}
+
 .hud-minimap {
   position: absolute;
   bottom: 15px;

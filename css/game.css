@@ -730,6 +730,12 @@
 .fp-role-journaliste { background: #3498db; color: white; }
 .fp-role-fanatique { background: #8e44ad; color: white; }
 .fp-role-espion { background: #9b59b6; color: white; }
+.fin-btn-continuer {
+  background: linear-gradient(180deg, #27ae60, #229954) !important;
+  border-color: #2ecc71 !important;
+  margin-bottom: 5px !important;
+}
+.fin-btn-continuer:hover { filter: brightness(1.15); }
 .fin-partie-btn {
   margin-top: 20px;
   margin-bottom: 20px;

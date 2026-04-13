@@ -584,6 +584,9 @@ function _demarrerJeuMultiplayer(state) {
   showScreen('jeu');
   jeuActif = true;
 
+  // Reset stats partie
+  partieKills = 0; partieMissions = 0; partieStartTime = Date.now(); partieMortTime = 0;
+
   // Mettre a jour le HUD role
   var roleEl = document.getElementById('hud-role');
   if (roleEl) {
@@ -698,6 +701,7 @@ function handleSinglePlayerUpdate(p) {
       var pseudo = getPseudo() || '';
       if (joueursElimines.indexOf(pseudo) < 0) {
         joueursElimines.push(pseudo);
+        partieMortTime = Date.now();
         showNotif(t('youDiedGhost'), 'warn');
         var joueurEl = document.getElementById('joueur');
         if (joueurEl) joueurEl.classList.add('bot-mort');

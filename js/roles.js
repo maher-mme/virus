@@ -433,6 +433,7 @@ function tuerVictime() {
   if (killCibleIsRemote) {
     if (joueursElimines.indexOf(pseudoVictime) >= 0) return;
     killCooldown = true;
+    partieKills++;
     incrementerStat('kills');
     if (typeof incrementerQueteStat === 'function') incrementerQueteStat('kills', 1);
     ajouterXP(XP_PAR_KILL);
@@ -490,6 +491,7 @@ function tuerVictime() {
   killCooldown = true;
 
   // Kills : API si disponible, sinon local
+  partieKills++;
   if (typeof apiDisponible !== 'undefined' && apiDisponible && partieActuelleId) {
     apiKillXP(partieActuelleId).catch(function() {
       incrementerStat('kills');
@@ -636,6 +638,7 @@ function botsVirusTuent() {
             var pseudo = getPseudo() || t('player');
             if (joueursElimines.indexOf(pseudo) >= 0) return;
             joueursElimines.push(pseudo);
+            partieMortTime = Date.now();
             if (monRole === 'fanatique') {
               showNotif(t('diedAsFanatic'), 'info');
             } else {
@@ -885,8 +888,38 @@ function afficherFinPartie(gagnant) {
     html += '<div class="fin-partie-gold">+' + recompense + ' GOLDS !</div>';
   }
 
+  // Resume de la partie
+  var pseudo = getPseudo() || t('player');
+  var estMort = joueursElimines.indexOf(pseudo) >= 0;
+  var tempsTotal = Date.now() - partieStartTime;
+  var tempsSurvie = estMort ? (partieMortTime - partieStartTime) : tempsTotal;
+  var minSurvie = Math.floor(tempsSurvie / 60000);
+  var secSurvie = Math.floor((tempsSurvie % 60000) / 1000);
+  html += '<div style="background:rgba(44,62,80,0.6);border:1px solid #34495e;border-radius:10px;padding:12px;margin-top:10px;">';
+  html += '<div style="color:#f39c12;font-size:11px;font-weight:bold;letter-spacing:1px;text-align:center;margin-bottom:8px;">RESUME</div>';
+  html += '<div style="display:flex;justify-content:space-around;gap:8px;flex-wrap:wrap;">';
+  html += '<div style="text-align:center;"><div style="font-size:18px;font-weight:bold;color:#e74c3c;">' + partieKills + '</div><div style="font-size:9px;color:#95a5a6;">KILLS</div></div>';
+  html += '<div style="text-align:center;"><div style="font-size:18px;font-weight:bold;color:#2ecc71;">' + partieMissions + '</div><div style="font-size:9px;color:#95a5a6;">MISSIONS</div></div>';
+  html += '<div style="text-align:center;"><div style="font-size:18px;font-weight:bold;color:#3498db;">' + minSurvie + 'm' + (secSurvie < 10 ? '0' : '') + secSurvie + 's</div><div style="font-size:9px;color:#95a5a6;">' + (estMort ? 'SURVIE' : 'TEMPS') + '</div></div>';
+  html += '<div style="text-align:center;"><div style="font-size:18px;font-weight:bold;color:' + (joueurAGagne ? '#f39c12' : '#e74c3c') + ';">' + (joueurAGagne ? 'VICTOIRE' : 'DEFAITE') + '</div><div style="font-size:9px;color:#95a5a6;">RESULTAT</div></div>';
+  html += '</div></div>';
+
   rolesDiv.innerHTML = html;
   overlay.classList.add('visible');
+
+  // Afficher le bouton "Continuer a jouer" si mode en ligne
+  var btnContinuer = document.getElementById('fin-btn-continuer');
+  if (btnContinuer) btnContinuer.style.display = (!modeHorsLigne && partieActuelleId) ? 'block' : 'none';
+}
+
+function retourLobbyFinPartie() {
+  document.getElementById('fin-partie-overlay').classList.remove('visible');
+  var joueurEl = document.getElementById('joueur');
+  if (joueurEl) { joueurEl.classList.remove('bot-mort'); joueurEl.style.display = ''; }
+  nettoyerBots();
+  joueursElimines = [];
+  botsMorts = [];
+  if (typeof retourLobbyApresPartie === 'function') retourLobbyApresPartie();
 }
 
 function retourMenuFinPartie() {

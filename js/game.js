@@ -403,6 +403,9 @@ function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion) 
     showNotif(t('youAreInnocent'), 'info');
   }
 
+  // Reset stats partie
+  partieKills = 0; partieMissions = 0; partieStartTime = Date.now(); partieMortTime = 0;
+
   // Reset eliminations
   joueursElimines = [];
   botsMorts = [];

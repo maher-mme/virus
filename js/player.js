@@ -11,6 +11,12 @@ var modeHorsLigne = false;
 var monRole = 'innocent';
 var espionCamp = null; // 'virus' ou 'innocent' - le camp choisi par l'espion
 
+// Stats de la partie en cours (pour le resume)
+var partieKills = 0;
+var partieMissions = 0;
+var partieStartTime = 0;
+var partieMortTime = 0;
+
 var reunionEnCours = false;
 var reunionTimer = null;
 var voteChoisi = -1; // index du joueur vote

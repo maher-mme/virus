@@ -1183,9 +1183,9 @@ function afficherFlecheAlarme(capteur) {
 
 // === PASSAGES SECRETS (teleportation) ===
 var PASSAGES_SECRETS = [
-  { nom: 'Mode-Parfumerie', ax: 560, ay: 260, bx: 7440, by: 4425, rayon: 50, cooldown: 0 },
-  { nom: 'Pharmacie-Restaurant', ax: 560, ay: 725, bx: 7440, by: 1725, rayon: 50, cooldown: 0 },
-  { nom: 'Supermarche-Bijouterie', ax: 760, ay: 3450, bx: 7440, by: 260, rayon: 50, cooldown: 0 }
+  { nom: 'Mode-Parfumerie', ax: 100, ay: 100, bx: 7890, by: 4550, rayon: 50, cooldown: 0 },
+  { nom: 'Pharmacie-Restaurant', ax: 100, ay: 600, bx: 7890, by: 1850, rayon: 50, cooldown: 0 },
+  { nom: 'Supermarche-Bijouterie', ax: 100, ay: 3250, bx: 7890, by: 110, rayon: 50, cooldown: 0 }
 ];
 var PASSAGE_COOLDOWN = 10000; // 10 secondes
 var _passagesInit = false;

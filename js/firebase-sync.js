@@ -512,6 +512,11 @@ function subscribeToGameState(partyId) {
 // Gestion des mises a jour de l'etat du jeu
 var lastGamePhase = null;
 function handleGameStateUpdate(state) {
+  // Lumieres eteintes synchronisees
+  if (typeof activerLumieresEteintes === 'function' && typeof desactiverLumieres === 'function') {
+    if (state.lumieresEteintes && !lumieresEteintes) activerLumieresEteintes();
+    else if (!state.lumieresEteintes && lumieresEteintes) desactiverLumieres();
+  }
   // Phase a change
   if (state.phase !== lastGamePhase) {
     if (state.phase === 'playing' && lastGamePhase === 'lobby') {
@@ -653,6 +658,9 @@ function _demarrerJeuMultiplayer(state) {
 
   // Initialiser les missions
   initMissions();
+
+  // Bouton lumieres pour l'espion
+  if (typeof initBoutonLumieres === 'function') initBoutonLumieres();
 
   // Jauge collective de missions (seulement les vrais joueurs)
   var nbTotalJoueurs = firebasePartyPlayers.length;

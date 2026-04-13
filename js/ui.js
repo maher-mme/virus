@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.6.5';
+var CURRENT_VERSION = '2.6.6';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -1181,11 +1181,89 @@ function afficherFlecheAlarme(capteur) {
   _alarmeTimer = setTimeout(function() { if (div.parentNode) div.remove(); }, duree);
 }
 
+// === LUMIERES ETEINTES ===
+var lumieresEteintes = false;
+var LUMIERES_COOLDOWN = 90000; // 1min30
+var _dernierLumieres = 0;
+
+function couperLumieres() {
+  if (monRole !== 'espion') return;
+  var now = Date.now();
+  if (now - _dernierLumieres < LUMIERES_COOLDOWN) {
+    var restant = Math.ceil((LUMIERES_COOLDOWN - (now - _dernierLumieres)) / 1000);
+    showNotif('Attends encore ' + restant + 's', 'warn');
+    return;
+  }
+  _dernierLumieres = now;
+  activerLumieresEteintes();
+  // En mode en ligne, synchroniser via Firebase
+  if (!modeHorsLigne && partieActuelleId && typeof db !== 'undefined') {
+    db.collection('parties').doc(partieActuelleId).update({ lumieresEteintes: true }).catch(function() {});
+  }
+}
+
+function activerLumieresEteintes() {
+  lumieresEteintes = true;
+  var overlay = document.getElementById('lumieres-overlay');
+  if (overlay) overlay.style.display = 'block';
+  showNotif('LES LUMIERES SONT ETEINTES !', 'warn');
+  // Afficher bouton reparer si pres du poste de securite
+  majBoutonReparer();
+}
+
+function desactiverLumieres() {
+  lumieresEteintes = false;
+  var overlay = document.getElementById('lumieres-overlay');
+  if (overlay) overlay.style.display = 'none';
+  var btnRep = document.getElementById('btn-reparer-lumieres');
+  if (btnRep) btnRep.style.display = 'none';
+  showNotif('Lumieres reparees !', 'success');
+  // En mode en ligne, synchroniser
+  if (!modeHorsLigne && partieActuelleId && typeof db !== 'undefined') {
+    db.collection('parties').doc(partieActuelleId).update({ lumieresEteintes: false }).catch(function() {});
+  }
+}
+
+function reparerLumieres() {
+  desactiverLumieres();
+}
+
+function majBoutonReparer() {
+  if (!lumieresEteintes) return;
+  // Le poste de securite est a (2800, 60, 450x300)
+  var sr = { x: 2800, y: 60, w: 450, h: 300 };
+  var marge = 50;
+  var dans = joueurX >= sr.x - marge && joueurX <= sr.x + sr.w + marge &&
+             joueurY >= sr.y - marge && joueurY <= sr.y + sr.h + marge;
+  var btnRep = document.getElementById('btn-reparer-lumieres');
+  if (btnRep) btnRep.style.display = dans ? 'block' : 'none';
+}
+
+function majLumieresPosition() {
+  if (!lumieresEteintes) return;
+  var overlay = document.getElementById('lumieres-overlay');
+  if (!overlay) return;
+  // Calculer la position du joueur sur l'ecran
+  var map = document.getElementById('mall-map');
+  if (!map) return;
+  var mapRect = map.getBoundingClientRect();
+  var screenX = mapRect.left + joueurX + 15;
+  var screenY = mapRect.top + joueurY + 20;
+  overlay.style.setProperty('--lx', screenX + 'px');
+  overlay.style.setProperty('--ly', screenY + 'px');
+  majBoutonReparer();
+}
+
+function initBoutonLumieres() {
+  var btn = document.getElementById('hud-btn-lumieres');
+  if (btn) btn.style.display = (monRole === 'espion') ? 'inline-block' : 'none';
+}
+
 // === PASSAGES SECRETS (teleportation) ===
 var PASSAGES_SECRETS = [
-  { nom: 'Mode-Parfumerie', ax: 100, ay: 100, bx: 7890, by: 4550, rayon: 50, cooldown: 0 },
-  { nom: 'Pharmacie-Restaurant', ax: 100, ay: 600, bx: 7890, by: 1850, rayon: 50, cooldown: 0 },
-  { nom: 'Supermarche-Bijouterie', ax: 100, ay: 3250, bx: 7890, by: 110, rayon: 50, cooldown: 0 }
+  { nom: 'Mode-Parfumerie', ax: 280, ay: 430, bx: 7700, by: 4570, rayon: 50, cooldown: 0 },
+  { nom: 'Pharmacie-Restaurant', ax: 530, ay: 700, bx: 7470, by: 1700, rayon: 50, cooldown: 0 },
+  { nom: 'Supermarche-Bijouterie', ax: 360, ay: 3230, bx: 7700, by: 430, rayon: 50, cooldown: 0 }
 ];
 var PASSAGE_COOLDOWN = 10000; // 10 secondes
 var _passagesInit = false;

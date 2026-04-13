@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="css/menu.css?v=18">
   <link rel="stylesheet" href="css/lobby.css?v=20260412">
   <link rel="stylesheet" href="css/game.css?v=12">
-  <link rel="stylesheet" href="css/hud.css?v=8">
+  <link rel="stylesheet" href="css/hud.css?v=9">
   <link rel="stylesheet" href="css/meeting.css?v=6">
   <link rel="stylesheet" href="css/friends.css?v=7">
   <link rel="stylesheet" href="css/responsive.css?v=20260323">
@@ -76,7 +76,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v2.6.5 - ALPHA</span>
+    <span class="version">VIRUS v2.6.6 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -146,7 +146,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.6.5 - ALPHA</span>
+    <span class="version">VIRUS v2.6.6 - ALPHA</span>
     </div>
   </div>
 
@@ -217,7 +217,7 @@
             <button class="btn-sauver-pseudo" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.6.5 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.6.6 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -401,7 +401,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v2.6.5 - ALPHA</span>
+        <span class="version-inline">v2.6.6 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -616,7 +616,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v2.6.5 - ALPHA</span>
+    <span class="version">VIRUS v2.6.6 - ALPHA</span>
     </div>
   </div>
 
@@ -707,7 +707,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.6.5 - ALPHA</span>
+    <span class="version">VIRUS v2.6.6 - ALPHA</span>
     </div>
   </div>
 
@@ -753,7 +753,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v2.6.5 - ALPHA</span>
+    <span class="version">VIRUS v2.6.6 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -1596,7 +1596,14 @@
         <span class="hud-role" id="hud-role">INNOCENT</span>
         <button class="hud-quetes-btn" id="hud-quetes-btn" onclick="ouvrirQuetes()" title="Quetes">&#128221;</button>
         <button class="hud-quetes-btn" style="background:rgba(243,156,18,0.3);border-color:#f39c12;" onclick="ouvrirPanelSignalement()" title="Signaler">&#9888;</button>
+        <button class="hud-quetes-btn hud-btn-lumieres" id="hud-btn-lumieres" style="display:none;background:rgba(44,62,80,0.5);border-color:#2c3e50;" onclick="couperLumieres()" title="Couper les lumieres">&#128161;</button>
       </div>
+
+      <!-- Overlay lumieres eteintes -->
+      <div class="lumieres-overlay" id="lumieres-overlay" style="display:none;">
+        <div class="lumieres-cercle" id="lumieres-cercle"></div>
+      </div>
+      <button class="btn-reparer-lumieres" id="btn-reparer-lumieres" style="display:none;" onclick="reparerLumieres()">REPARER LES LUMIERES</button>
 
       <div class="hud-missions">
         <h4>MISSIONS</h4>
@@ -1895,15 +1902,15 @@
 <script src="js/skins.js?v=5"></script>
 <script src="js/music.js?v=2"></script>
 <script src="js/account.js?v=20"></script>
-<script src="js/ui.js?v=20260413c"></script>
+<script src="js/ui.js?v=20260413d"></script>
 <script src="js/chat.js?v=6"></script>
 <script src="js/comments.js?v=5"></script>
 <script src="js/translation.js?v=20260409b"></script>
-<script src="js/firebase-sync.js?v=40"></script>
+<script src="js/firebase-sync.js?v=41"></script>
 <script src="js/player.js?v=7"></script>
 <script src="js/shop.js?v=14"></script>
 <script src="js/bots.js?v=11"></script>
-<script src="js/game.js?v=20260413b"></script>
+<script src="js/game.js?v=20260413c"></script>
 <script src="js/roles.js?v=21"></script>
 <script src="js/meeting.js?v=14"></script>
 <script src="js/missions.js?v=8"></script>

@@ -436,6 +436,9 @@ function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion) 
   // Missions
   initMissions();
 
+  // Bouton lumieres pour l'espion
+  if (typeof initBoutonLumieres === 'function') initBoutonLumieres();
+
   // Game loop
   gameLoop();
 }
@@ -1092,6 +1095,9 @@ function gameLoop() {
 
   // Systeme de teleportation - passages secrets
   if (typeof verifierPassagesSecrets === 'function') verifierPassagesSecrets();
+
+  // Lumieres eteintes - mettre a jour la position du cercle
+  if (typeof majLumieresPosition === 'function') majLumieresPosition();
 
   // Mise a jour des bots
   if (bots.length > 0) {

@@ -1090,6 +1090,9 @@ function gameLoop() {
   // Systeme d'alarme - detection capteurs
   if (typeof verifierCapteurs === 'function') verifierCapteurs();
 
+  // Systeme de teleportation - passages secrets
+  if (typeof verifierPassagesSecrets === 'function') verifierPassagesSecrets();
+
   // Mise a jour des bots
   if (bots.length > 0) {
     updateBots();

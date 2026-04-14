@@ -262,6 +262,28 @@
   padding: 2px;
 }
 .btn-oeil-mdp:hover { color: #ecf0f1; }
+.happy-hour-badge {
+  position: absolute;
+  top: 15px;
+  right: 50%;
+  transform: translateX(50%);
+  background: linear-gradient(180deg, #f39c12, #e67e22);
+  color: white;
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 2px solid #f1c40f;
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: 14px;
+  letter-spacing: 2px;
+  box-shadow: 0 0 20px rgba(243,156,18,0.6);
+  animation: happyPulse 1.5s ease-in-out infinite;
+  z-index: 100;
+}
+@keyframes happyPulse {
+  0%, 100% { transform: translateX(50%) scale(1); }
+  50% { transform: translateX(50%) scale(1.08); }
+}
+
 .btn-voir-regles {
   background: rgba(26,26,46,0.7);
   border: 1.5px solid #566573;

@@ -4,6 +4,50 @@
 var XP_PAR_KILL = 5;
 var GOLD_PAR_NIVEAU = 50;
 
+// Happy Hour : XP x2 vendredi 18h -> dimanche 22h, premiere et derniere semaine du mois
+function isHappyHour() {
+  // Heure de France : UTC+2 en ete, UTC+1 en hiver. On utilise +2 (CEST par defaut)
+  var now = new Date();
+  var franceTime = new Date(now.getTime() + (2 - (now.getTimezoneOffset() / -60)) * 3600 * 1000);
+  // Actually : utiliser l'heure locale du joueur (simple et acceptable)
+  var d = now;
+  var jour = d.getDay(); // 0=dimanche, 5=vendredi, 6=samedi
+  var heure = d.getHours();
+  // Verifier la periode (vendredi 18h -> dimanche 22h)
+  var dansPeriode = false;
+  if (jour === 5 && heure >= 18) dansPeriode = true;
+  else if (jour === 6) dansPeriode = true;
+  else if (jour === 0 && heure < 22) dansPeriode = true;
+  if (!dansPeriode) return false;
+  // Verifier la semaine du mois (premiere ou derniere)
+  var jourMois = d.getDate();
+  var dernierJourMois = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+  var premiereSemaine = jourMois <= 7;
+  var derniereSemaine = jourMois > dernierJourMois - 7;
+  return premiereSemaine || derniereSemaine;
+}
+
+function getMultiplicateurXP() {
+  return isHappyHour() ? 2 : 1;
+}
+
+function majBadgeHappyHour() {
+  var badge = document.getElementById('happy-hour-badge');
+  if (!badge) return;
+  badge.style.display = isHappyHour() ? 'block' : 'none';
+}
+
+// Verifier toutes les minutes (au cas ou le joueur reste longtemps)
+setInterval(majBadgeHappyHour, 60000);
+// Au chargement
+setTimeout(function() {
+  majBadgeHappyHour();
+  if (isHappyHour() && !sessionStorage.getItem('happyHourNotifShown')) {
+    sessionStorage.setItem('happyHourNotifShown', '1');
+    if (typeof showNotif === 'function') showNotif('🎉 HAPPY HOUR ! XP x2', 'success');
+  }
+}, 1500);
+
 function xpPourNiveau(niveau) {
   return 1000;
 }
@@ -23,6 +67,8 @@ var _dernierNiveauNotifie = 0;
 function ajouterXP(xpGagne) {
   if (!monPlayerId) return;
   if (typeof tutoGuide !== 'undefined' && tutoGuide) return;
+  // Happy Hour : XP x2
+  xpGagne = xpGagne * getMultiplicateurXP();
   var ref = db.collection('players').doc(monPlayerId);
   var _levelUpInfo = null;
   db.runTransaction(function(transaction) {

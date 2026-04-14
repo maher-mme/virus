@@ -406,6 +406,9 @@ function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion) 
   // Reset stats partie
   partieKills = 0; partieMissions = 0; partieStartTime = Date.now(); partieMortTime = 0;
 
+  // Reset lumieres
+  if (typeof desactiverLumieres === 'function' && lumieresEteintes) desactiverLumieres();
+
   // Reset eliminations
   joueursElimines = [];
   botsMorts = [];
@@ -1099,8 +1102,9 @@ function gameLoop() {
   // Systeme de teleportation - passages secrets
   if (typeof verifierPassagesSecrets === 'function') verifierPassagesSecrets();
 
-  // Lumieres eteintes - mettre a jour la position du cercle
+  // Lumieres eteintes - mettre a jour la position du cercle + fleche securite
   if (typeof majLumieresPosition === 'function') majLumieresPosition();
+  if (typeof majFlecheSecurite === 'function') majFlecheSecurite();
 
   // Mise a jour des bots
   if (bots.length > 0) {

@@ -584,8 +584,9 @@ function _demarrerJeuMultiplayer(state) {
   showScreen('jeu');
   jeuActif = true;
 
-  // Reset stats partie
+  // Reset stats partie + lumieres
   partieKills = 0; partieMissions = 0; partieStartTime = Date.now(); partieMortTime = 0;
+  if (typeof desactiverLumieres === 'function' && typeof lumieresEteintes !== 'undefined' && lumieresEteintes) desactiverLumieres();
 
   // Mettre a jour le HUD role
   var roleEl = document.getElementById('hud-role');

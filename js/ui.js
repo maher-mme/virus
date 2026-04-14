@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.6.8';
+var CURRENT_VERSION = '2.6.9';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -1207,8 +1207,39 @@ function activerLumieresEteintes() {
   var overlay = document.getElementById('lumieres-overlay');
   if (overlay) overlay.style.display = 'block';
   showNotif('LES LUMIERES SONT ETEINTES !', 'warn');
-  // Afficher bouton reparer si pres du poste de securite
   majBoutonReparer();
+  afficherFlecheSecurite();
+}
+
+function afficherFlecheSecurite() {
+  var old = document.getElementById('fleche-securite');
+  if (old) old.remove();
+  var div = document.createElement('div');
+  div.id = 'fleche-securite';
+  div.style.cssText = 'position:fixed;display:flex;flex-direction:column;align-items:center;pointer-events:none;z-index:202;';
+  div.innerHTML = '<div style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 6px rgba(52,152,219,0.7));"><svg viewBox="0 0 40 50" width="30" height="30"><path d="M20 0 L38 45 L20 35 L2 45 Z" fill="#3498db"/></svg></div>' +
+    '<div style="color:#3498db;font-size:9px;font-weight:bold;margin-top:2px;text-shadow:0 0 3px rgba(0,0,0,0.8);">SECURITE</div>';
+  document.body.appendChild(div);
+}
+
+function majFlecheSecurite() {
+  var el = document.getElementById('fleche-securite');
+  if (!el) return;
+  if (!lumieresEteintes) { el.remove(); return; }
+  var secX = 3025, secY = 210;
+  var angle = Math.atan2(secY - joueurY, secX - joueurX);
+  var deg = angle * (180 / Math.PI);
+  var svgEl = el.querySelector('svg');
+  if (svgEl) svgEl.style.transform = 'rotate(' + deg + 'deg)';
+  var vw = window.innerWidth;
+  var vh = window.innerHeight;
+  var margin = 45;
+  var edgeX = vw / 2 + Math.cos(angle) * (vw / 2 - margin);
+  var edgeY = vh / 2 + Math.sin(angle) * (vh / 2 - margin);
+  edgeX = Math.max(margin, Math.min(vw - margin, edgeX));
+  edgeY = Math.max(margin, Math.min(vh - margin, edgeY));
+  el.style.left = edgeX + 'px';
+  el.style.top = edgeY + 'px';
 }
 
 function desactiverLumieres() {
@@ -1217,6 +1248,8 @@ function desactiverLumieres() {
   if (overlay) overlay.style.display = 'none';
   var btnRep = document.getElementById('btn-reparer-lumieres');
   if (btnRep) btnRep.style.display = 'none';
+  var flecheSec = document.getElementById('fleche-securite');
+  if (flecheSec) flecheSec.remove();
   showNotif('Lumieres reparees !', 'success');
   // En mode en ligne, synchroniser
   if (!modeHorsLigne && partieActuelleId && typeof db !== 'undefined') {

@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.7.3';
+var CURRENT_VERSION = '2.7.4';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -343,6 +343,11 @@ function showScreen(id, fromPopstate) {
   // Zoom automatique pour petits ecrans
   autoScale();
 
+  // Auto-lancer la visite guidee la 1ere fois sur le menu principal
+  if (id === 'menu-principal' && typeof lancerVisiteGuidee === 'function' && localStorage.getItem('virusVisiteGuideeVue') !== '1') {
+    setTimeout(function() { lancerVisiteGuidee(false); }, 800);
+  }
+
   // Rafraichir la liste quand on arrive sur l'ecran
   if (id === 'liste-parties') {
     rafraichirListeParties();
@@ -534,12 +539,125 @@ var _tutoNbSlides = 7;
 var tutoGuide = false;
 
 function ouvrirTuto() {
+  lancerVisiteGuidee(true);
+}
+
+function ouvrirTutoSlides() {
   var popup = document.getElementById('popup-tuto');
   if (!popup) return;
   popup.style.display = 'flex';
   _tutoSlideActuel = 0;
   _initTutoDots();
   tutoSlide(0);
+}
+
+// === VISITE GUIDEE (BULLES INTERACTIVES) ===
+var _visiteEtape = 0;
+var VISITE_ETAPES = [
+  { selector: null, titre: 'Bienvenue dans VIRUS !', texte: 'Suis cette visite rapide pour decouvrir le menu. Tu peux la relancer a tout moment via le bouton TUTORIEL.', position: 'center' },
+  { selector: '.btn-online', titre: 'Mode ONLINE', texte: 'Joue avec d\'autres joueurs en multijoueur. Cree une partie ou rejoins-en une.', position: 'auto' },
+  { selector: '.btn-horsline', titre: 'Mode HORS LIGNE', texte: 'Entraine-toi contre des bots. Parfait pour decouvrir le jeu sans pression.', position: 'auto' },
+  { selector: '.btn-boutique', titre: 'BOUTIQUE', texte: 'Achete des skins avec tes etoiles gagnees en jouant.', position: 'auto' },
+  { selector: '.btn-casier', titre: 'CASIER', texte: 'Change ton skin equipe parmi ceux que tu possedes.', position: 'auto' },
+  { selector: '.btn-side-quetes', titre: 'QUETES', texte: 'Defis hebdomadaires pour gagner de l\'XP et des etoiles bonus.', position: 'auto' },
+  { selector: '.btn-side-profil', titre: 'PROFIL', texte: 'Consulte tes statistiques de jeu et ta progression.', position: 'auto' },
+  { selector: '#btn-voir-regles', titre: 'REGLES DU JEU', texte: 'Apprends les regles completes : roles, missions, votes, etc.', position: 'auto' },
+  { selector: '.btn-tuto', titre: 'C\'est parti !', texte: 'Bonne chance ! Tu peux relancer cette visite ici quand tu veux.', position: 'auto' }
+];
+
+function lancerVisiteGuidee(force) {
+  // Si pas force et deja vue, ne rien faire
+  if (!force && localStorage.getItem('virusVisiteGuideeVue') === '1') return;
+  // S'assurer qu'on est sur le menu principal
+  var menu = document.getElementById('menu-principal');
+  if (!menu || !menu.classList.contains('active')) return;
+  _visiteEtape = 0;
+  afficherEtapeVisite();
+}
+
+function afficherEtapeVisite() {
+  fermerVisiteUI();
+  if (_visiteEtape >= VISITE_ETAPES.length) {
+    terminerVisite();
+    return;
+  }
+  var etape = VISITE_ETAPES[_visiteEtape];
+  var cible = etape.selector ? document.querySelector(etape.selector) : null;
+
+  // Backdrop
+  var backdrop = document.createElement('div');
+  backdrop.id = 'visite-backdrop';
+  backdrop.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:99990;pointer-events:auto;';
+  document.body.appendChild(backdrop);
+
+  // Spotlight + bulle
+  var bulle = document.createElement('div');
+  bulle.id = 'visite-bulle';
+  bulle.style.cssText = 'position:fixed;background:linear-gradient(180deg,#8e44ad,#6c3483);color:white;padding:14px 18px;border-radius:14px;border:2px solid #a569bd;box-shadow:0 4px 20px rgba(0,0,0,0.6);max-width:320px;width:85%;z-index:99992;font-family:Arial,sans-serif;';
+  bulle.innerHTML =
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">' +
+      '<span style="background:#fff;color:#8e44ad;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:12px;">' + (_visiteEtape + 1) + '</span>' +
+      '<span style="font-weight:bold;font-size:14px;flex:1;">' + etape.titre + '</span>' +
+      '<button onclick="terminerVisite()" style="background:transparent;border:none;color:white;font-size:20px;cursor:pointer;line-height:1;padding:0 4px;">&times;</button>' +
+    '</div>' +
+    '<p style="margin:0 0 12px;font-size:13px;line-height:1.4;">' + etape.texte + '</p>' +
+    '<div style="display:flex;gap:6px;">' +
+      (_visiteEtape > 0 ? '<button onclick="visitePrecedent()" style="background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.4);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:bold;cursor:pointer;">&#9664; PREC.</button>' : '') +
+      '<button onclick="terminerVisite()" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer;">PASSER</button>' +
+      '<button onclick="visiteSuivant()" style="background:white;color:#8e44ad;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:bold;cursor:pointer;flex:1;">' + (_visiteEtape >= VISITE_ETAPES.length - 1 ? 'TERMINER' : 'SUIVANT &#9654;') + '</button>' +
+    '</div>' +
+    '<div style="margin-top:8px;font-size:10px;text-align:center;opacity:0.7;">' + (_visiteEtape + 1) + ' / ' + VISITE_ETAPES.length + '</div>';
+  document.body.appendChild(bulle);
+
+  // Highlight cible + positionner bulle
+  if (cible && etape.position !== 'center') {
+    var rect = cible.getBoundingClientRect();
+    // Halo highlight
+    var halo = document.createElement('div');
+    halo.id = 'visite-halo';
+    halo.style.cssText = 'position:fixed;top:' + (rect.top - 6) + 'px;left:' + (rect.left - 6) + 'px;width:' + (rect.width + 12) + 'px;height:' + (rect.height + 12) + 'px;border:3px solid #f1c40f;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,0.7),0 0 25px #f1c40f;z-index:99991;pointer-events:none;animation:visitePulse 1.5s ease-in-out infinite;';
+    document.body.appendChild(halo);
+    backdrop.style.background = 'transparent';
+
+    // Position bulle (au-dessus ou en-dessous)
+    var bulleH = bulle.offsetHeight;
+    var bulleW = bulle.offsetWidth;
+    var vh = window.innerHeight, vw = window.innerWidth;
+    var top = rect.bottom + 14;
+    if (top + bulleH > vh - 10) top = rect.top - bulleH - 14;
+    if (top < 10) top = 10;
+    var left = rect.left + rect.width / 2 - bulleW / 2;
+    if (left < 10) left = 10;
+    if (left + bulleW > vw - 10) left = vw - bulleW - 10;
+    bulle.style.top = top + 'px';
+    bulle.style.left = left + 'px';
+  } else {
+    // Centre ecran
+    bulle.style.top = '50%';
+    bulle.style.left = '50%';
+    bulle.style.transform = 'translate(-50%, -50%)';
+  }
+}
+
+function visiteSuivant() {
+  _visiteEtape++;
+  afficherEtapeVisite();
+}
+
+function visitePrecedent() {
+  if (_visiteEtape > 0) { _visiteEtape--; afficherEtapeVisite(); }
+}
+
+function terminerVisite() {
+  fermerVisiteUI();
+  localStorage.setItem('virusVisiteGuideeVue', '1');
+}
+
+function fermerVisiteUI() {
+  ['visite-backdrop', 'visite-bulle', 'visite-halo'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.remove();
+  });
 }
 
 function fermerTuto() {

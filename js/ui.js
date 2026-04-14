@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.7.0';
+var CURRENT_VERSION = '2.7.1';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -966,6 +966,8 @@ function initEchangeListener() {
 }
 
 function afficherDemandeEchange(trade) {
+  if (!trade || !trade._id || !trade.fromPseudo || !trade.fromSkinFichier || !trade.fromSkinNom) return;
+  if (typeof SKINS === 'undefined' || typeof SKINS_BOUTIQUE === 'undefined') return;
   _echangeReponseSkin = '';
   var popup = document.getElementById('popup-echange');
   if (!popup) return;
@@ -1007,7 +1009,8 @@ function selectionnerSkinReponse(skinId, el) {
 }
 
 function accepterEchange(tradeId) {
-  if (!_echangeReponseSkin) return;
+  if (!tradeId || !_echangeReponseSkin) return;
+  if (typeof SKINS === 'undefined' || typeof SKINS_BOUTIQUE === 'undefined') return;
   var skinObj = SKINS.concat(SKINS_BOUTIQUE).find(function(s) { return s.id === _echangeReponseSkin; });
   if (!skinObj) return;
   // Mettre a jour la demande avec le skin choisi
@@ -1031,12 +1034,15 @@ function accepterEchange(tradeId) {
 }
 
 function refuserEchange(tradeId) {
+  if (!tradeId) { fermerEchange(); return; }
   db.collection('skinTrades').doc(tradeId).update({ status: 'declined' }).catch(function() {});
   showNotif('Echange refuse.', 'info');
   fermerEchange();
 }
 
 function executerEchange(trade) {
+  if (!trade || !trade.fromPlayerId || !trade.fromSkinId || !trade.toSkinId) return;
+  if (typeof SKINS === 'undefined') return;
   // Joueur local recoit le skin de l'autre
   var mesAchats = getSkinsAchetes();
   // Ajouter le skin recu
@@ -1052,6 +1058,7 @@ function executerEchange(trade) {
   db.collection('players').doc(trade.fromPlayerId).get().then(function(doc) {
     if (!doc.exists) return;
     var data = doc.data();
+    if (!data) return;
     var autreAchats = data.skinsAchetes || [];
     // Ajouter le skin recu
     if (autreAchats.indexOf(trade.toSkinId) < 0 && !SKINS.find(function(s) { return s.id === trade.toSkinId; })) {
@@ -1300,6 +1307,20 @@ var PASSAGES_SECRETS = [
 ];
 var PASSAGE_COOLDOWN = 10000; // 10 secondes
 var _passagesInit = false;
+
+function resetPassagesEtCapteurs() {
+  _passagesInit = false;
+  for (var i = 0; i < PASSAGES_SECRETS.length; i++) PASSAGES_SECRETS[i].cooldown = 0;
+  if (typeof CAPTEURS !== 'undefined') {
+    for (var j = 0; j < CAPTEURS.length; j++) CAPTEURS[j].cooldown = 0;
+  }
+  // Supprimer les anciens elements DOM
+  document.querySelectorAll('.passage-secret').forEach(function(el) { el.remove(); });
+  // Cleanup alarme
+  if (typeof _alarmeTimer !== 'undefined' && _alarmeTimer) { clearTimeout(_alarmeTimer); _alarmeTimer = null; }
+  var alarmeFleche = document.getElementById('alarme-fleche');
+  if (alarmeFleche) alarmeFleche.remove();
+}
 
 function initPassagesSecrets() {
   if (_passagesInit) return;

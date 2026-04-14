@@ -164,6 +164,8 @@ function retirerBotEnLigne() {
 }
 
 function retourLobbyApresPartie() {
+  if (typeof lumieresEteintes !== 'undefined' && lumieresEteintes && typeof desactiverLumieres === 'function') desactiverLumieres();
+  if (typeof resetPassagesEtCapteurs === 'function') resetPassagesEtCapteurs();
   if (!partieActuelleId) { showScreen('menu-principal'); return; }
   // Remettre la partie en phase lobby
   if (estHost) {
@@ -209,27 +211,29 @@ function quitterPartie() {
   // Effacer la partie actuelle pour les amis
   if (monPlayerId) db.collection('players').doc(monPlayerId).update({ currentPartyId: '' }).catch(function() {});
   if (partieActuelleId) {
-    // Supprimer le joueur de la partie
-    if (myPartyPlayerDocId) {
-      db.collection('partyPlayers').doc(myPartyPlayerDocId).delete().catch(function() {});
-      myPartyPlayerDocId = null;
-    }
-    // Mettre a jour le compteur et la liste de joueurs
-    var pseudo = getPseudo();
-    db.collection('parties').doc(partieActuelleId).update({
-      joueurs: firebase.firestore.FieldValue.increment(-1),
-      listeJoueurs: firebase.firestore.FieldValue.arrayRemove(pseudo)
-    }).catch(function() {});
-    // Transferer host si necessaire (ignorer les bots)
     var _partyIdToClean = partieActuelleId;
-    db.collection('partyPlayers').where('partyId', '==', _partyIdToClean).get().then(function(snap) {
+    var pseudo = getPseudo();
+    var _docToDelete = myPartyPlayerDocId;
+    myPartyPlayerDocId = null;
+    // 1. Supprimer le joueur de la partie ET ATTENDRE
+    var deletePromise = _docToDelete ? db.collection('partyPlayers').doc(_docToDelete).delete() : Promise.resolve();
+    deletePromise.then(function() {
+      // 2. Mettre a jour le compteur
+      db.collection('parties').doc(_partyIdToClean).update({
+        joueurs: firebase.firestore.FieldValue.increment(-1),
+        listeJoueurs: firebase.firestore.FieldValue.arrayRemove(pseudo)
+      }).catch(function() {});
+      // 3. Apres suppression : verifier les joueurs restants (excluant les bots)
+      return db.collection('partyPlayers').where('partyId', '==', _partyIdToClean).get();
+    }).then(function(snap) {
       var vraisJoueurs = snap.docs.filter(function(d) { return !d.data().isBot; });
       if (vraisJoueurs.length > 0) {
+        // Transferer host au premier vrai joueur restant
         var newHost = vraisJoueurs[0];
         newHost.ref.update({ isHost: true });
         db.collection('parties').doc(_partyIdToClean).update({ hostPlayerId: newHost.data().playerId, hostPseudo: newHost.data().pseudo });
       } else {
-        // Plus de vrais joueurs -> supprimer les bots et la partie
+        // Plus de vrais joueurs -> supprimer tous les bots restants et la partie
         snap.docs.forEach(function(d) { d.ref.delete().catch(function() {}); });
         db.collection('parties').doc(_partyIdToClean).delete().catch(function() {});
       }

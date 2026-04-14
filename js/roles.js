@@ -916,6 +916,8 @@ function retourLobbyFinPartie() {
   document.getElementById('fin-partie-overlay').classList.remove('visible');
   var joueurEl = document.getElementById('joueur');
   if (joueurEl) { joueurEl.classList.remove('bot-mort'); joueurEl.style.display = ''; }
+  if (typeof lumieresEteintes !== 'undefined' && lumieresEteintes && typeof desactiverLumieres === 'function') desactiverLumieres();
+  if (typeof resetPassagesEtCapteurs === 'function') resetPassagesEtCapteurs();
   nettoyerBots();
   joueursElimines = [];
   botsMorts = [];
@@ -960,6 +962,8 @@ function retourMenuFinPartie() {
   if (elToggleClean) { elToggleClean.classList.remove('visible', 'active'); elToggleClean.style.cssText = ''; }
   document.getElementById('reunion-resultat').classList.remove('visible');
   document.getElementById('reunion-resultat').style.display = 'none';
+  if (typeof lumieresEteintes !== 'undefined' && lumieresEteintes && typeof desactiverLumieres === 'function') desactiverLumieres();
+  if (typeof resetPassagesEtCapteurs === 'function') resetPassagesEtCapteurs();
   nettoyerBots();
   joueursElimines = [];
   botsMorts = [];

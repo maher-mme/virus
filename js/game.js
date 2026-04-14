@@ -1075,7 +1075,7 @@ function gameLoop() {
       var angle = Math.atan2(missionPlusProche.caisseY - joueurY, missionPlusProche.caisseX - joueurX);
       var deg = angle * (180 / Math.PI);
       var arrow = document.getElementById('mission-indicator-arrow');
-      if (arrow) arrow.style.transform = 'rotate(' + deg + 'deg)';
+      if (arrow) arrow.style.transform = 'rotate(' + (deg + 90) + 'deg)';
       var distEl = document.getElementById('mission-indicator-dist');
       if (distEl) distEl.textContent = Math.round(distMin / 100) + 'm';
       // Positionner au bord de l'ecran

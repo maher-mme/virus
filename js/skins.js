@@ -80,7 +80,17 @@ function genererSkinSelector(containerId) {
   skinTempSelection = currentSkin;
   container.innerHTML = '';
   var ordreRarete = {legendaire:0, epic:1, rare:2, commun:3, typique:4};
-  var skinsTries = SKINS.slice().sort(function(a, b) {
+  // Skins de base toujours dispo + skins boutique reellement achetes
+  var achetes = (typeof getSkinsAchetes === 'function') ? getSkinsAchetes() : [];
+  var basesIds = {};
+  // SKINS d'origine (sans pollution) : on ne garde que les ids 'garcon' et 'fille'
+  var baseSkins = SKINS.filter(function(s) { return s.id === 'garcon' || s.id === 'fille'; });
+  baseSkins.forEach(function(s) { basesIds[s.id] = true; });
+  var bouchesAchetes = (typeof SKINS_BOUTIQUE !== 'undefined')
+    ? SKINS_BOUTIQUE.filter(function(s) { return achetes.indexOf(s.id) >= 0; })
+    : [];
+  var disponibles = baseSkins.concat(bouchesAchetes);
+  var skinsTries = disponibles.sort(function(a, b) {
     return (ordreRarete[a.rarete] || 4) - (ordreRarete[b.rarete] || 4);
   });
   skinsTries.forEach(function(skin) {

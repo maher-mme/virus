@@ -315,6 +315,7 @@ function terminerMission(missionIdx) {
   var m = mesMissions[missionIdx];
   if (!m || m.faite) return;
   m.faite = true;
+  if (typeof replayLog === 'function') replayLog('mission', { joueur: (typeof getPseudo === 'function' ? getPseudo() : '?') });
 
   var missionEl = document.getElementById('mission-' + missionIdx);
   if (missionEl) {

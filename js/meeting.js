@@ -618,9 +618,11 @@ function terminerVote() {
     ajouterMsgReunion(t('system'), t('meetNoElim'), '#f39c12');
     resultatDiv.style.display = 'block';
     resultatDiv.classList.add('visible');
+    if (typeof replayLog === 'function') replayLog('vote', { elimine: null });
   } else {
     var elimine = joueursReunion[maxIdx];
     joueursElimines.push(elimine.pseudo);
+    if (typeof replayLog === 'function') replayLog('vote', { elimine: elimine.pseudo });
     texteEl.textContent = t('wasEliminated', elimine.pseudo);
     roleEl.style.display = 'inline-block';
 

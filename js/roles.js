@@ -437,6 +437,7 @@ function tuerVictime() {
     incrementerStat('kills');
     if (typeof incrementerQueteStat === 'function') incrementerQueteStat('kills', 1);
     ajouterXP(XP_PAR_KILL);
+    if (typeof replayLog === 'function') replayLog('kill', { tueur: getPseudo(), victime: pseudoVictime });
     showNotif(t('youInfected', pseudoVictime), 'warn');
     // Mettre alive=false dans Firebase pour le joueur distant
     if (typeof firebasePartyPlayers !== 'undefined') {
@@ -567,6 +568,8 @@ function signalerCadavre() {
   showNotif(t('bodyReported', c.pseudo), 'warn');
   reunionCreateur = getPseudo() || t('player');
   if (typeof incrementerQueteStat === 'function') incrementerQueteStat('signalements', 1);
+  if (typeof replayLog === 'function') replayLog('signalement', { joueur: getPseudo(), victime: c.pseudo });
+  if (typeof replayLog === 'function') replayLog('reunion', {});
   // Marquer le cadavre comme reported en Firebase
   if (!modeHorsLigne && partieActuelleId && typeof db !== 'undefined') {
     db.collection('cadavres').where('partyId', '==', partieActuelleId)
@@ -812,6 +815,7 @@ function verifierVictoire() {
 
 function afficherFinPartie(gagnant) {
   enregistrerStatsFinPartie(gagnant);
+  if (typeof replaySaveEnd === 'function') replaySaveEnd(gagnant);
   jeuActif = false;
   touchActif = false;
   if (miniJeuOuvert) fermerMiniJeu();
@@ -910,6 +914,12 @@ function afficherFinPartie(gagnant) {
   // Afficher le bouton "Continuer a jouer" si mode en ligne
   var btnContinuer = document.getElementById('fin-btn-continuer');
   if (btnContinuer) btnContinuer.style.display = (!modeHorsLigne && partieActuelleId) ? 'block' : 'none';
+
+  // Afficher le bouton replay si online et replay disponible
+  var btnReplay = document.getElementById('fin-btn-replay');
+  if (btnReplay) {
+    btnReplay.style.display = (!modeHorsLigne && typeof replayHasOne === 'function' && replayHasOne()) ? 'block' : 'none';
+  }
 }
 
 function retourLobbyFinPartie() {

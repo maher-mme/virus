@@ -592,6 +592,14 @@ function _demarrerJeuMultiplayer(state) {
   partieKills = 0; partieMissions = 0; partieStartTime = Date.now(); partieMortTime = 0;
   if (typeof desactiverLumieres === 'function' && typeof lumieresEteintes !== 'undefined' && lumieresEteintes) desactiverLumieres();
 
+  // Demarrer enregistrement replay (online uniquement)
+  if (typeof replayStart === 'function') {
+    var replayJoueurs = (firebasePartyPlayers || []).map(function(p) {
+      return { pseudo: p.pseudo, role: p.role || '?', skin: p.skin };
+    });
+    replayStart({ mode: 'online', monPseudo: getPseudo(), monRole: monRole, joueurs: replayJoueurs });
+  }
+
   // Mettre a jour le HUD role
   var roleEl = document.getElementById('hud-role');
   if (roleEl) {

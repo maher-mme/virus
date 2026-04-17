@@ -50,6 +50,7 @@
 .hud-role-journaliste { background: #3498db; color: white; }
 .hud-role-fanatique { background: #8e44ad; color: white; }
 .hud-role-espion { background: #9b59b6; color: white; }
+.hud-role-cherif { background: #f39c12; color: white; }
 
 /* Indicateur de direction mission (fleche au bord de l'ecran) */
 .mission-indicator {
@@ -313,6 +314,28 @@
   50% { box-shadow: 0 4px 25px rgba(231,76,60,0.8); }
 }
 .btn-kill:hover { filter: brightness(1.15); transform: translateX(-50%) scale(1.05); }
+
+.btn-tirer {
+  position: absolute;
+  bottom: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #f39c12, #d35400);
+  color: white;
+  border: 3px solid #b7720f;
+  border-radius: 14px;
+  padding: 12px 28px;
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: 18px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  pointer-events: auto;
+  display: none;
+  box-shadow: 0 4px 15px rgba(243,156,18,0.5);
+  z-index: 210;
+  animation: killPulse 1s ease-in-out infinite;
+}
+.btn-tirer:hover { filter: brightness(1.15); transform: translateX(-50%) scale(1.05); }
 
 .btn-enqueter {
   position: absolute;

@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.7.8';
+var CURRENT_VERSION = '2.7.9';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -1417,88 +1417,15 @@ function initBoutonLumieres() {
   if (btn) btn.style.display = (monRole === 'espion') ? 'inline-block' : 'none';
 }
 
-// === PASSAGES SECRETS (teleportation) ===
-var PASSAGES_SECRETS = [
-  { nom: 'Mode-Parfumerie', ax: 280, ay: 430, bx: 7700, by: 4570, rayon: 50, cooldown: 0 },
-  { nom: 'Pharmacie-Restaurant', ax: 530, ay: 700, bx: 7470, by: 1700, rayon: 50, cooldown: 0 },
-  { nom: 'Supermarche-Bijouterie', ax: 360, ay: 3230, bx: 7700, by: 430, rayon: 50, cooldown: 0 }
-];
-var PASSAGE_COOLDOWN = 10000; // 10 secondes
-var _passagesInit = false;
-
+// === RESET CAPTEURS/ALARME entre parties ===
 function resetPassagesEtCapteurs() {
-  _passagesInit = false;
-  for (var i = 0; i < PASSAGES_SECRETS.length; i++) PASSAGES_SECRETS[i].cooldown = 0;
   if (typeof CAPTEURS !== 'undefined') {
     for (var j = 0; j < CAPTEURS.length; j++) CAPTEURS[j].cooldown = 0;
   }
-  // Supprimer les anciens elements DOM
-  document.querySelectorAll('.passage-secret').forEach(function(el) { el.remove(); });
   // Cleanup alarme
   if (typeof _alarmeTimer !== 'undefined' && _alarmeTimer) { clearTimeout(_alarmeTimer); _alarmeTimer = null; }
   var alarmeFleche = document.getElementById('alarme-fleche');
   if (alarmeFleche) alarmeFleche.remove();
-}
-
-function initPassagesSecrets() {
-  if (_passagesInit) return;
-  _passagesInit = true;
-  var mallMap = document.getElementById('mall-map');
-  if (!mallMap) return;
-  PASSAGES_SECRETS.forEach(function(p, idx) {
-    // Point A
-    var divA = document.createElement('div');
-    divA.className = 'passage-secret';
-    divA.id = 'passage-a-' + idx;
-    divA.style.left = p.ax + 'px';
-    divA.style.top = p.ay + 'px';
-    mallMap.appendChild(divA);
-    // Point B
-    var divB = document.createElement('div');
-    divB.className = 'passage-secret';
-    divB.id = 'passage-b-' + idx;
-    divB.style.left = p.bx + 'px';
-    divB.style.top = p.by + 'px';
-    mallMap.appendChild(divB);
-  });
-}
-
-function verifierPassagesSecrets() {
-  if (!jeuActif || reunionEnCours) return;
-  // Seuls innocents et journalistes
-  if (monRole !== 'innocent' && monRole !== 'journaliste') return;
-  if (!_passagesInit) initPassagesSecrets();
-  var now = Date.now();
-  for (var pi = 0; pi < PASSAGES_SECRETS.length; pi++) {
-    var p = PASSAGES_SECRETS[pi];
-    if (now < p.cooldown) continue;
-    var dxa = joueurX - p.ax;
-    var dya = joueurY - p.ay;
-    var distA = Math.sqrt(dxa * dxa + dya * dya);
-    var dxb = joueurX - p.bx;
-    var dyb = joueurY - p.by;
-    var distB = Math.sqrt(dxb * dxb + dyb * dyb);
-    // Activer le trou visuellement quand on est proche
-    var elA = document.getElementById('passage-a-' + pi);
-    var elB = document.getElementById('passage-b-' + pi);
-    if (elA) elA.classList.toggle('passage-actif', distA < 100);
-    if (elB) elB.classList.toggle('passage-actif', distB < 100);
-    // Teleporter si on marche dessus
-    if (distA < 30) {
-      joueurX = p.bx;
-      joueurY = p.by;
-      p.cooldown = now + PASSAGE_COOLDOWN;
-      showNotif('Teleporte !', 'info');
-      break;
-    }
-    if (distB < 30) {
-      joueurX = p.ax;
-      joueurY = p.ay;
-      p.cooldown = now + PASSAGE_COOLDOWN;
-      showNotif('Teleporte !', 'info');
-      break;
-    }
-  }
 }
 
 // === TOGGLE REGLES DU JEU ===

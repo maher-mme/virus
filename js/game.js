@@ -70,6 +70,7 @@ function specPrev() {
 var hlConfigJournaliste = 0;
 var hlConfigFanatique = 0;
 var hlConfigEspion = 0;
+var hlConfigCherif = 0;
 
 function majConfigHL() {
   var nbTotal = parseInt(document.getElementById('hl-nb-joueurs').value);
@@ -113,8 +114,8 @@ function majConfigHL() {
     }
   }
 
-  // Contrainte : virus + journaliste + fanatique + espion ne doit pas depasser nbTotal
-  var rolesSpeciaux = nbVirus + hlConfigJournaliste + hlConfigFanatique + hlConfigEspion;
+  // Contrainte : virus + journaliste + fanatique + espion + cherif ne doit pas depasser nbTotal
+  var rolesSpeciaux = nbVirus + hlConfigJournaliste + hlConfigFanatique + hlConfigEspion + hlConfigCherif;
   if (rolesSpeciaux >= nbTotal) {
     // Desactiver espion d'abord, puis fanatique, puis journaliste si necessaire
     if (hlConfigEspion === 1 && nbVirus + hlConfigJournaliste + hlConfigFanatique >= nbTotal) {
@@ -147,13 +148,38 @@ function majConfigHL() {
   document.getElementById('hl-nb-joueurs-val').textContent = nbTotal;
   document.getElementById('hl-nb-virus-val').textContent = nbVirus;
 
-  var nbInnocents = nbTotal - nbVirus - hlConfigJournaliste - hlConfigFanatique - hlConfigEspion;
+  var nbInnocents = nbTotal - nbVirus - hlConfigJournaliste - hlConfigFanatique - hlConfigEspion - hlConfigCherif;
   document.getElementById('hl-resume-total').textContent = nbTotal;
   document.getElementById('hl-resume-innocents').textContent = nbInnocents;
   document.getElementById('hl-resume-virus').textContent = nbVirus;
   document.getElementById('hl-resume-journaliste').textContent = hlConfigJournaliste;
   document.getElementById('hl-resume-fanatique').textContent = hlConfigFanatique;
   document.getElementById('hl-resume-espion').textContent = hlConfigEspion;
+  var resCh = document.getElementById('hl-resume-cherif');
+  if (resCh) resCh.textContent = hlConfigCherif;
+}
+
+function toggleCherifHL() {
+  var toggle = document.getElementById('hl-toggle-cherif');
+  var toggleLabel = document.getElementById('hl-toggle-cherif-label');
+  var nbTotal = parseInt(document.getElementById('hl-nb-joueurs').value);
+  var nbVirus = parseInt(document.getElementById('hl-nb-virus').value);
+  if (hlConfigCherif === 1) {
+    hlConfigCherif = 0;
+    toggle.classList.remove('active');
+    toggleLabel.classList.remove('active');
+    toggleLabel.textContent = '0 CHERIF';
+  } else {
+    if (nbVirus + hlConfigJournaliste + hlConfigFanatique + hlConfigEspion + 1 >= nbTotal) {
+      showNotif('Pas assez de joueurs', 'warn');
+      return;
+    }
+    hlConfigCherif = 1;
+    toggle.classList.add('active');
+    toggleLabel.classList.add('active');
+    toggleLabel.textContent = '1 CHERIF';
+  }
+  majConfigHL();
 }
 
 function toggleJournalisteHL() {
@@ -247,15 +273,17 @@ function validerConfigHL() {
   var nbJournaliste = hlConfigJournaliste;
   var nbFanatique = hlConfigFanatique;
   var nbEspion = hlConfigEspion;
-  lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion);
+  var nbCherif = hlConfigCherif;
+  lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion, nbCherif);
 }
 
-function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion) {
+function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion, nbCherif) {
   nbBots = nbBots || 3;
   nbVirus = nbVirus || 1;
   nbJournaliste = (nbJournaliste !== undefined) ? nbJournaliste : 1;
   nbFanatique = (nbFanatique !== undefined) ? nbFanatique : 1;
   nbEspion = (nbEspion !== undefined) ? nbEspion : 1;
+  nbCherif = (nbCherif !== undefined) ? nbCherif : 0;
 
   modeHorsLigne = true;
   partieActuelleId = null;
@@ -329,6 +357,14 @@ function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion) 
     indicesDisponibles.splice(pickE, 1);
   }
 
+  // Placer le(s) cherif(s)
+  for (var ch = 0; ch < nbCherif; ch++) {
+    if (indicesDisponibles.length === 0) break;
+    var pickC = Math.floor(Math.random() * indicesDisponibles.length);
+    roles[indicesDisponibles[pickC]] = 'cherif';
+    indicesDisponibles.splice(pickC, 1);
+  }
+
   // Le joueur est l'index 0
   monRole = roles[0];
   // Attribuer les roles aux bots
@@ -368,6 +404,7 @@ function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion) 
     else if (monRole === 'journaliste') { roleEl.textContent = t('roleJournalist'); }
     else if (monRole === 'fanatique') { roleEl.textContent = t('roleFanatic'); }
     else if (monRole === 'espion') { roleEl.textContent = t('roleSpy'); }
+    else if (monRole === 'cherif') { roleEl.textContent = 'CHERIF'; }
     else { roleEl.textContent = t('roleInnocent'); }
   }
 
@@ -399,9 +436,23 @@ function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion) 
     showNotif(t('youAreSpy'), 'info');
     var overlay = document.getElementById('espion-choix-overlay');
     if (overlay) overlay.style.display = 'flex';
+  } else if (monRole === 'cherif') {
+    showNotif('Tu es le CHERIF ! Tu as ' + nbVirus + ' balle(s) pour eliminer les Virus.', 'info');
   } else {
     showNotif(t('youAreInnocent'), 'info');
   }
+
+  // Init balles du cherif (egal au nombre de virus)
+  cherifBalles = (monRole === 'cherif') ? nbVirus : 0;
+  for (var bc = 0; bc < bots.length; bc++) {
+    if (bots[bc].role === 'cherif') bots[bc].cherifBalles = nbVirus;
+  }
+  // Annonce globale si un cherif est dans la partie
+  if (nbCherif > 0) {
+    setTimeout(function() { showNotif('Un CHERIF est dans cette partie !', 'warn'); }, 2500);
+  }
+  // Afficher le compteur de balles pour le cherif
+  majHudCherif();
 
   // Reset stats partie
   partieKills = 0; partieMissions = 0; partieStartTime = Date.now(); partieMortTime = 0;
@@ -665,6 +716,7 @@ function lancerJeu() {
     else if (monRole === 'journaliste') { roleEl.textContent = t('roleJournalist'); }
     else if (monRole === 'fanatique') { roleEl.textContent = t('roleFanatic'); }
     else if (monRole === 'espion') { roleEl.textContent = t('roleSpy'); }
+    else if (monRole === 'cherif') { roleEl.textContent = 'CHERIF'; }
     else { roleEl.textContent = t('roleInnocent'); }
   }
   // Si virus, colorer les allies
@@ -1099,8 +1151,15 @@ function gameLoop() {
   // Systeme d'alarme - detection capteurs
   if (typeof verifierCapteurs === 'function') verifierCapteurs();
 
-  // Systeme de teleportation - passages secrets
-  if (typeof verifierPassagesSecrets === 'function') verifierPassagesSecrets();
+  // Cherif : detection cible + bouton TIRER
+  if (monRole === 'cherif' && cherifBalles > 0 && !reunionEnCours) {
+    detecterCibleCherif();
+    var btnTirer = document.getElementById('btn-tirer');
+    if (btnTirer) btnTirer.style.display = cherifCiblePseudo ? 'block' : 'none';
+  } else {
+    var btnT = document.getElementById('btn-tirer');
+    if (btnT) btnT.style.display = 'none';
+  }
 
   // Lumieres eteintes - mettre a jour la position du cercle + fleche securite
   if (typeof majLumieresPosition === 'function') majLumieresPosition();

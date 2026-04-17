@@ -239,6 +239,131 @@ var KILL_COOLDOWN_MS = 15000; // 15 secondes de cooldown
 
 var VIRUS_VISION_DISTANCE = 150; // distance pour voir les allies virus
 
+// ============================
+// SYSTEME DE TIR (CHERIF)
+// ============================
+var cherifBalles = 0;
+var cherifCiblePseudo = null;
+var cherifCibleIsRemote = false;
+var CHERIF_RANGE = 400; // portee moyenne
+
+function majHudCherif() {
+  var elCounter = document.getElementById('cherif-balles');
+  if (monRole === 'cherif') {
+    if (!elCounter) {
+      var hudBar = document.querySelector('.hud-bar') || document.body;
+      var div = document.createElement('div');
+      div.id = 'cherif-balles';
+      div.style.cssText = 'position:fixed;top:70px;left:12px;background:linear-gradient(180deg,#f39c12,#d35400);color:white;padding:8px 14px;border-radius:10px;border:2px solid #f1c40f;font-family:Arial,sans-serif;font-weight:bold;font-size:14px;z-index:60;box-shadow:0 0 12px rgba(241,196,15,0.5);';
+      div.innerHTML = '&#128299; <span id="cherif-balles-val">' + cherifBalles + '</span>';
+      document.body.appendChild(div);
+    } else {
+      var val = document.getElementById('cherif-balles-val');
+      if (val) val.textContent = cherifBalles;
+    }
+  } else {
+    if (elCounter) elCounter.remove();
+  }
+}
+
+function detecterCibleCherif() {
+  if (monRole !== 'cherif' || cherifBalles <= 0) {
+    cherifCiblePseudo = null;
+    return;
+  }
+  var monPseudo = getPseudo() || t('player');
+  if (joueursElimines.indexOf(monPseudo) >= 0) { cherifCiblePseudo = null; return; }
+  var meilleure = null;
+  var distMin = CHERIF_RANGE;
+  // Bots locaux
+  for (var i = 0; i < bots.length; i++) {
+    var b = bots[i];
+    if (joueursElimines.indexOf(b.pseudo) >= 0) continue;
+    var dx = b.x - joueurX;
+    var dy = b.y - joueurY;
+    var d = Math.sqrt(dx * dx + dy * dy);
+    if (d < distMin) { distMin = d; meilleure = { pseudo: b.pseudo, isRemote: false }; }
+  }
+  // Joueurs distants en ligne
+  if (!modeHorsLigne && typeof remotePlayers !== 'undefined') {
+    for (var pid in remotePlayers) {
+      var rp = remotePlayers[pid];
+      if (!rp || joueursElimines.indexOf(rp.pseudo) >= 0) continue;
+      var dxr = rp.x - joueurX;
+      var dyr = rp.y - joueurY;
+      var dr = Math.sqrt(dxr * dxr + dyr * dyr);
+      if (dr < distMin) { distMin = dr; meilleure = { pseudo: rp.pseudo, isRemote: true }; }
+    }
+  }
+  cherifCiblePseudo = meilleure ? meilleure.pseudo : null;
+  cherifCibleIsRemote = meilleure ? meilleure.isRemote : false;
+}
+
+function tirerCible() {
+  if (monRole !== 'cherif' || !cherifCiblePseudo || cherifBalles <= 0) return;
+  var pseudoCible = cherifCiblePseudo;
+  cherifBalles--;
+  majHudCherif();
+  // Trouver le role de la cible
+  var roleCible = null;
+  var cibleX = 0, cibleY = 0;
+  var cibleSkin = 'skin/gratuit/skin-de-base-garcon.svg';
+  for (var i = 0; i < bots.length; i++) {
+    if (bots[i].pseudo === pseudoCible) {
+      roleCible = bots[i].role;
+      cibleX = bots[i].x; cibleY = bots[i].y;
+      cibleSkin = bots[i].skin;
+      break;
+    }
+  }
+  if (!roleCible && typeof remotePlayers !== 'undefined') {
+    for (var pid in remotePlayers) {
+      if (remotePlayers[pid].pseudo === pseudoCible) {
+        roleCible = remotePlayers[pid].role;
+        cibleX = remotePlayers[pid].x; cibleY = remotePlayers[pid].y;
+        cibleSkin = remotePlayers[pid].skin || cibleSkin;
+        break;
+      }
+    }
+  }
+  // Eliminer la cible (peu importe le role)
+  joueursElimines.push(pseudoCible);
+  // Cadavre visuel
+  if (typeof creerCadavre === 'function' && cibleX && cibleY) {
+    creerCadavre(cibleX, cibleY, pseudoCible, cibleSkin);
+  }
+  // Visuel bot mort
+  for (var bm = 0; bm < bots.length; bm++) {
+    if (bots[bm].pseudo === pseudoCible && bots[bm].element) {
+      bots[bm].element.classList.add('bot-mort');
+      if (!botsMorts.find(function(x) { return x.pseudo === pseudoCible; })) {
+        botsMorts.push({ pseudo: pseudoCible, element: bots[bm].element });
+      }
+    }
+  }
+  // Feedback
+  if (roleCible === 'virus') {
+    showNotif('Tu as abattu un VIRUS : ' + pseudoCible + ' !', 'success');
+  } else {
+    showNotif('Tu as tue un innocent : ' + pseudoCible + '...', 'warn');
+  }
+  // Firebase sync si online
+  if (!modeHorsLigne && cherifCibleIsRemote && typeof firebasePartyPlayers !== 'undefined') {
+    var fpC = firebasePartyPlayers.find(function(p) { return p.pseudo === pseudoCible; });
+    if (fpC && fpC._docId && typeof db !== 'undefined') {
+      db.collection('partyPlayers').doc(fpC._docId).update({ alive: false }).catch(function() {});
+    }
+  }
+  if (typeof replayLog === 'function') replayLog('kill', { tueur: getPseudo() + ' (cherif)', victime: pseudoCible });
+  cherifCiblePseudo = null;
+  // Cacher bouton
+  var btn = document.getElementById('btn-tirer');
+  if (btn) btn.style.display = 'none';
+  // Verifier victoire
+  var gagnant = verifierVictoire();
+  if (gagnant) setTimeout(function() { afficherFinPartie(gagnant); }, 800);
+}
+
 function detecterVirusProches() {
   if (bots.length === 0 || monRole !== 'virus' || reunionEnCours) return;
   for (var i = 0; i < bots.length; i++) {

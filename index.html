@@ -21,8 +21,8 @@
   <link rel="stylesheet" href="css/components.css?v=6">
   <link rel="stylesheet" href="css/menu.css?v=19">
   <link rel="stylesheet" href="css/lobby.css?v=20260412">
-  <link rel="stylesheet" href="css/game.css?v=14">
-  <link rel="stylesheet" href="css/hud.css?v=11">
+  <link rel="stylesheet" href="css/game.css?v=15">
+  <link rel="stylesheet" href="css/hud.css?v=12">
   <link rel="stylesheet" href="css/meeting.css?v=6">
   <link rel="stylesheet" href="css/friends.css?v=7">
   <link rel="stylesheet" href="css/responsive.css?v=20260414">
@@ -76,7 +76,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v2.7.8 - ALPHA</span>
+    <span class="version">VIRUS v2.7.9 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -133,6 +133,14 @@
           </div>
         </div>
 
+        <div class="config-hl-champ">
+          <label>CHERIF <span style="color:#f39c12; font-size:10px;">(INNOCENT)</span></label>
+          <div class="config-hl-toggle-row">
+            <div class="config-hl-toggle" id="hl-toggle-cherif" onclick="toggleCherifHL()"></div>
+            <span class="config-hl-toggle-label" id="hl-toggle-cherif-label">0 CHERIF</span>
+          </div>
+        </div>
+
         <div class="config-hl-resume" id="hl-resume">
           <div class="config-hl-resume-item"><span data-i18n="totalPlayers">Total :</span> <span id="hl-resume-total">4</span> <span data-i18n="players">joueurs</span></div>
           <div class="config-hl-resume-item"><span data-i18n="innocentsLabel">Innocents :</span> <span id="hl-resume-innocents">3</span></div>
@@ -140,13 +148,14 @@
           <div class="config-hl-resume-item"><span data-i18n="journalistLabel">Journaliste :</span> <span id="hl-resume-journaliste">0</span></div>
           <div class="config-hl-resume-item"><span data-i18n="fanaticLabel">Fanatique :</span> <span id="hl-resume-fanatique">0</span></div>
           <div class="config-hl-resume-item"><span data-i18n="spyLabel">Espion :</span> <span id="hl-resume-espion">0</span></div>
+          <div class="config-hl-resume-item">Cherif : <span id="hl-resume-cherif">0</span></div>
         </div>
 
         <button class="btn-lancer-hl" onclick="validerConfigHL()" data-i18n="launch">LANCER LA PARTIE</button>
       </div>
     </div>
 
-    <span class="version">VIRUS v2.7.8 - ALPHA</span>
+    <span class="version">VIRUS v2.7.9 - ALPHA</span>
     </div>
   </div>
 
@@ -217,7 +226,7 @@
             <button class="btn-sauver-pseudo" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.7.8 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.7.9 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -402,7 +411,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v2.7.8 - ALPHA</span>
+        <span class="version-inline">v2.7.9 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -617,7 +626,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v2.7.8 - ALPHA</span>
+    <span class="version">VIRUS v2.7.9 - ALPHA</span>
     </div>
   </div>
 
@@ -708,7 +717,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.7.8 - ALPHA</span>
+    <span class="version">VIRUS v2.7.9 - ALPHA</span>
     </div>
   </div>
 
@@ -754,7 +763,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v2.7.8 - ALPHA</span>
+    <span class="version">VIRUS v2.7.9 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -1629,6 +1638,7 @@
       <button class="btn-reunion" id="btn-reunion" onclick="demanderReunion()" data-i18n="callMeeting">APPELER UNE REUNION</button>
       <button class="btn-mission" id="btn-mission" onclick="faireMission()" data-i18n="doTask">FAIRE LA TACHE</button>
       <button class="btn-kill" id="btn-kill" onclick="tuerVictime()" data-i18n="kill">KILL</button>
+      <button class="btn-tirer" id="btn-tirer" onclick="tirerCible()" style="display:none;">&#128299; TIRER</button>
       <div class="kill-countdown" id="kill-countdown">7</div>
       <button class="btn-signaler" id="btn-signaler" onclick="signalerCadavre()" data-i18n="report">SIGNALER</button>
       <button class="btn-enqueter" id="btn-enqueter" onclick="enqueterCible()" data-i18n="investigate">ENQUETER</button>
@@ -1905,7 +1915,7 @@
 <script src="js/skins.js?v=6"></script>
 <script src="js/music.js?v=2"></script>
 <script src="js/account.js?v=21"></script>
-<script src="js/ui.js?v=20260414a"></script>
+<script src="js/ui.js?v=20260415a"></script>
 <script src="js/chat.js?v=6"></script>
 <script src="js/comments.js?v=5"></script>
 <script src="js/translation.js?v=20260409b"></script>
@@ -1914,8 +1924,8 @@
 <script src="js/player.js?v=8"></script>
 <script src="js/shop.js?v=14"></script>
 <script src="js/bots.js?v=11"></script>
-<script src="js/game.js?v=20260414b"></script>
-<script src="js/roles.js?v=24"></script>
+<script src="js/game.js?v=20260415a"></script>
+<script src="js/roles.js?v=25"></script>
 <script src="js/meeting.js?v=15"></script>
 <script src="js/missions.js?v=10"></script>
 <script src="js/minigames.js?v=2"></script>

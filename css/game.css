@@ -733,6 +733,10 @@
 .fp-role-fanatique { background: #8e44ad; color: white; }
 .fp-role-espion { background: #9b59b6; color: white; }
 .fp-role-cherif { background: #f39c12; color: white; }
+
+/* Cherif : curseur viseur sur la map et sur les joueurs cliquables */
+#mall-map.cherif-aim { cursor: crosshair; }
+#mall-map.cherif-aim .joueur-perso { cursor: crosshair; outline: 2px dashed rgba(243,156,18,0.5); outline-offset: 2px; }
 .fin-btn-continuer {
   background: linear-gradient(180deg, #27ae60, #229954) !important;
   border-color: #2ecc71 !important;

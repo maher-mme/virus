@@ -240,18 +240,15 @@ var KILL_COOLDOWN_MS = 15000; // 15 secondes de cooldown
 var VIRUS_VISION_DISTANCE = 150; // distance pour voir les allies virus
 
 // ============================
-// SYSTEME DE TIR (CHERIF)
+// SYSTEME DE TIR (CHERIF) - CLIC SUR JOUEUR
 // ============================
 var cherifBalles = 0;
-var cherifCiblePseudo = null;
-var cherifCibleIsRemote = false;
 var CHERIF_RANGE = 400; // portee moyenne
 
 function majHudCherif() {
   var elCounter = document.getElementById('cherif-balles');
   if (monRole === 'cherif') {
     if (!elCounter) {
-      var hudBar = document.querySelector('.hud-bar') || document.body;
       var div = document.createElement('div');
       div.id = 'cherif-balles';
       div.style.cssText = 'position:fixed;top:70px;left:12px;background:linear-gradient(180deg,#f39c12,#d35400);color:white;padding:8px 14px;border-radius:10px;border:2px solid #f1c40f;font-family:Arial,sans-serif;font-weight:bold;font-size:14px;z-index:60;box-shadow:0 0 12px rgba(241,196,15,0.5);';
@@ -261,47 +258,45 @@ function majHudCherif() {
       var val = document.getElementById('cherif-balles-val');
       if (val) val.textContent = cherifBalles;
     }
+    // Activer mode viseur (curseur crosshair)
+    var mapEl = document.getElementById('mall-map');
+    if (mapEl) mapEl.classList.toggle('cherif-aim', cherifBalles > 0);
   } else {
     if (elCounter) elCounter.remove();
+    var mapEl2 = document.getElementById('mall-map');
+    if (mapEl2) mapEl2.classList.remove('cherif-aim');
   }
 }
 
-function detecterCibleCherif() {
-  if (monRole !== 'cherif' || cherifBalles <= 0) {
-    cherifCiblePseudo = null;
-    return;
-  }
-  var monPseudo = getPseudo() || t('player');
-  if (joueursElimines.indexOf(monPseudo) >= 0) { cherifCiblePseudo = null; return; }
-  var meilleure = null;
-  var distMin = CHERIF_RANGE;
-  // Bots locaux
+// Clic sur un joueur (bot ou remote) quand on est cherif
+function tenterTirSurCible(pseudoCible, isRemote) {
+  if (monRole !== 'cherif' || cherifBalles <= 0 || !jeuActif || reunionEnCours) return false;
+  if (!pseudoCible) return false;
+  if (joueursElimines.indexOf(pseudoCible) >= 0) return false;
+  // Verifier la distance
+  var tx = null, ty = null;
   for (var i = 0; i < bots.length; i++) {
-    var b = bots[i];
-    if (joueursElimines.indexOf(b.pseudo) >= 0) continue;
-    var dx = b.x - joueurX;
-    var dy = b.y - joueurY;
-    var d = Math.sqrt(dx * dx + dy * dy);
-    if (d < distMin) { distMin = d; meilleure = { pseudo: b.pseudo, isRemote: false }; }
+    if (bots[i].pseudo === pseudoCible) { tx = bots[i].x; ty = bots[i].y; break; }
   }
-  // Joueurs distants en ligne
-  if (!modeHorsLigne && typeof remotePlayers !== 'undefined') {
+  if ((tx === null || ty === null) && typeof remotePlayers !== 'undefined') {
     for (var pid in remotePlayers) {
-      var rp = remotePlayers[pid];
-      if (!rp || joueursElimines.indexOf(rp.pseudo) >= 0) continue;
-      var dxr = rp.x - joueurX;
-      var dyr = rp.y - joueurY;
-      var dr = Math.sqrt(dxr * dxr + dyr * dyr);
-      if (dr < distMin) { distMin = dr; meilleure = { pseudo: rp.pseudo, isRemote: true }; }
+      if (remotePlayers[pid].pseudo === pseudoCible) { tx = remotePlayers[pid].x; ty = remotePlayers[pid].y; break; }
     }
   }
-  cherifCiblePseudo = meilleure ? meilleure.pseudo : null;
-  cherifCibleIsRemote = meilleure ? meilleure.isRemote : false;
+  if (tx === null) return false;
+  var dx = tx - joueurX;
+  var dy = ty - joueurY;
+  var dist = Math.sqrt(dx * dx + dy * dy);
+  if (dist > CHERIF_RANGE) {
+    showNotif('Trop loin pour tirer !', 'warn');
+    return false;
+  }
+  tirerCible(pseudoCible, isRemote);
+  return true;
 }
 
-function tirerCible() {
-  if (monRole !== 'cherif' || !cherifCiblePseudo || cherifBalles <= 0) return;
-  var pseudoCible = cherifCiblePseudo;
+function tirerCible(pseudoCible, isRemote) {
+  if (monRole !== 'cherif' || cherifBalles <= 0) return;
   cherifBalles--;
   majHudCherif();
   // Trouver le role de la cible
@@ -348,17 +343,13 @@ function tirerCible() {
     showNotif('Tu as tue un innocent : ' + pseudoCible + '...', 'warn');
   }
   // Firebase sync si online
-  if (!modeHorsLigne && cherifCibleIsRemote && typeof firebasePartyPlayers !== 'undefined') {
+  if (!modeHorsLigne && isRemote && typeof firebasePartyPlayers !== 'undefined') {
     var fpC = firebasePartyPlayers.find(function(p) { return p.pseudo === pseudoCible; });
     if (fpC && fpC._docId && typeof db !== 'undefined') {
       db.collection('partyPlayers').doc(fpC._docId).update({ alive: false }).catch(function() {});
     }
   }
   if (typeof replayLog === 'function') replayLog('kill', { tueur: getPseudo() + ' (cherif)', victime: pseudoCible });
-  cherifCiblePseudo = null;
-  // Cacher bouton
-  var btn = document.getElementById('btn-tirer');
-  if (btn) btn.style.display = 'none';
   // Verifier victoire
   var gagnant = verifierVictoire();
   if (gagnant) setTimeout(function() { afficherFinPartie(gagnant); }, 800);

@@ -965,6 +965,42 @@ function updatePetSuivi(petObj, ownerX, ownerY, ownerMoved) {
   petObj.lastY = ownerY;
 }
 
+// Click delegation pour le cherif : tir quand clic sur un joueur
+(function() {
+  function onClickCherif(e) {
+    if (typeof monRole === 'undefined' || monRole !== 'cherif') return;
+    if (!cherifBalles || cherifBalles <= 0) return;
+    if (!jeuActif || reunionEnCours) return;
+    var el = e.target;
+    // Remonter jusqu'a trouver un .joueur-perso (bot ou remote)
+    var joueurEl = null;
+    while (el && el !== document.body) {
+      if (el.classList && el.classList.contains('joueur-perso')) { joueurEl = el; break; }
+      el = el.parentNode;
+    }
+    if (!joueurEl) return;
+    // Bot local
+    if (joueurEl.id && joueurEl.id.indexOf('bot-') === 0) {
+      var botIdx = parseInt(joueurEl.id.replace('bot-', ''));
+      if (!isNaN(botIdx) && bots[botIdx]) {
+        e.preventDefault(); e.stopPropagation();
+        tenterTirSurCible(bots[botIdx].pseudo, false);
+        return;
+      }
+    }
+    // Joueur distant
+    if (joueurEl.id && joueurEl.id.indexOf('remote-') === 0 && typeof remotePlayers !== 'undefined') {
+      var pid = joueurEl.id.replace('remote-', '');
+      if (remotePlayers[pid]) {
+        e.preventDefault(); e.stopPropagation();
+        tenterTirSurCible(remotePlayers[pid].pseudo, true);
+        return;
+      }
+    }
+  }
+  document.addEventListener('click', onClickCherif, true);
+})();
+
 function gameLoop() {
   if (!jeuActif) return;
 
@@ -1150,16 +1186,6 @@ function gameLoop() {
 
   // Systeme d'alarme - detection capteurs
   if (typeof verifierCapteurs === 'function') verifierCapteurs();
-
-  // Cherif : detection cible + bouton TIRER
-  if (monRole === 'cherif' && cherifBalles > 0 && !reunionEnCours) {
-    detecterCibleCherif();
-    var btnTirer = document.getElementById('btn-tirer');
-    if (btnTirer) btnTirer.style.display = cherifCiblePseudo ? 'block' : 'none';
-  } else {
-    var btnT = document.getElementById('btn-tirer');
-    if (btnT) btnT.style.display = 'none';
-  }
 
   // Lumieres eteintes - mettre a jour la position du cercle + fleche securite
   if (typeof majLumieresPosition === 'function') majLumieresPosition();

@@ -146,6 +146,12 @@ function connecterCompte() {
       var goldEl = document.getElementById('gold-display');
       if (goldEl) goldEl.textContent = playerGold;
     }
+    // Reset SKINS a la base (eviter pollution d'un compte admin precedent)
+    if (typeof SKINS !== 'undefined') {
+      for (var ks = SKINS.length - 1; ks >= 0; ks--) {
+        if (SKINS[ks].id !== 'garcon' && SKINS[ks].id !== 'fille') SKINS.splice(ks, 1);
+      }
+    }
     if (data.skinsAchetes) {
       localStorage.setItem('virusSkinsAchetes', JSON.stringify(data.skinsAchetes));
       // Recharger les skins achetes dans le tableau SKINS
@@ -155,6 +161,14 @@ function connecterCompte() {
           if (sb) SKINS.push({ id: sb.id, nom: sb.nom, fichier: sb.fichier, rarete: sb.rarete });
         }
       });
+    } else {
+      localStorage.setItem('virusSkinsAchetes', '[]');
+    }
+    // Reset MUSIQUES aussi
+    if (typeof MUSIQUES !== 'undefined' && typeof MUSIQUES_BOUTIQUE !== 'undefined') {
+      for (var km = MUSIQUES.length - 1; km >= 0; km--) {
+        if (MUSIQUES_BOUTIQUE.find(function(mb) { return mb.id === MUSIQUES[km].id; })) MUSIQUES.splice(km, 1);
+      }
     }
     if (data.musiquesAchetees) {
       localStorage.setItem('virusMusiquesAchetees', JSON.stringify(data.musiquesAchetees));

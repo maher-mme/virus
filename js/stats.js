@@ -488,9 +488,9 @@ function checkProfilURL() {
       ouvrirProfil(snap.docs[0].id);
     } else {
       showNotif(t('profilNotFound', profilPseudo), 'warn');
+      // Nettoyer seulement si profil introuvable
+      window.history.replaceState({}, '', window.location.pathname);
     }
-    // Nettoyer l'URL sans recharger
-    window.history.replaceState({}, '', window.location.pathname);
   }).catch(function(err) {
     console.error('Erreur checkProfilURL:', err);
   });

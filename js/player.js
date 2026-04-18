@@ -230,6 +230,10 @@ document.addEventListener('keydown', function(e) {
   if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].indexOf(e.key) > -1) {
     e.preventDefault();
   }
+  // Touche M : ouvrir le picker d'emotes (si en jeu)
+  if ((e.key === 'm' || e.key === 'M') && typeof jeuActif !== 'undefined' && jeuActif && typeof toggleEmotePicker === 'function') {
+    toggleEmotePicker();
+  }
 });
 document.addEventListener('keyup', function(e) {
   keys[e.key] = false;

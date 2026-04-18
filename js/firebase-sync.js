@@ -427,6 +427,8 @@ function subscribeToGameState(partyId) {
           var data = change.doc.data();
           data._docId = change.doc.id;
           handleSinglePlayerUpdate(data);
+          // Emote : jouer si recue
+          if (typeof traiterEmoteRemote === 'function') traiterEmoteRemote(change.doc.id, data);
         } else if (change.type === 'removed') {
           var removedData = change.doc.data();
           if (removedData.playerId && remotePlayers[removedData.playerId]) {

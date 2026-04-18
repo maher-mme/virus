@@ -17,7 +17,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <!-- CSS -->
-  <link rel="stylesheet" href="css/base.css?v=3">
+  <link rel="stylesheet" href="css/base.css?v=4">
   <link rel="stylesheet" href="css/components.css?v=6">
   <link rel="stylesheet" href="css/menu.css?v=19">
   <link rel="stylesheet" href="css/lobby.css?v=20260412">
@@ -76,7 +76,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v2.8.1 - ALPHA</span>
+    <span class="version">VIRUS v2.8.2 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -155,7 +155,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.8.1 - ALPHA</span>
+    <span class="version">VIRUS v2.8.2 - ALPHA</span>
     </div>
   </div>
 
@@ -185,6 +185,14 @@
             <button class="lang-btn" id="lang-de" onclick="setLanguage('de')">Deutsch</button>
             <button class="lang-btn" id="lang-ar" onclick="setLanguage('ar')">العربية</button>
           </div>
+        </div>
+        <div class="popup-section">
+          <label>ACCESSIBILITE</label>
+          <div class="config-hl-toggle-row" style="gap:12px;">
+            <div class="config-hl-toggle" id="toggle-dyslexie" onclick="toggleDyslexie()"></div>
+            <span class="config-hl-toggle-label" id="toggle-dyslexie-label">POLICE DYSLEXIQUE</span>
+          </div>
+          <p style="font-size:11px;color:#95a5a6;margin-top:6px;">Change la police pour une police plus lisible (Comic Sans / Verdana) avec plus d'espacement.</p>
         </div>
         <div class="popup-section" id="section-set-pin" style="display:none;">
           <label data-i18n="setPin">CHOISIR UN MOT DE PASSE</label>
@@ -226,7 +234,7 @@
             <button class="btn-sauver-pseudo" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.8.1 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.8.2 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -411,7 +419,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v2.8.1 - ALPHA</span>
+        <span class="version-inline">v2.8.2 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -626,7 +634,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v2.8.1 - ALPHA</span>
+    <span class="version">VIRUS v2.8.2 - ALPHA</span>
     </div>
   </div>
 
@@ -717,7 +725,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.8.1 - ALPHA</span>
+    <span class="version">VIRUS v2.8.2 - ALPHA</span>
     </div>
   </div>
 
@@ -763,7 +771,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v2.8.1 - ALPHA</span>
+    <span class="version">VIRUS v2.8.2 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -1913,8 +1921,8 @@
 <script src="js/api.js?v=1"></script>
 <script src="js/skins.js?v=6"></script>
 <script src="js/music.js?v=2"></script>
-<script src="js/account.js?v=21"></script>
-<script src="js/ui.js?v=20260415b"></script>
+<script src="js/account.js?v=22"></script>
+<script src="js/ui.js?v=20260418a"></script>
 <script src="js/chat.js?v=6"></script>
 <script src="js/comments.js?v=5"></script>
 <script src="js/translation.js?v=20260409b"></script>

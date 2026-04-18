@@ -357,6 +357,8 @@ function ouvrirParams() {
   document.getElementById('popup-params').classList.add('visible');
   var display = document.getElementById('input-edit-pseudo-display');
   if (display) display.textContent = getPseudo();
+  // Refleter l'etat du toggle dyslexie
+  if (typeof majToggleDyslexie === 'function') majToggleDyslexie();
   chargerJoinMode();
   // Verifier si le joueur a un PIN, sinon afficher la section set-pin
   var sectionPin = document.getElementById('section-set-pin');

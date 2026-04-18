@@ -13,6 +13,15 @@ body {
   height: 100vh;
   user-select: none;
 }
+
+/* Mode police dyslexique : plus de lisibilite */
+body.dyslexie, body.dyslexie * {
+  font-family: "Comic Sans MS", "Verdana", "Tahoma", sans-serif !important;
+  letter-spacing: 0.04em !important;
+  word-spacing: 0.08em !important;
+  line-height: 1.55 !important;
+}
+
 /* Permettre la saisie sur mobile */
 input, textarea { user-select: text; -webkit-user-select: text; }
 

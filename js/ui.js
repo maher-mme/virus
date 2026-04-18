@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.8.1';
+var CURRENT_VERSION = '2.8.2';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -1416,6 +1416,29 @@ function initBoutonLumieres() {
   var btn = document.getElementById('hud-btn-lumieres');
   if (btn) btn.style.display = (monRole === 'espion') ? 'inline-block' : 'none';
 }
+
+// === POLICE DYSLEXIQUE ===
+function toggleDyslexie() {
+  var actif = document.body.classList.toggle('dyslexie');
+  localStorage.setItem('virusDyslexie', actif ? '1' : '0');
+  majToggleDyslexie();
+}
+function majToggleDyslexie() {
+  var tg = document.getElementById('toggle-dyslexie');
+  var lb = document.getElementById('toggle-dyslexie-label');
+  var actif = document.body.classList.contains('dyslexie');
+  if (tg) tg.classList.toggle('active', actif);
+  if (lb) lb.classList.toggle('active', actif);
+}
+(function() {
+  function apply() {
+    if (localStorage.getItem('virusDyslexie') === '1' && document.body) {
+      document.body.classList.add('dyslexie');
+    }
+  }
+  if (document.body) apply();
+  else document.addEventListener('DOMContentLoaded', apply);
+})();
 
 // === CONFETTIS (fin de partie victoire) ===
 function lancerConfettis(couleurs) {

@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.8.0';
+var CURRENT_VERSION = '2.8.1';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -1415,6 +1415,38 @@ function majLumieresPosition() {
 function initBoutonLumieres() {
   var btn = document.getElementById('hud-btn-lumieres');
   if (btn) btn.style.display = (monRole === 'espion') ? 'inline-block' : 'none';
+}
+
+// === CONFETTIS (fin de partie victoire) ===
+function lancerConfettis(couleurs) {
+  couleurs = couleurs || ['#f1c40f', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#f39c12'];
+  var existing = document.getElementById('confetti-container');
+  if (existing) existing.remove();
+  var container = document.createElement('div');
+  container.id = 'confetti-container';
+  container.className = 'confetti-container';
+  document.body.appendChild(container);
+  var nbConfettis = 120;
+  for (var i = 0; i < nbConfettis; i++) {
+    var c = document.createElement('div');
+    c.className = 'confetti';
+    var couleur = couleurs[Math.floor(Math.random() * couleurs.length)];
+    var gauche = Math.random() * 100;
+    var delai = Math.random() * 2.5;
+    var duree = 2.5 + Math.random() * 2.5;
+    var tailleW = 6 + Math.random() * 8;
+    var tailleH = 10 + Math.random() * 10;
+    var formeRound = Math.random() < 0.3;
+    c.style.left = gauche + 'vw';
+    c.style.background = couleur;
+    c.style.width = tailleW + 'px';
+    c.style.height = tailleH + 'px';
+    c.style.animationDelay = delai + 's';
+    c.style.animationDuration = duree + 's';
+    c.style.borderRadius = formeRound ? '50%' : '2px';
+    container.appendChild(c);
+  }
+  setTimeout(function() { if (container && container.parentNode) container.remove(); }, 7000);
 }
 
 // === RESET CAPTEURS/ALARME entre parties ===

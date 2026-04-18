@@ -1027,6 +1027,15 @@ function afficherFinPartie(gagnant) {
   rolesDiv.innerHTML = html;
   overlay.classList.add('visible');
 
+  // Confettis si le joueur a gagne
+  if (joueurAGagne && typeof lancerConfettis === 'function') {
+    var couleurs = ['#f1c40f', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#f39c12', '#1abc9c'];
+    if (gagnant === 'virus') couleurs = ['#e74c3c', '#c0392b', '#f39c12', '#e67e22'];
+    else if (gagnant === 'fanatique') couleurs = ['#8e44ad', '#9b59b6', '#f1c40f'];
+    else couleurs = ['#2ecc71', '#27ae60', '#3498db', '#f1c40f', '#ffffff'];
+    lancerConfettis(couleurs);
+  }
+
   // Afficher le bouton "Continuer a jouer" si mode en ligne
   var btnContinuer = document.getElementById('fin-btn-continuer');
   if (btnContinuer) btnContinuer.style.display = (!modeHorsLigne && partieActuelleId) ? 'block' : 'none';
@@ -1040,6 +1049,8 @@ function afficherFinPartie(gagnant) {
 
 function retourLobbyFinPartie() {
   document.getElementById('fin-partie-overlay').classList.remove('visible');
+  var confC = document.getElementById('confetti-container');
+  if (confC) confC.remove();
   var joueurEl = document.getElementById('joueur');
   if (joueurEl) { joueurEl.classList.remove('bot-mort'); joueurEl.style.display = ''; }
   if (typeof lumieresEteintes !== 'undefined' && lumieresEteintes && typeof desactiverLumieres === 'function') desactiverLumieres();
@@ -1052,6 +1063,8 @@ function retourLobbyFinPartie() {
 
 function retourMenuFinPartie() {
   document.getElementById('fin-partie-overlay').classList.remove('visible');
+  var confC = document.getElementById('confetti-container');
+  if (confC) confC.remove();
   // Retirer le visuel fantome du joueur
   var joueurEl = document.getElementById('joueur');
   if (joueurEl) joueurEl.classList.remove('bot-mort');

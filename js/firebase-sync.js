@@ -1108,7 +1108,7 @@ function renderWaitingRoomPlayers(players) {
       // Mettre a jour le pet
       var petEl = existing.querySelector('.sa-pet-img');
       if (p.pet && !petEl && typeof PETS_BOUTIQUE !== 'undefined') {
-        var petData = PETS_BOUTIQUE.find(function(pt) { return pt.id === p.pet; });
+        var petData = (typeof findPetById === 'function') ? findPetById(p.pet) : PETS_BOUTIQUE.find(function(pt) { return pt.id === p.pet; });
         if (petData) {
           var petImg = document.createElement('img');
           petImg.className = 'sa-pet-img';
@@ -1133,7 +1133,7 @@ function renderWaitingRoomPlayers(players) {
       var saDir = p.saDirection === -1 ? 'scaleX(-1)' : 'scaleX(1)';
       var petHtml = '';
       if (p.pet && typeof PETS_BOUTIQUE !== 'undefined') {
-        var petInfo = PETS_BOUTIQUE.find(function(pt) { return pt.id === p.pet; });
+        var petInfo = (typeof findPetById === 'function') ? findPetById(p.pet) : PETS_BOUTIQUE.find(function(pt) { return pt.id === p.pet; });
         if (petInfo) {
           petHtml = '<img class="sa-pet-img" src="' + petInfo.idle + '" style="width:24px;height:24px;position:absolute;bottom:-5px;right:-10px;">';
         }

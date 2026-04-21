@@ -413,8 +413,15 @@ function genererCasierAnimaux() {
   divNone.innerHTML = '<div style="height:46px;width:46px;display:flex;align-items:center;justify-content:center;font-size:24px;color:#566573;">&#10005;</div><span class="skin-label">' + t('none') + '</span>';
   container.appendChild(divNone);
 
-  // Pets possedes
+  // Pets possedes (boutique + passe reclames)
   var petsDisponibles = PETS_BOUTIQUE.filter(function(p) { return achetes.indexOf(p.id) >= 0 || isAdmin(); });
+  if (typeof PETS_PASSE !== 'undefined') {
+    PETS_PASSE.forEach(function(pp) {
+      if (achetes.indexOf(pp.id) >= 0 && !petsDisponibles.find(function(x) { return x.id === pp.id; })) {
+        petsDisponibles.push(pp);
+      }
+    });
+  }
   if (petsDisponibles.length === 0 && !isAdmin()) {
     var vide = document.createElement('div');
     vide.className = 'boutique-vide';

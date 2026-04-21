@@ -837,7 +837,7 @@ function initMonPet() {
     petEl.style.display = 'none';
     return;
   }
-  var pet = PETS_BOUTIQUE.find(function(p) { return p.id === petId; });
+  var pet = findPetById(petId);
   if (!pet) { petEl.style.display = 'none'; return; }
   petImg.src = pet.idle;
   petEl.style.display = 'block';
@@ -853,7 +853,7 @@ function updateMonPet(moved) {
   var petEl = document.getElementById('mon-pet');
   var petImg = document.getElementById('mon-pet-img');
   if (!petEl || !petImg || !petId) return;
-  var pet = PETS_BOUTIQUE.find(function(p) { return p.id === petId; });
+  var pet = findPetById(petId);
   if (!pet) return;
 
   if (!petInitialized) { initMonPet(); return; }
@@ -891,9 +891,16 @@ function updateMonPet(moved) {
   petLastY = joueurY;
 }
 
+function findPetById(id) {
+  var p = (typeof PETS_BOUTIQUE !== 'undefined') ? PETS_BOUTIQUE.find(function(x) { return x.id === id; }) : null;
+  if (p) return p;
+  if (typeof PETS_PASSE !== 'undefined') return PETS_PASSE.find(function(x) { return x.id === id; });
+  return null;
+}
+
 function creerPetElement(petId, parentEl) {
   if (!parentEl) return null;
-  var pet = PETS_BOUTIQUE.find(function(p) { return p.id === petId; });
+  var pet = findPetById(petId);
   if (!pet) return null;
   var div = document.createElement('div');
   div.className = 'pet-element';

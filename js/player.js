@@ -328,6 +328,32 @@ if (isMobile) {
           return;
         }
       }
+      // Cherif : tap sur un joueur pour tirer
+      if (typeof monRole !== 'undefined' && monRole === 'cherif' && typeof cherifBalles !== 'undefined' && cherifBalles > 0) {
+        var tElem = document.elementFromPoint(touch.clientX, touch.clientY);
+        var joueurEl = null;
+        while (tElem && tElem !== document.body) {
+          if (tElem.classList && tElem.classList.contains('joueur-perso')) { joueurEl = tElem; break; }
+          tElem = tElem.parentNode;
+        }
+        if (joueurEl && joueurEl.id) {
+          if (joueurEl.id.indexOf('bot-') === 0) {
+            var bIdx = parseInt(joueurEl.id.replace('bot-', ''));
+            if (!isNaN(bIdx) && bots[bIdx] && typeof tenterTirSurCible === 'function') {
+              e.preventDefault();
+              tenterTirSurCible(bots[bIdx].pseudo, false);
+              return;
+            }
+          } else if (joueurEl.id.indexOf('remote-') === 0 && typeof remotePlayers !== 'undefined') {
+            var rid = joueurEl.id.replace('remote-', '');
+            if (remotePlayers[rid] && typeof tenterTirSurCible === 'function') {
+              e.preventDefault();
+              tenterTirSurCible(remotePlayers[rid].pseudo, true);
+              return;
+            }
+          }
+        }
+      }
       e.preventDefault();
       var mode = getControleMobile();
       if (mode === 'joystick') {

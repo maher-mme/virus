@@ -59,7 +59,7 @@ function appliquerSkinPartout() {
   if (saPet) {
     var petEquipe = localStorage.getItem('virusPet');
     if (petEquipe && typeof PETS_BOUTIQUE !== 'undefined') {
-      var petData = PETS_BOUTIQUE.find(function(p) { return p.id === petEquipe; });
+      var petData = (typeof findPetById === 'function') ? findPetById(petEquipe) : PETS_BOUTIQUE.find(function(p) { return p.id === petEquipe; });
       if (petData) {
         saPet.src = petData.idle + '?v=' + (typeof CURRENT_VERSION !== 'undefined' ? CURRENT_VERSION : '1');
         saPet.style.display = 'block';

@@ -490,6 +490,9 @@ function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion, 
   // Protection de 7 secondes au debut
   activerKillProtection();
 
+  // Decorations theme saison
+  if (typeof genererDecorations === 'function') genererDecorations();
+
   // Missions
   initMissions();
 

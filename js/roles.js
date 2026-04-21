@@ -1055,6 +1055,7 @@ function retourLobbyFinPartie() {
   if (joueurEl) { joueurEl.classList.remove('bot-mort'); joueurEl.style.display = ''; }
   if (typeof lumieresEteintes !== 'undefined' && lumieresEteintes && typeof desactiverLumieres === 'function') desactiverLumieres();
   if (typeof resetPassagesEtCapteurs === 'function') resetPassagesEtCapteurs();
+  if (typeof nettoyerDecorations === 'function') nettoyerDecorations();
   nettoyerBots();
   joueursElimines = [];
   botsMorts = [];
@@ -1103,6 +1104,7 @@ function retourMenuFinPartie() {
   document.getElementById('reunion-resultat').style.display = 'none';
   if (typeof lumieresEteintes !== 'undefined' && lumieresEteintes && typeof desactiverLumieres === 'function') desactiverLumieres();
   if (typeof resetPassagesEtCapteurs === 'function') resetPassagesEtCapteurs();
+  if (typeof nettoyerDecorations === 'function') nettoyerDecorations();
   nettoyerBots();
   joueursElimines = [];
   botsMorts = [];

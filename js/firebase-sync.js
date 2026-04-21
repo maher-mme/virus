@@ -594,6 +594,9 @@ function _demarrerJeuMultiplayer(state) {
   partieKills = 0; partieMissions = 0; partieStartTime = Date.now(); partieMortTime = 0;
   if (typeof desactiverLumieres === 'function' && typeof lumieresEteintes !== 'undefined' && lumieresEteintes) desactiverLumieres();
 
+  // Decorations theme saison
+  if (typeof genererDecorations === 'function') genererDecorations();
+
   // Demarrer enregistrement replay (online uniquement)
   if (typeof replayStart === 'function') {
     var replayJoueurs = (firebasePartyPlayers || []).map(function(p) {

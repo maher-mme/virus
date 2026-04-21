@@ -337,6 +337,33 @@
 }
 .btn-tirer:hover { filter: brightness(1.15); transform: translateX(-50%) scale(1.05); }
 
+/* === JOYSTICK VIRTUEL === */
+.joystick-base {
+  position: fixed;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  display: none;
+  pointer-events: none;
+  z-index: 220;
+  transform: translate(-50%, -50%);
+  touch-action: none;
+}
+.joystick-stick {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
 /* === EMOTES === */
 .btn-emote {
   position: absolute;

@@ -134,6 +134,8 @@ var TR = {
     privateGame: 'PARTIE PRIVEE',
     privateGameDesc: 'Seuls vos amis verront la partie',
     passBtn: 'PASSE',
+    mobileJoystick: 'JOYSTICK MOBILE',
+    mobileJoystickDesc: 'Active : joystick virtuel apparait au toucher. Desactive : tape ou tu veux te deplacer.',
     oneJournalist: '1 JOURNALISTE',
     zeroJournalist: '0 JOURNALISTE',
     oneFanatic: '1 FANATIQUE',

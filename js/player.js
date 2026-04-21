@@ -243,38 +243,128 @@ document.addEventListener('keyup', function(e) {
 var touchActif = false;
 var touchTargetX = 0, touchTargetY = 0;
 
+// === JOYSTICK VIRTUEL ===
+var joystickActif = false;
+var joystickDx = 0, joystickDy = 0;
+var joystickCx = 0, joystickCy = 0;
+var joystickTouchId = null;
+var JOYSTICK_RADIUS = 50;
+
+function getControleMobile() {
+  var v = localStorage.getItem('virusControleMobile');
+  return v || 'joystick'; // 'joystick' (default) ou 'tap'
+}
+function setControleMobile(mode) {
+  localStorage.setItem('virusControleMobile', mode);
+  majToggleControleMobile();
+}
+function majToggleControleMobile() {
+  var btn = document.getElementById('toggle-controle-mobile');
+  var lbl = document.getElementById('toggle-controle-mobile-label');
+  var actif = (getControleMobile() === 'joystick');
+  if (btn) btn.classList.toggle('active', actif);
+  if (lbl) lbl.classList.toggle('active', actif);
+}
+function toggleControleMobile() {
+  setControleMobile(getControleMobile() === 'joystick' ? 'tap' : 'joystick');
+}
+
+function showJoystickAt(cx, cy) {
+  var base = document.getElementById('joystick-base');
+  var stick = document.getElementById('joystick-stick');
+  if (!base || !stick) return;
+  joystickCx = cx;
+  joystickCy = cy;
+  base.style.left = cx + 'px';
+  base.style.top = cy + 'px';
+  base.style.display = 'block';
+  stick.style.left = '50%';
+  stick.style.top = '50%';
+  stick.style.transform = 'translate(-50%, -50%)';
+}
+function updateJoystickStick(cx, cy) {
+  var dx = cx - joystickCx;
+  var dy = cy - joystickCy;
+  var dist = Math.sqrt(dx * dx + dy * dy);
+  var clamped = Math.min(dist, JOYSTICK_RADIUS);
+  var nx = dist > 0 ? dx / dist : 0;
+  var ny = dist > 0 ? dy / dist : 0;
+  var stickX = nx * clamped;
+  var stickY = ny * clamped;
+  var stick = document.getElementById('joystick-stick');
+  if (stick) {
+    stick.style.left = 'calc(50% + ' + stickX + 'px)';
+    stick.style.top = 'calc(50% + ' + stickY + 'px)';
+    stick.style.transform = 'translate(-50%, -50%)';
+  }
+  var intensity = clamped / JOYSTICK_RADIUS;
+  joystickDx = nx * intensity;
+  joystickDy = ny * intensity;
+}
+function hideJoystick() {
+  var base = document.getElementById('joystick-base');
+  if (base) base.style.display = 'none';
+  joystickActif = false;
+  joystickDx = 0;
+  joystickDy = 0;
+  joystickTouchId = null;
+}
+
 if (isMobile) {
   var touchViewport = document.getElementById('jeu-viewport');
   if (touchViewport) {
     touchViewport.addEventListener('touchstart', function(e) {
       if (camerasOuvertes || reunionEnCours) return;
+      var touch = e.changedTouches[0];
+      if (!touch) return;
       // Verifier si un bouton du HUD est sous le doigt
-      var touch = e.touches[0];
-      if (touch) {
-        var hud = document.querySelector('.jeu-hud');
-        if (hud) {
-          hud.style.pointerEvents = 'auto';
-          var elSous = document.elementFromPoint(touch.clientX, touch.clientY);
-          hud.style.pointerEvents = 'none';
-          if (elSous && elSous.closest && elSous.closest('button')) {
-            elSous.closest('button').click();
-            return;
-          }
+      var hud = document.querySelector('.jeu-hud');
+      if (hud) {
+        hud.style.pointerEvents = 'auto';
+        var elSous = document.elementFromPoint(touch.clientX, touch.clientY);
+        hud.style.pointerEvents = 'none';
+        if (elSous && elSous.closest && elSous.closest('button')) {
+          elSous.closest('button').click();
+          return;
         }
       }
       e.preventDefault();
-      touchActif = true;
-      updateTouchTarget(e);
+      var mode = getControleMobile();
+      if (mode === 'joystick') {
+        joystickActif = true;
+        joystickTouchId = touch.identifier;
+        showJoystickAt(touch.clientX, touch.clientY);
+      } else {
+        touchActif = true;
+        updateTouchTarget(e);
+      }
     }, { passive: false });
     touchViewport.addEventListener('touchmove', function(e) {
-      if (!touchActif) return;
-      e.preventDefault();
-      updateTouchTarget(e);
+      var mode = getControleMobile();
+      if (mode === 'joystick' && joystickActif) {
+        e.preventDefault();
+        for (var i = 0; i < e.changedTouches.length; i++) {
+          var t = e.changedTouches[i];
+          if (t.identifier === joystickTouchId) {
+            updateJoystickStick(t.clientX, t.clientY);
+            break;
+          }
+        }
+      } else if (touchActif) {
+        e.preventDefault();
+        updateTouchTarget(e);
+      }
     }, { passive: false });
     touchViewport.addEventListener('touchend', function(e) {
+      for (var i = 0; i < e.changedTouches.length; i++) {
+        if (e.changedTouches[i].identifier === joystickTouchId) {
+          hideJoystick();
+        }
+      }
       touchActif = false;
     }, { passive: false });
     touchViewport.addEventListener('touchcancel', function(e) {
+      hideJoystick();
       touchActif = false;
     }, { passive: false });
   }

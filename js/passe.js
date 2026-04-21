@@ -68,28 +68,28 @@ var SAISONS = [
     paliers: [
       // VIRUS (1-3)
       { palier: 1,  free: { type: 'skin', id: 'infecter' },       premium: { type: 'pet', id: 'virus_pet' } },
-      { palier: 2,  free: { type: 'gold', montant: 40 },          premium: { type: 'emote', id: 'tousser' } },
-      { palier: 3,  free: { type: 'gold', montant: 60 },          premium: { type: 'skin', id: 'docteur' } },
+      { palier: 2,  free: { type: 'gold', montant: 20 },          premium: { type: 'emote', id: 'tousser' } },
+      { palier: 3,  free: { type: 'gold', montant: 30 },          premium: { type: 'skin', id: 'docteur' } },
       // INNOCENT (4-6)
-      { palier: 4,  free: { type: 'gold', montant: 50 },          premium: { type: 'skin', id: 'enfant' } },
-      { palier: 5,  free: { type: 'gold', montant: 70 },          premium: { type: 'emote', id: 'peur' } },
-      { palier: 6,  free: { type: 'gold', montant: 80 },          premium: { type: 'pet', id: 'voiture_jouet' } },
+      { palier: 4,  free: { type: 'gold', montant: 25 },          premium: { type: 'skin', id: 'enfant' } },
+      { palier: 5,  free: { type: 'gold', montant: 30 },          premium: { type: 'emote', id: 'peur' } },
+      { palier: 6,  free: { type: 'gold', montant: 40 },          premium: { type: 'pet', id: 'voiture_jouet' } },
       // JOURNALISTE (7-9)
-      { palier: 7,  free: { type: 'gold', montant: 70 },          premium: { type: 'skin', id: 'detective' } },
-      { palier: 8,  free: { type: 'gold', montant: 80 },          premium: { type: 'emote', id: 'enquete' } },
-      { palier: 9,  free: { type: 'gold', montant: 100 },         premium: { type: 'pet', id: 'pigeon_detective' } },
+      { palier: 7,  free: { type: 'gold', montant: 30 },          premium: { type: 'skin', id: 'detective' } },
+      { palier: 8,  free: { type: 'gold', montant: 40 },          premium: { type: 'emote', id: 'enquete' } },
+      { palier: 9,  free: { type: 'gold', montant: 50 },          premium: { type: 'pet', id: 'pigeon_detective' } },
       // FANATIQUE (10-12)
-      { palier: 10, free: { type: 'gold', montant: 80 },          premium: { type: 'skin', id: 'le_fanatique' } },
-      { palier: 11, free: { type: 'gold', montant: 100 },         premium: { type: 'emote', id: 'rire_demon' } },
-      { palier: 12, free: { type: 'gold', montant: 120 },         premium: { type: 'gold', montant: 200 } },
+      { palier: 10, free: { type: 'gold', montant: 40 },          premium: { type: 'skin', id: 'le_fanatique' } },
+      { palier: 11, free: { type: 'gold', montant: 50 },          premium: { type: 'emote', id: 'rire_demon' } },
+      { palier: 12, free: { type: 'gold', montant: 60 },          premium: { type: 'gold', montant: 80 } },
       // ESPION (13-15)
-      { palier: 13, free: { type: 'gold', montant: 100 },         premium: { type: 'skin', id: 'agent_secret' } },
-      { palier: 14, free: { type: 'gold', montant: 120 },         premium: { type: 'pet', id: 'petit_robot' } },
+      { palier: 13, free: { type: 'gold', montant: 50 },          premium: { type: 'skin', id: 'agent_secret' } },
+      { palier: 14, free: { type: 'gold', montant: 60 },          premium: { type: 'pet', id: 'petit_robot' } },
       { palier: 15, free: { type: 'emote', id: 'clin_oeil' },     premium: { type: 'skin', id: 'espionne' } },
       // CHERIF (16-18)
-      { palier: 16, free: { type: 'gold', montant: 140 },         premium: { type: 'skin', id: 'cowboy' } },
+      { palier: 16, free: { type: 'gold', montant: 70 },          premium: { type: 'skin', id: 'cowboy' } },
       { palier: 17, free: { type: 'pet', id: 'cheval' },          premium: { type: 'emote', id: 'degaine' } },
-      { palier: 18, free: { type: 'gold', montant: 250 },         premium: { type: 'skin', id: 'cherif' } }
+      { palier: 18, free: { type: 'gold', montant: 100 },         premium: { type: 'skin', id: 'cherif' } }
     ]
   }
 ];
@@ -122,17 +122,39 @@ function getSaisonLevelFromXP(xp, saison) {
 function resetSaisonSiNecessaire(data) {
   var saison = getSaisonActive();
   if (!data || !monPlayerId) return;
+
+  // Migration : si premier passage sur le passe et niveau carriere > 1, seed seasonXP
+  if (data.seasonId === saison.id && !data.passeSeededV1 && (data.level || 1) > 1 && (!data.seasonXP || data.seasonXP === 0)) {
+    var niveauSaison = Math.min(data.level || 1, saison.paliers.length);
+    var seed = niveauSaison * saison.xpParPalier;
+    db.collection('players').doc(monPlayerId).update({
+      seasonXP: seed,
+      seasonLevel: niveauSaison,
+      passeSeededV1: true
+    }).catch(function() {});
+    return;
+  }
+
   if (data.seasonId === saison.id) return; // deja a jour
+
+  // Nouvelle saison : seeder a partir de la carriere si premier passage
+  var seedXP = 0;
+  if (!data.seasonId && (data.level || 1) > 1) {
+    var nivS = Math.min(data.level || 1, saison.paliers.length);
+    seedXP = nivS * saison.xpParPalier;
+  }
+
   var update = {
     seasonId: saison.id,
-    seasonXP: 0,
-    seasonLevel: 1,
+    seasonXP: seedXP,
+    seasonLevel: Math.max(1, Math.floor(seedXP / saison.xpParPalier) || 1),
     seasonKills: 0,
     seasonWins: 0,
     seasonDeaths: 0,
     seasonGames: 0,
     passeClaims: [],
-    passePremium: false
+    passePremium: false,
+    passeSeededV1: true
   };
   db.collection('players').doc(monPlayerId).update(update).catch(function() {});
 }

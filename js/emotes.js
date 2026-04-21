@@ -25,9 +25,8 @@ function toggleEmotePicker() {
   var panel = document.getElementById('emote-picker-panel');
   if (!panel) return;
   panel.classList.toggle('visible');
-  if (panel.classList.contains('visible') && !panel.dataset.built) {
+  if (panel.classList.contains('visible')) {
     remplirEmotePicker();
-    panel.dataset.built = '1';
   }
 }
 

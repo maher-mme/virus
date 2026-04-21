@@ -1024,8 +1024,16 @@ function gameLoop() {
       dx += vitesse;
       if (cachedSkinImg) cachedSkinImg.style.transform = 'scaleX(1)';
     }
-    // Deplacement mobile : vers le doigt
-    if (touchActif) {
+    // Deplacement mobile : joystick OU tap
+    if (typeof joystickActif !== 'undefined' && joystickActif) {
+      dx += joystickDx * vitesse;
+      dy += joystickDy * vitesse;
+      if (joystickDx < -0.1) {
+        if (cachedSkinImg) cachedSkinImg.style.transform = 'scaleX(-1)';
+      } else if (joystickDx > 0.1) {
+        if (cachedSkinImg) cachedSkinImg.style.transform = 'scaleX(1)';
+      }
+    } else if (touchActif) {
       var tdx = touchTargetX - joueurX;
       var tdy = touchTargetY - joueurY;
       var tdist = Math.sqrt(tdx * tdx + tdy * tdy);

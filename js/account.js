@@ -359,6 +359,7 @@ function ouvrirParams() {
   if (display) display.textContent = getPseudo();
   // Refleter l'etat du toggle dyslexie
   if (typeof majToggleDyslexie === 'function') majToggleDyslexie();
+  if (typeof majToggleControleMobile === 'function') majToggleControleMobile();
   chargerJoinMode();
   // Verifier si le joueur a un PIN, sinon afficher la section set-pin
   var sectionPin = document.getElementById('section-set-pin');

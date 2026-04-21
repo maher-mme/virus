@@ -27,6 +27,7 @@
   <link rel="stylesheet" href="css/friends.css?v=7">
   <link rel="stylesheet" href="css/responsive.css?v=20260418">
   <link rel="stylesheet" href="css/minigames.css?v=1">
+  <link rel="stylesheet" href="css/passe.css?v=1">
 </head>
 <body>
 
@@ -76,7 +77,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v2.8.7 - ALPHA</span>
+    <span class="version">VIRUS v2.8.8 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -155,7 +156,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.8.7 - ALPHA</span>
+    <span class="version">VIRUS v2.8.8 - ALPHA</span>
     </div>
   </div>
 
@@ -234,7 +235,7 @@
             <button class="btn-sauver-pseudo" data-i18n="cancelBtn" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.8.7 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.8.8 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -379,7 +380,14 @@
       </div>
       <div class="popup-body">
         <div class="profil-header" id="profil-header"></div>
-        <div class="profil-stats" id="profil-stats"></div>
+        <div class="profil-tabs">
+          <button class="profil-tab active" id="profil-tab-carriere" onclick="switchProfilTab('carriere')" data-i18n="profilTabCareer">CARRIERE</button>
+          <button class="profil-tab" id="profil-tab-saison" onclick="switchProfilTab('saison')" data-i18n="profilTabSeason">SAISON</button>
+        </div>
+        <div class="profil-tab-content profil-tab-content-active" id="profil-carriere-content">
+          <div class="profil-stats" id="profil-stats"></div>
+        </div>
+        <div class="profil-tab-content" id="profil-saison-content"></div>
       </div>
     </div>
   </div>
@@ -419,7 +427,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v2.8.7 - ALPHA</span>
+        <span class="version-inline">v2.8.8 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -634,7 +642,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v2.8.7 - ALPHA</span>
+    <span class="version">VIRUS v2.8.8 - ALPHA</span>
     </div>
   </div>
 
@@ -725,7 +733,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.8.7 - ALPHA</span>
+    <span class="version">VIRUS v2.8.8 - ALPHA</span>
     </div>
   </div>
 
@@ -771,7 +779,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v2.8.7 - ALPHA</span>
+    <span class="version">VIRUS v2.8.8 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -1931,6 +1939,7 @@
 <script src="js/firebase-sync.js?v=46"></script>
 <script src="js/replay.js?v=2"></script>
 <script src="js/emotes.js?v=2"></script>
+<script src="js/passe.js?v=1"></script>
 <script src="js/player.js?v=9"></script>
 <script src="js/shop.js?v=15"></script>
 <script src="js/bots.js?v=11"></script>

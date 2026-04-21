@@ -2,12 +2,18 @@
 // SYSTEME D'EMOTES
 // ============================
 var EMOTES = [
-  { id: 'lol',   emoji: '\uD83D\uDE02', nom: 'LOL',   anim: 'squash' },
-  { id: 'dance', emoji: '\uD83D\uDD7A', nom: 'Dance', anim: 'wiggle' },
-  { id: 'love',  emoji: '\u2764\uFE0F', nom: 'Love',  anim: 'jump' },
-  { id: 'cry',   emoji: '\uD83D\uDE2D', nom: 'Cry',   anim: 'squashDown' },
-  { id: 'wave',  emoji: '\uD83D\uDC4B', nom: 'Wave',  anim: 'tilt' },
-  { id: 'omg',   emoji: '\uD83E\uDD2F', nom: 'OMG',   anim: 'stretch' }
+  { id: 'lol',     emoji: '\uD83D\uDE02', nom: 'LOL',     anim: 'squash' },
+  { id: 'dance',   emoji: '\uD83D\uDD7A', nom: 'Dance',   anim: 'wiggle' },
+  { id: 'love',    emoji: '\u2764\uFE0F', nom: 'Love',    anim: 'jump' },
+  { id: 'cry',     emoji: '\uD83D\uDE2D', nom: 'Cry',     anim: 'squashDown' },
+  { id: 'wave',    emoji: '\uD83D\uDC4B', nom: 'Wave',    anim: 'tilt' },
+  { id: 'omg',     emoji: '\uD83E\uDD2F', nom: 'OMG',     anim: 'stretch' },
+  { id: 'cool',    emoji: '\uD83D\uDE0E', nom: 'Cool',    anim: 'tilt' },
+  { id: 'think',   emoji: '\uD83E\uDD14', nom: 'Think',   anim: 'wiggle' },
+  { id: 'flex',    emoji: '\uD83D\uDCAA', nom: 'Flex',    anim: 'squash' },
+  { id: 'party',   emoji: '\uD83C\uDF89', nom: 'Party',   anim: 'jump' },
+  { id: 'silence', emoji: '\uD83E\uDD2B', nom: 'Silence', anim: 'stretch' },
+  { id: 'anger',   emoji: '\uD83D\uDE21', nom: 'Colere',  anim: 'squashDown' }
 ];
 
 var _emoteCooldown = 0;

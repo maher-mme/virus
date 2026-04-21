@@ -513,7 +513,8 @@
   .emote-picker-panel {
     bottom: 75px;
     left: 15px;
-    max-width: 200px;
+    max-width: 240px;
+    grid-template-columns: repeat(3, 1fr);
   }
   .emote-btn { padding: 6px 8px; }
   .emote-btn-emoji { font-size: 20px; }

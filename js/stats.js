@@ -456,14 +456,16 @@ function chargerProfil(playerId) {
       '</div>' +
       skinHtml;
 
-    // Onglet CARRIERE : stats all-time, SANS badges
+    // Onglet CARRIERE : stats all-time + badges
     var wins = data.wins || 0;
     var kills = data.kills || 0;
     var games = data.gamesPlayed || 0;
     var deaths = data.deaths || 0;
     var winRate = games > 0 ? Math.round((wins / games) * 100) : 0;
+    var niveau = data.level || niveauInfo.niveau;
 
     statsEl.innerHTML =
+      construireBadges(kills, wins, niveau) +
       '<div class="profil-stats-grid">' +
         '<div class="profil-stat"><span class="profil-stat-val">' + kills + '</span><span class="profil-stat-label">KILLS</span></div>' +
         '<div class="profil-stat"><span class="profil-stat-val">' + wins + '</span><span class="profil-stat-label">' + t('victories') + '</span></div>' +

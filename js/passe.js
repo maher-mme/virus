@@ -331,17 +331,13 @@ function afficherPasse() {
     var joursRestants = Math.max(0, Math.ceil((new Date(saison.dateFin) - new Date()) / 86400000));
 
     var html = '';
-    // Stats de la saison + badges (basés sur carrière, jamais reset)
+    // Stats de la saison (sans badges, juste les chiffres)
     var sKills = data.seasonKills || 0;
     var sWins = data.seasonWins || 0;
     var sDeaths = data.seasonDeaths || 0;
     var sGames = data.seasonGames || 0;
     var sWinRate = sGames > 0 ? Math.round((sWins / sGames) * 100) : 0;
-    var careerKills = data.kills || 0;
-    var careerWins = data.wins || 0;
-    var careerLevel = data.level || 1;
     html += '<div class="saison-stats">';
-    if (typeof construireBadges === 'function') html += construireBadges(careerKills, careerWins, careerLevel);
     html += '<div class="profil-stats-grid" style="margin-top:10px;">';
     html += '<div class="profil-stat"><span class="profil-stat-val">' + sKills + '</span><span class="profil-stat-label">KILLS</span></div>';
     html += '<div class="profil-stat"><span class="profil-stat-val">' + sWins + '</span><span class="profil-stat-label">' + (typeof t === 'function' ? t('victories') : 'VICTOIRES') + '</span></div>';

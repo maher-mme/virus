@@ -126,10 +126,12 @@ function genererBoutique() {
   });
 }
 
-// Debloquer tous les skins et musiques pour les admins
+// Debloquer tous les skins et musiques pour les admins (SAUF skins de passe)
 function debloquerToutAdmin() {
   if (!isAdmin()) return;
+  var passeIds = (typeof SKINS_PASSE !== 'undefined') ? SKINS_PASSE.map(function(s) { return s.id; }) : [];
   SKINS_BOUTIQUE.forEach(function(sb) {
+    if (passeIds.indexOf(sb.id) >= 0) return;
     if (!SKINS.find(function(s) { return s.id === sb.id; })) {
       SKINS.push({ id: sb.id, nom: sb.nom, fichier: sb.fichier, rarete: sb.rarete });
     }

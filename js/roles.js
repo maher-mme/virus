@@ -288,7 +288,7 @@ function tenterTirSurCible(pseudoCible, isRemote) {
   var dy = ty - joueurY;
   var dist = Math.sqrt(dx * dx + dy * dy);
   if (dist > CHERIF_RANGE) {
-    showNotif('Trop loin pour tirer !', 'warn');
+    showNotif(t('sheriffTooFar'), 'warn');
     return false;
   }
   tirerCible(pseudoCible, isRemote);
@@ -338,9 +338,9 @@ function tirerCible(pseudoCible, isRemote) {
   }
   // Feedback
   if (roleCible === 'virus') {
-    showNotif('Tu as abattu un VIRUS : ' + pseudoCible + ' !', 'success');
+    showNotif(t('sheriffShotVirus', pseudoCible), 'success');
   } else {
-    showNotif('Tu as tue un innocent : ' + pseudoCible + '...', 'warn');
+    showNotif(t('sheriffShotInnocent', pseudoCible), 'warn');
   }
   // Firebase sync si online
   if (!modeHorsLigne && isRemote && typeof firebasePartyPlayers !== 'undefined') {

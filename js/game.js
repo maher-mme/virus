@@ -168,16 +168,16 @@ function toggleCherifHL() {
     hlConfigCherif = 0;
     toggle.classList.remove('active');
     toggleLabel.classList.remove('active');
-    toggleLabel.textContent = '0 CHERIF';
+    toggleLabel.textContent = t('zeroSheriff');
   } else {
     if (nbVirus + hlConfigJournaliste + hlConfigFanatique + hlConfigEspion + 1 >= nbTotal) {
-      showNotif('Pas assez de joueurs', 'warn');
+      showNotif(t('notEnoughPlayers'), 'warn');
       return;
     }
     hlConfigCherif = 1;
     toggle.classList.add('active');
     toggleLabel.classList.add('active');
-    toggleLabel.textContent = '1 CHERIF';
+    toggleLabel.textContent = t('oneSheriff');
   }
   majConfigHL();
 }
@@ -404,7 +404,7 @@ function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion, 
     else if (monRole === 'journaliste') { roleEl.textContent = t('roleJournalist'); }
     else if (monRole === 'fanatique') { roleEl.textContent = t('roleFanatic'); }
     else if (monRole === 'espion') { roleEl.textContent = t('roleSpy'); }
-    else if (monRole === 'cherif') { roleEl.textContent = 'CHERIF'; }
+    else if (monRole === 'cherif') { roleEl.textContent = t('roleSheriff'); }
     else { roleEl.textContent = t('roleInnocent'); }
   }
 
@@ -437,7 +437,7 @@ function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion, 
     var overlay = document.getElementById('espion-choix-overlay');
     if (overlay) overlay.style.display = 'flex';
   } else if (monRole === 'cherif') {
-    showNotif('Tu es le CHERIF ! Tu as ' + nbVirus + ' balle(s) pour eliminer les Virus.', 'info');
+    showNotif(t('youAreSheriff', nbVirus), 'info');
   } else {
     showNotif(t('youAreInnocent'), 'info');
   }
@@ -449,7 +449,7 @@ function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion, 
   }
   // Annonce globale si un cherif est dans la partie
   if (nbCherif > 0) {
-    setTimeout(function() { showNotif('Un CHERIF est dans cette partie !', 'warn'); }, 2500);
+    setTimeout(function() { showNotif(t('sheriffInParty'), 'warn'); }, 2500);
   }
   // Afficher le compteur de balles pour le cherif
   majHudCherif();
@@ -716,7 +716,7 @@ function lancerJeu() {
     else if (monRole === 'journaliste') { roleEl.textContent = t('roleJournalist'); }
     else if (monRole === 'fanatique') { roleEl.textContent = t('roleFanatic'); }
     else if (monRole === 'espion') { roleEl.textContent = t('roleSpy'); }
-    else if (monRole === 'cherif') { roleEl.textContent = 'CHERIF'; }
+    else if (monRole === 'cherif') { roleEl.textContent = t('roleSheriff'); }
     else { roleEl.textContent = t('roleInnocent'); }
   }
   // Si virus, colorer les allies

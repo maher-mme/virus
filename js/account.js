@@ -428,19 +428,20 @@ function majJoinModeUI(mode) {
   var desc = document.getElementById('join-mode-desc');
   if (btn) {
     if (mode === 'libre') {
-      btn.textContent = 'SANS DEMANDE';
+      btn.textContent = t('joinModeFree');
       btn.style.background = 'linear-gradient(180deg,#27ae60,#229954)';
       btn.style.borderColor = '#27ae60';
+      btn.setAttribute('data-i18n', 'joinModeFree');
     } else {
-      btn.textContent = 'AVEC DEMANDE';
+      btn.textContent = t('joinModeRequest');
       btn.style.background = 'linear-gradient(180deg,#3498db,#2980b9)';
       btn.style.borderColor = '#3498db';
+      btn.setAttribute('data-i18n', 'joinModeRequest');
     }
   }
   if (desc) {
-    desc.textContent = (mode === 'libre')
-      ? 'Tes amis peuvent rejoindre ta partie directement.'
-      : 'Tes amis doivent demander pour rejoindre ta partie.';
+    desc.textContent = (mode === 'libre') ? t('joinModeFreeDesc') : t('joinModeRequestDesc');
+    desc.setAttribute('data-i18n', mode === 'libre' ? 'joinModeFreeDesc' : 'joinModeRequestDesc');
   }
 }
 

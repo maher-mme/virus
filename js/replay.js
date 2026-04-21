@@ -50,9 +50,9 @@ function replayHasOne() {
 function ouvrirReplay() {
   var raw;
   try { raw = localStorage.getItem('virusLastReplay'); } catch(e) { return; }
-  if (!raw) { showNotif('Aucun replay disponible', 'warn'); return; }
+  if (!raw) { showNotif(t('replayNone'), 'warn'); return; }
   var replay;
-  try { replay = JSON.parse(raw); } catch(e) { showNotif('Replay corrompu', 'warn'); return; }
+  try { replay = JSON.parse(raw); } catch(e) { showNotif(t('replayCorrupt'), 'warn'); return; }
   if (!replay || !replay.events) return;
 
   var existing = document.getElementById('replay-overlay');

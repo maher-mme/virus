@@ -76,7 +76,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v2.8.4 - ALPHA</span>
+    <span class="version">VIRUS v2.8.5 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -134,10 +134,10 @@
         </div>
 
         <div class="config-hl-champ">
-          <label>CHERIF <span style="color:#f39c12; font-size:10px;">(INNOCENT)</span></label>
+          <label><span data-i18n="roleSheriff">CHERIF</span> <span style="color:#f39c12; font-size:10px;" data-i18n="sheriffAlignment">(INNOCENT)</span></label>
           <div class="config-hl-toggle-row">
             <div class="config-hl-toggle" id="hl-toggle-cherif" onclick="toggleCherifHL()"></div>
-            <span class="config-hl-toggle-label" id="hl-toggle-cherif-label">0 CHERIF</span>
+            <span class="config-hl-toggle-label" id="hl-toggle-cherif-label" data-i18n="zeroSheriff">0 CHERIF</span>
           </div>
         </div>
 
@@ -148,14 +148,14 @@
           <div class="config-hl-resume-item"><span data-i18n="journalistLabel">Journaliste :</span> <span id="hl-resume-journaliste">0</span></div>
           <div class="config-hl-resume-item"><span data-i18n="fanaticLabel">Fanatique :</span> <span id="hl-resume-fanatique">0</span></div>
           <div class="config-hl-resume-item"><span data-i18n="spyLabel">Espion :</span> <span id="hl-resume-espion">0</span></div>
-          <div class="config-hl-resume-item">Cherif : <span id="hl-resume-cherif">0</span></div>
+          <div class="config-hl-resume-item"><span data-i18n="sheriffLabel">Cherif :</span> <span id="hl-resume-cherif">0</span></div>
         </div>
 
         <button class="btn-lancer-hl" onclick="validerConfigHL()" data-i18n="launch">LANCER LA PARTIE</button>
       </div>
     </div>
 
-    <span class="version">VIRUS v2.8.4 - ALPHA</span>
+    <span class="version">VIRUS v2.8.5 - ALPHA</span>
     </div>
   </div>
 
@@ -187,12 +187,12 @@
           </div>
         </div>
         <div class="popup-section">
-          <label>ACCESSIBILITE</label>
+          <label data-i18n="accessibility">ACCESSIBILITE</label>
           <div class="config-hl-toggle-row" style="gap:12px;">
             <div class="config-hl-toggle" id="toggle-dyslexie" onclick="toggleDyslexie()"></div>
-            <span class="config-hl-toggle-label" id="toggle-dyslexie-label">POLICE DYSLEXIQUE</span>
+            <span class="config-hl-toggle-label" id="toggle-dyslexie-label" data-i18n="dyslexicFont">POLICE DYSLEXIQUE</span>
           </div>
-          <p style="font-size:11px;color:#95a5a6;margin-top:6px;">Change la police pour une police plus lisible (Comic Sans / Verdana) avec plus d'espacement.</p>
+          <p style="font-size:11px;color:#95a5a6;margin-top:6px;" data-i18n="dyslexicFontDesc">Change la police pour une police plus lisible (Comic Sans / Verdana) avec plus d'espacement.</p>
         </div>
         <div class="popup-section" id="section-set-pin" style="display:none;">
           <label data-i18n="setPin">CHOISIR UN MOT DE PASSE</label>
@@ -203,38 +203,38 @@
           <span class="pin-counter" id="set-pin-counter">0 / 10</span>
         </div>
         <div class="popup-section">
-          <label>REJOINDRE MES PARTIES</label>
+          <label data-i18n="joinMyGames">REJOINDRE MES PARTIES</label>
           <div style="display:flex;gap:8px;align-items:center;">
             <button class="btn-sauver-pseudo" id="btn-join-mode" style="flex:1;padding:8px;" onclick="toggleJoinMode()">AVEC DEMANDE</button>
           </div>
-          <p style="color:#7f8c8d;font-size:11px;margin:4px 0 0;" id="join-mode-desc">Tes amis doivent demander pour rejoindre ta partie.</p>
+          <p style="color:#7f8c8d;font-size:11px;margin:4px 0 0;" id="join-mode-desc" data-i18n="joinModeRequestDesc">Tes amis doivent demander pour rejoindre ta partie.</p>
         </div>
         <div class="popup-section">
           <label data-i18n="account">COMPTE</label>
-          <button class="btn-sauver-pseudo" style="background:linear-gradient(180deg,#f39c12,#e67e22); border-color:#f39c12; width:100%; padding:10px; margin-bottom:8px;" onclick="ouvrirChangerMotDePasse()">CHANGER LE MOT DE PASSE</button>
+          <button class="btn-sauver-pseudo" data-i18n="changePassword" style="background:linear-gradient(180deg,#f39c12,#e67e22); border-color:#f39c12; width:100%; padding:10px; margin-bottom:8px;" onclick="ouvrirChangerMotDePasse()">CHANGER LE MOT DE PASSE</button>
           <button class="btn-sauver-pseudo" data-i18n="logout" style="background:linear-gradient(180deg,#3498db,#2980b9); border-color:#3498db; width:100%; padding:10px; margin-bottom:8px;" onclick="deconnecterCompte()">SE DECONNECTER</button>
           <button class="btn-sauver-pseudo" data-i18n="deleteAccount" style="background:linear-gradient(180deg,#e74c3c,#c0392b); border-color:#e74c3c; width:100%; padding:10px;" onclick="supprimerCompte()">SUPPRIMER MON COMPTE</button>
         </div>
         <div class="popup-section" id="section-changer-mdp" style="display:none;">
-          <label>CHANGER LE MOT DE PASSE</label>
+          <label data-i18n="changePassword">CHANGER LE MOT DE PASSE</label>
           <div style="position:relative;margin-bottom:6px;">
-            <input type="password" id="input-ancien-mdp" maxlength="10" placeholder="Ancien mot de passe" style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px 35px 8px 12px;color:#ecf0f1;font-size:14px;text-align:center;letter-spacing:3px;font-family:Arial,sans-serif;outline:none;">
+            <input type="password" id="input-ancien-mdp" maxlength="10" placeholder="Ancien mot de passe" data-i18n="oldPasswordPh" data-i18n-attr="placeholder" style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px 35px 8px 12px;color:#ecf0f1;font-size:14px;text-align:center;letter-spacing:3px;font-family:Arial,sans-serif;outline:none;">
             <button type="button" class="btn-oeil-mdp" onclick="toggleVoirMdp('input-ancien-mdp', this)">&#128065;</button>
           </div>
           <div style="position:relative;margin-bottom:6px;">
-            <input type="password" id="input-nouveau-mdp" maxlength="10" placeholder="Nouveau mot de passe (5-10)" style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px 35px 8px 12px;color:#ecf0f1;font-size:14px;text-align:center;letter-spacing:3px;font-family:Arial,sans-serif;outline:none;">
+            <input type="password" id="input-nouveau-mdp" maxlength="10" placeholder="Nouveau mot de passe (5-10)" data-i18n="newPasswordPh" data-i18n-attr="placeholder" style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px 35px 8px 12px;color:#ecf0f1;font-size:14px;text-align:center;letter-spacing:3px;font-family:Arial,sans-serif;outline:none;">
             <button type="button" class="btn-oeil-mdp" onclick="toggleVoirMdp('input-nouveau-mdp', this)">&#128065;</button>
           </div>
           <div style="position:relative;margin-bottom:8px;">
-            <input type="password" id="input-confirm-mdp" maxlength="10" placeholder="Confirmer le nouveau mot de passe" style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px 35px 8px 12px;color:#ecf0f1;font-size:14px;text-align:center;letter-spacing:3px;font-family:Arial,sans-serif;outline:none;">
+            <input type="password" id="input-confirm-mdp" maxlength="10" placeholder="Confirmer le nouveau mot de passe" data-i18n="confirmPasswordPh" data-i18n-attr="placeholder" style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px 35px 8px 12px;color:#ecf0f1;font-size:14px;text-align:center;letter-spacing:3px;font-family:Arial,sans-serif;outline:none;">
             <button type="button" class="btn-oeil-mdp" onclick="toggleVoirMdp('input-confirm-mdp', this)">&#128065;</button>
           </div>
           <div style="display:flex;gap:6px;">
-            <button class="btn-sauver-pseudo" style="background:linear-gradient(180deg,#27ae60,#229954);border-color:#27ae60;flex:1;padding:8px;" onclick="changerMotDePasse()">VALIDER</button>
-            <button class="btn-sauver-pseudo" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
+            <button class="btn-sauver-pseudo" data-i18n="validate" style="background:linear-gradient(180deg,#27ae60,#229954);border-color:#27ae60;flex:1;padding:8px;" onclick="changerMotDePasse()">VALIDER</button>
+            <button class="btn-sauver-pseudo" data-i18n="cancelBtn" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.8.4 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.8.5 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -419,7 +419,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v2.8.4 - ALPHA</span>
+        <span class="version-inline">v2.8.5 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -634,7 +634,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v2.8.4 - ALPHA</span>
+    <span class="version">VIRUS v2.8.5 - ALPHA</span>
     </div>
   </div>
 
@@ -725,7 +725,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.8.4 - ALPHA</span>
+    <span class="version">VIRUS v2.8.5 - ALPHA</span>
     </div>
   </div>
 
@@ -771,7 +771,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v2.8.4 - ALPHA</span>
+    <span class="version">VIRUS v2.8.5 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -1923,19 +1923,19 @@
 <script src="js/api.js?v=1"></script>
 <script src="js/skins.js?v=6"></script>
 <script src="js/music.js?v=2"></script>
-<script src="js/account.js?v=22"></script>
-<script src="js/ui.js?v=20260418a"></script>
+<script src="js/account.js?v=23"></script>
+<script src="js/ui.js?v=20260420a"></script>
 <script src="js/chat.js?v=6"></script>
 <script src="js/comments.js?v=5"></script>
-<script src="js/translation.js?v=20260409b"></script>
+<script src="js/translation.js?v=20260420a"></script>
 <script src="js/firebase-sync.js?v=46"></script>
-<script src="js/replay.js?v=1"></script>
-<script src="js/emotes.js?v=1"></script>
+<script src="js/replay.js?v=2"></script>
+<script src="js/emotes.js?v=2"></script>
 <script src="js/player.js?v=9"></script>
-<script src="js/shop.js?v=14"></script>
+<script src="js/shop.js?v=15"></script>
 <script src="js/bots.js?v=11"></script>
-<script src="js/game.js?v=20260415b"></script>
-<script src="js/roles.js?v=27"></script>
+<script src="js/game.js?v=20260420a"></script>
+<script src="js/roles.js?v=28"></script>
 <script src="js/meeting.js?v=15"></script>
 <script src="js/missions.js?v=10"></script>
 <script src="js/minigames.js?v=2"></script>

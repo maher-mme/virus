@@ -50,7 +50,7 @@ function jouerEmote(emoteId) {
   if (!em) return;
   var now = Date.now();
   if (now < _emoteCooldown) {
-    if (typeof showNotif === 'function') showNotif('Attends un peu avant de refaire un emote', 'info');
+    if (typeof showNotif === 'function') showNotif(t('emoteCooldown'), 'info');
     return;
   }
   _emoteCooldown = now + EMOTE_COOLDOWN_MS;

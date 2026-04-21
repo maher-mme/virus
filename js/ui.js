@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.8.4';
+var CURRENT_VERSION = '2.8.5';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -554,15 +554,15 @@ function ouvrirTutoSlides() {
 // === VISITE GUIDEE (BULLES INTERACTIVES) ===
 var _visiteEtape = 0;
 var VISITE_ETAPES = [
-  { selector: null, titre: 'Bienvenue dans VIRUS !', texte: 'Suis cette visite rapide pour decouvrir le menu. Tu peux la relancer a tout moment via le bouton TUTORIEL.', position: 'center' },
-  { selector: '.btn-online', titre: 'Mode ONLINE', texte: 'Joue avec d\'autres joueurs en multijoueur. Cree une partie ou rejoins-en une.', position: 'auto' },
-  { selector: '.btn-horsline', titre: 'Mode HORS LIGNE', texte: 'Entraine-toi contre des bots. Parfait pour decouvrir le jeu sans pression.', position: 'auto' },
-  { selector: '.btn-boutique', titre: 'BOUTIQUE', texte: 'Achete des skins avec tes etoiles gagnees en jouant.', position: 'auto' },
-  { selector: '.btn-casier', titre: 'CASIER', texte: 'Change ton skin equipe parmi ceux que tu possedes.', position: 'auto' },
-  { selector: '.btn-side-quetes', titre: 'QUETES', texte: 'Defis hebdomadaires pour gagner de l\'XP et des etoiles bonus.', position: 'auto' },
-  { selector: '.btn-side-profil', titre: 'PROFIL', texte: 'Consulte tes statistiques de jeu et ta progression.', position: 'auto' },
-  { selector: '#btn-voir-regles', titre: 'REGLES DU JEU', texte: 'Apprends les regles completes : roles, missions, votes, etc.', position: 'auto' },
-  { selector: '.btn-tuto', titre: 'C\'est parti !', texte: 'Bonne chance ! Tu peux relancer cette visite ici quand tu veux.', position: 'auto' }
+  { selector: null, titreKey: 'tutoWelcomeTitle', texteKey: 'tutoWelcomeText', position: 'center' },
+  { selector: '.btn-online', titreKey: 'tutoOnlineTitle', texteKey: 'tutoOnlineText', position: 'auto' },
+  { selector: '.btn-horsline', titreKey: 'tutoOfflineTitle', texteKey: 'tutoOfflineText', position: 'auto' },
+  { selector: '.btn-boutique', titreKey: 'tutoShopTitle', texteKey: 'tutoShopText', position: 'auto' },
+  { selector: '.btn-casier', titreKey: 'tutoLockerTitle', texteKey: 'tutoLockerText', position: 'auto' },
+  { selector: '.btn-side-quetes', titreKey: 'tutoQuestsTitle', texteKey: 'tutoQuestsText', position: 'auto' },
+  { selector: '.btn-side-profil', titreKey: 'tutoProfileTitle', texteKey: 'tutoProfileText', position: 'auto' },
+  { selector: '#btn-voir-regles', titreKey: 'tutoRulesTitle', texteKey: 'tutoRulesText', position: 'auto' },
+  { selector: '.btn-tuto', titreKey: 'tutoEndTitle', texteKey: 'tutoEndText', position: 'auto' }
 ];
 
 function lancerVisiteGuidee(force) {
@@ -597,14 +597,14 @@ function afficherEtapeVisite() {
   bulle.innerHTML =
     '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">' +
       '<span style="background:#fff;color:#8e44ad;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:12px;">' + (_visiteEtape + 1) + '</span>' +
-      '<span style="font-weight:bold;font-size:14px;flex:1;">' + etape.titre + '</span>' +
+      '<span style="font-weight:bold;font-size:14px;flex:1;">' + (etape.titreKey ? t(etape.titreKey) : (etape.titre || '')) + '</span>' +
       '<button onclick="terminerVisite()" style="background:transparent;border:none;color:white;font-size:20px;cursor:pointer;line-height:1;padding:0 4px;">&times;</button>' +
     '</div>' +
-    '<p style="margin:0 0 12px;font-size:13px;line-height:1.4;">' + etape.texte + '</p>' +
+    '<p style="margin:0 0 12px;font-size:13px;line-height:1.4;">' + (etape.texteKey ? t(etape.texteKey) : (etape.texte || '')) + '</p>' +
     '<div style="display:flex;gap:6px;">' +
-      (_visiteEtape > 0 ? '<button onclick="visitePrecedent()" style="background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.4);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:bold;cursor:pointer;">&#9664; PREC.</button>' : '') +
-      '<button onclick="terminerVisite()" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer;">PASSER</button>' +
-      '<button onclick="visiteSuivant()" style="background:white;color:#8e44ad;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:bold;cursor:pointer;flex:1;">' + (_visiteEtape >= VISITE_ETAPES.length - 1 ? 'TERMINER' : 'SUIVANT &#9654;') + '</button>' +
+      (_visiteEtape > 0 ? '<button onclick="visitePrecedent()" style="background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.4);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:bold;cursor:pointer;">&#9664; ' + t('tutoPrev') + '</button>' : '') +
+      '<button onclick="terminerVisite()" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer;">' + t('tutoSkip') + '</button>' +
+      '<button onclick="visiteSuivant()" style="background:white;color:#8e44ad;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:bold;cursor:pointer;flex:1;">' + (_visiteEtape >= VISITE_ETAPES.length - 1 ? t('tutoFinish') : t('tutoNext') + ' &#9654;') + '</button>' +
     '</div>' +
     '<div style="margin-top:8px;font-size:10px;text-align:center;opacity:0.7;">' + (_visiteEtape + 1) + ' / ' + VISITE_ETAPES.length + '</div>';
   document.body.appendChild(bulle);

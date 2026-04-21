@@ -101,6 +101,8 @@ function ajouterXP(xpGagne) {
       sauvegarderGold();
       showNotif(t('levelUp', _levelUpInfo.level, goldBonus), 'success');
     }
+    // Ajouter aussi a l'XP de saison en cours
+    if (typeof ajouterSeasonXP === 'function') ajouterSeasonXP(xpGagne);
   }).catch(function(err) { console.error('Erreur ajouterXP:', err); });
 }
 
@@ -248,12 +250,26 @@ function creerClassementItem(data, rang, valeur) {
 // ============================
 // PROFIL JOUEUR
 // ============================
+function switchProfilTab(tab) {
+  var tabs = document.querySelectorAll('.profil-tab');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+  var contents = document.querySelectorAll('.profil-tab-content');
+  for (var j = 0; j < contents.length; j++) contents[j].classList.remove('profil-tab-content-active');
+  var btn = document.getElementById('profil-tab-' + tab);
+  var cnt = document.getElementById('profil-' + tab + '-content');
+  if (btn) btn.classList.add('active');
+  if (cnt) cnt.classList.add('profil-tab-content-active');
+  if (tab === 'saison' && typeof afficherPasse === 'function') afficherPasse();
+}
+
 function ouvrirProfil(playerId) {
   // Fermer le panel amis s'il est ouvert
   if (typeof panelAmisOuvert !== 'undefined' && panelAmisOuvert) {
     togglePanelAmis();
   }
   document.getElementById('popup-profil').classList.add('visible');
+  // Reset sur l'onglet Carriere par defaut
+  switchProfilTab('carriere');
   chargerProfil(playerId);
   // Mettre a jour l'URL avec le pseudo du joueur
   var targetId = playerId || monPlayerId;
@@ -440,15 +456,20 @@ function chargerProfil(playerId) {
       '</div>' +
       skinHtml;
 
+    // Onglet CARRIERE : stats all-time, SANS badges
     var wins = data.wins || 0;
     var kills = data.kills || 0;
     var games = data.gamesPlayed || 0;
     var deaths = data.deaths || 0;
     var winRate = games > 0 ? Math.round((wins / games) * 100) : 0;
-    var niveau = data.level || niveauInfo.niveau;
 
     statsEl.innerHTML =
-      construireBadges(kills, wins, niveau) +
+      '<div class="profil-stats-grid">' +
+        '<div class="profil-stat"><span class="profil-stat-val">' + kills + '</span><span class="profil-stat-label">KILLS</span></div>' +
+        '<div class="profil-stat"><span class="profil-stat-val">' + wins + '</span><span class="profil-stat-label">' + t('victories') + '</span></div>' +
+        '<div class="profil-stat"><span class="profil-stat-val">' + deaths + '</span><span class="profil-stat-label">' + t('deaths') + '</span></div>' +
+        '<div class="profil-stat"><span class="profil-stat-val">' + games + '</span><span class="profil-stat-label">' + t('gamesPlayed') + '</span></div>' +
+      '</div>' +
       '<div class="profil-stat" style="grid-column:1/-1"><span class="profil-stat-val">' + winRate + '%</span><span class="profil-stat-label">' + t('winRate') + ' (' + wins + '/' + games + ')</span></div>' +
       construireGrapheXP(data.xpParMois || {});
   }).catch(function() {
@@ -507,6 +528,9 @@ function incrementerStat(champ, valeur) {
   if (typeof tutoGuide !== 'undefined' && tutoGuide) return;
   var update = {};
   update[champ] = firebase.firestore.FieldValue.increment(valeur || 1);
+  // Miroir sur les stats saison (seasonKills, seasonWins, etc.)
+  var champSaison = 'season' + champ.charAt(0).toUpperCase() + champ.slice(1);
+  update[champSaison] = firebase.firestore.FieldValue.increment(valeur || 1);
   db.collection('players').doc(monPlayerId).update(update).then(function() {
     // Verifier si un nouveau palier de badge est atteint
     if (champ === 'kills' || champ === 'wins') verifierNouveauBadge(champ);

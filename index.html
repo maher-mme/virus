@@ -76,7 +76,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v2.8.6 - ALPHA</span>
+    <span class="version">VIRUS v2.8.7 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -155,7 +155,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v2.8.6 - ALPHA</span>
+    <span class="version">VIRUS v2.8.7 - ALPHA</span>
     </div>
   </div>
 
@@ -234,7 +234,7 @@
             <button class="btn-sauver-pseudo" data-i18n="cancelBtn" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.8.6 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v2.8.7 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -419,7 +419,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v2.8.6 - ALPHA</span>
+        <span class="version-inline">v2.8.7 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -444,10 +444,10 @@
       </button>
       <button class="btn-side btn-side-mdp-check" onclick="ouvrirMdpCheck()" title="Verifier mot de passe">
         <svg width="14" height="14" viewBox="0 0 24 24" style="display:inline-block;vertical-align:middle;"><path d="M12 2a3 3 0 0 1 3 3c0 1.3-.84 2.4-2 2.82V11h2v2h-2v2h2v2h-2v2.18A3 3 0 1 1 11 18.82V18H9v-2h2v-2H9v-2h2v-3.18A3 3 0 0 1 9 5a3 3 0 0 1 3-3z" fill="currentColor"/><circle cx="18" cy="6" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="18" y1="4" x2="18" y2="6" stroke="currentColor" stroke-width="1.5"/><line x1="18" y1="6" x2="20" y2="7" stroke="currentColor" stroke-width="1.5"/></svg>
-        <span>MDP</span>
+        <span data-i18n="mdpBtn">MDP</span>
       </button>
       <button class="btn-side btn-side-quetes" onclick="ouvrirQuetes()" title="Quetes hebdomadaires">
-        &#128221; <span>QUETES</span>
+        &#128221; <span data-i18n="questsBtn">QUETES</span>
         <span class="quetes-badge" id="quetes-badge" style="display:none;">!</span>
       </button>
       <button class="btn-side btn-side-profil" onclick="ouvrirProfil()" title="Profil">
@@ -477,8 +477,8 @@
       </button>
       <button class="btn btn-param" onclick="ouvrirParams()">&#9881; <span data-i18n="settings">PARAMETRES</span></button>
       <button class="btn btn-tuto" onclick="ouvrirTuto()">
-        <span>&#128218; TUTORIEL</span>
-        <span class="btn-sub">Apprendre a jouer</span>
+        <span>&#128218; <span data-i18n="tutorialBtn">TUTORIEL</span></span>
+        <span class="btn-sub" data-i18n="tutorialSub">Apprendre a jouer</span>
       </button>
     </div>
 
@@ -486,7 +486,7 @@
       &#9998; <span data-i18n="comments">COMMENTAIRES</span>
     </button>
 
-    <button class="btn-voir-regles" onclick="toggleRegles()" id="btn-voir-regles">&#128214; REGLES DU JEU &#9660;</button>
+    <button class="btn-voir-regles" onclick="toggleRegles()" id="btn-voir-regles"><span data-i18n="rulesBtnIcon">&#128214;</span> <span data-i18n="rules">REGLES DU JEU</span> <span class="btn-voir-regles-arrow">&#9660;</span></button>
     <div class="regles-panneau" id="regles-panneau" style="display:none;">
       <div class="regles-header"><h3 data-i18n="rules">REGLES DU JEU</h3></div>
       <div class="regles-liste">
@@ -634,7 +634,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v2.8.6 - ALPHA</span>
+    <span class="version">VIRUS v2.8.7 - ALPHA</span>
     </div>
   </div>
 
@@ -689,14 +689,14 @@
             </div>
           </div>
           <div class="cp-role-item">
-            <label>FANATIQUE <span style="color:#8e44ad;font-size:10px" data-i18n="fanaticNeutral">(NEUTRE)</span></label>
+            <label><span data-i18n="fanaticRole">FANATIQUE</span> <span style="color:#8e44ad;font-size:10px" data-i18n="fanaticNeutral">(NEUTRE)</span></label>
             <div class="cp-toggle-row">
               <div class="cp-toggle cp-fanatic" id="cp-toggle-fanatique" onclick="toggleCpFanatique()"></div>
               <span class="cp-toggle-label cp-fanatic-label" id="cp-toggle-fanatique-label" data-i18n="zeroFanatic">0 FANATIQUE</span>
             </div>
           </div>
           <div class="cp-role-item">
-            <label>ESPION <span style="color:#9b59b6;font-size:10px" data-i18n="spyNeutral">(NEUTRE)</span></label>
+            <label><span data-i18n="spyRole">ESPION</span> <span style="color:#9b59b6;font-size:10px" data-i18n="spyNeutral">(NEUTRE)</span></label>
             <div class="cp-toggle-row">
               <div class="cp-toggle cp-spy" id="cp-toggle-espion" onclick="toggleCpEspion()"></div>
               <span class="cp-toggle-label cp-spy-label" id="cp-toggle-espion-label" data-i18n="zeroSpy">0 ESPION</span>
@@ -715,17 +715,17 @@
           </div>
         </div>
         <div class="cp-role-item">
-          <label>PARTIE PRIVEE</label>
+          <label data-i18n="privateGame">PARTIE PRIVEE</label>
           <div class="cp-toggle-row">
             <div class="cp-toggle" id="cp-toggle-prive" onclick="this.classList.toggle('active')"></div>
-            <span class="cp-toggle-label" id="cp-toggle-prive-label" style="color:#95a5a6;font-size:11px">Seuls vos amis verront la partie</span>
+            <span class="cp-toggle-label" id="cp-toggle-prive-label" data-i18n="privateGameDesc" style="color:#95a5a6;font-size:11px">Seuls vos amis verront la partie</span>
           </div>
         </div>
         <button class="btn-valider-creer" onclick="creerPartie()" data-i18n="create">CREER LA PARTIE</button>
       </div>
     </div>
 
-    <span class="version">VIRUS v2.8.6 - ALPHA</span>
+    <span class="version">VIRUS v2.8.7 - ALPHA</span>
     </div>
   </div>
 
@@ -771,7 +771,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v2.8.6 - ALPHA</span>
+    <span class="version">VIRUS v2.8.7 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -1924,10 +1924,10 @@
 <script src="js/skins.js?v=7"></script>
 <script src="js/music.js?v=2"></script>
 <script src="js/account.js?v=23"></script>
-<script src="js/ui.js?v=20260420a"></script>
+<script src="js/ui.js?v=20260421a"></script>
 <script src="js/chat.js?v=6"></script>
 <script src="js/comments.js?v=5"></script>
-<script src="js/translation.js?v=20260420a"></script>
+<script src="js/translation.js?v=20260421a"></script>
 <script src="js/firebase-sync.js?v=46"></script>
 <script src="js/replay.js?v=2"></script>
 <script src="js/emotes.js?v=2"></script>

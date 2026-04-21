@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '2.8.6';
+var CURRENT_VERSION = '2.8.7';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -1488,12 +1488,10 @@ function toggleRegles() {
   var panneau = document.getElementById('regles-panneau');
   var btn = document.getElementById('btn-voir-regles');
   if (!panneau) return;
-  if (panneau.style.display === 'none') {
-    panneau.style.display = '';
-    if (btn) btn.innerHTML = '&#128214; REGLES DU JEU &#9650;';
-  } else {
-    panneau.style.display = 'none';
-    if (btn) btn.innerHTML = '&#128214; REGLES DU JEU &#9660;';
+  var estFerme = (panneau.style.display === 'none');
+  panneau.style.display = estFerme ? '' : 'none';
+  if (btn) {
+    btn.innerHTML = '<span>&#128214;</span> <span data-i18n="rules">' + t('rules') + '</span> <span class="btn-voir-regles-arrow">' + (estFerme ? '&#9650;' : '&#9660;') + '</span>';
   }
 }
 

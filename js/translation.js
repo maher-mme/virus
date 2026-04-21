@@ -126,6 +126,13 @@ var TR = {
     oldPasswordPh: 'Ancien mot de passe',
     newPasswordPh: 'Nouveau mot de passe (5-10)',
     confirmPasswordPh: 'Confirmer le nouveau mot de passe',
+    // BOUTONS MENU
+    mdpBtn: 'MDP',
+    questsBtn: 'QUETES',
+    tutorialBtn: 'TUTORIEL',
+    tutorialSub: 'Apprendre a jouer',
+    privateGame: 'PARTIE PRIVEE',
+    privateGameDesc: 'Seuls vos amis verront la partie',
     oneJournalist: '1 JOURNALISTE',
     zeroJournalist: '0 JOURNALISTE',
     oneFanatic: '1 FANATIQUE',
@@ -853,6 +860,13 @@ var TR = {
     oldPasswordPh: 'Old password',
     newPasswordPh: 'New password (5-10)',
     confirmPasswordPh: 'Confirm new password',
+    // BOUTONS MENU
+    mdpBtn: 'PWD',
+    questsBtn: 'QUESTS',
+    tutorialBtn: 'TUTORIAL',
+    tutorialSub: 'Learn to play',
+    privateGame: 'PRIVATE GAME',
+    privateGameDesc: 'Only your friends will see the game',
     oneJournalist: '1 JOURNALIST',
     zeroJournalist: '0 JOURNALIST',
     oneFanatic: '1 FANATIC',
@@ -1581,6 +1595,13 @@ var TR = {
     oldPasswordPh: 'Contrasena antigua',
     newPasswordPh: 'Nueva contrasena (5-10)',
     confirmPasswordPh: 'Confirmar nueva contrasena',
+    // BOUTONS MENU
+    mdpBtn: 'CONTRA',
+    questsBtn: 'MISIONES',
+    tutorialBtn: 'TUTORIAL',
+    tutorialSub: 'Aprende a jugar',
+    privateGame: 'PARTIDA PRIVADA',
+    privateGameDesc: 'Solo tus amigos veran la partida',
     oneJournalist: '1 PERIODISTA',
     zeroJournalist: '0 PERIODISTA',
     oneFanatic: '1 FANATICO',
@@ -2221,6 +2242,13 @@ var TR = {
     oldPasswordPh: '古いパスワード',
     newPasswordPh: '新しいパスワード (5-10)',
     confirmPasswordPh: '新しいパスワードを確認',
+    // BOUTONS MENU
+    mdpBtn: 'パスワード',
+    questsBtn: 'クエスト',
+    tutorialBtn: 'チュートリアル',
+    tutorialSub: '遊び方を学ぶ',
+    privateGame: 'プライベートゲーム',
+    privateGameDesc: '友達だけがゲームを見られます',
     oneJournalist: 'ジャーナリスト1人',
     zeroJournalist: 'ジャーナリスト0人',
     oneFanatic: 'ファナティック1人',
@@ -2861,6 +2889,13 @@ var TR = {
     oldPasswordPh: 'Altes Passwort',
     newPasswordPh: 'Neues Passwort (5-10)',
     confirmPasswordPh: 'Neues Passwort bestaetigen',
+    // BOUTONS MENU
+    mdpBtn: 'PASSWORT',
+    questsBtn: 'QUESTS',
+    tutorialBtn: 'TUTORIAL',
+    tutorialSub: 'Spielen lernen',
+    privateGame: 'PRIVATES SPIEL',
+    privateGameDesc: 'Nur deine Freunde sehen das Spiel',
     oneJournalist: '1 JOURNALIST',
     zeroJournalist: '0 JOURNALIST',
     oneFanatic: '1 FANATIKER',
@@ -3501,6 +3536,13 @@ var TR = {
     oldPasswordPh: 'كلمة المرور القديمة',
     newPasswordPh: 'كلمة المرور الجديدة (5-10)',
     confirmPasswordPh: 'تأكيد كلمة المرور الجديدة',
+    // BOUTONS MENU
+    mdpBtn: 'كلمة المرور',
+    questsBtn: 'المهام',
+    tutorialBtn: 'الدليل',
+    tutorialSub: 'تعلم كيفية اللعب',
+    privateGame: 'لعبة خاصة',
+    privateGameDesc: 'فقط أصدقاؤك سيرون اللعبة',
     oneJournalist: '1 صحفي',
     zeroJournalist: '0 صحفي',
     oneFanatic: '1 متعصب',
@@ -4070,6 +4112,32 @@ function translatePage() {
       els[i].innerHTML = t(key);
     } else {
       els[i].textContent = t(key);
+    }
+  }
+  // Rebuild des dropdowns dynamiques (joueurs / virus) avec la langue active
+  var selMax = document.getElementById('cp-max-joueurs');
+  if (selMax) {
+    var valMax = selMax.value;
+    selMax.innerHTML = '';
+    for (var j = 4; j <= 15; j++) {
+      var opt = document.createElement('option');
+      opt.value = j;
+      opt.textContent = j + ' ' + t('players');
+      if (String(j) === valMax) opt.selected = true;
+      selMax.appendChild(opt);
+    }
+  }
+  var selMech = document.getElementById('cp-mechants');
+  if (selMech) {
+    var valMech = selMech.value;
+    var virusLbl = (t('virusLabel') || 'virus').replace(/[: ：]+$/, '').toLowerCase();
+    selMech.innerHTML = '';
+    for (var v = 1; v <= 3; v++) {
+      var optV = document.createElement('option');
+      optV.value = v;
+      optV.textContent = v + ' ' + virusLbl;
+      if (String(v) === valMech) optV.selected = true;
+      selMech.appendChild(optV);
     }
   }
 }

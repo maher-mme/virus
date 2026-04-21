@@ -152,6 +152,10 @@ function connecterCompte() {
         if (SKINS[ks].id !== 'garcon' && SKINS[ks].id !== 'fille') SKINS.splice(ks, 1);
       }
     }
+    // Charger emotes achetes du passe
+    if (data.emotesAchetes) {
+      try { localStorage.setItem('virusEmotesAchetes', JSON.stringify(data.emotesAchetes)); } catch(e) {}
+    }
     if (data.skinsAchetes) {
       localStorage.setItem('virusSkinsAchetes', JSON.stringify(data.skinsAchetes));
       // Recharger les skins achetes dans le tableau SKINS

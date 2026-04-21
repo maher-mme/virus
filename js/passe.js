@@ -263,10 +263,12 @@ function claimPalier(claimKey) {
       var pa = (data.petsAchetes || []).slice();
       if (pa.indexOf(reward.id) < 0) pa.push(reward.id);
       update.petsAchetes = pa;
+      try { localStorage.setItem('virusPetsAchetes', JSON.stringify(pa)); } catch(e) {}
     } else if (reward.type === 'emote') {
       var ea = (data.emotesAchetes || []).slice();
       if (ea.indexOf(reward.id) < 0) ea.push(reward.id);
       update.emotesAchetes = ea;
+      try { localStorage.setItem('virusEmotesAchetes', JSON.stringify(ea)); } catch(e) {}
     }
     db.collection('players').doc(monPlayerId).update(update).then(function() {
       // Sync local

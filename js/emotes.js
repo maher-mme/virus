@@ -35,11 +35,80 @@ function fermerEmotePicker() {
   if (panel) panel.classList.remove('visible');
 }
 
+function toggleEmotePickerLobby() {
+  var panel = document.getElementById('sa-emote-picker-panel');
+  if (!panel) return;
+  panel.classList.toggle('visible');
+  if (panel.classList.contains('visible')) {
+    remplirEmotePickerLobby();
+  }
+}
+function fermerEmotePickerLobby() {
+  var panel = document.getElementById('sa-emote-picker-panel');
+  if (panel) panel.classList.remove('visible');
+}
+function remplirEmotePickerLobby() {
+  var panel = document.getElementById('sa-emote-picker-panel');
+  if (!panel) return;
+  panel.innerHTML = '';
+  var emotes = getAllEmotesDispo();
+  emotes.forEach(function(em) {
+    var btn = document.createElement('button');
+    btn.className = 'emote-btn';
+    btn.title = em.nom;
+    btn.innerHTML = '<span class="emote-btn-emoji">' + em.emoji + '</span><span class="emote-btn-nom">' + em.nom + '</span>';
+    btn.onclick = function() { jouerEmoteLobby(em.id); fermerEmotePickerLobby(); };
+    panel.appendChild(btn);
+  });
+}
+
+function jouerEmoteLobby(emoteId) {
+  var em = getAllEmotesDispo().find(function(e) { return e.id === emoteId; });
+  if (!em) return;
+  var now = Date.now();
+  if (now < _emoteCooldown) {
+    if (typeof showNotif === 'function') showNotif(t('emoteCooldown'), 'info');
+    return;
+  }
+  _emoteCooldown = now + EMOTE_COOLDOWN_MS;
+  // Animer sur l'avatar lobby
+  var avatar = document.getElementById('sa-avatar-skin') || document.getElementById('sa-mon-avatar');
+  if (avatar) afficherEmoteSur(avatar, em);
+  // Sync online si en lobby online
+  if (typeof modeHorsLigne !== 'undefined' && !modeHorsLigne && typeof myPartyPlayerDocId !== 'undefined' && myPartyPlayerDocId && typeof db !== 'undefined') {
+    db.collection('partyPlayers').doc(myPartyPlayerDocId).update({
+      emote: emoteId,
+      emoteAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(function() {});
+  }
+  var btn = document.getElementById('sa-btn-emote');
+  if (btn) {
+    btn.classList.add('cooldown');
+    setTimeout(function() { btn.classList.remove('cooldown'); }, EMOTE_COOLDOWN_MS);
+  }
+}
+
+function getAllEmotesDispo() {
+  var liste = EMOTES.slice();
+  // Ajouter les emotes du passe reellement reclames
+  if (typeof EMOTES_PASSE !== 'undefined') {
+    var achetes = [];
+    try { achetes = JSON.parse(localStorage.getItem('virusEmotesAchetes')) || []; } catch(e) {}
+    EMOTES_PASSE.forEach(function(ep) {
+      if (achetes.indexOf(ep.id) >= 0 && !liste.find(function(e) { return e.id === ep.id; })) {
+        liste.push(ep);
+      }
+    });
+  }
+  return liste;
+}
+
 function remplirEmotePicker() {
   var panel = document.getElementById('emote-picker-panel');
   if (!panel) return;
   panel.innerHTML = '';
-  EMOTES.forEach(function(em) {
+  var emotes = getAllEmotesDispo();
+  emotes.forEach(function(em) {
     var btn = document.createElement('button');
     btn.className = 'emote-btn';
     btn.title = em.nom;
@@ -51,7 +120,7 @@ function remplirEmotePicker() {
 
 // Jouer un emote pour le joueur local + syncer online
 function jouerEmote(emoteId) {
-  var em = EMOTES.find(function(e) { return e.id === emoteId; });
+  var em = getAllEmotesDispo().find(function(e) { return e.id === emoteId; });
   if (!em) return;
   var now = Date.now();
   if (now < _emoteCooldown) {
@@ -109,9 +178,10 @@ function traiterEmoteRemote(docId, data) {
   _emotesJouees[docId] = stamp;
   // Ignorer si c'est moi
   if (typeof myPartyPlayerDocId !== 'undefined' && docId === myPartyPlayerDocId) return;
-  var em = EMOTES.find(function(e) { return e.id === data.emote; });
+  var allEmotes = EMOTES.concat(typeof EMOTES_PASSE !== 'undefined' ? EMOTES_PASSE : []);
+  var em = allEmotes.find(function(e) { return e.id === data.emote; });
   if (!em) return;
-  // Trouver l'element DOM : remote-playerId
-  var el = document.getElementById('remote-' + data.playerId);
+  // Trouver l'element DOM : remote-playerId (jeu) ou sa-remote-playerId (lobby)
+  var el = document.getElementById('remote-' + data.playerId) || document.getElementById('sa-remote-' + data.playerId);
   if (el) afficherEmoteSur(el, em);
 }

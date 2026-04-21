@@ -80,14 +80,19 @@ function genererSkinSelector(containerId) {
   skinTempSelection = currentSkin;
   container.innerHTML = '';
   var ordreRarete = {legendaire:0, epic:1, rare:2, commun:3, typique:4};
-  // Skins de base toujours dispo + skins boutique reellement achetes
+  // Skins de base toujours dispo + skins boutique reellement achetes (ou tous si admin, sauf passe)
   var achetes = (typeof getSkinsAchetes === 'function') ? getSkinsAchetes() : [];
-  var basesIds = {};
-  // SKINS d'origine (sans pollution) : on ne garde que les ids 'garcon' et 'fille'
+  var estAdmin = (typeof isAdmin === 'function') && isAdmin();
+  var passeIds = (typeof SKINS_PASSE !== 'undefined') ? SKINS_PASSE.map(function(s) { return s.id; }) : [];
   var baseSkins = SKINS.filter(function(s) { return s.id === 'garcon' || s.id === 'fille'; });
-  baseSkins.forEach(function(s) { basesIds[s.id] = true; });
   var bouchesAchetes = (typeof SKINS_BOUTIQUE !== 'undefined')
-    ? SKINS_BOUTIQUE.filter(function(s) { return achetes.indexOf(s.id) >= 0; })
+    ? SKINS_BOUTIQUE.filter(function(s) {
+        if (passeIds.indexOf(s.id) >= 0) {
+          // Skin de passe : seulement si reellement reclame
+          return achetes.indexOf(s.id) >= 0;
+        }
+        return estAdmin || achetes.indexOf(s.id) >= 0;
+      })
     : [];
   var disponibles = baseSkins.concat(bouchesAchetes);
   var skinsTries = disponibles.sort(function(a, b) {

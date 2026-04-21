@@ -208,6 +208,7 @@ function acheterPassePremium() {
       playerGold -= PASSE_PREMIUM_PRIX;
       sauvegarderGold();
       showNotif(t('passePremiumUnlocked'), 'success');
+      if (typeof afficherPasseDedie === 'function') afficherPasseDedie();
       if (typeof afficherPasse === 'function') afficherPasse();
     }).catch(function() { showNotif(t('passeError'), 'warn'); });
   }).catch(function() {});
@@ -283,24 +284,83 @@ function claimPalier(claimKey) {
         }
       }
       showNotif(t('passeRewardClaimed'), 'success');
+      if (typeof afficherPasseDedie === 'function') afficherPasseDedie();
       if (typeof afficherPasse === 'function') afficherPasse();
     }).catch(function() { showNotif(t('passeError'), 'warn'); });
   }).catch(function() {});
 }
 
-// Ouvre directement le profil sur l'onglet SAISON
+// Ouvre la popup dediee au passe
 function ouvrirPasse() {
-  if (typeof ouvrirProfil === 'function') {
-    ouvrirProfil(typeof monPlayerId !== 'undefined' ? monPlayerId : null);
-    // Laisser le temps au profil de s'ouvrir puis switcher sur saison
-    setTimeout(function() {
-      if (typeof switchProfilTab === 'function') switchProfilTab('saison');
-    }, 50);
+  var pop = document.getElementById('popup-passe-dedie');
+  if (pop) pop.classList.add('visible');
+  afficherPasseDedie();
+}
+function fermerPasseDedie() {
+  var pop = document.getElementById('popup-passe-dedie');
+  if (pop) pop.classList.remove('visible');
+}
+
+// Badges saison : seuils plus petits que carriere
+var BADGE_PALIERS_SAISON = [
+  { nom: 'Maitre', min: 1000, fichier: 'assets/badges/Badges_maître.svg', couleur: '#9b59b6' },
+  { nom: 'Champion', min: 250, fichier: 'assets/badges/Badges_Chaimpion.svg', couleur: '#e74c3c' },
+  { nom: 'Diamant', min: 100, fichier: 'assets/badges/Badges_diament.svg', couleur: '#2962ff' },
+  { nom: 'Platine', min: 50, fichier: 'assets/badges/Badges_Platine.svg', couleur: '#00e5ff' },
+  { nom: 'Or', min: 25, fichier: 'assets/badges/Bages_or.svg', couleur: '#fdd835' },
+  { nom: 'Argent', min: 10, fichier: 'assets/badges/Badges_argent.svg', couleur: '#bdbdbd' },
+  { nom: 'Bronze', min: 1, fichier: 'assets/badges/Badges_bronze.svg', couleur: '#b8860b' }
+];
+var BADGE_PALIERS_SAISON_NIVEAU = [
+  { nom: 'Maitre', min: 18, fichier: 'assets/badges/Badges_maître.svg', couleur: '#9b59b6' },
+  { nom: 'Champion', min: 12, fichier: 'assets/badges/Badges_Chaimpion.svg', couleur: '#e74c3c' },
+  { nom: 'Diamant', min: 9, fichier: 'assets/badges/Badges_diament.svg', couleur: '#2962ff' },
+  { nom: 'Platine', min: 6, fichier: 'assets/badges/Badges_Platine.svg', couleur: '#00e5ff' },
+  { nom: 'Or', min: 4, fichier: 'assets/badges/Bages_or.svg', couleur: '#fdd835' },
+  { nom: 'Argent', min: 2, fichier: 'assets/badges/Badges_argent.svg', couleur: '#bdbdbd' },
+  { nom: 'Bronze', min: 1, fichier: 'assets/badges/Badges_bronze.svg', couleur: '#b8860b' }
+];
+function getBadgePalierSaison(valeur, type) {
+  var paliers = (type === 'niveau') ? BADGE_PALIERS_SAISON_NIVEAU : BADGE_PALIERS_SAISON;
+  for (var i = 0; i < paliers.length; i++) {
+    if (valeur >= paliers[i].min) return paliers[i];
   }
+  return null;
+}
+function construireBadgesSaison(kills, wins, niveau) {
+  var categories = [
+    { label: 'KILLS', valeur: kills, emoji: '\uD83E\uDDA0', type: 'combat' },
+    { label: 'VICTOIRES', valeur: wins, emoji: '\uD83C\uDFC6', type: 'combat' },
+    { label: 'NIVEAU', valeur: niveau, emoji: '<span style="color:#9b59b6;font-weight:bold;">XP</span>', type: 'niveau' }
+  ];
+  var html = '<div style="display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin-bottom:10px;">';
+  categories.forEach(function(cat) {
+    var palier = getBadgePalierSaison(cat.valeur, cat.type);
+    if (palier) {
+      html += '<div style="text-align:center;width:90px;">' +
+        '<div style="position:relative;width:80px;height:80px;margin:0 auto;">' +
+        '<img src="' + palier.fichier + '" style="width:100%;height:100%;object-fit:contain;" alt="' + palier.nom + '">' +
+        '<div style="position:absolute;top:55%;left:50%;transform:translate(-50%,-50%);font-size:22px;">' + cat.emoji + '</div>' +
+        '</div>' +
+        '<div style="color:' + palier.couleur + ';font-size:10px;font-weight:bold;letter-spacing:1px;margin-top:4px;">' + palier.nom.toUpperCase() + '</div>' +
+        '<div style="color:#ecf0f1;font-size:13px;font-weight:bold;">' + cat.valeur + '</div>' +
+        '<div style="color:#95a5a6;font-size:9px;">' + cat.label + '</div>' +
+        '</div>';
+    } else {
+      html += '<div style="text-align:center;width:90px;">' +
+        '<div style="width:80px;height:80px;margin:0 auto;border:2px dashed #34495e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;opacity:0.4;">' + cat.emoji + '</div>' +
+        '<div style="color:#566573;font-size:10px;margin-top:4px;">---</div>' +
+        '<div style="color:#566573;font-size:13px;">0</div>' +
+        '<div style="color:#566573;font-size:9px;">' + cat.label + '</div>' +
+        '</div>';
+    }
+  });
+  html += '</div>';
+  return html;
 }
 
 // ============================
-// AFFICHAGE DU PASSE (onglet Saison du profil)
+// AFFICHAGE STATS+BADGES SAISON (onglet SAISON du profil)
 // ============================
 function afficherPasse() {
   var container = document.getElementById('profil-saison-content');
@@ -314,7 +374,49 @@ function afficherPasse() {
   db.collection('players').doc(monPlayerId).get().then(function(doc) {
     if (!doc.exists) return;
     var data = doc.data();
-    // Auto-reset si nouvelle saison
+    resetSaisonSiNecessaire(data);
+
+    var sKills = data.seasonKills || 0;
+    var sWins = data.seasonWins || 0;
+    var sDeaths = data.seasonDeaths || 0;
+    var sGames = data.seasonGames || 0;
+    var sWinRate = sGames > 0 ? Math.round((sWins / sGames) * 100) : 0;
+    var sLevel = data.seasonLevel || 1;
+
+    var html = '';
+    html += '<div class="saison-stats">';
+    html += construireBadgesSaison(sKills, sWins, sLevel);
+    html += '<div class="profil-stats-grid" style="margin-top:10px;">';
+    html += '<div class="profil-stat"><span class="profil-stat-val">' + sKills + '</span><span class="profil-stat-label">KILLS</span></div>';
+    html += '<div class="profil-stat"><span class="profil-stat-val">' + sWins + '</span><span class="profil-stat-label">' + t('victories') + '</span></div>';
+    html += '<div class="profil-stat"><span class="profil-stat-val">' + sDeaths + '</span><span class="profil-stat-label">' + t('deaths') + '</span></div>';
+    html += '<div class="profil-stat"><span class="profil-stat-val">' + sGames + '</span><span class="profil-stat-label">' + t('gamesPlayed') + '</span></div>';
+    html += '</div>';
+    html += '<div class="profil-stat" style="grid-column:1/-1;margin-top:6px;"><span class="profil-stat-val">' + sWinRate + '%</span><span class="profil-stat-label">' + t('winRate') + '</span></div>';
+    html += '</div>';
+
+    container.innerHTML = html;
+  }).catch(function(err) {
+    console.error('Erreur afficherPasse stats:', err);
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:#e74c3c;">' + t('passeLoadError') + '</div>';
+  });
+}
+
+// ============================
+// AFFICHAGE PASSE DEDIE (popup standalone)
+// ============================
+function afficherPasseDedie() {
+  var container = document.getElementById('passe-dedie-content');
+  if (!container) return;
+  if (!monPlayerId) {
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:#95a5a6;">' + t('passeEmpty') + '</div>';
+    return;
+  }
+  container.innerHTML = '<div class="spinner"></div>';
+
+  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+    if (!doc.exists) return;
+    var data = doc.data();
     resetSaisonSiNecessaire(data);
 
     var saison = getSaisonActive();
@@ -331,22 +433,6 @@ function afficherPasse() {
     var joursRestants = Math.max(0, Math.ceil((new Date(saison.dateFin) - new Date()) / 86400000));
 
     var html = '';
-    // Stats de la saison (sans badges, juste les chiffres)
-    var sKills = data.seasonKills || 0;
-    var sWins = data.seasonWins || 0;
-    var sDeaths = data.seasonDeaths || 0;
-    var sGames = data.seasonGames || 0;
-    var sWinRate = sGames > 0 ? Math.round((sWins / sGames) * 100) : 0;
-    html += '<div class="saison-stats">';
-    html += '<div class="profil-stats-grid" style="margin-top:10px;">';
-    html += '<div class="profil-stat"><span class="profil-stat-val">' + sKills + '</span><span class="profil-stat-label">KILLS</span></div>';
-    html += '<div class="profil-stat"><span class="profil-stat-val">' + sWins + '</span><span class="profil-stat-label">' + (typeof t === 'function' ? t('victories') : 'VICTOIRES') + '</span></div>';
-    html += '<div class="profil-stat"><span class="profil-stat-val">' + sDeaths + '</span><span class="profil-stat-label">' + (typeof t === 'function' ? t('deaths') : 'MORTS') + '</span></div>';
-    html += '<div class="profil-stat"><span class="profil-stat-val">' + sGames + '</span><span class="profil-stat-label">' + (typeof t === 'function' ? t('gamesPlayed') : 'PARTIES') + '</span></div>';
-    html += '</div>';
-    html += '<div class="profil-stat" style="grid-column:1/-1;margin-top:6px;"><span class="profil-stat-val">' + sWinRate + '%</span><span class="profil-stat-label">' + (typeof t === 'function' ? t('winRate') : 'TAUX DE VICTOIRE') + '</span></div>';
-    html += '</div>';
-
     // Header saison
     html += '<div class="passe-header" style="border-color:' + saison.couleurTheme + ';">';
     html += '<div class="passe-titre" style="color:' + saison.couleurTheme + ';">&#9889; ' + t('passeSeason') + ' ' + saison.id + ' : ' + saison.nom + '</div>';

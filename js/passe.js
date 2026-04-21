@@ -68,40 +68,40 @@ var SAISONS = [
     paliers: [
       // VIRUS (1-5)
       { palier: 1,  free: { type: 'skin', id: 'infecter' },       premium: { type: 'pet', id: 'virus_pet' } },
-      { palier: 2,  free: { type: 'gold', montant: 100 },         premium: { type: 'emote', id: 'tousser' } },
-      { palier: 3,  free: null,                                    premium: { type: 'skin', id: 'docteur' } },
-      { palier: 4,  free: { type: 'gold', montant: 150 },         premium: { type: 'gold', montant: 300 } },
-      { palier: 5,  free: null,                                    premium: { type: 'gold', montant: 500 } },
+      { palier: 2,  free: { type: 'gold', montant: 40 },          premium: { type: 'emote', id: 'tousser' } },
+      { palier: 3,  free: { type: 'gold', montant: 50 },          premium: { type: 'skin', id: 'docteur' } },
+      { palier: 4,  free: { type: 'gold', montant: 60 },          premium: { type: 'gold', montant: 120 } },
+      { palier: 5,  free: { type: 'gold', montant: 80 },          premium: { type: 'gold', montant: 200 } },
       // INNOCENT (6-10)
-      { palier: 6,  free: { type: 'gold', montant: 100 },         premium: { type: 'skin', id: 'enfant' } },
-      { palier: 7,  free: null,                                    premium: { type: 'emote', id: 'peur' } },
-      { palier: 8,  free: { type: 'gold', montant: 150 },         premium: { type: 'gold', montant: 250 } },
-      { palier: 9,  free: null,                                    premium: { type: 'pet', id: 'voiture_jouet' } },
-      { palier: 10, free: null,                                    premium: { type: 'gold', montant: 400 } },
+      { palier: 6,  free: { type: 'gold', montant: 40 },          premium: { type: 'skin', id: 'enfant' } },
+      { palier: 7,  free: { type: 'gold', montant: 60 },          premium: { type: 'emote', id: 'peur' } },
+      { palier: 8,  free: { type: 'gold', montant: 60 },          premium: { type: 'gold', montant: 100 } },
+      { palier: 9,  free: { type: 'gold', montant: 80 },          premium: { type: 'pet', id: 'voiture_jouet' } },
+      { palier: 10, free: { type: 'gold', montant: 100 },         premium: { type: 'gold', montant: 160 } },
       // JOURNALISTE (11-15)
-      { palier: 11, free: { type: 'gold', montant: 150 },         premium: { type: 'skin', id: 'detective' } },
-      { palier: 12, free: null,                                    premium: { type: 'emote', id: 'enquete' } },
-      { palier: 13, free: { type: 'gold', montant: 200 },         premium: { type: 'gold', montant: 300 } },
-      { palier: 14, free: null,                                    premium: { type: 'pet', id: 'pigeon_detective' } },
-      { palier: 15, free: null,                                    premium: { type: 'gold', montant: 500 } },
+      { palier: 11, free: { type: 'gold', montant: 60 },          premium: { type: 'skin', id: 'detective' } },
+      { palier: 12, free: { type: 'gold', montant: 80 },          premium: { type: 'emote', id: 'enquete' } },
+      { palier: 13, free: { type: 'gold', montant: 80 },          premium: { type: 'gold', montant: 120 } },
+      { palier: 14, free: { type: 'gold', montant: 100 },         premium: { type: 'pet', id: 'pigeon_detective' } },
+      { palier: 15, free: { type: 'gold', montant: 120 },         premium: { type: 'gold', montant: 200 } },
       // FANATIQUE (16-20)
-      { palier: 16, free: { type: 'gold', montant: 200 },         premium: { type: 'skin', id: 'le_fanatique' } },
-      { palier: 17, free: null,                                    premium: { type: 'emote', id: 'rire_demon' } },
-      { palier: 18, free: { type: 'gold', montant: 250 },         premium: { type: 'gold', montant: 350 } },
-      { palier: 19, free: null,                                    premium: { type: 'gold', montant: 400 } },
-      { palier: 20, free: null,                                    premium: { type: 'gold', montant: 600 } },
+      { palier: 16, free: { type: 'gold', montant: 80 },          premium: { type: 'skin', id: 'le_fanatique' } },
+      { palier: 17, free: { type: 'gold', montant: 100 },         premium: { type: 'emote', id: 'rire_demon' } },
+      { palier: 18, free: { type: 'gold', montant: 100 },         premium: { type: 'gold', montant: 140 } },
+      { palier: 19, free: { type: 'gold', montant: 120 },         premium: { type: 'gold', montant: 160 } },
+      { palier: 20, free: { type: 'gold', montant: 140 },         premium: { type: 'gold', montant: 240 } },
       // ESPION (21-25)
-      { palier: 21, free: { type: 'gold', montant: 250 },         premium: { type: 'skin', id: 'agent_secret' } },
-      { palier: 22, free: null,                                    premium: { type: 'emote', id: 'clin_oeil' } },
-      { palier: 23, free: { type: 'gold', montant: 300 },         premium: { type: 'gold', montant: 400 } },
-      { palier: 24, free: null,                                    premium: { type: 'pet', id: 'petit_robot' } },
-      { palier: 25, free: null,                                    premium: { type: 'skin', id: 'espionne' } },
+      { palier: 21, free: { type: 'gold', montant: 100 },         premium: { type: 'skin', id: 'agent_secret' } },
+      { palier: 22, free: { type: 'gold', montant: 120 },         premium: { type: 'emote', id: 'clin_oeil' } },
+      { palier: 23, free: { type: 'gold', montant: 120 },         premium: { type: 'gold', montant: 160 } },
+      { palier: 24, free: { type: 'gold', montant: 140 },         premium: { type: 'pet', id: 'petit_robot' } },
+      { palier: 25, free: { type: 'gold', montant: 160 },         premium: { type: 'skin', id: 'espionne' } },
       // CHERIF (26-30)
-      { palier: 26, free: { type: 'gold', montant: 400 },         premium: { type: 'skin', id: 'cowboy' } },
-      { palier: 27, free: null,                                    premium: { type: 'emote', id: 'degaine' } },
-      { palier: 28, free: { type: 'gold', montant: 500 },         premium: { type: 'pet', id: 'cheval' } },
-      { palier: 29, free: null,                                    premium: { type: 'gold', montant: 1000 } },
-      { palier: 30, free: null,                                    premium: { type: 'skin', id: 'cherif' } }
+      { palier: 26, free: { type: 'gold', montant: 160 },         premium: { type: 'skin', id: 'cowboy' } },
+      { palier: 27, free: { type: 'gold', montant: 200 },         premium: { type: 'emote', id: 'degaine' } },
+      { palier: 28, free: { type: 'gold', montant: 200 },         premium: { type: 'pet', id: 'cheval' } },
+      { palier: 29, free: { type: 'gold', montant: 240 },         premium: { type: 'gold', montant: 400 } },
+      { palier: 30, free: { type: 'gold', montant: 400 },         premium: { type: 'skin', id: 'cherif' } }
     ]
   }
 ];
@@ -276,6 +276,17 @@ function claimPalier(claimKey) {
       if (typeof afficherPasse === 'function') afficherPasse();
     }).catch(function() { showNotif(t('passeError'), 'warn'); });
   }).catch(function() {});
+}
+
+// Ouvre directement le profil sur l'onglet SAISON
+function ouvrirPasse() {
+  if (typeof ouvrirProfil === 'function') {
+    ouvrirProfil(typeof monPlayerId !== 'undefined' ? monPlayerId : null);
+    // Laisser le temps au profil de s'ouvrir puis switcher sur saison
+    setTimeout(function() {
+      if (typeof switchProfilTab === 'function') switchProfilTab('saison');
+    }, 50);
+  }
 }
 
 // ============================

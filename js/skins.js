@@ -83,18 +83,17 @@ function genererSkinSelector(containerId) {
   // Skins de base toujours dispo + skins boutique reellement achetes (ou tous si admin, sauf passe)
   var achetes = (typeof getSkinsAchetes === 'function') ? getSkinsAchetes() : [];
   var estAdmin = (typeof isAdmin === 'function') && isAdmin();
-  var passeIds = (typeof SKINS_PASSE !== 'undefined') ? SKINS_PASSE.map(function(s) { return s.id; }) : [];
   var baseSkins = SKINS.filter(function(s) { return s.id === 'garcon' || s.id === 'fille'; });
   var bouchesAchetes = (typeof SKINS_BOUTIQUE !== 'undefined')
     ? SKINS_BOUTIQUE.filter(function(s) {
-        if (passeIds.indexOf(s.id) >= 0) {
-          // Skin de passe : seulement si reellement reclame
-          return achetes.indexOf(s.id) >= 0;
-        }
         return estAdmin || achetes.indexOf(s.id) >= 0;
       })
     : [];
-  var disponibles = baseSkins.concat(bouchesAchetes);
+  // Skins de passe reellement reclames (jamais deverouilles pour admin)
+  var passeAchetes = (typeof SKINS_PASSE !== 'undefined')
+    ? SKINS_PASSE.filter(function(s) { return achetes.indexOf(s.id) >= 0; })
+    : [];
+  var disponibles = baseSkins.concat(bouchesAchetes).concat(passeAchetes);
   var skinsTries = disponibles.sort(function(a, b) {
     return (ordreRarete[a.rarete] || 4) - (ordreRarete[b.rarete] || 4);
   });

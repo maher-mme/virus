@@ -135,6 +135,10 @@
   background: linear-gradient(180deg, #3498db, #2980b9);
   border-color: #1a6fa0;
 }
+.btn-side-passe {
+  background: linear-gradient(180deg, #f39c12, #d35400);
+  border-color: #9a6314;
+}
 .btn-side-commentaires {
   background: linear-gradient(180deg, #1a3a5c, #0d253f);
   border-color: #2c5f8a;

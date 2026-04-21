@@ -56,52 +56,40 @@ var SAISONS = [
     dateDebut: '2026-04-19',
     dateFin: '2026-07-19',
     xpParPalier: 100,
-    // Sections de 5 paliers chacune, une par role
+    // Sections de 3 paliers chacune, une par role
     sections: [
-      { debut: 1,  fin: 5,  role: 'virus',       nom: 'VIRUS',       couleur: '#e74c3c' },
-      { debut: 6,  fin: 10, role: 'innocent',    nom: 'INNOCENT',    couleur: '#2ecc71' },
-      { debut: 11, fin: 15, role: 'journaliste', nom: 'JOURNALISTE', couleur: '#3498db' },
-      { debut: 16, fin: 20, role: 'fanatique',   nom: 'FANATIQUE',   couleur: '#8e44ad' },
-      { debut: 21, fin: 25, role: 'espion',      nom: 'ESPION',      couleur: '#9b59b6' },
-      { debut: 26, fin: 30, role: 'cherif',      nom: 'CHERIF',      couleur: '#f39c12' }
+      { debut: 1,  fin: 3,  role: 'virus',       nom: 'VIRUS',       couleur: '#e74c3c' },
+      { debut: 4,  fin: 6,  role: 'innocent',    nom: 'INNOCENT',    couleur: '#2ecc71' },
+      { debut: 7,  fin: 9,  role: 'journaliste', nom: 'JOURNALISTE', couleur: '#3498db' },
+      { debut: 10, fin: 12, role: 'fanatique',   nom: 'FANATIQUE',   couleur: '#8e44ad' },
+      { debut: 13, fin: 15, role: 'espion',      nom: 'ESPION',      couleur: '#9b59b6' },
+      { debut: 16, fin: 18, role: 'cherif',      nom: 'CHERIF',      couleur: '#f39c12' }
     ],
     paliers: [
-      // VIRUS (1-5)
+      // VIRUS (1-3)
       { palier: 1,  free: { type: 'skin', id: 'infecter' },       premium: { type: 'pet', id: 'virus_pet' } },
       { palier: 2,  free: { type: 'gold', montant: 40 },          premium: { type: 'emote', id: 'tousser' } },
-      { palier: 3,  free: { type: 'gold', montant: 50 },          premium: { type: 'skin', id: 'docteur' } },
-      { palier: 4,  free: { type: 'gold', montant: 60 },          premium: { type: 'gold', montant: 120 } },
-      { palier: 5,  free: { type: 'gold', montant: 80 },          premium: { type: 'gold', montant: 200 } },
-      // INNOCENT (6-10)
-      { palier: 6,  free: { type: 'gold', montant: 40 },          premium: { type: 'skin', id: 'enfant' } },
-      { palier: 7,  free: { type: 'gold', montant: 60 },          premium: { type: 'emote', id: 'peur' } },
-      { palier: 8,  free: { type: 'gold', montant: 60 },          premium: { type: 'gold', montant: 100 } },
-      { palier: 9,  free: { type: 'gold', montant: 80 },          premium: { type: 'pet', id: 'voiture_jouet' } },
-      { palier: 10, free: { type: 'gold', montant: 100 },         premium: { type: 'gold', montant: 160 } },
-      // JOURNALISTE (11-15)
-      { palier: 11, free: { type: 'gold', montant: 60 },          premium: { type: 'skin', id: 'detective' } },
-      { palier: 12, free: { type: 'gold', montant: 80 },          premium: { type: 'emote', id: 'enquete' } },
-      { palier: 13, free: { type: 'gold', montant: 80 },          premium: { type: 'gold', montant: 120 } },
-      { palier: 14, free: { type: 'gold', montant: 100 },         premium: { type: 'pet', id: 'pigeon_detective' } },
-      { palier: 15, free: { type: 'gold', montant: 120 },         premium: { type: 'gold', montant: 200 } },
-      // FANATIQUE (16-20)
-      { palier: 16, free: { type: 'gold', montant: 80 },          premium: { type: 'skin', id: 'le_fanatique' } },
-      { palier: 17, free: { type: 'gold', montant: 100 },         premium: { type: 'emote', id: 'rire_demon' } },
-      { palier: 18, free: { type: 'gold', montant: 100 },         premium: { type: 'gold', montant: 140 } },
-      { palier: 19, free: { type: 'gold', montant: 120 },         premium: { type: 'gold', montant: 160 } },
-      { palier: 20, free: { type: 'gold', montant: 140 },         premium: { type: 'gold', montant: 240 } },
-      // ESPION (21-25)
-      { palier: 21, free: { type: 'gold', montant: 100 },         premium: { type: 'skin', id: 'agent_secret' } },
-      { palier: 22, free: { type: 'gold', montant: 120 },         premium: { type: 'emote', id: 'clin_oeil' } },
-      { palier: 23, free: { type: 'gold', montant: 120 },         premium: { type: 'gold', montant: 160 } },
-      { palier: 24, free: { type: 'gold', montant: 140 },         premium: { type: 'pet', id: 'petit_robot' } },
-      { palier: 25, free: { type: 'gold', montant: 160 },         premium: { type: 'skin', id: 'espionne' } },
-      // CHERIF (26-30)
-      { palier: 26, free: { type: 'gold', montant: 160 },         premium: { type: 'skin', id: 'cowboy' } },
-      { palier: 27, free: { type: 'gold', montant: 200 },         premium: { type: 'emote', id: 'degaine' } },
-      { palier: 28, free: { type: 'gold', montant: 200 },         premium: { type: 'pet', id: 'cheval' } },
-      { palier: 29, free: { type: 'gold', montant: 240 },         premium: { type: 'gold', montant: 400 } },
-      { palier: 30, free: { type: 'gold', montant: 400 },         premium: { type: 'skin', id: 'cherif' } }
+      { palier: 3,  free: { type: 'gold', montant: 60 },          premium: { type: 'skin', id: 'docteur' } },
+      // INNOCENT (4-6)
+      { palier: 4,  free: { type: 'gold', montant: 50 },          premium: { type: 'skin', id: 'enfant' } },
+      { palier: 5,  free: { type: 'gold', montant: 70 },          premium: { type: 'emote', id: 'peur' } },
+      { palier: 6,  free: { type: 'gold', montant: 80 },          premium: { type: 'pet', id: 'voiture_jouet' } },
+      // JOURNALISTE (7-9)
+      { palier: 7,  free: { type: 'gold', montant: 70 },          premium: { type: 'skin', id: 'detective' } },
+      { palier: 8,  free: { type: 'gold', montant: 80 },          premium: { type: 'emote', id: 'enquete' } },
+      { palier: 9,  free: { type: 'gold', montant: 100 },         premium: { type: 'pet', id: 'pigeon_detective' } },
+      // FANATIQUE (10-12)
+      { palier: 10, free: { type: 'gold', montant: 80 },          premium: { type: 'skin', id: 'le_fanatique' } },
+      { palier: 11, free: { type: 'gold', montant: 100 },         premium: { type: 'emote', id: 'rire_demon' } },
+      { palier: 12, free: { type: 'gold', montant: 120 },         premium: { type: 'gold', montant: 200 } },
+      // ESPION (13-15)
+      { palier: 13, free: { type: 'gold', montant: 100 },         premium: { type: 'skin', id: 'agent_secret' } },
+      { palier: 14, free: { type: 'gold', montant: 120 },         premium: { type: 'pet', id: 'petit_robot' } },
+      { palier: 15, free: { type: 'emote', id: 'clin_oeil' },     premium: { type: 'skin', id: 'espionne' } },
+      // CHERIF (16-18)
+      { palier: 16, free: { type: 'gold', montant: 140 },         premium: { type: 'skin', id: 'cowboy' } },
+      { palier: 17, free: { type: 'pet', id: 'cheval' },          premium: { type: 'emote', id: 'degaine' } },
+      { palier: 18, free: { type: 'gold', montant: 250 },         premium: { type: 'skin', id: 'cherif' } }
     ]
   }
 ];

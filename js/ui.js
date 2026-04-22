@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.0.1';
+var CURRENT_VERSION = '3.0.2';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -1439,6 +1439,40 @@ function majToggleDyslexie() {
   if (document.body) apply();
   else document.addEventListener('DOMContentLoaded', apply);
 })();
+
+// === BANNIERE DE ROLE (debut de partie) ===
+function afficherBanniereRole(role) {
+  if (!role) return;
+  var existing = document.getElementById('banniere-role');
+  if (existing) existing.remove();
+  var couleurs = {
+    virus: '#e74c3c',
+    innocent: '#27ae60',
+    journaliste: '#3498db',
+    fanatique: '#8e44ad',
+    espion: '#9b59b6',
+    cherif: '#f39c12'
+  };
+  var couleur = couleurs[role] || '#27ae60';
+  var nomRole = (typeof t === 'function') ? t('role' + role.charAt(0).toUpperCase() + role.slice(1)) : role.toUpperCase();
+  var sousTitre = '';
+  if (role === 'virus') sousTitre = 'Elimine tous les innocents';
+  else if (role === 'innocent') sousTitre = 'Accomplis tes missions';
+  else if (role === 'journaliste') sousTitre = 'Enquete sur les suspects';
+  else if (role === 'fanatique') sousTitre = 'Fais-toi eliminer pour gagner';
+  else if (role === 'espion') sousTitre = 'Choisis ton camp';
+  else if (role === 'cherif') sousTitre = 'Abats les Virus avec tes balles';
+  var div = document.createElement('div');
+  div.className = 'banniere-role';
+  div.id = 'banniere-role';
+  div.style.setProperty('--banniere-color', couleur);
+  div.innerHTML = '<div class="banniere-role-box">' +
+    '<h1 class="banniere-role-titre">' + nomRole + '</h1>' +
+    '<div class="banniere-role-sous">' + sousTitre + '</div>' +
+    '</div>';
+  document.body.appendChild(div);
+  setTimeout(function() { if (div && div.parentNode) div.remove(); }, 3100);
+}
 
 // === CONFETTIS (fin de partie victoire) ===
 function lancerConfettis(couleurs) {

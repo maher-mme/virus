@@ -441,6 +441,8 @@ function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion, 
   } else {
     showNotif(t('youAreInnocent'), 'info');
   }
+  // Banniere de role
+  if (typeof afficherBanniereRole === 'function') afficherBanniereRole(monRole);
 
   // Init balles du cherif (egal au nombre de virus)
   cherifBalles = (monRole === 'cherif') ? nbVirus : 0;

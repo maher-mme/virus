@@ -142,7 +142,65 @@ function switchCasierTab(tab) {
   if (tab === 'musique') genererMusiqueList();
   if (tab === 'animaux') genererCasierAnimaux();
   if (tab === 'pfp') chargerPfpDansCasier();
+  if (tab === 'cadre') genererCadreSelector();
 }
+
+// === CADRES DE PFP ===
+var CADRES_PFP = [
+  { id: 'none',    nom: 'Aucun' },
+  { id: 'gold',    nom: 'Or' },
+  { id: 'emerald', nom: 'Emeraude' },
+  { id: 'royal',   nom: 'Royal' },
+  { id: 'neon',    nom: 'Neon' },
+  { id: 'flame',   nom: 'Flamme' },
+  { id: 'rainbow', nom: 'Arc-en-ciel' }
+];
+function getPfpCadre() {
+  return localStorage.getItem('virusPfpCadre') || 'none';
+}
+function setPfpCadre(id) {
+  localStorage.setItem('virusPfpCadre', id);
+  appliquerCadrePartout();
+  if (typeof db !== 'undefined' && typeof monPlayerId !== 'undefined' && monPlayerId) {
+    db.collection('players').doc(monPlayerId).update({ pfpCadre: id }).catch(function() {});
+  }
+}
+function appliquerCadrePartout() {
+  var cadre = getPfpCadre();
+  document.querySelectorAll('.profil-pfp, .menu-pseudo-pfp, .pfp-preview, .classement-pfp').forEach(function(el) {
+    // Retirer anciens cadres
+    ['none','gold','emerald','royal','neon','flame','rainbow'].forEach(function(c) {
+      el.classList.remove('pfp-cadre-' + c);
+    });
+    el.classList.add('pfp-cadre-' + cadre);
+  });
+}
+function genererCadreSelector() {
+  var container = document.getElementById('casier-cadre-selector');
+  if (!container) return;
+  var current = getPfpCadre();
+  var pfpSrc = (typeof getPfp === 'function') ? getPfp() : 'assets/pfp_de_base.png';
+  container.innerHTML = '';
+  CADRES_PFP.forEach(function(cadre) {
+    var div = document.createElement('div');
+    div.className = 'cadre-option' + (cadre.id === current ? ' cadre-selected' : '');
+    div.onclick = function() {
+      setPfpCadre(cadre.id);
+      container.querySelectorAll('.cadre-option').forEach(function(el) { el.classList.remove('cadre-selected'); });
+      div.classList.add('cadre-selected');
+    };
+    div.innerHTML = '<div class="cadre-option-preview pfp-cadre-' + cadre.id + '" style="background-image:url(' + pfpSrc + ');"></div><div class="cadre-option-nom">' + cadre.nom + '</div>';
+    container.appendChild(div);
+  });
+}
+// Appliquer au chargement
+(function() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', appliquerCadrePartout);
+  } else {
+    setTimeout(appliquerCadrePartout, 100);
+  }
+})();
 
 // ============================
 // SYSTEME DE PHOTO DE PROFIL (PFP)

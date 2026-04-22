@@ -645,6 +645,8 @@ function _demarrerJeuMultiplayer(state) {
   } else {
     showNotif(t('youAreInnocent'), 'info');
   }
+  // Banniere de role
+  if (typeof afficherBanniereRole === 'function') afficherBanniereRole(monRole);
 
   // Afficher le pseudo du joueur local
   var pseudo = getPseudo() || t('player');

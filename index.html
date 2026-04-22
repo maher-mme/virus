@@ -18,11 +18,11 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css?v=4">
-  <link rel="stylesheet" href="css/components.css?v=6">
+  <link rel="stylesheet" href="css/components.css?v=7">
   <link rel="stylesheet" href="css/menu.css?v=20">
   <link rel="stylesheet" href="css/lobby.css?v=20260412">
   <link rel="stylesheet" href="css/game.css?v=18">
-  <link rel="stylesheet" href="css/hud.css?v=15">
+  <link rel="stylesheet" href="css/hud.css?v=16">
   <link rel="stylesheet" href="css/meeting.css?v=6">
   <link rel="stylesheet" href="css/friends.css?v=7">
   <link rel="stylesheet" href="css/responsive.css?v=20260421b">
@@ -77,7 +77,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS v3.0.1 - ALPHA</span>
+    <span class="version">VIRUS v3.0.2 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -156,7 +156,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v3.0.1 - ALPHA</span>
+    <span class="version">VIRUS v3.0.2 - ALPHA</span>
     </div>
   </div>
 
@@ -240,7 +240,7 @@
             <button class="btn-sauver-pseudo" data-i18n="cancelBtn" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v3.0.1 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS v3.0.2 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -445,7 +445,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">v3.0.1 - ALPHA</span>
+        <span class="version-inline">v3.0.2 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -663,7 +663,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS v3.0.1 - ALPHA</span>
+    <span class="version">VIRUS v3.0.2 - ALPHA</span>
     </div>
   </div>
 
@@ -754,7 +754,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS v3.0.1 - ALPHA</span>
+    <span class="version">VIRUS v3.0.2 - ALPHA</span>
     </div>
   </div>
 
@@ -800,7 +800,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS v3.0.1 - ALPHA</span>
+    <span class="version">VIRUS v3.0.2 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -975,6 +975,7 @@
       <button class="casier-tab" id="casier-tab-musique" onclick="switchCasierTab('musique')" data-i18n="musicTab">MUSIQUE</button>
       <button class="casier-tab" id="casier-tab-animaux" onclick="switchCasierTab('animaux')" data-i18n="petsTab">ANIMAUX</button>
       <button class="casier-tab" id="casier-tab-pfp" onclick="switchCasierTab('pfp')" data-i18n="pfpTab">PHOTO</button>
+      <button class="casier-tab" id="casier-tab-cadre" onclick="switchCasierTab('cadre')" data-i18n="frameTab">CADRE</button>
     </div>
 
     <div class="casier-tab-content active" id="casier-content-skin">
@@ -1008,6 +1009,12 @@
         <input type="file" id="pfp-file-input" accept="image/*" style="display:none;" onchange="handlePfpFileSelect(event)">
         <button class="pfp-supprimer-btn" id="pfp-supprimer-btn" onclick="supprimerPfp()" style="display:none;" data-i18n="removePfp">SUPPRIMER</button>
       </div>
+      <button class="cabine-popup-close" onclick="fermerCabine()" data-i18n="close">FERMER</button>
+    </div>
+
+    <div class="casier-tab-content" id="casier-content-cadre">
+      <p data-i18n="chooseFrame">Choisis un cadre pour ta photo de profil !</p>
+      <div class="cadre-selector" id="casier-cadre-selector"></div>
       <button class="cabine-popup-close" onclick="fermerCabine()" data-i18n="close">FERMER</button>
     </div>
   </div>
@@ -1958,14 +1965,14 @@
 <!-- JS -->
 <script src="js/config.js?v=10"></script>
 <script src="js/api.js?v=1"></script>
-<script src="js/skins.js?v=9"></script>
+<script src="js/skins.js?v=10"></script>
 <script src="js/music.js?v=2"></script>
-<script src="js/account.js?v=25"></script>
-<script src="js/ui.js?v=20260421a"></script>
+<script src="js/account.js?v=26"></script>
+<script src="js/ui.js?v=20260422a"></script>
 <script src="js/chat.js?v=6"></script>
 <script src="js/comments.js?v=5"></script>
-<script src="js/translation.js?v=20260421c"></script>
-<script src="js/firebase-sync.js?v=48"></script>
+<script src="js/translation.js?v=20260422a"></script>
+<script src="js/firebase-sync.js?v=49"></script>
 <script src="js/replay.js?v=2"></script>
 <script src="js/emotes.js?v=5"></script>
 <script src="js/passe.js?v=7"></script>
@@ -1973,7 +1980,7 @@
 <script src="js/player.js?v=11"></script>
 <script src="js/shop.js?v=16"></script>
 <script src="js/bots.js?v=11"></script>
-<script src="js/game.js?v=20260421d"></script>
+<script src="js/game.js?v=20260422a"></script>
 <script src="js/roles.js?v=29"></script>
 <script src="js/meeting.js?v=15"></script>
 <script src="js/missions.js?v=10"></script>

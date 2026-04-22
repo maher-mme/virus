@@ -337,6 +337,48 @@
 }
 .btn-tirer:hover { filter: brightness(1.15); transform: translateX(-50%) scale(1.05); }
 
+/* === BANNIERE DE ROLE (debut de partie) === */
+.banniere-role {
+  position: fixed;
+  top: 40%;
+  left: 0;
+  width: 100%;
+  z-index: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  animation: banniereApparition 3s ease-out forwards;
+}
+.banniere-role-box {
+  background: linear-gradient(90deg, transparent 0%, var(--banniere-color, #e74c3c) 20%, var(--banniere-color, #e74c3c) 80%, transparent 100%);
+  padding: 24px 60px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+.banniere-role-titre {
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: clamp(32px, 6vw, 72px);
+  letter-spacing: 8px;
+  color: white;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.8), 0 0 20px var(--banniere-color, #e74c3c);
+  margin: 0;
+}
+.banniere-role-sous {
+  font-family: Arial, sans-serif;
+  font-size: clamp(12px, 2vw, 18px);
+  color: rgba(255,255,255,0.9);
+  letter-spacing: 3px;
+  margin-top: 6px;
+}
+@keyframes banniereApparition {
+  0%   { transform: translateX(-100%); opacity: 0; }
+  15%  { transform: translateX(0); opacity: 1; }
+  75%  { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
 /* === JOYSTICK VIRTUEL === */
 .joystick-base {
   position: fixed;

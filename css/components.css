@@ -1,4 +1,71 @@
 /* ============================== */
+/* CADRES PFP                     */
+/* ============================== */
+.cadre-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  padding: 10px 0;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+.cadre-option {
+  text-align: center;
+  padding: 8px;
+  background: rgba(44,62,80,0.4);
+  border: 2px solid #34495e;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.cadre-option:hover { background: rgba(44,62,80,0.7); border-color: #95a5a6; }
+.cadre-option.cadre-selected { border-color: #f39c12; background: rgba(243,156,18,0.2); }
+.cadre-option-preview {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 6px;
+  border-radius: 50%;
+  background: #34495e url('assets/pfp_de_base.png') center/cover;
+}
+.cadre-option-nom {
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  color: #ecf0f1;
+  letter-spacing: 1px;
+}
+
+/* Effets de cadre (appliques a .pfp-cadre-wrapper ou directement sur img) */
+.pfp-cadre-none { border: none; }
+.pfp-cadre-gold {
+  border: 3px solid #f1c40f;
+  box-shadow: 0 0 10px rgba(241,196,15,0.5);
+}
+.pfp-cadre-flame {
+  border: 3px solid #e74c3c;
+  box-shadow: 0 0 12px rgba(231,76,60,0.6), 0 0 20px rgba(243,156,18,0.4);
+}
+.pfp-cadre-neon {
+  border: 3px solid #00e5ff;
+  box-shadow: 0 0 12px rgba(0,229,255,0.7), 0 0 24px rgba(0,229,255,0.4);
+}
+.pfp-cadre-rainbow {
+  border: 3px solid transparent;
+  background-image: linear-gradient(#2c3e50, #2c3e50), linear-gradient(45deg, #e74c3c, #f39c12, #f1c40f, #2ecc71, #3498db, #9b59b6, #e74c3c);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  animation: cadreRainbow 4s linear infinite;
+}
+@keyframes cadreRainbow { 0%{filter:hue-rotate(0deg);} 100%{filter:hue-rotate(360deg);} }
+.pfp-cadre-royal {
+  border: 3px solid #9b59b6;
+  box-shadow: 0 0 12px rgba(155,89,182,0.6);
+}
+.pfp-cadre-emerald {
+  border: 3px solid #2ecc71;
+  box-shadow: 0 0 12px rgba(46,204,113,0.5);
+}
+
+/* ============================== */
 /* VISITE GUIDEE                  */
 /* ============================== */
 @keyframes visitePulse {

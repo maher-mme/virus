@@ -136,6 +136,8 @@ var TR = {
     passBtn: 'PASSE',
     mobileJoystick: 'JOYSTICK MOBILE',
     mobileJoystickDesc: 'Active : joystick virtuel apparait au toucher. Desactive : tape ou tu veux te deplacer.',
+    frameTab: 'CADRE',
+    chooseFrame: 'Choisis un cadre pour ta photo de profil !',
     oneJournalist: '1 JOURNALISTE',
     zeroJournalist: '0 JOURNALISTE',
     oneFanatic: '1 FANATIQUE',

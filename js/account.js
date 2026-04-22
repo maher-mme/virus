@@ -197,6 +197,11 @@ function connecterCompte() {
       localStorage.setItem('virusPfp', data.pfp);
       afficherPfpPartout();
     }
+    // Restaurer le cadre pfp
+    if (data.pfpCadre) {
+      localStorage.setItem('virusPfpCadre', data.pfpCadre);
+      if (typeof appliquerCadrePartout === 'function') appliquerCadrePartout();
+    }
     // Mettre en ligne + sync skinsCount
     var skinsLogin = data.skinsAchetes || [];
     db.collection('players').doc(monPlayerId).update({

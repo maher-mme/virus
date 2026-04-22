@@ -449,8 +449,9 @@ function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion, 
         if (bots[bv2].role === 'virus') coPlayers.push({ pseudo: bots[bv2].pseudo, skin: bots[bv2].skin });
       }
     } else if (monRole === 'innocent') {
+      // Innocent voit tout le monde
       for (var bi2 = 0; bi2 < bots.length; bi2++) {
-        if (bots[bi2].role === 'innocent') coPlayers.push({ pseudo: bots[bi2].pseudo, skin: bots[bi2].skin });
+        coPlayers.push({ pseudo: bots[bi2].pseudo, skin: bots[bi2].skin });
       }
     } else if (monRole === 'fanatique') {
       for (var bf2 = 0; bf2 < bots.length; bf2++) {

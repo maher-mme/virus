@@ -652,7 +652,7 @@ function _demarrerJeuMultiplayer(state) {
       firebasePartyPlayers.forEach(function(fp) {
         if (fp.playerId === monPlayerId) return; // soi-meme exclu
         if (monRole === 'virus' && fp.role === 'virus') coPlayers.push({ pseudo: fp.pseudo, skin: fp.skin });
-        else if (monRole === 'innocent' && fp.role === 'innocent') coPlayers.push({ pseudo: fp.pseudo, skin: fp.skin });
+        else if (monRole === 'innocent') coPlayers.push({ pseudo: fp.pseudo, skin: fp.skin });
         else if (monRole === 'fanatique' && fp.role === 'espion') coPlayers.push({ pseudo: fp.pseudo, skin: fp.skin });
         else if (monRole === 'espion' && fp.role === 'fanatique') coPlayers.push({ pseudo: fp.pseudo, skin: fp.skin });
       });

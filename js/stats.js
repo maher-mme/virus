@@ -219,7 +219,7 @@ function creerClassementItem(data, rang, valeur) {
   item.appendChild(rangEl);
 
   var img = document.createElement('img');
-  img.className = 'classement-pfp';
+  img.className = 'classement-pfp pfp-cadre-' + (data.pfpCadre || 'none');
   img.src = data.pfp || (typeof PFP_DE_BASE !== 'undefined' ? PFP_DE_BASE : 'assets/pfp_de_base.png');
   img.style.cursor = 'pointer';
   img.title = 'Voir le profil';
@@ -407,8 +407,9 @@ function chargerProfil(playerId) {
     var pourcent = Math.round((niveauInfo.xpDansNiveau / niveauInfo.xpRequis) * 100);
 
     // Header
+    var cadreCls = 'pfp-cadre-' + (data.pfpCadre || 'none');
     var pfpHtml = pfp
-      ? '<img class="profil-pfp" src="' + pfp + '" alt="PFP">'
+      ? '<img class="profil-pfp ' + cadreCls + '" src="' + pfp + '" alt="PFP">'
       : '<div class="profil-pfp-placeholder">?</div>';
     // Statut en ligne / hors ligne + derniere connexion
     var isOnline = data.online && data.lastSeen && (Date.now() - data.lastSeen.toDate().getTime() < 120000);

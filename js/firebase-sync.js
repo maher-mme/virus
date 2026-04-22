@@ -645,8 +645,20 @@ function _demarrerJeuMultiplayer(state) {
   } else {
     showNotif(t('youAreInnocent'), 'info');
   }
-  // Banniere de role
-  if (typeof afficherBanniereRole === 'function') afficherBanniereRole(monRole);
+  // Banniere de role avec allies selon le role (online = vrais joueurs uniquement)
+  if (typeof afficherBanniereRole === 'function') {
+    var coPlayers = [];
+    if (typeof firebasePartyPlayers !== 'undefined') {
+      firebasePartyPlayers.forEach(function(fp) {
+        if (fp.playerId === monPlayerId) return; // soi-meme exclu
+        if (monRole === 'virus' && fp.role === 'virus') coPlayers.push({ pseudo: fp.pseudo, skin: fp.skin });
+        else if (monRole === 'innocent' && fp.role === 'innocent') coPlayers.push({ pseudo: fp.pseudo, skin: fp.skin });
+        else if (monRole === 'fanatique' && fp.role === 'espion') coPlayers.push({ pseudo: fp.pseudo, skin: fp.skin });
+        else if (monRole === 'espion' && fp.role === 'fanatique') coPlayers.push({ pseudo: fp.pseudo, skin: fp.skin });
+      });
+    }
+    afficherBanniereRole(monRole, coPlayers);
+  }
 
   // Afficher le pseudo du joueur local
   var pseudo = getPseudo() || t('player');

@@ -441,8 +441,29 @@ function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion, 
   } else {
     showNotif(t('youAreInnocent'), 'info');
   }
-  // Banniere de role
-  if (typeof afficherBanniereRole === 'function') afficherBanniereRole(monRole);
+  // Banniere de role avec allies selon le role
+  if (typeof afficherBanniereRole === 'function') {
+    var coPlayers = [];
+    if (monRole === 'virus') {
+      for (var bv2 = 0; bv2 < bots.length; bv2++) {
+        if (bots[bv2].role === 'virus') coPlayers.push({ pseudo: bots[bv2].pseudo, skin: bots[bv2].skin });
+      }
+    } else if (monRole === 'innocent') {
+      for (var bi2 = 0; bi2 < bots.length; bi2++) {
+        if (bots[bi2].role === 'innocent') coPlayers.push({ pseudo: bots[bi2].pseudo, skin: bots[bi2].skin });
+      }
+    } else if (monRole === 'fanatique') {
+      for (var bf2 = 0; bf2 < bots.length; bf2++) {
+        if (bots[bf2].role === 'espion') coPlayers.push({ pseudo: bots[bf2].pseudo, skin: bots[bf2].skin });
+      }
+    } else if (monRole === 'espion') {
+      for (var be3 = 0; be3 < bots.length; be3++) {
+        if (bots[be3].role === 'fanatique') coPlayers.push({ pseudo: bots[be3].pseudo, skin: bots[be3].skin });
+      }
+    }
+    // cherif et journaliste : aucun allie affiche
+    afficherBanniereRole(monRole, coPlayers);
+  }
 
   // Init balles du cherif (egal au nombre de virus)
   cherifBalles = (monRole === 'cherif') ? nbVirus : 0;

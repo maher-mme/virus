@@ -378,6 +378,31 @@
   75%  { transform: translateX(0); opacity: 1; }
   100% { transform: translateX(100%); opacity: 0; }
 }
+.banniere-coplayers {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.banniere-coplayer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 10px;
+  background: rgba(0,0,0,0.35);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 8px;
+  min-width: 60px;
+}
+.banniere-coplayer img { width: 42px; height: 42px; object-fit: contain; }
+.banniere-coplayer span {
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  color: white;
+  letter-spacing: 1px;
+}
 
 /* === JOYSTICK VIRTUEL === */
 .joystick-base {

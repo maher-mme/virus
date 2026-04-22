@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.0.2';
+var CURRENT_VERSION = '3.0.3';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -1441,7 +1441,7 @@ function majToggleDyslexie() {
 })();
 
 // === BANNIERE DE ROLE (debut de partie) ===
-function afficherBanniereRole(role) {
+function afficherBanniereRole(role, coPlayers) {
   if (!role) return;
   var existing = document.getElementById('banniere-role');
   if (existing) existing.remove();
@@ -1462,6 +1462,18 @@ function afficherBanniereRole(role) {
   else if (role === 'fanatique') sousTitre = 'Fais-toi eliminer pour gagner';
   else if (role === 'espion') sousTitre = 'Choisis ton camp';
   else if (role === 'cherif') sousTitre = 'Abats les Virus avec tes balles';
+
+  var avatarsHtml = '';
+  if (coPlayers && coPlayers.length > 0) {
+    avatarsHtml = '<div class="banniere-coplayers">';
+    for (var i = 0; i < coPlayers.length; i++) {
+      var p = coPlayers[i];
+      var skinSrc = p.skin || 'skin/gratuit/skin-de-base-garcon.svg';
+      avatarsHtml += '<div class="banniere-coplayer"><img src="' + skinSrc + '" alt=""><span>' + (p.pseudo || '') + '</span></div>';
+    }
+    avatarsHtml += '</div>';
+  }
+
   var div = document.createElement('div');
   div.className = 'banniere-role';
   div.id = 'banniere-role';
@@ -1469,6 +1481,7 @@ function afficherBanniereRole(role) {
   div.innerHTML = '<div class="banniere-role-box">' +
     '<h1 class="banniere-role-titre">' + nomRole + '</h1>' +
     '<div class="banniere-role-sous">' + sousTitre + '</div>' +
+    avatarsHtml +
     '</div>';
   document.body.appendChild(div);
   setTimeout(function() { if (div && div.parentNode) div.remove(); }, 3100);

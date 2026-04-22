@@ -68,28 +68,28 @@ var SAISONS = [
     paliers: [
       // VIRUS (1-3)
       { palier: 1,  free: { type: 'skin', id: 'infecter' },       premium: { type: 'pet', id: 'virus_pet' } },
-      { palier: 2,  free: { type: 'gold', montant: 20 },          premium: { type: 'emote', id: 'tousser' } },
-      { palier: 3,  free: { type: 'gold', montant: 30 },          premium: { type: 'skin', id: 'docteur' } },
+      { palier: 2,  free: { type: 'gold', montant: 10 },          premium: { type: 'emote', id: 'tousser' } },
+      { palier: 3,  free: { type: 'gold', montant: 10 },          premium: { type: 'skin', id: 'docteur' } },
       // INNOCENT (4-6)
-      { palier: 4,  free: { type: 'gold', montant: 25 },          premium: { type: 'skin', id: 'enfant' } },
-      { palier: 5,  free: { type: 'gold', montant: 30 },          premium: { type: 'emote', id: 'peur' } },
-      { palier: 6,  free: { type: 'gold', montant: 40 },          premium: { type: 'pet', id: 'voiture_jouet' } },
+      { palier: 4,  free: { type: 'gold', montant: 10 },          premium: { type: 'skin', id: 'enfant' } },
+      { palier: 5,  free: { type: 'gold', montant: 10 },          premium: { type: 'emote', id: 'peur' } },
+      { palier: 6,  free: { type: 'gold', montant: 10 },          premium: { type: 'pet', id: 'voiture_jouet' } },
       // JOURNALISTE (7-9)
-      { palier: 7,  free: { type: 'gold', montant: 30 },          premium: { type: 'skin', id: 'detective' } },
-      { palier: 8,  free: { type: 'gold', montant: 40 },          premium: { type: 'emote', id: 'enquete' } },
-      { palier: 9,  free: { type: 'gold', montant: 50 },          premium: { type: 'pet', id: 'pigeon_detective' } },
+      { palier: 7,  free: { type: 'gold', montant: 10 },          premium: { type: 'skin', id: 'detective' } },
+      { palier: 8,  free: { type: 'gold', montant: 10 },          premium: { type: 'emote', id: 'enquete' } },
+      { palier: 9,  free: { type: 'gold', montant: 10 },          premium: { type: 'pet', id: 'pigeon_detective' } },
       // FANATIQUE (10-12)
-      { palier: 10, free: { type: 'gold', montant: 40 },          premium: { type: 'skin', id: 'le_fanatique' } },
-      { palier: 11, free: { type: 'gold', montant: 50 },          premium: { type: 'emote', id: 'rire_demon' } },
-      { palier: 12, free: { type: 'gold', montant: 60 },          premium: { type: 'gold', montant: 80 } },
+      { palier: 10, free: { type: 'gold', montant: 10 },          premium: { type: 'skin', id: 'le_fanatique' } },
+      { palier: 11, free: { type: 'gold', montant: 10 },          premium: { type: 'emote', id: 'rire_demon' } },
+      { palier: 12, free: { type: 'gold', montant: 15 },          premium: { type: 'gold', montant: 240 } },
       // ESPION (13-15)
-      { palier: 13, free: { type: 'gold', montant: 50 },          premium: { type: 'skin', id: 'agent_secret' } },
-      { palier: 14, free: { type: 'gold', montant: 60 },          premium: { type: 'pet', id: 'petit_robot' } },
+      { palier: 13, free: { type: 'gold', montant: 10 },          premium: { type: 'skin', id: 'agent_secret' } },
+      { palier: 14, free: { type: 'gold', montant: 15 },          premium: { type: 'pet', id: 'petit_robot' } },
       { palier: 15, free: { type: 'emote', id: 'clin_oeil' },     premium: { type: 'skin', id: 'espionne' } },
       // CHERIF (16-18)
-      { palier: 16, free: { type: 'gold', montant: 70 },          premium: { type: 'skin', id: 'cowboy' } },
+      { palier: 16, free: { type: 'gold', montant: 20 },          premium: { type: 'skin', id: 'cowboy' } },
       { palier: 17, free: { type: 'pet', id: 'cheval' },          premium: { type: 'emote', id: 'degaine' } },
-      { palier: 18, free: { type: 'gold', montant: 100 },         premium: { type: 'skin', id: 'cherif' } }
+      { palier: 18, free: { type: 'gold', montant: 50 },          premium: { type: 'skin', id: 'cherif' } }
     ]
   }
 ];
@@ -137,6 +137,28 @@ function resetSaisonSiNecessaire(data) {
 
   if (data.seasonId === saison.id) return; // deja a jour
 
+  // AUTO-CLAIM des recompenses non-reclamees de l'ancienne saison
+  var oldSaison = data.seasonId ? SAISONS.find(function(s) { return s.id === data.seasonId; }) : null;
+  var gainsAuto = { gold: 0, skins: [], pets: [], emotes: [] };
+  if (oldSaison) {
+    var oldClaims = data.passeClaims || [];
+    var oldLevel = data.seasonLevel || Math.floor((data.seasonXP || 0) / (oldSaison.xpParPalier || 100));
+    var oldPremium = !!data.passePremium;
+    oldSaison.paliers.forEach(function(p) {
+      if (p.palier > oldLevel) return;
+      // Track free
+      var freeKey = 'free-' + p.palier;
+      if (p.free && oldClaims.indexOf(freeKey) < 0) {
+        accumReward(gainsAuto, p.free);
+      }
+      // Track premium (seulement si avait le premium)
+      var premKey = 'premium-' + p.palier;
+      if (oldPremium && p.premium && oldClaims.indexOf(premKey) < 0) {
+        accumReward(gainsAuto, p.premium);
+      }
+    });
+  }
+
   // Nouvelle saison : seeder a partir de la carriere si premier passage
   var seedXP = 0;
   if (!data.seasonId && (data.level || 1) > 1) {
@@ -156,7 +178,50 @@ function resetSaisonSiNecessaire(data) {
     passePremium: false,
     passeSeededV1: true
   };
-  db.collection('players').doc(monPlayerId).update(update).catch(function() {});
+
+  // Appliquer les gains auto
+  if (gainsAuto.gold > 0) update.gold = firebase.firestore.FieldValue.increment(gainsAuto.gold);
+  if (gainsAuto.skins.length > 0) {
+    var sa = (data.skinsAchetes || []).slice();
+    gainsAuto.skins.forEach(function(id) { if (sa.indexOf(id) < 0) sa.push(id); });
+    update.skinsAchetes = sa;
+    update.skinsCount = sa.length;
+    try { localStorage.setItem('virusSkinsAchetes', JSON.stringify(sa)); } catch(e) {}
+  }
+  if (gainsAuto.pets.length > 0) {
+    var pa = (data.petsAchetes || []).slice();
+    gainsAuto.pets.forEach(function(id) { if (pa.indexOf(id) < 0) pa.push(id); });
+    update.petsAchetes = pa;
+    try { localStorage.setItem('virusPetsAchetes', JSON.stringify(pa)); } catch(e) {}
+  }
+  if (gainsAuto.emotes.length > 0) {
+    var ea = (data.emotesAchetes || []).slice();
+    gainsAuto.emotes.forEach(function(id) { if (ea.indexOf(id) < 0) ea.push(id); });
+    update.emotesAchetes = ea;
+    try { localStorage.setItem('virusEmotesAchetes', JSON.stringify(ea)); } catch(e) {}
+  }
+
+  db.collection('players').doc(monPlayerId).update(update).then(function() {
+    if (gainsAuto.gold > 0 && typeof playerGold !== 'undefined') {
+      playerGold += gainsAuto.gold;
+      if (typeof sauvegarderGold === 'function') sauvegarderGold();
+    }
+    var nbItems = gainsAuto.skins.length + gainsAuto.pets.length + gainsAuto.emotes.length;
+    if (nbItems > 0 || gainsAuto.gold > 0) {
+      var msg = 'Recompenses de l\'ancienne saison recuperees ! ';
+      if (gainsAuto.gold > 0) msg += '+' + gainsAuto.gold + ' gold';
+      if (nbItems > 0) msg += ' +' + nbItems + ' item(s)';
+      if (typeof showNotif === 'function') showNotif(msg, 'success');
+    }
+  }).catch(function() {});
+}
+
+function accumReward(acc, reward) {
+  if (!reward) return;
+  if (reward.type === 'gold') acc.gold += (reward.montant || 0);
+  else if (reward.type === 'skin') acc.skins.push(reward.id);
+  else if (reward.type === 'pet') acc.pets.push(reward.id);
+  else if (reward.type === 'emote') acc.emotes.push(reward.id);
 }
 
 // Ajouter XP saison (appele en parallele de ajouterXP carriere)

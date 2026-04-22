@@ -1229,6 +1229,23 @@ function gameLoop() {
   // Systeme d'alarme - detection capteurs
   if (typeof verifierCapteurs === 'function') verifierCapteurs();
 
+  // Bruits de pas 3D pour bots + joueurs distants
+  if (typeof updateFootstep === 'function' && !reunionEnCours) {
+    for (var fsb = 0; fsb < bots.length; fsb++) {
+      if (!bots[fsb].pseudo) continue;
+      if (joueursElimines.indexOf(bots[fsb].pseudo) >= 0) continue;
+      updateFootstep(bots[fsb].pseudo, bots[fsb].x, bots[fsb].y);
+    }
+    if (typeof remotePlayers !== 'undefined') {
+      for (var pidFs in remotePlayers) {
+        var rpFs = remotePlayers[pidFs];
+        if (!rpFs || !rpFs.pseudo) continue;
+        if (joueursElimines.indexOf(rpFs.pseudo) >= 0) continue;
+        updateFootstep(rpFs.pseudo, rpFs.x, rpFs.y);
+      }
+    }
+  }
+
   // Lumieres eteintes - mettre a jour la position du cercle + fleche securite
   if (typeof majLumieresPosition === 'function') majLumieresPosition();
   if (typeof majFlecheSecurite === 'function') majFlecheSecurite();

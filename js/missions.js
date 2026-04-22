@@ -315,7 +315,6 @@ function terminerMission(missionIdx) {
   var m = mesMissions[missionIdx];
   if (!m || m.faite) return;
   m.faite = true;
-  if (typeof playSound3D === 'function') playSound3D('Audio/mission.mp3', joueurX, joueurY, 0.4);
   if (typeof replayLog === 'function') replayLog('mission', { joueur: (typeof getPseudo === 'function' ? getPseudo() : '?') });
 
   var missionEl = document.getElementById('mission-' + missionIdx);

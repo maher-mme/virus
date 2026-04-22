@@ -1062,6 +1062,7 @@ function retourLobbyFinPartie() {
   if (typeof lumieresEteintes !== 'undefined' && lumieresEteintes && typeof desactiverLumieres === 'function') desactiverLumieres();
   if (typeof resetPassagesEtCapteurs === 'function') resetPassagesEtCapteurs();
   if (typeof nettoyerDecorations === 'function') nettoyerDecorations();
+  if (typeof nettoyerFootsteps === 'function') nettoyerFootsteps();
   nettoyerBots();
   joueursElimines = [];
   botsMorts = [];
@@ -1111,6 +1112,7 @@ function retourMenuFinPartie() {
   if (typeof lumieresEteintes !== 'undefined' && lumieresEteintes && typeof desactiverLumieres === 'function') desactiverLumieres();
   if (typeof resetPassagesEtCapteurs === 'function') resetPassagesEtCapteurs();
   if (typeof nettoyerDecorations === 'function') nettoyerDecorations();
+  if (typeof nettoyerFootsteps === 'function') nettoyerFootsteps();
   nettoyerBots();
   joueursElimines = [];
   botsMorts = [];

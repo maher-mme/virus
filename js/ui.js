@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.0.7';
+var CURRENT_VERSION = '3.0.8';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -1440,6 +1440,57 @@ function majToggleDyslexie() {
   if (document.body) apply();
   else document.addEventListener('DOMContentLoaded', apply);
 })();
+
+// === BRUITS DE PAS 3D (loop, volume selon distance) ===
+var _footstepAudios = {};
+var _footstepLastPos = {};
+var FOOTSTEP_SRC = 'Audio/bruit_de_pas.mp3';
+var FOOTSTEP_MAX_DIST = 800;
+var FOOTSTEP_MAX_VOL = 0.45;
+
+function updateFootstep(pseudo, x, y) {
+  if (!pseudo) return;
+  var now = Date.now();
+  var prev = _footstepLastPos[pseudo] || { x: x, y: y, lastMoveTime: 0 };
+  var dx = x - prev.x;
+  var dy = y - prev.y;
+  var bouge = (Math.abs(dx) > 0.2 || Math.abs(dy) > 0.2);
+  if (bouge) prev.lastMoveTime = now;
+  prev.x = x; prev.y = y;
+  _footstepLastPos[pseudo] = prev;
+
+  var mobile = (now - prev.lastMoveTime < 200);
+  if (typeof joueurX === 'undefined' || typeof joueurY === 'undefined') return;
+  var ddx = x - joueurX;
+  var ddy = y - joueurY;
+  var dist = Math.sqrt(ddx * ddx + ddy * ddy);
+
+  if (!mobile || dist > FOOTSTEP_MAX_DIST) {
+    if (_footstepAudios[pseudo]) { try { _footstepAudios[pseudo].pause(); } catch(e) {} }
+    return;
+  }
+  var vol = (1 - dist / FOOTSTEP_MAX_DIST) * FOOTSTEP_MAX_VOL;
+  if (!_footstepAudios[pseudo]) {
+    try {
+      var a = new Audio(FOOTSTEP_SRC);
+      a.loop = true;
+      a.volume = vol;
+      a.play().catch(function() {});
+      _footstepAudios[pseudo] = a;
+    } catch (e) {}
+  } else {
+    _footstepAudios[pseudo].volume = vol;
+    if (_footstepAudios[pseudo].paused) _footstepAudios[pseudo].play().catch(function() {});
+  }
+}
+
+function nettoyerFootsteps() {
+  for (var p in _footstepAudios) {
+    try { _footstepAudios[p].pause(); } catch(e) {}
+  }
+  _footstepAudios = {};
+  _footstepLastPos = {};
+}
 
 // === PARTICULES DE MORT (par role) ===
 var ROLE_COULEURS_PARTICULES = {

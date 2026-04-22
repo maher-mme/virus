@@ -753,6 +753,13 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* Particules de mort (par role) */
+@keyframes particuleMortFly {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  70%  { opacity: 1; }
+  100% { transform: translate(var(--pdx, 50px), var(--pdy, 50px)) scale(0.2); opacity: 0; }
+}
+
 /* Confettis */
 .confetti-container {
   position: fixed;

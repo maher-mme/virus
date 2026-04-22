@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.0.6';
+var CURRENT_VERSION = '3.0.7';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -1413,8 +1413,9 @@ function majLumieresPosition() {
 }
 
 function initBoutonLumieres() {
+  // Fonctionnalite retiree : l'Espion ne peut plus eteindre les lumieres
   var btn = document.getElementById('hud-btn-lumieres');
-  if (btn) btn.style.display = (monRole === 'espion') ? 'inline-block' : 'none';
+  if (btn) btn.style.display = 'none';
 }
 
 // === POLICE DYSLEXIQUE ===
@@ -1439,6 +1440,58 @@ function majToggleDyslexie() {
   if (document.body) apply();
   else document.addEventListener('DOMContentLoaded', apply);
 })();
+
+// === PARTICULES DE MORT (par role) ===
+var ROLE_COULEURS_PARTICULES = {
+  virus: '#e74c3c',
+  innocent: '#2ecc71',
+  journaliste: '#3498db',
+  fanatique: '#8e44ad',
+  espion: '#9b59b6',
+  cherif: '#f39c12'
+};
+function spawnParticulesMort(mapX, mapY, role) {
+  var mallMap = document.getElementById('mall-map');
+  if (!mallMap) return;
+  var couleur = ROLE_COULEURS_PARTICULES[role] || '#bdc3c7';
+  var container = document.createElement('div');
+  container.className = 'particules-mort';
+  container.style.cssText = 'position:absolute;left:' + mapX + 'px;top:' + mapY + 'px;width:0;height:0;pointer-events:none;z-index:40;';
+  mallMap.appendChild(container);
+  var nb = 18;
+  for (var i = 0; i < nb; i++) {
+    var angle = (i / nb) * Math.PI * 2 + Math.random() * 0.3;
+    var distance = 25 + Math.random() * 45;
+    var dx = Math.cos(angle) * distance;
+    var dy = Math.sin(angle) * distance;
+    var size = 5 + Math.random() * 5;
+    var p = document.createElement('div');
+    p.className = 'particule-mort';
+    p.style.cssText = 'position:absolute;left:0;top:0;width:' + size + 'px;height:' + size + 'px;background:' + couleur + ';border-radius:50%;opacity:1;box-shadow:0 0 6px ' + couleur + ';--pdx:' + dx + 'px;--pdy:' + dy + 'px;animation:particuleMortFly 1.1s ease-out forwards;';
+    container.appendChild(p);
+  }
+  setTimeout(function() { if (container && container.parentNode) container.remove(); }, 1400);
+}
+
+// === SONS 3D (volume selon distance) ===
+var SON_DISTANCE_MAX = 800; // au-dela = silence
+function playSound3D(src, sourceX, sourceY, volumeBase) {
+  if (!src) return;
+  try {
+    var audio = new Audio(src);
+    var vol = (typeof volumeBase === 'number') ? volumeBase : 1;
+    if (typeof sourceX === 'number' && typeof sourceY === 'number' && typeof joueurX !== 'undefined' && typeof joueurY !== 'undefined') {
+      var dx = sourceX - joueurX;
+      var dy = sourceY - joueurY;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist >= SON_DISTANCE_MAX) return;
+      var facteur = 1 - (dist / SON_DISTANCE_MAX);
+      vol = Math.max(0, Math.min(1, vol * facteur));
+    }
+    audio.volume = vol;
+    audio.play().catch(function() {});
+  } catch (e) {}
+}
 
 // === BANNIERE DE ROLE (debut de partie) ===
 function afficherBanniereRole(role, coPlayers) {

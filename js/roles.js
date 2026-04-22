@@ -323,9 +323,11 @@ function tirerCible(pseudoCible, isRemote) {
   }
   // Eliminer la cible (peu importe le role)
   joueursElimines.push(pseudoCible);
+  // Son 3D du tir
+  if (typeof playSound3D === 'function') playSound3D('Audio/tir.mp3', cibleX, cibleY, 0.6);
   // Cadavre visuel
   if (typeof creerCadavre === 'function' && cibleX && cibleY) {
-    creerCadavre(cibleX, cibleY, pseudoCible, cibleSkin);
+    creerCadavre(cibleX, cibleY, pseudoCible, cibleSkin, roleCible);
   }
   // Visuel bot mort
   for (var bm = 0; bm < bots.length; bm++) {
@@ -477,7 +479,7 @@ var SIGNALER_DISTANCE = 120;
 var cadavreProche = -1; // index du cadavre le plus proche
 var killProtection = false; // protection de 7s au debut et apres reunion
 
-function creerCadavre(x, y, pseudo, skin) {
+function creerCadavre(x, y, pseudo, skin, roleVictime) {
   var mallMap = document.getElementById('mall-map');
   var div = document.createElement('div');
   div.className = 'cadavre';
@@ -486,6 +488,8 @@ function creerCadavre(x, y, pseudo, skin) {
   div.innerHTML = '<span class="cadavre-x">X</span><img src="' + skin + '" alt="cadavre">';
   mallMap.appendChild(div);
   cadavres.push({ x: x, y: y, pseudo: pseudo, skin: skin, element: div });
+  // Particules colorees selon le role de la victime
+  if (typeof spawnParticulesMort === 'function') spawnParticulesMort(x, y, roleVictime);
   // Si reunion en cours, supprimer immediatement le cadavre
   if (reunionEnCours) {
     if (div.parentNode) div.parentNode.removeChild(div);
@@ -528,9 +532,11 @@ function eliminerBot(pseudoVictime) {
       if (bots[b].petObj && bots[b].petObj.element) {
         bots[b].petObj.element.style.display = 'none';
       }
+      var broleDeath = bots[b].role;
       botsMorts.push(bots[b]);
       bots.splice(b, 1);
-      creerCadavre(bx, by, pseudoVictime, bskin);
+      if (typeof playSound3D === 'function') playSound3D('Audio/kill.mp3', bx, by, 0.6);
+      creerCadavre(bx, by, pseudoVictime, bskin, broleDeath);
       break;
     }
   }
@@ -569,7 +575,7 @@ function tuerVictime() {
     }
     if (rpVictime) {
       setTimeout(function() {
-        creerCadavre(rpVictime.x, rpVictime.y, pseudoVictime, rpVictime.skin || 'skin/gratuit/skin-de-base-garcon.svg');
+        creerCadavre(rpVictime.x, rpVictime.y, pseudoVictime, rpVictime.skin || 'skin/gratuit/skin-de-base-garcon.svg', rpVictime.role);
       }, 5000);
     }
     // Cooldown
@@ -777,7 +783,7 @@ function botsVirusTuent() {
               db.collection('partyPlayers').doc(myPartyPlayerDocId).update({ alive: false }).catch(function() {});
             }
             // Creer cadavre joueur
-            creerCadavre(joueurX, joueurY, pseudo, getSkinFichier(getSkin()));
+            creerCadavre(joueurX, joueurY, pseudo, getSkinFichier(getSkin()), monRole);
             var gagnant = verifierVictoire();
             if (gagnant) afficherFinPartie(gagnant);
           }, 5000);

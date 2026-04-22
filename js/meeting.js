@@ -290,6 +290,7 @@ function lancerChatBotsIA() {
   var phrasesJournaliste = t('botJournalist');
   var phrasesFanatique = t('botFanatic');
   var phrasesEspion = t('botSpy');
+  var phrasesCherif = t('botSheriff');
   var phrasesCommentaire = t('botComment');
 
   var pseudoJoueur = getPseudo() || t('player');
@@ -355,6 +356,8 @@ function lancerChatBotsIA() {
           msg = phrasesFanatique[Math.floor(Math.random() * phrasesFanatique.length)];
         } else if (bot.role === 'espion' && rand < 0.5) {
           msg = phrasesEspion[Math.floor(Math.random() * phrasesEspion.length)].replace('{c}', cible);
+        } else if (bot.role === 'cherif' && rand < 0.5 && phrasesCherif && phrasesCherif.length > 0) {
+          msg = phrasesCherif[Math.floor(Math.random() * phrasesCherif.length)].replace('{c}', cible);
         } else if (rand < 0.4) {
           if (cible) {
             msg = phrasesAccusation[Math.floor(Math.random() * phrasesAccusation.length)].replace('{c}', cible);

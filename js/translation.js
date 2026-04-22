@@ -572,6 +572,18 @@ var TR = {
       '{c} cache quelque chose, j\'en suis certain 🤨',
       'Je joue mon propre jeu, ne m\'incluez pas dans vos plans 😎'
     ],
+    botSheriff: [
+      'Je garde mes balles pour les virus ! 🔫',
+      'Faites confiance au cherif 🤠',
+      'Ne me forcez pas a tirer ! 😤',
+      'J\'ai mes balles, ne les gaspillez pas ⚡',
+      '{c} est dans mon viseur... 🎯',
+      'Je vais regler ca moi-meme 🤠',
+      'Un pas de plus vers moi et je tire 🔫',
+      'Je suis le cherif, la loi c\'est moi 🌟',
+      'Je tire sur les virus, pas sur les innocents 😤',
+      'J\'ai attrape {c} la main dans le sac 🔍'
+    ],
     botComment: [
       'aller votez ! 🗳️',
       'je vais faire mes taches apres 📋',
@@ -1306,6 +1318,18 @@ var TR = {
       'I\'m neither with you nor against you',
       '{c} is hiding something, I\'m certain',
       'I\'m playing my own game, don\'t include me in your plans'
+    ],
+    botSheriff: [
+      'I\'m saving my bullets for the viruses! 🔫',
+      'Trust the sheriff 🤠',
+      'Don\'t make me shoot! 😤',
+      'I\'ve got my bullets, don\'t waste them ⚡',
+      '{c} is in my crosshairs... 🎯',
+      'I\'ll handle this myself 🤠',
+      'One more step towards me and I shoot 🔫',
+      'I\'m the sheriff, I am the law 🌟',
+      'I shoot viruses, not innocents 😤',
+      'Caught {c} red-handed 🔍'
     ],
     botComment: [
       'let\'s goo!',
@@ -2043,6 +2067,18 @@ var TR = {
       '{c} oculta algo, estoy seguro',
       'Juego mi propio juego, no me incluyan en sus planes'
     ],
+    botSheriff: [
+      '\u00A1Guardo mis balas para los virus! 🔫',
+      'Confien en el sheriff 🤠',
+      '\u00A1No me obliguen a disparar! 😤',
+      'Tengo mis balas, no las desperdicien ⚡',
+      '{c} esta en mi mira... 🎯',
+      'Voy a arreglar esto yo mismo 🤠',
+      'Un paso mas hacia mi y disparo 🔫',
+      'Soy el sheriff, la ley soy yo 🌟',
+      'Disparo a los virus, no a los inocentes 😤',
+      'Atrape a {c} con las manos en la masa 🔍'
+    ],
     botComment: [
       '\u00A1vamos vamos!',
       '\u00A1a votar!',
@@ -2690,6 +2726,18 @@ var TR = {
       'きみたちのみかたでもてきでもない',
       '{c}はなにかかくしてる、かくしんがある',
       'じぶんのゲームをしてるから、けいかくにいれないで'
+    ],
+    botSheriff: [
+      'たまはウイルスのためにとっておく！ 🔫',
+      'ほあんかんをしんじろ 🤠',
+      'うたせるなよ！ 😤',
+      'たまはあるけど、むだにするな ⚡',
+      '{c}をねらってる... 🎯',
+      'じぶんでかたをつける 🤠',
+      'いっぽでもちかづいたらうつぞ 🔫',
+      'おれがほあんかん、おれがほうりつだ 🌟',
+      'ウイルスはうつ、むこはうたない 😤',
+      '{c}をげんこうはんでつかまえた 🔍'
     ],
     botComment: [
       'いくぞ！',
@@ -3339,6 +3387,18 @@ var TR = {
       '{c} verbirgt etwas, da bin ich sicher',
       'Ich spiele mein eigenes Spiel, bezieht mich nicht in eure Plane ein'
     ],
+    botSheriff: [
+      'Ich spare meine Kugeln fur die Viren! 🔫',
+      'Vertraut dem Sheriff 🤠',
+      'Zwingt mich nicht zu schiessen! 😤',
+      'Ich habe meine Kugeln, verschwendet sie nicht ⚡',
+      '{c} ist in meinem Visier... 🎯',
+      'Ich regle das selbst 🤠',
+      'Noch einen Schritt naher und ich schiesse 🔫',
+      'Ich bin der Sheriff, ich bin das Gesetz 🌟',
+      'Ich schiesse auf Viren, nicht auf Unschuldige 😤',
+      'Ich habe {c} auf frischer Tat ertappt 🔍'
+    ],
     botComment: [
       'auf geht\'s!',
       'stimmt ab!',
@@ -3986,6 +4046,18 @@ var TR = {
       'لست معكم ولا ضدكم',
       '{c} يخفي شيئا، انا متاكد',
       'انا العب لعبتي الخاصة، لا تشملوني في خططكم'
+    ],
+    botSheriff: [
+      'احتفظ برصاصاتي للفيروسات! 🔫',
+      'ثقوا بالشريف 🤠',
+      'لا تجبروني على اطلاق النار! 😤',
+      'لدي رصاصاتي، لا تضيعوها ⚡',
+      '{c} في مرماي... 🎯',
+      'ساتولى الامر بنفسي 🤠',
+      'خطوة اخرى نحوي وساطلق النار 🔫',
+      'انا الشريف، انا القانون 🌟',
+      'اطلق النار على الفيروسات لا على الابرياء 😤',
+      'امسكت {c} متلبسا 🔍'
     ],
     botComment: [
       'يا جماعة!',

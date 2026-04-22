@@ -16,8 +16,8 @@ var DECORATIONS_SAISONS = {
   }
 };
 
-var DECO_NB_MIN = 50;
-var DECO_NB_MAX = 75;
+var DECO_NB_MIN = 120;
+var DECO_NB_MAX = 180;
 var DECO_MARGIN = 100; // px de marge par rapport aux bords
 
 function getSaisonActiveDeco() {
@@ -48,13 +48,13 @@ function genererDecorations() {
     var elem = data.elements[Math.floor(Math.random() * data.elements.length)];
     var x = DECO_MARGIN + Math.floor(Math.random() * (mapW - 2 * DECO_MARGIN));
     var y = DECO_MARGIN + Math.floor(Math.random() * (mapH - 2 * DECO_MARGIN));
-    var rotation = Math.floor(Math.random() * 40) - 20; // -20deg a +20deg
-    var taille = 20 + Math.floor(Math.random() * 12); // 20 a 32 px
-    var opacity = 0.35 + Math.random() * 0.35; // 0.35 a 0.70
+    var rotation = Math.floor(Math.random() * 60) - 30; // -30deg a +30deg
+    var taille = 28 + Math.floor(Math.random() * 20); // 28 a 48 px (plus gros)
+    var opacity = 0.75 + Math.random() * 0.2; // 0.75 a 0.95 (presque opaque)
 
     var deco = document.createElement('div');
     deco.className = 'decoration';
-    deco.style.cssText = 'position:absolute;left:' + x + 'px;top:' + y + 'px;font-size:' + taille + 'px;transform:rotate(' + rotation + 'deg);opacity:' + opacity + ';pointer-events:none;user-select:none;';
+    deco.style.cssText = 'position:absolute;left:' + x + 'px;top:' + y + 'px;font-size:' + taille + 'px;transform:rotate(' + rotation + 'deg);opacity:' + opacity + ';pointer-events:none;user-select:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));';
     deco.textContent = elem.icone;
     container.appendChild(deco);
   }

@@ -261,6 +261,16 @@ function setControleMobile(mode) {
 function majToggleControleMobile() {
   var btn = document.getElementById('toggle-controle-mobile');
   var lbl = document.getElementById('toggle-controle-mobile-label');
+  var row = document.getElementById('joystick-toggle-row');
+  var desc = document.getElementById('joystick-toggle-desc');
+  // Afficher seulement sur mobile
+  if (isMobile) {
+    if (row) row.style.display = 'flex';
+    if (desc) desc.style.display = '';
+  } else {
+    if (row) row.style.display = 'none';
+    if (desc) desc.style.display = 'none';
+  }
   var actif = (getControleMobile() === 'joystick');
   if (btn) btn.classList.toggle('active', actif);
   if (lbl) lbl.classList.toggle('active', actif);

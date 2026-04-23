@@ -194,11 +194,11 @@
             <span class="config-hl-toggle-label" id="toggle-dyslexie-label" data-i18n="dyslexicFont">POLICE DYSLEXIQUE</span>
           </div>
           <p style="font-size:11px;color:#95a5a6;margin-top:6px;" data-i18n="dyslexicFontDesc">Change la police pour une police plus lisible (Comic Sans / Verdana) avec plus d'espacement.</p>
-          <div class="config-hl-toggle-row" style="gap:12px;margin-top:10px;">
+          <div class="config-hl-toggle-row mobile-only" id="joystick-toggle-row" style="gap:12px;margin-top:10px;display:none;">
             <div class="config-hl-toggle active" id="toggle-controle-mobile" onclick="toggleControleMobile()"></div>
             <span class="config-hl-toggle-label active" id="toggle-controle-mobile-label" data-i18n="mobileJoystick">JOYSTICK MOBILE</span>
           </div>
-          <p style="font-size:11px;color:#95a5a6;margin-top:6px;" data-i18n="mobileJoystickDesc">Active : joystick virtuel apparait au toucher. Desactive : tape ou tu veux te deplacer.</p>
+          <p class="mobile-only" id="joystick-toggle-desc" style="font-size:11px;color:#95a5a6;margin-top:6px;display:none;" data-i18n="mobileJoystickDesc">Active : joystick virtuel apparait au toucher. Desactive : tape ou tu veux te deplacer.</p>
         </div>
         <div class="popup-section" id="section-set-pin" style="display:none;">
           <label data-i18n="setPin">CHOISIR UN MOT DE PASSE</label>

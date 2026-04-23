@@ -25,8 +25,8 @@ var SKINS_BOUTIQUE = [
   { id: 'mario', nom: 'Technicien', fichier: 'skin/boutique/Plombier_blanc.svg', prix: 250, rarete: 'rare' },
   { id: 'princessepeach', nom: 'Princesse Peach', fichier: 'skin/boutique/princesse-peach.svg', prix: 100, rarete: 'commun' },
   { id: 'luigi', nom: 'Technicien Vert', fichier: 'skin/boutique/Pombier_vert.svg', prix: 100, rarete: 'commun' },
-  { id: 'steve', nom: 'Steve', fichier: 'skin/boutique/Steve.svg', prix: 300, rarete: 'rare' },
-  { id: 'alex', nom: 'Alex', fichier: 'skin/boutique/Alex.svg', prix: 100, rarete: 'commun' },
+  { id: 'steve', nom: 'Aventurier', fichier: 'skin/boutique/Steve.svg', prix: 300, rarete: 'rare' },
+  { id: 'alex', nom: 'Exploratrice', fichier: 'skin/boutique/Alex.svg', prix: 100, rarete: 'commun' },
   { id: 'ninjaxx', nom: 'Ninjaxx', fichier: 'skin/boutique/Ninjaxx.svg', prix: 150, rarete: 'rare' },
   { id: 'valentina', nom: 'Valentina', fichier: 'skin/boutique/Valentina.svg', prix: 500, rarete: 'epic' },
   { id: 'galaxy', nom: 'Galaxy', fichier: 'skin/boutique/Galaxy.svg', prix: 1000, rarete: 'legendaire' },
@@ -36,7 +36,7 @@ var SKINS_BOUTIQUE = [
   { id: 'pomni', nom: 'Pomni', fichier: 'skin/boutique/pomni.svg', prix: 400, rarete: 'epic' },
   { id: 'caine', nom: 'Caine', fichier: 'skin/boutique/Caine-immobile.svg', fichierMove: 'skin/boutique/Caine-d\u00e9placment.svg', prix: 900, rarete: 'legendaire', animated: true },
   { id: 'frilleu', nom: 'Frilleu', fichier: 'skin/boutique/frilleu.svg', prix: 100, rarete: 'commun' },
-  { id: 'creeper', nom: 'Creeper', fichier: 'skin/boutique/creeper.svg', prix: 250, rarete: 'rare' }
+  { id: 'creeper', nom: 'Explosif Vert', fichier: 'skin/boutique/creeper.svg', prix: 250, rarete: 'rare' }
 ];
 
 function getSkinsAchetes() {

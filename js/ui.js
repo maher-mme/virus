@@ -1,7 +1,7 @@
 // Navigation entre ecrans
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.1.0';
+var CURRENT_VERSION = '3.1.1';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 

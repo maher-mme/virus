@@ -22,9 +22,9 @@ sauvegarderGold();
 // BOUTIQUE DE SKINS
 // ============================
 var SKINS_BOUTIQUE = [
-  { id: 'mario', nom: 'Mario', fichier: 'skin/boutique/Mario.svg', prix: 250, rarete: 'rare' },
+  { id: 'mario', nom: 'Plombier', fichier: 'skin/boutique/Plombier_blanc.svg', prix: 250, rarete: 'rare' },
   { id: 'princessepeach', nom: 'Princesse Peach', fichier: 'skin/boutique/princesse-peach.svg', prix: 100, rarete: 'commun' },
-  { id: 'luigi', nom: 'Luigi', fichier: 'skin/boutique/Luigi.svg', prix: 100, rarete: 'commun' },
+  { id: 'luigi', nom: 'Plombier Vert', fichier: 'skin/boutique/Pombier_vert.svg', prix: 100, rarete: 'commun' },
   { id: 'steve', nom: 'Steve', fichier: 'skin/boutique/Steve.svg', prix: 300, rarete: 'rare' },
   { id: 'alex', nom: 'Alex', fichier: 'skin/boutique/Alex.svg', prix: 100, rarete: 'commun' },
   { id: 'ninjaxx', nom: 'Ninjaxx', fichier: 'skin/boutique/Ninjaxx.svg', prix: 150, rarete: 'rare' },

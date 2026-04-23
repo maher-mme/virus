@@ -4,7 +4,6 @@ var MUSIQUES = [
 ];
 
 var MUSIQUES_BOUTIQUE = [
-  { id: 'tadc', nom: 'The Amazing Digital Circus', artiste: '', fichier: 'musique/The_Amazing_Digital_Circus/The_Amazing_Digital_Circus_.mp3', image: 'musique/The_Amazing_Digital_Circus/The_Amazing_Digital_Circus.png', prix: 250, couleur: '#9b59b6' },
   { id: 'multiverse', nom: 'Multiverse', artiste: '', fichier: 'musique/multiverse/Multiverse.mp3', image: 'musique/multiverse/affiche_de_multiverse.png', prix: 200, couleur: '#e74c3c' },
   { id: 'flute_flailed', nom: 'Fl\u00fbte flailed', artiste: '', fichier: 'musique/fl\u00fbte_flailed/flute-failed-sondtrack.mp3', image: 'musique/fl\u00fbte_flailed/affiche_de_fl\u00fbte.flailed.png', prix: 200, couleur: '#3b3b98' },
   { id: 'enough_silence', nom: 'Enough silence', artiste: '', fichier: 'musique/Enough_silence/Enough_silence.mp3', image: 'musique/Enough_silence/Enough_silence-image.png', prix: 150, couleur: '#1a3a8a' }

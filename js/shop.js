@@ -33,8 +33,7 @@ var SKINS_BOUTIQUE = [
   { id: 'obstinate', nom: 'Obstinate', fichier: 'skin/boutique/obstinate.svg', prix: 500, rarete: 'epic' },
   { id: 'fermier', nom: 'Fermier', fichier: 'skin/boutique/fermier.svg', prix: 50, rarete: 'typique' },
   { id: 'pandareulou', nom: 'Panda Reulou', fichier: 'skin/boutique/panda-reulou.svg', prix: 1000, rarete: 'legendaire' },
-  { id: 'pomni', nom: 'Pomni', fichier: 'skin/boutique/pomni.svg', prix: 400, rarete: 'epic' },
-  { id: 'caine', nom: 'Caine', fichier: 'skin/boutique/Caine-immobile.svg', fichierMove: 'skin/boutique/Caine-d\u00e9placment.svg', prix: 900, rarete: 'legendaire', animated: true },
+  { id: 'pomni', nom: 'Poufonne', fichier: 'skin/boutique/pomni.svg', prix: 400, rarete: 'epic' },
   { id: 'frilleu', nom: 'Frilleu', fichier: 'skin/boutique/frilleu.svg', prix: 100, rarete: 'commun' },
   { id: 'creeper', nom: 'Explosif Vert', fichier: 'skin/boutique/creeper.svg', prix: 250, rarete: 'rare' }
 ];
@@ -281,7 +280,7 @@ function genererBoutiqueMusique() {
 var PETS_BOUTIQUE = [
   { id: 'chien-spatial', nom: 'Chien Spatial', idle: 'pets/chien_de_l\'espsace1.svg', walk1: 'pets/chien_de_l\'espsace2.svg', walk2: 'pets/chien_de_l\'espsace3.svg', prix: 50, rarete: 'typique' },
   { id: 'lapin', nom: 'Lapin', idle: 'pets/Rabbit-a.svg', walk1: 'pets/Rabbit-a.svg', walk2: 'pets/Rabbit-b.svg', prix: 100, rarete: 'commun' },
-  { id: 'bubble', nom: 'Bubble', idle: 'pets/buble.svg', walk1: 'pets/buble.svg', walk2: 'pets/buble2.svg', prix: 150, rarete: 'rare' },
+  { id: 'bubble', nom: 'Bulle', idle: 'pets/buble.svg', walk1: 'pets/buble.svg', walk2: 'pets/buble2.svg', prix: 150, rarete: 'rare' },
   { id: 'dragon-feu', nom: 'Dragon de Feu', idle: 'pets/dragon_de_feu.gif', walk1: 'pets/dragon_de_feu.gif', walk2: 'pets/dragon_de_feu.gif', prix: 150, rarete: 'epic', isGif: true, sizePx: 80 }
 ];
 

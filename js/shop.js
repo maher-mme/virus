@@ -28,7 +28,7 @@ var SKINS_BOUTIQUE = [
   { id: 'steve', nom: 'Aventurier', fichier: 'skin/boutique/Steve.svg', prix: 300, rarete: 'rare' },
   { id: 'alex', nom: 'Exploratrice', fichier: 'skin/boutique/Alex.svg', prix: 100, rarete: 'commun' },
   { id: 'ninjaxx', nom: 'Ninjaxx', fichier: 'skin/boutique/Ninjaxx.svg', prix: 150, rarete: 'rare' },
-  { id: 'valentina', nom: 'Valentina', fichier: 'skin/boutique/Valentina.svg', prix: 500, rarete: 'epic' },
+  { id: 'valentina', nom: 'Voleuse', fichier: 'skin/boutique/Valentina.svg', prix: 500, rarete: 'epic' },
   { id: 'galaxy', nom: 'Galaxy', fichier: 'skin/boutique/Galaxy.svg', prix: 1000, rarete: 'legendaire' },
   { id: 'obstinate', nom: 'Obstinate', fichier: 'skin/boutique/obstinate.svg', prix: 500, rarete: 'epic' },
   { id: 'fermier', nom: 'Fermier', fichier: 'skin/boutique/fermier.svg', prix: 50, rarete: 'typique' },

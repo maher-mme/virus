@@ -23,7 +23,7 @@ sauvegarderGold();
 // ============================
 var SKINS_BOUTIQUE = [
   { id: 'mario', nom: 'Technicien', fichier: 'skin/boutique/Plombier_blanc.svg', prix: 250, rarete: 'rare' },
-  { id: 'princessepeach', nom: 'Princesse', fichier: 'skin/boutique/princesse-peach.svg', prix: 100, rarete: 'commun' },
+  { id: 'princessepeach', nom: 'Princesse', fichier: 'skin/boutique/princesse.svg', prix: 100, rarete: 'commun' },
   { id: 'luigi', nom: 'Technicien Vert', fichier: 'skin/boutique/Pombier_vert.svg', prix: 100, rarete: 'commun' },
   { id: 'steve', nom: 'Aventurier', fichier: 'skin/boutique/Steve.svg', prix: 300, rarete: 'rare' },
   { id: 'alex', nom: 'Exploratrice', fichier: 'skin/boutique/Alex.svg', prix: 100, rarete: 'commun' },

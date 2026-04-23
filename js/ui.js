@@ -272,7 +272,7 @@ function gererMusiqueMenu(ecranId) {
 
 function playLobbyMusic() {
   if (!_lobbyAudio) {
-    _lobbyAudio = new Audio('musique/mincraft/minecraft-game-relax.wav');
+    _lobbyAudio = new Audio('musique/Enough_silence/Enough_silence.mp3');
     _lobbyAudio.loop = true;
     _lobbyAudio.volume = 0.3;
   }

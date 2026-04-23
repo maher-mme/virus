@@ -151,9 +151,19 @@ function chargerClassement(champ) {
         var estAdmin = pseudoLower === 'obstinate' || pseudoLower === 'obstinate2.0' || pseudoLower === 'chrikidd77';
         if (estAdmin) return;
         var nb = nbSkinsBase; // skins de base inclus pour tous
-        if (data.skinsAchetes && Array.isArray(data.skinsAchetes)) nb += data.skinsAchetes.length;
-        if (data.petsAchetes && Array.isArray(data.petsAchetes)) nb += data.petsAchetes.length;
-        if (data.musiquesAchetees && Array.isArray(data.musiquesAchetees)) nb += data.musiquesAchetees.length;
+        // Compter seulement les items encore dispo dans la boutique (filtrer les retires)
+        var skinsValidesIds = (typeof SKINS_BOUTIQUE !== 'undefined') ? SKINS_BOUTIQUE.map(function(s) { return s.id; }) : [];
+        var petsValidesIds = (typeof PETS_BOUTIQUE !== 'undefined') ? PETS_BOUTIQUE.map(function(p) { return p.id; }) : [];
+        var musiquesValidesIds = (typeof MUSIQUES_BOUTIQUE !== 'undefined') ? MUSIQUES_BOUTIQUE.map(function(m) { return m.id; }) : [];
+        if (data.skinsAchetes && Array.isArray(data.skinsAchetes)) {
+          nb += data.skinsAchetes.filter(function(id) { return skinsValidesIds.indexOf(id) >= 0; }).length;
+        }
+        if (data.petsAchetes && Array.isArray(data.petsAchetes)) {
+          nb += data.petsAchetes.filter(function(id) { return petsValidesIds.indexOf(id) >= 0; }).length;
+        }
+        if (data.musiquesAchetees && Array.isArray(data.musiquesAchetees)) {
+          nb += data.musiquesAchetees.filter(function(id) { return musiquesValidesIds.indexOf(id) >= 0; }).length;
+        }
         if (data.pseudo && data.pseudo.trim()) {
           joueurs.push({ data: data, count: nb });
         }

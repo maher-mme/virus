@@ -62,6 +62,7 @@ function afficherAmis() {
         }
       }
       html += '<button class="ami-btn-profil" onclick="ouvrirProfil(\'' + escapeOnclick(ami.uid) + '\')" title="Voir le profil">&#128100;</button>';
+      html += '<button class="ami-btn-vs" onclick="afficherHistoriqueVs(\'' + escapeOnclick(ami.uid) + '\', \'' + escapeOnclick(ami.pseudo) + '\')" title="Historique vs cet ami">VS</button>';
       if (isOnline) {
         html += '<button class="ami-btn-echange" onclick="proposerEchange(\'' + escapeOnclick(ami.uid) + '\', \'' + escapeOnclick(ami.pseudo) + '\')" title="Echanger un skin">&#128260;</button>';
       }

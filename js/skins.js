@@ -106,7 +106,8 @@ function genererSkinSelector(containerId) {
       div.classList.add('skin-selected');
     };
     var rar = RARETES[skin.rarete] || RARETES.typique;
-    div.innerHTML = '<img src="' + skin.fichier + '" alt="' + skin.nom + '"><span class="skin-rarete" style="color:' + rar.couleur + '">' + rar.nom + '</span><span class="skin-label">' + skin.nom + '</span>';
+    var skinNomCasier = (typeof getCosmeticNom === 'function') ? getCosmeticNom(skin) : skin.nom;
+    div.innerHTML = '<img src="' + skin.fichier + '" alt="' + skinNomCasier + '"><span class="skin-rarete" style="color:' + rar.couleur + '">' + rar.nom + '</span><span class="skin-label">' + skinNomCasier + '</span>';
     container.appendChild(div);
   });
 }

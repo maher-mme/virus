@@ -1,5 +1,15 @@
 // Systeme de monnaie : Golds
 var playerGold = parseInt(localStorage.getItem('virusGold')) || 0;
+// Helper : recuperer le nom traduit d'un cosmetique
+function getCosmeticNom(item) {
+  if (!item) return '';
+  if (item.nomKey && typeof t === 'function') {
+    var tr = t(item.nomKey);
+    if (tr && tr !== item.nomKey) return tr;
+  }
+  return item.nom || '';
+}
+
 function sauvegarderGold() {
   localStorage.setItem('virusGold', playerGold);
   var el = document.getElementById('gold-display');
@@ -22,24 +32,24 @@ sauvegarderGold();
 // BOUTIQUE DE SKINS
 // ============================
 var SKINS_BOUTIQUE = [
-  { id: 'mario', nom: 'Technicien', fichier: 'skin/boutique/Plombier_blanc.svg', prix: 250, rarete: 'rare' },
-  { id: 'princessepeach', nom: 'Princesse', fichier: 'skin/boutique/princesse.svg', prix: 100, rarete: 'commun' },
-  { id: 'luigi', nom: 'Technicien Vert', fichier: 'skin/boutique/Pombier_vert.svg', prix: 100, rarete: 'commun' },
-  { id: 'steve', nom: 'Aventurier', fichier: 'skin/boutique/Steve.svg', prix: 300, rarete: 'rare' },
-  { id: 'alex', nom: 'Exploratrice', fichier: 'skin/boutique/Alex.svg', prix: 100, rarete: 'commun' },
-  { id: 'ninjaxx', nom: 'Glace-man', fichier: 'skin/boutique/Ninjaxx.svg', prix: 150, rarete: 'rare' },
-  { id: 'valentina', nom: 'Voleuse', fichier: 'skin/boutique/Valentina.svg', prix: 500, rarete: 'epic' },
-  { id: 'galaxy', nom: 'Galaxy', fichier: 'skin/boutique/Galaxy.svg', prix: 1000, rarete: 'legendaire' },
-  { id: 'obstinate', nom: 'Obstinate', fichier: 'skin/boutique/obstinate.svg', prix: 500, rarete: 'epic' },
-  { id: 'fermier', nom: 'Fermier', fichier: 'skin/boutique/fermier.svg', prix: 50, rarete: 'typique' },
-  { id: 'pandareulou', nom: 'Panda Reulou', fichier: 'skin/boutique/panda-reulou.svg', prix: 1000, rarete: 'legendaire' },
-  { id: 'pomni', nom: 'Poufonne', fichier: 'skin/boutique/pomni.svg', prix: 400, rarete: 'epic' },
-  { id: 'frilleu', nom: 'Frilleu', fichier: 'skin/boutique/frilleu.svg', prix: 100, rarete: 'commun' },
-  { id: 'creeper', nom: 'Explosif Vert', fichier: 'skin/boutique/creeper.svg', prix: 250, rarete: 'rare' },
-  { id: 'chevalier', nom: 'Chevalier', fichier: 'skin/boutique/chevalier.svg', prix: 250, rarete: 'rare' },
-  { id: 'archer', nom: 'Archere', fichier: 'skin/boutique/archère.svg', prix: 200, rarete: 'rare' },
-  { id: 'ninja', nom: 'Ninja', fichier: 'skin/boutique/ninja.svg', prix: 200, rarete: 'rare' },
-  { id: 'fille_chat', nom: 'Fille-chat', fichier: 'skin/boutique/fille_chat.svg', prix: 350, rarete: 'epic' }
+  { id: 'mario', nom: 'Technicien', nomKey: 'skinTechnicien', fichier: 'skin/boutique/Plombier_blanc.svg', prix: 250, rarete: 'rare' },
+  { id: 'princessepeach', nom: 'Princesse', nomKey: 'skinPrincesse', fichier: 'skin/boutique/princesse.svg', prix: 100, rarete: 'commun' },
+  { id: 'luigi', nom: 'Technicien Vert', nomKey: 'skinTechnicienVert', fichier: 'skin/boutique/Pombier_vert.svg', prix: 100, rarete: 'commun' },
+  { id: 'steve', nom: 'Aventurier', nomKey: 'skinAventurier', fichier: 'skin/boutique/Steve.svg', prix: 300, rarete: 'rare' },
+  { id: 'alex', nom: 'Exploratrice', nomKey: 'skinExploratrice', fichier: 'skin/boutique/Alex.svg', prix: 100, rarete: 'commun' },
+  { id: 'ninjaxx', nom: 'Glace-man', nomKey: 'skinGlaceMan', fichier: 'skin/boutique/Ninjaxx.svg', prix: 150, rarete: 'rare' },
+  { id: 'valentina', nom: 'Voleuse', nomKey: 'skinVoleuse', fichier: 'skin/boutique/Valentina.svg', prix: 500, rarete: 'epic' },
+  { id: 'galaxy', nom: 'Galaxy', nomKey: 'skinGalaxy', fichier: 'skin/boutique/Galaxy.svg', prix: 1000, rarete: 'legendaire' },
+  { id: 'obstinate', nom: 'Obstinate', nomKey: 'skinObstinate', fichier: 'skin/boutique/obstinate.svg', prix: 500, rarete: 'epic' },
+  { id: 'fermier', nom: 'Fermier', nomKey: 'skinFermier', fichier: 'skin/boutique/fermier.svg', prix: 50, rarete: 'typique' },
+  { id: 'pandareulou', nom: 'Panda Reulou', nomKey: 'skinPandaReulou', fichier: 'skin/boutique/panda-reulou.svg', prix: 1000, rarete: 'legendaire' },
+  { id: 'pomni', nom: 'Poufonne', nomKey: 'skinPoufonne', fichier: 'skin/boutique/pomni.svg', prix: 400, rarete: 'epic' },
+  { id: 'frilleu', nom: 'Frilleu', nomKey: 'skinFrilleu', fichier: 'skin/boutique/frilleu.svg', prix: 100, rarete: 'commun' },
+  { id: 'creeper', nom: 'Explosif Vert', nomKey: 'skinExplosifVert', fichier: 'skin/boutique/creeper.svg', prix: 250, rarete: 'rare' },
+  { id: 'chevalier', nom: 'Chevalier', nomKey: 'skinChevalier', fichier: 'skin/boutique/chevalier.svg', prix: 250, rarete: 'rare' },
+  { id: 'archer', nom: 'Archere', nomKey: 'skinArchere', fichier: 'skin/boutique/archère.svg', prix: 200, rarete: 'rare' },
+  { id: 'ninja', nom: 'Ninja', nomKey: 'skinNinja', fichier: 'skin/boutique/ninja.svg', prix: 200, rarete: 'rare' },
+  { id: 'fille_chat', nom: 'Fille-chat', nomKey: 'skinFilleChat', fichier: 'skin/boutique/fille_chat.svg', prix: 350, rarete: 'epic' }
 ];
 
 function getSkinsAchetes() {
@@ -119,9 +129,10 @@ function genererBoutique() {
     }
     var rar = RARETES[skin.rarete] || RARETES.typique;
     carte.style.borderColor = rar.couleur;
-    carte.innerHTML = '<img class="skin-carte-img" src="' + skin.fichier + '" alt="' + skin.nom + '">' +
+    var skinNomAff = getCosmeticNom(skin);
+    carte.innerHTML = '<img class="skin-carte-img" src="' + skin.fichier + '" alt="' + skinNomAff + '">' +
       '<div class="skin-carte-rarete" style="color:' + rar.couleur + '">' + rar.nom + '</div>' +
-      '<div class="skin-carte-nom">' + skin.nom + '</div>' +
+      '<div class="skin-carte-nom">' + skinNomAff + '</div>' +
       (possede ? '' : '<div class="skin-carte-prix"><span class="prix-icon">&#9733;</span>' + skin.prix + '</div>') +
       btnHtml;
     grille.appendChild(carte);
@@ -250,9 +261,10 @@ function genererBoutiqueMusique() {
       btnHtml = '<button class="skin-carte-btn acheter desactive">' + t('buy') + '</button>';
     }
 
-    var imgHtml = m.image ? '<img class="musique-carte-img" src="' + m.image + '" alt="' + m.nom + '">' : '';
+    var mNomAff = getCosmeticNom(m);
+    var imgHtml = m.image ? '<img class="musique-carte-img" src="' + m.image + '" alt="' + mNomAff + '">' : '';
     carte.innerHTML = imgHtml +
-      '<div class="skin-carte-nom">' + m.nom + '</div>' +
+      '<div class="skin-carte-nom">' + mNomAff + '</div>' +
       (possede ? '' : '<div class="skin-carte-prix"><span class="prix-icon">&#9733;</span>' + m.prix + '</div>') +
       btnHtml;
     grille.appendChild(carte);
@@ -282,10 +294,10 @@ function genererBoutiqueMusique() {
 // BOUTIQUE D'ANIMAUX (PETS)
 // ============================
 var PETS_BOUTIQUE = [
-  { id: 'chien-spatial', nom: 'Chien Spatial', idle: 'pets/chien_de_l\'espsace1.svg', walk1: 'pets/chien_de_l\'espsace2.svg', walk2: 'pets/chien_de_l\'espsace3.svg', prix: 50, rarete: 'typique' },
-  { id: 'lapin', nom: 'Lapin', idle: 'pets/Rabbit-a.svg', walk1: 'pets/Rabbit-a.svg', walk2: 'pets/Rabbit-b.svg', prix: 100, rarete: 'commun' },
-  { id: 'bubble', nom: 'Bulle', idle: 'pets/buble.svg', walk1: 'pets/buble.svg', walk2: 'pets/buble2.svg', prix: 150, rarete: 'rare' },
-  { id: 'dragon-feu', nom: 'Dragon de Feu', idle: 'pets/dragon_de_feu.gif', walk1: 'pets/dragon_de_feu.gif', walk2: 'pets/dragon_de_feu.gif', prix: 150, rarete: 'epic', isGif: true, sizePx: 80 }
+  { id: 'chien-spatial', nom: 'Chien Spatial', nomKey: 'petChienSpatial', idle: 'pets/chien_de_l\'espsace1.svg', walk1: 'pets/chien_de_l\'espsace2.svg', walk2: 'pets/chien_de_l\'espsace3.svg', prix: 50, rarete: 'typique' },
+  { id: 'lapin', nom: 'Lapin', nomKey: 'petLapin', idle: 'pets/Rabbit-a.svg', walk1: 'pets/Rabbit-a.svg', walk2: 'pets/Rabbit-b.svg', prix: 100, rarete: 'commun' },
+  { id: 'bubble', nom: 'Bulle', nomKey: 'petBulle', idle: 'pets/buble.svg', walk1: 'pets/buble.svg', walk2: 'pets/buble2.svg', prix: 150, rarete: 'rare' },
+  { id: 'dragon-feu', nom: 'Dragon de Feu', nomKey: 'petDragonFeu', idle: 'pets/dragon_de_feu.gif', walk1: 'pets/dragon_de_feu.gif', walk2: 'pets/dragon_de_feu.gif', prix: 150, rarete: 'epic', isGif: true, sizePx: 80 }
 ];
 
 var petEquipe = localStorage.getItem('virusPet') || '';
@@ -387,9 +399,10 @@ function genererBoutiqueAnimaux() {
     var rar = RARETES[pet.rarete] || RARETES.typique;
     carte.style.borderColor = rar.couleur;
     var petSrc = pet.isGif ? pet.idle : (pet.idle + '?v=' + CURRENT_VERSION);
-    carte.innerHTML = '<img class="skin-carte-img" src="' + petSrc + '" alt="' + pet.nom + '" style="image-rendering:pixelated;object-fit:contain;">' +
+    var petNomAff = getCosmeticNom(pet);
+    carte.innerHTML = '<img class="skin-carte-img" src="' + petSrc + '" alt="' + petNomAff + '" style="image-rendering:pixelated;object-fit:contain;">' +
       '<div class="skin-carte-rarete" style="color:' + rar.couleur + '">' + rar.nom + '</div>' +
-      '<div class="skin-carte-nom">' + pet.nom + '</div>' +
+      '<div class="skin-carte-nom">' + petNomAff + '</div>' +
       (possede ? '' : '<div class="skin-carte-prix"><span class="prix-icon">&#9733;</span>' + pet.prix + '</div>') +
       btnHtml;
     grille.appendChild(carte);
@@ -440,7 +453,8 @@ function genererCasierAnimaux() {
       div.classList.add('skin-selected');
     };
     var rar = RARETES[pet.rarete] || RARETES.typique;
-    div.innerHTML = '<img src="' + pet.idle + '" alt="' + pet.nom + '"><span class="skin-rarete" style="color:' + rar.couleur + '">' + rar.nom + '</span><span class="skin-label">' + pet.nom + '</span>';
+    var petNomCasier = getCosmeticNom(pet);
+    div.innerHTML = '<img src="' + pet.idle + '" alt="' + petNomCasier + '"><span class="skin-rarete" style="color:' + rar.couleur + '">' + rar.nom + '</span><span class="skin-label">' + petNomCasier + '</span>';
     container.appendChild(div);
   });
 }

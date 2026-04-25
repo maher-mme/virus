@@ -4,6 +4,7 @@ var MUSIQUES = [
 ];
 
 var MUSIQUES_BOUTIQUE = [
+  { id: 'im_infected', nom: 'I\'m... INFECTED!', artiste: '', fichier: 'musique/I\'m... INFECTED!/I\'m... INFECTED!.mp3', image: 'musique/I\'m... INFECTED!/I\'m... INFECTED!.png', prix: 300, couleur: '#e74c3c' },
   { id: 'multiverse', nom: 'Multiverse', artiste: '', fichier: 'musique/multiverse/Multiverse.mp3', image: 'musique/multiverse/affiche_de_multiverse.png', prix: 200, couleur: '#e74c3c' },
   { id: 'flute_flailed', nom: 'Fl\u00fbte flailed', artiste: '', fichier: 'musique/fl\u00fbte_flailed/flute-failed-sondtrack.mp3', image: 'musique/fl\u00fbte_flailed/affiche_de_fl\u00fbte.flailed.png', prix: 200, couleur: '#3b3b98' },
   { id: 'enough_silence', nom: 'Enough silence', artiste: '', fichier: 'musique/Enough_silence/Enough_silence.mp3', image: 'musique/Enough_silence/Enough_silence-image.png', prix: 150, couleur: '#1a3a8a' }

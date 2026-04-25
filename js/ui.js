@@ -65,6 +65,28 @@ function confirmerInstallPWA() {
   }
 })();
 
+// Forcer la MAJ : desenregistre le SW + vide les caches + reload
+function forcerMajPWA() {
+  if (typeof showNotif === 'function') showNotif('Mise a jour en cours...', 'info');
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(regs) {
+      return Promise.all(regs.map(function(r) { return r.unregister(); }));
+    }).then(function() {
+      if ('caches' in window) {
+        return caches.keys().then(function(keys) {
+          return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+        });
+      }
+    }).then(function() {
+      window.location.reload(true);
+    }).catch(function() {
+      window.location.reload(true);
+    });
+  } else {
+    window.location.reload(true);
+  }
+}
+
 // Enregistrer le Service Worker + detecter MAJ
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {

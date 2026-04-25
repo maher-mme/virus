@@ -1,6 +1,6 @@
 // Service Worker pour VIRUS PWA
 // CACHE_VERSION : a bumper a chaque release importante pour forcer le refresh
-var CACHE_VERSION = 'virus-v3.2.7';
+var CACHE_VERSION = 'virus-v3.2.8';
 var ASSETS_TO_CACHE = [
   '/',
   '/index.html',

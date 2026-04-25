@@ -99,9 +99,15 @@ function convertirEmojis(msg) {
   for (var i = 0; i < EMOJI_MAP.length; i++) {
     var raccourci = EMOJI_MAP[i][0];
     var emoji = EMOJI_MAP[i][1];
-    // Remplacement simple : chercher le raccourci exact dans le texte
-    while (result.indexOf(raccourci) >= 0) {
-      result = result.replace(raccourci, emoji);
+    // Si raccourci alphabetique pur (ok, lol, fire...) : matcher uniquement comme mot complet
+    if (/^[a-zA-Z]+$/.test(raccourci)) {
+      var re = new RegExp('(^|[^a-zA-Z0-9])' + raccourci + '(?![a-zA-Z0-9])', 'gi');
+      result = result.replace(re, function(m, p1) { return p1 + emoji; });
+    } else {
+      // Raccourcis symboliques (:), :D, <3...) : remplacement simple
+      while (result.indexOf(raccourci) >= 0) {
+        result = result.replace(raccourci, emoji);
+      }
     }
   }
   return result;

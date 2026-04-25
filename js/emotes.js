@@ -16,6 +16,22 @@ var EMOTES = [
   { id: 'anger',   emoji: '\uD83D\uDE21', nom: 'Colere',  anim: 'squashDown' }
 ];
 
+// Emotes payants (boutique)
+var EMOTES_BOUTIQUE = [
+  { id: 'salut',      emoji: '🤝', nom: 'Salut',       anim: 'tilt',       prix: 50,  rarete: 'commun' },
+  { id: 'fete',       emoji: '🎊', nom: 'Fete',        anim: 'jump',       prix: 100, rarete: 'rare' },
+  { id: 'mortx',      emoji: '💀', nom: 'Mort',        anim: 'squashDown', prix: 100, rarete: 'rare' },
+  { id: 'endormi',    emoji: '😴', nom: 'Endormi',     anim: 'wiggle',     prix: 100, rarete: 'rare' },
+  { id: 'genie',      emoji: '💡', nom: 'Genie',       anim: 'stretch',    prix: 150, rarete: 'rare' },
+  { id: 'frigorifie', emoji: '🥶', nom: 'Frigorifie',  anim: 'wiggle',     prix: 150, rarete: 'rare' },
+  { id: 'brulant',    emoji: '🥵', nom: 'Brulant',     anim: 'jump',       prix: 150, rarete: 'rare' },
+  { id: 'degoute',    emoji: '🤢', nom: 'Degoute',     anim: 'squashDown', prix: 100, rarete: 'commun' },
+  { id: 'flirt',      emoji: '😘', nom: 'Flirt',       anim: 'jump',       prix: 200, rarete: 'epic' },
+  { id: 'rock',       emoji: '🤘', nom: 'Rock',        anim: 'wiggle',     prix: 200, rarete: 'epic' },
+  { id: 'arcenciel',  emoji: '🌈', nom: 'Arc-en-ciel', anim: 'stretch',    prix: 250, rarete: 'epic' },
+  { id: 'feu',        emoji: '🔥', nom: 'Feu',         anim: 'jump',       prix: 250, rarete: 'epic' }
+];
+
 var _emoteCooldown = 0;
 var EMOTE_COOLDOWN_MS = 4000;
 var EMOTE_DUREE_MS = 2000;
@@ -90,13 +106,21 @@ function jouerEmoteLobby(emoteId) {
 
 function getAllEmotesDispo() {
   var liste = EMOTES.slice();
+  var achetes = [];
+  try { achetes = JSON.parse(localStorage.getItem('virusEmotesAchetes')) || []; } catch(e) {}
   // Ajouter les emotes du passe reellement reclames
   if (typeof EMOTES_PASSE !== 'undefined') {
-    var achetes = [];
-    try { achetes = JSON.parse(localStorage.getItem('virusEmotesAchetes')) || []; } catch(e) {}
     EMOTES_PASSE.forEach(function(ep) {
       if (achetes.indexOf(ep.id) >= 0 && !liste.find(function(e) { return e.id === ep.id; })) {
         liste.push(ep);
+      }
+    });
+  }
+  // Ajouter les emotes boutique achetes
+  if (typeof EMOTES_BOUTIQUE !== 'undefined') {
+    EMOTES_BOUTIQUE.forEach(function(eb) {
+      if (achetes.indexOf(eb.id) >= 0 && !liste.find(function(e) { return e.id === eb.id; })) {
+        liste.push(eb);
       }
     });
   }
@@ -178,7 +202,7 @@ function traiterEmoteRemote(docId, data) {
   _emotesJouees[docId] = stamp;
   // Ignorer si c'est moi
   if (typeof myPartyPlayerDocId !== 'undefined' && docId === myPartyPlayerDocId) return;
-  var allEmotes = EMOTES.concat(typeof EMOTES_PASSE !== 'undefined' ? EMOTES_PASSE : []);
+  var allEmotes = EMOTES.concat(typeof EMOTES_PASSE !== 'undefined' ? EMOTES_PASSE : []).concat(typeof EMOTES_BOUTIQUE !== 'undefined' ? EMOTES_BOUTIQUE : []);
   var em = allEmotes.find(function(e) { return e.id === data.emote; });
   if (!em) return;
   // Trouver l'element DOM : remote-playerId (jeu) ou sa-remote-playerId (lobby)

@@ -183,49 +183,88 @@ function switchBoutiqueTab(tab) {
 // ============================
 // BOUTIQUE EMOTES (apercu avec ton skin equipe)
 // ============================
+function getEmotesAchetes() {
+  try { return JSON.parse(localStorage.getItem('virusEmotesAchetes')) || []; }
+  catch(e) { return []; }
+}
+function sauvegarderEmotesAchetes(liste) {
+  try { localStorage.setItem('virusEmotesAchetes', JSON.stringify(liste)); } catch(e) {}
+  if (typeof db !== 'undefined' && typeof monPlayerId !== 'undefined' && monPlayerId) {
+    db.collection('players').doc(monPlayerId).update({ emotesAchetes: liste }).catch(function() {});
+  }
+}
+
+function acheterEmote(emoteId) {
+  if (typeof EMOTES_BOUTIQUE === 'undefined') return;
+  var em = EMOTES_BOUTIQUE.find(function(e) { return e.id === emoteId; });
+  if (!em) return;
+  var achetes = getEmotesAchetes();
+  if (achetes.indexOf(emoteId) >= 0) return;
+  if (playerGold < em.prix) {
+    showNotif(t('passeNotEnoughGold', em.prix), 'warn');
+    return;
+  }
+  if (!monPlayerId) return;
+  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+    if (!doc.exists) return;
+    var goldFB = doc.data().gold || 0;
+    if (goldFB < em.prix) {
+      playerGold = goldFB;
+      sauvegarderGold();
+      showNotif(t('passeNotEnoughGold', em.prix), 'warn');
+      genererBoutiqueEmotes();
+      return;
+    }
+    playerGold = goldFB - em.prix;
+    sauvegarderGold();
+    achetes.push(emoteId);
+    sauvegarderEmotesAchetes(achetes);
+    showNotif(em.nom + ' achete !', 'success');
+    genererBoutiqueEmotes();
+  }).catch(function() {});
+}
+
 function genererBoutiqueEmotes() {
   var grille = document.getElementById('boutique-grille-emotes');
   if (!grille) return;
-  if (typeof EMOTES === 'undefined') return;
+  if (typeof EMOTES_BOUTIQUE === 'undefined') return;
   grille.innerHTML = '';
+  playerGold = parseInt(localStorage.getItem('virusGold')) || 0;
   var skinFichier = (typeof getSkinFichier === 'function' && typeof getSkin === 'function') ? getSkinFichier(getSkin()) : 'skin/gratuit/skin-de-base-garcon.svg';
+  var achetes = getEmotesAchetes();
 
-  // Liste des emotes (de base + passe possedes)
-  var emotes = EMOTES.slice();
-  if (typeof EMOTES_PASSE !== 'undefined') {
-    var emotesAchetes = [];
-    try { emotesAchetes = JSON.parse(localStorage.getItem('virusEmotesAchetes')) || []; } catch(e) {}
-    EMOTES_PASSE.forEach(function(ep) {
-      var possede = emotesAchetes.indexOf(ep.id) >= 0;
-      if (!emotes.find(function(e) { return e.id === ep.id; })) {
-        ep._estPasse = true;
-        ep._possede = possede;
-        emotes.push(ep);
-      }
-    });
-  }
-
-  emotes.forEach(function(em) {
+  EMOTES_BOUTIQUE.forEach(function(em) {
     var carte = document.createElement('div');
     carte.className = 'skin-carte emote-carte';
-    carte.style.cursor = 'pointer';
     carte.title = em.nom;
+    var rar = (typeof RARETES !== 'undefined' && RARETES[em.rarete]) || (typeof RARETES !== 'undefined' && RARETES.typique) || { nom: '', couleur: '#95a5a6' };
+    carte.style.borderColor = rar.couleur;
+    var possede = achetes.indexOf(em.id) >= 0;
+    var peutAcheter = !possede && playerGold >= em.prix;
+    var btnHtml = '';
+    if (possede) {
+      btnHtml = '<button class="skin-carte-btn possede">POSSEDE</button>';
+    } else if (peutAcheter) {
+      btnHtml = '<button class="skin-carte-btn acheter" onclick="event.stopPropagation();acheterEmote(\'' + em.id + '\')">ACHETER</button>';
+    } else {
+      btnHtml = '<button class="skin-carte-btn acheter desactive">ACHETER</button>';
+    }
     carte.innerHTML =
       '<div class="emote-preview-zone">' +
         '<div class="emote-preview-bulle">' + em.emoji + '</div>' +
         '<img class="emote-preview-skin" src="' + skinFichier + '" alt="">' +
       '</div>' +
+      '<div class="skin-carte-rarete" style="color:' + rar.couleur + '">' + rar.nom + '</div>' +
       '<div class="skin-carte-nom">' + em.nom + '</div>' +
-      (em._estPasse ? '<div class="emote-passe-tag">PASSE</div>' : '');
+      (possede ? '' : '<div class="skin-carte-prix"><span class="prix-icon">★</span>' + em.prix + '</div>') +
+      btnHtml;
 
-    // Au clic : declencher l'animation sur la preview
-    var skinImg = null;
-    var bulle = null;
-    carte.onclick = function() {
-      skinImg = carte.querySelector('.emote-preview-skin');
-      bulle = carte.querySelector('.emote-preview-bulle');
+    // Clic sur la carte (pas le bouton) : lancer l'anim demo
+    carte.onclick = function(e) {
+      if (e.target.tagName === 'BUTTON') return;
+      var skinImg = carte.querySelector('.emote-preview-skin');
+      var bulle = carte.querySelector('.emote-preview-bulle');
       if (!skinImg) return;
-      // Reset toutes les anims
       skinImg.classList.remove('emote-squash', 'emote-squashDown', 'emote-wiggle', 'emote-jump', 'emote-tilt', 'emote-stretch');
       void skinImg.offsetWidth;
       skinImg.classList.add('emote-' + em.anim);
@@ -238,16 +277,33 @@ function genererBoutiqueEmotes() {
     grille.appendChild(carte);
   });
 
-  // Lancer une anim de demo a l'ouverture (cycle sur toutes)
+  // Anim de demo cyclique
   var idx = 0;
-  var demoInterval = setInterval(function() {
-    var cartes = grille.querySelectorAll('.emote-carte');
-    if (cartes.length === 0 || !document.getElementById('boutique-content-emotes').classList.contains('active')) {
-      clearInterval(demoInterval);
+  if (genererBoutiqueEmotes._demoTimer) clearInterval(genererBoutiqueEmotes._demoTimer);
+  genererBoutiqueEmotes._demoTimer = setInterval(function() {
+    var cont = document.getElementById('boutique-content-emotes');
+    if (!cont || !cont.classList.contains('active')) {
+      clearInterval(genererBoutiqueEmotes._demoTimer);
       return;
     }
+    var cartes = grille.querySelectorAll('.emote-carte');
+    if (cartes.length === 0) return;
     var carte = cartes[idx % cartes.length];
-    if (carte && carte.onclick) carte.onclick();
+    if (carte) {
+      var skinImg = carte.querySelector('.emote-preview-skin');
+      var bulle = carte.querySelector('.emote-preview-bulle');
+      var em = EMOTES_BOUTIQUE[idx % EMOTES_BOUTIQUE.length];
+      if (skinImg && em) {
+        skinImg.classList.remove('emote-squash', 'emote-squashDown', 'emote-wiggle', 'emote-jump', 'emote-tilt', 'emote-stretch');
+        void skinImg.offsetWidth;
+        skinImg.classList.add('emote-' + em.anim);
+        if (bulle) {
+          bulle.classList.remove('emote-bulle-active');
+          void bulle.offsetWidth;
+          bulle.classList.add('emote-bulle-active');
+        }
+      }
+    }
     idx++;
   }, 2200);
 }

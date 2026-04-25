@@ -26,7 +26,6 @@ var EMOTES_BOUTIQUE = [
   { id: 'frigorifie', emoji: '🥶', nom: 'Frigorifie',  anim: 'wiggle',     prix: 150, rarete: 'rare' },
   { id: 'brulant',    emoji: '🥵', nom: 'Brulant',     anim: 'jump',       prix: 150, rarete: 'rare' },
   { id: 'degoute',    emoji: '🤢', nom: 'Degoute',     anim: 'squashDown', prix: 100, rarete: 'commun' },
-  { id: 'flirt',      emoji: '😘', nom: 'Flirt',       anim: 'jump',       prix: 200, rarete: 'epic' },
   { id: 'rock',       emoji: '🤘', nom: 'Rock',        anim: 'wiggle',     prix: 200, rarete: 'epic' },
   { id: 'arcenciel',  emoji: '🌈', nom: 'Arc-en-ciel', anim: 'stretch',    prix: 250, rarete: 'epic' },
   { id: 'feu',        emoji: '🔥', nom: 'Feu',         anim: 'jump',       prix: 250, rarete: 'epic' }

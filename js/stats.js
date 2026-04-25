@@ -272,6 +272,56 @@ function switchProfilTab(tab) {
   if (tab === 'saison' && typeof afficherPasse === 'function') afficherPasse();
 }
 
+// === HISTORIQUE VS AMI ===
+function afficherHistoriqueVs(amiId, amiPseudo) {
+  if (!amiId || !monPlayerId) return;
+  var pop = document.getElementById('popup-historique-vs');
+  var titre = document.getElementById('historique-vs-pseudo');
+  var content = document.getElementById('historique-vs-content');
+  if (!pop || !content) return;
+  if (titre) titre.textContent = amiPseudo || 'Ami';
+  pop.classList.add('visible');
+  content.innerHTML = '<div class="spinner"></div>';
+
+  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+    if (!doc.exists) {
+      content.innerHTML = '<div style="color:#e74c3c;">Erreur</div>';
+      return;
+    }
+    var data = doc.data();
+    var vs = (data.vsHistory && data.vsHistory[amiId]) || { games: 0, wins: 0, losses: 0 };
+    var games = vs.games || 0;
+    var wins = vs.wins || 0;
+    var losses = vs.losses || 0;
+    var draws = Math.max(0, games - wins - losses);
+    var winRate = games > 0 ? Math.round((wins / games) * 100) : 0;
+
+    if (games === 0) {
+      content.innerHTML = '<div style="padding:30px;color:#95a5a6;">Aucune partie jouee ensemble.<br>Joue en ligne avec ' + escapeHtml(amiPseudo || 'cet ami') + ' pour voir les stats !</div>';
+      return;
+    }
+
+    var html = '';
+    html += '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px;">';
+    html += '<div style="background:rgba(44,62,80,0.6);border:1.5px solid #34495e;border-radius:10px;padding:12px;"><div style="font-size:24px;font-weight:bold;color:#3498db;">' + games + '</div><div style="font-size:11px;color:#95a5a6;letter-spacing:1px;">PARTIES</div></div>';
+    html += '<div style="background:rgba(44,62,80,0.6);border:1.5px solid #34495e;border-radius:10px;padding:12px;"><div style="font-size:24px;font-weight:bold;color:#f39c12;">' + winRate + '%</div><div style="font-size:11px;color:#95a5a6;letter-spacing:1px;">VICTOIRES</div></div>';
+    html += '<div style="background:rgba(46,204,113,0.15);border:1.5px solid #2ecc71;border-radius:10px;padding:12px;"><div style="font-size:24px;font-weight:bold;color:#2ecc71;">' + wins + '</div><div style="font-size:11px;color:#95a5a6;letter-spacing:1px;">GAGNEES</div></div>';
+    html += '<div style="background:rgba(231,76,60,0.15);border:1.5px solid #e74c3c;border-radius:10px;padding:12px;"><div style="font-size:24px;font-weight:bold;color:#e74c3c;">' + losses + '</div><div style="font-size:11px;color:#95a5a6;letter-spacing:1px;">PERDUES</div></div>';
+    html += '</div>';
+    if (draws > 0) {
+      html += '<div style="font-size:12px;color:#95a5a6;">' + draws + ' partie(s) sans victoire/defaite (egalite ou meme camp)</div>';
+    }
+    content.innerHTML = html;
+  }).catch(function() {
+    content.innerHTML = '<div style="color:#e74c3c;">Erreur de chargement</div>';
+  });
+}
+
+function fermerHistoriqueVs() {
+  var pop = document.getElementById('popup-historique-vs');
+  if (pop) pop.classList.remove('visible');
+}
+
 function ouvrirProfil(playerId) {
   // Fermer le panel amis s'il est ouvert
   if (typeof panelAmisOuvert !== 'undefined' && panelAmisOuvert) {
@@ -619,6 +669,25 @@ function enregistrerStatsFinPartie(gagnant) {
   incrementerStat('gamesPlayed');
   if (estMort) incrementerStat('deaths');
   if (aGagne) incrementerStat('wins');
+
+  // Historique vs autres joueurs reels (online uniquement)
+  if (!modeHorsLigne && typeof firebasePartyPlayers !== 'undefined' && monPlayerId) {
+    firebasePartyPlayers.forEach(function(fp) {
+      if (fp.isBot) return;
+      if (!fp.playerId || fp.playerId === monPlayerId) return;
+      var autreAGagne = false;
+      if (gagnant === 'virus' && fp.role === 'virus') autreAGagne = true;
+      if ((gagnant === 'innocents' || gagnant === 'missions') && (fp.role === 'innocent' || fp.role === 'journaliste' || fp.role === 'cherif')) autreAGagne = true;
+      if (gagnant === 'fanatique' && fp.role === 'fanatique') autreAGagne = true;
+      var update = {};
+      update['vsHistory.' + fp.playerId + '.games'] = firebase.firestore.FieldValue.increment(1);
+      if (aGagne && !autreAGagne) update['vsHistory.' + fp.playerId + '.wins'] = firebase.firestore.FieldValue.increment(1);
+      else if (!aGagne && autreAGagne) update['vsHistory.' + fp.playerId + '.losses'] = firebase.firestore.FieldValue.increment(1);
+      update['vsHistory.' + fp.playerId + '.pseudo'] = fp.pseudo || '';
+      update['vsHistory.' + fp.playerId + '.lastGame'] = firebase.firestore.FieldValue.serverTimestamp();
+      db.collection('players').doc(monPlayerId).update(update).catch(function() {});
+    });
+  }
 
   // XP : defaite 10-100, victoire 100-250
   var xpGagne;

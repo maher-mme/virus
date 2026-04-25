@@ -493,6 +493,7 @@ var TR = {
     spyRole: 'ESPION',
     musicTab: 'MUSIQUE',
     petsTab: 'ANIMAUX',
+    emotesTab: 'EMOTES',
     petsSoon: 'Bientot disponible ! Les animaux arrivent...',
     choosePet: 'Choisis ton animal !',
     leaderboard: 'CLASSEMENT',

@@ -177,6 +177,79 @@ function switchBoutiqueTab(tab) {
   document.getElementById('boutique-content-' + tab).classList.add('active');
   if (tab === 'musique') genererBoutiqueMusique();
   if (tab === 'animaux') genererBoutiqueAnimaux();
+  if (tab === 'emotes') genererBoutiqueEmotes();
+}
+
+// ============================
+// BOUTIQUE EMOTES (apercu avec ton skin equipe)
+// ============================
+function genererBoutiqueEmotes() {
+  var grille = document.getElementById('boutique-grille-emotes');
+  if (!grille) return;
+  if (typeof EMOTES === 'undefined') return;
+  grille.innerHTML = '';
+  var skinFichier = (typeof getSkinFichier === 'function' && typeof getSkin === 'function') ? getSkinFichier(getSkin()) : 'skin/gratuit/skin-de-base-garcon.svg';
+
+  // Liste des emotes (de base + passe possedes)
+  var emotes = EMOTES.slice();
+  if (typeof EMOTES_PASSE !== 'undefined') {
+    var emotesAchetes = [];
+    try { emotesAchetes = JSON.parse(localStorage.getItem('virusEmotesAchetes')) || []; } catch(e) {}
+    EMOTES_PASSE.forEach(function(ep) {
+      var possede = emotesAchetes.indexOf(ep.id) >= 0;
+      if (!emotes.find(function(e) { return e.id === ep.id; })) {
+        ep._estPasse = true;
+        ep._possede = possede;
+        emotes.push(ep);
+      }
+    });
+  }
+
+  emotes.forEach(function(em) {
+    var carte = document.createElement('div');
+    carte.className = 'skin-carte emote-carte';
+    carte.style.cursor = 'pointer';
+    carte.title = em.nom;
+    carte.innerHTML =
+      '<div class="emote-preview-zone">' +
+        '<div class="emote-preview-bulle">' + em.emoji + '</div>' +
+        '<img class="emote-preview-skin" src="' + skinFichier + '" alt="">' +
+      '</div>' +
+      '<div class="skin-carte-nom">' + em.nom + '</div>' +
+      (em._estPasse ? '<div class="emote-passe-tag">PASSE</div>' : '');
+
+    // Au clic : declencher l'animation sur la preview
+    var skinImg = null;
+    var bulle = null;
+    carte.onclick = function() {
+      skinImg = carte.querySelector('.emote-preview-skin');
+      bulle = carte.querySelector('.emote-preview-bulle');
+      if (!skinImg) return;
+      // Reset toutes les anims
+      skinImg.classList.remove('emote-squash', 'emote-squashDown', 'emote-wiggle', 'emote-jump', 'emote-tilt', 'emote-stretch');
+      void skinImg.offsetWidth;
+      skinImg.classList.add('emote-' + em.anim);
+      if (bulle) {
+        bulle.classList.remove('emote-bulle-active');
+        void bulle.offsetWidth;
+        bulle.classList.add('emote-bulle-active');
+      }
+    };
+    grille.appendChild(carte);
+  });
+
+  // Lancer une anim de demo a l'ouverture (cycle sur toutes)
+  var idx = 0;
+  var demoInterval = setInterval(function() {
+    var cartes = grille.querySelectorAll('.emote-carte');
+    if (cartes.length === 0 || !document.getElementById('boutique-content-emotes').classList.contains('active')) {
+      clearInterval(demoInterval);
+      return;
+    }
+    var carte = cartes[idx % cartes.length];
+    if (carte && carte.onclick) carte.onclick();
+    idx++;
+  }, 2200);
 }
 
 // ============================

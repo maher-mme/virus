@@ -337,6 +337,52 @@
 }
 .btn-tirer:hover { filter: brightness(1.15); transform: translateX(-50%) scale(1.05); }
 
+/* === BOUTIQUE EMOTES (preview avec skin) === */
+.emote-carte {
+  position: relative;
+}
+.emote-preview-zone {
+  position: relative;
+  width: 100%;
+  height: 110px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: visible;
+  margin-bottom: 8px;
+}
+.emote-preview-skin {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  transform-origin: bottom center;
+}
+.emote-preview-bulle {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  font-size: 28px;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+  opacity: 0;
+}
+.emote-preview-bulle.emote-bulle-active {
+  animation: emoteBulleFloat 2s ease-out forwards;
+}
+.emote-passe-tag {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: linear-gradient(180deg, #f39c12, #d35400);
+  color: white;
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
 /* === BANNIERE DE ROLE (debut de partie) === */
 .banniere-role {
   position: fixed;

@@ -65,10 +65,37 @@ function confirmerInstallPWA() {
   }
 })();
 
-// Enregistrer le Service Worker
+// Enregistrer le Service Worker + detecter MAJ
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/service-worker.js').catch(function() {});
+    navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' }).then(function(reg) {
+      // Verifier les MAJ toutes les 30 minutes (au lieu de 24h par defaut)
+      setInterval(function() { reg.update().catch(function() {}); }, 1800000);
+      // Quand un nouveau SW est installe, demander a l'utilisateur de recharger
+      reg.addEventListener('updatefound', function() {
+        var newWorker = reg.installing;
+        if (!newWorker) return;
+        newWorker.addEventListener('statechange', function() {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            // Nouvelle version disponible
+            if (typeof showNotif === 'function') {
+              showNotif('Nouvelle version disponible ! Rechargement...', 'info');
+            }
+            setTimeout(function() {
+              newWorker.postMessage({ action: 'skipWaiting' });
+              window.location.reload();
+            }, 2000);
+          }
+        });
+      });
+    }).catch(function() {});
+    // Reload auto quand le SW change (nouveau controleur)
+    var refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
+    });
   });
 }
 

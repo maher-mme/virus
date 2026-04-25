@@ -1533,6 +1533,33 @@
   filter: brightness(1.15);
   transform: scale(1.03);
 }
+
+.btn-installer {
+  width: 220px;
+  height: 50px;
+  background: linear-gradient(180deg, #27ae60, #229954) !important;
+  border: 1.5px solid #2ecc71 !important;
+  border-radius: 10px;
+  color: #ecf0f1;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.btn-installer .btn-sub {
+  font-size: 10px;
+  color: #d4f1dd;
+  font-weight: normal;
+  letter-spacing: 1px;
+}
+.btn-installer::before { display: none; }
+.btn-installer:hover {
+  filter: brightness(1.15);
+  transform: scale(1.03);
+}
 .popup-box-tuto {
   width: clamp(340px, 55vw, 550px) !important;
   max-height: 90vh;

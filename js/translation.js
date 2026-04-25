@@ -162,6 +162,20 @@ var TR = {
     petLapin: 'Lapin',
     petBulle: 'Bulle',
     petDragonFeu: 'Dragon de Feu',
+
+    // PWA installable
+    installApp: 'INSTALLER L\'APP',
+    installAppSub: 'Sur ton telephone ou PC',
+    installAppTitle: 'INSTALLER L\'APP',
+    installAppInstructions: 'Clique sur Telecharger pour installer l\'application sur ton appareil.',
+    downloadAppBtn: 'TELECHARGER',
+    installAppIosHelp: 'Sur iPhone/iPad : appuie sur l\'icone Partager puis "Sur l\'ecran d\'accueil".',
+    installAppAdvantagesTitle: 'AVANTAGES :',
+    installAdvOffline: 'Mode hors ligne jouable sans internet',
+    installAdvHomescreen: 'Icone sur ton ecran d\'accueil',
+    installAdvFullscreen: 'Plein ecran sans barre de navigateur',
+    installAdvFast: 'Lancement plus rapide',
+
     frameTab: 'CADRE',
     chooseFrame: 'Choisis un cadre pour ta photo de profil !',
     oneJournalist: '1 JOURNALISTE',

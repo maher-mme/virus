@@ -1,0 +1,21 @@
+{
+  "name": "VIRUS - Jeu multijoueur",
+  "short_name": "VIRUS",
+  "description": "Jeu de deduction multijoueur en ligne. Demasque le virus avant qu'il ne te contamine !",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#e74c3c",
+  "background_color": "#0f0f1a",
+  "lang": "fr",
+  "categories": ["games", "social", "entertainment"],
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

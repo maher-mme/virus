@@ -1,5 +1,77 @@
 // Navigation entre ecrans
 
+// === PWA : INSTALL + SERVICE WORKER ===
+var _pwaInstallPrompt = null;
+var _pwaIsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  _pwaInstallPrompt = e;
+  var btn = document.getElementById('btn-installer-pwa');
+  if (btn) btn.style.display = 'block';
+});
+
+window.addEventListener('appinstalled', function() {
+  var btn = document.getElementById('btn-installer-pwa');
+  if (btn) btn.style.display = 'none';
+  _pwaInstallPrompt = null;
+});
+
+// Bouton du menu : ouvre le popup
+function declencherInstallPWA() {
+  var pop = document.getElementById('popup-installer-pwa');
+  if (pop) pop.classList.add('visible');
+  // Adapter les instructions selon l'appareil
+  var iosHelp = document.getElementById('install-pwa-ios-help');
+  var btnDownload = document.getElementById('install-pwa-download-btn');
+  var instructions = document.getElementById('install-pwa-instructions');
+  if (_pwaIsIos) {
+    if (iosHelp) iosHelp.style.display = 'block';
+    if (btnDownload) btnDownload.style.display = 'none';
+    if (instructions) instructions.textContent = 'Pour installer VIRUS sur ton iPhone/iPad :';
+  } else if (!_pwaInstallPrompt) {
+    if (instructions) instructions.textContent = 'Ouvre ce site dans Chrome ou Edge sur ton appareil pour pouvoir l\'installer.';
+    if (btnDownload) btnDownload.style.display = 'none';
+  }
+}
+
+function fermerInstallPWA() {
+  var pop = document.getElementById('popup-installer-pwa');
+  if (pop) pop.classList.remove('visible');
+}
+
+function confirmerInstallPWA() {
+  if (!_pwaInstallPrompt) return;
+  _pwaInstallPrompt.prompt();
+  _pwaInstallPrompt.userChoice.then(function(res) {
+    if (res.outcome === 'accepted') {
+      fermerInstallPWA();
+      var btn = document.getElementById('btn-installer-pwa');
+      if (btn) btn.style.display = 'none';
+    }
+    _pwaInstallPrompt = null;
+  });
+}
+
+// Afficher le bouton sur iOS aussi (force, car pas de beforeinstallprompt)
+(function() {
+  if (_pwaIsIos) {
+    setTimeout(function() {
+      var btn = document.getElementById('btn-installer-pwa');
+      // Detecter si deja installee (running standalone)
+      var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+      if (btn && !standalone) btn.style.display = 'block';
+    }, 1000);
+  }
+})();
+
+// Enregistrer le Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/service-worker.js').catch(function() {});
+  });
+}
+
 // === DETECTION DE MISE A JOUR ===
 var CURRENT_VERSION = '3.1.1';
 var _updateDismissed = false;

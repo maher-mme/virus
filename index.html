@@ -10,9 +10,14 @@
   <meta http-equiv="Expires" content="0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com; media-src 'self'; font-src 'self';">
   <title>VIRUS - Jeu multijoueur</title>
-  <link rel="shortcut icon" href="assets/favicon.png?v=3" type="image/png">
-  <link rel="icon" type="image/png" href="assets/favicon.png?v=3">
-  <link rel="apple-touch-icon" href="assets/favicon.png?v=3">
+  <link rel="shortcut icon" href="assets/favicon.svg?v=4" type="image/svg+xml">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=4">
+  <link rel="apple-touch-icon" href="assets/favicon.svg?v=4">
+  <link rel="manifest" href="manifest.json?v=1">
+  <meta name="theme-color" content="#e74c3c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="VIRUS">
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -33,6 +38,23 @@
 
   <!-- Emoji Picker -->
   <div class="emoji-picker" id="emoji-picker" style="display:none;"></div>
+
+  <!-- POPUP INSTALLER PWA -->
+  <div class="popup-overlay" id="popup-installer-pwa">
+    <div class="popup-box" style="max-width:380px;">
+      <div class="popup-header" style="background:#e74c3c;">
+        <h3>&#128229; <span data-i18n="installAppTitle">INSTALLER L'APP</span></h3>
+        <button class="popup-close" onclick="fermerInstallPWA()">&times;</button>
+      </div>
+      <div class="popup-body" style="text-align:center;padding:20px;">
+        <p id="install-pwa-instructions" data-i18n="installAppInstructions" style="margin-bottom:16px;color:#bdc3c7;">Clique sur Telecharger pour installer l'application sur ton appareil.</p>
+        <button id="install-pwa-download-btn" class="btn-sauver-pseudo" style="background:linear-gradient(180deg,#27ae60,#229954);border-color:#27ae60;width:100%;padding:12px;font-size:16px;" onclick="confirmerInstallPWA()">
+          &#128229; <span data-i18n="downloadAppBtn">TELECHARGER</span>
+        </button>
+        <p id="install-pwa-ios-help" data-i18n="installAppIosHelp" style="display:none;font-size:11px;color:#95a5a6;margin-top:14px;">Sur iPhone/iPad : appuie sur l'icone Partager &#10138; puis "Sur l'ecran d'accueil".</p>
+      </div>
+    </div>
+  </div>
 
   <!-- ============================== -->
   <!-- ECRAN 0 : CREATION DE COMPTE  -->
@@ -77,7 +99,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS 3.1.7 - ALPHA</span>
+    <span class="version">VIRUS 3.1.8 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -156,7 +178,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.1.7 - ALPHA</span>
+    <span class="version">VIRUS 3.1.8 - ALPHA</span>
     </div>
   </div>
 
@@ -240,7 +262,7 @@
             <button class="btn-sauver-pseudo" data-i18n="cancelBtn" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.1.7 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.1.8 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -445,7 +467,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline">3.1.7 - ALPHA</span>
+        <span class="version-inline">3.1.8 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -508,6 +530,10 @@
       <button class="btn btn-tuto" onclick="ouvrirTuto()">
         <span>&#128218; <span data-i18n="tutorialBtn">TUTORIEL</span></span>
         <span class="btn-sub" data-i18n="tutorialSub">Apprendre a jouer</span>
+      </button>
+      <button class="btn btn-installer" id="btn-installer-pwa" onclick="declencherInstallPWA()" style="display:none;">
+        <span>&#128229; <span data-i18n="installApp">INSTALLER L'APP</span></span>
+        <span class="btn-sub" data-i18n="installAppSub">Sur ton telephone ou PC</span>
       </button>
     </div>
 
@@ -663,7 +689,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS 3.1.7 - ALPHA</span>
+    <span class="version">VIRUS 3.1.8 - ALPHA</span>
     </div>
   </div>
 
@@ -754,7 +780,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.1.7 - ALPHA</span>
+    <span class="version">VIRUS 3.1.8 - ALPHA</span>
     </div>
   </div>
 
@@ -800,7 +826,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS 3.1.7 - ALPHA</span>
+    <span class="version">VIRUS 3.1.8 - ALPHA</span>
   </div>
 
   <!-- ============================== -->

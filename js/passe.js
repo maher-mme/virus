@@ -448,7 +448,8 @@ function afficherPasse() {
     var sDeaths = data.seasonDeaths || 0;
     var sGames = data.seasonGames || 0;
     var sWinRate = sGames > 0 ? Math.round((sWins / sGames) * 100) : 0;
-    var sLevel = data.seasonLevel || 1;
+    var saison = getSaisonActive();
+    var sLevel = getSaisonLevelFromXP(data.seasonXP || 0, saison);
 
     var html = '';
     html += '<div class="saison-stats">';

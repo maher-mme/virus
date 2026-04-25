@@ -152,6 +152,13 @@ setInterval(function() {
   }
 }, 10000);
 
+// Cleanup global des parties fantomes toutes les 2 min (tout client peut nettoyer)
+setInterval(function() {
+  if (typeof monPlayerId !== 'undefined' && monPlayerId && typeof nettoyerPartiesFantomes === 'function') {
+    nettoyerPartiesFantomes();
+  }
+}, 120000);
+
 // Host : verifier les joueurs deconnectes toutes les 15s
 setInterval(function() {
   if (!estHost || !partieActuelleId) return;

@@ -1401,15 +1401,58 @@ function rejoindrePartie(partieId) {
 // Nettoyer les parties fantomes (0 joueurs ou host absent)
 function nettoyerPartiesFantomes() {
   var parties = getParties();
+  var maintenant = Date.now();
+  var seuilFantome = 90000; // 90s sans heartbeat = fantome
+
   parties.forEach(function(p) {
+    // Cas 1 : compteur a 0 → fantome evident
     if (p.joueurs <= 0 || !p.listeJoueurs || p.listeJoueurs.length === 0) {
-      db.collection('parties').doc(p._id).delete().catch(function() {});
-      // Supprimer aussi les partyPlayers orphelins
-      db.collection('partyPlayers').where('partyId', '==', p._id).get().then(function(snap) {
-        snap.forEach(function(doc) { doc.ref.delete(); });
-      }).catch(function() {});
+      supprimerPartieEntiere(p._id);
+      return;
     }
+    // Cas 2 : verifier les heartbeats des vrais joueurs
+    db.collection('partyPlayers').where('partyId', '==', p._id).get().then(function(snap) {
+      var auMoinsUnVivant = false;
+      var docs = [];
+      snap.forEach(function(d) { docs.push(d); });
+      for (var i = 0; i < docs.length; i++) {
+        var data = docs[i].data();
+        if (data.isBot) continue;
+        var la = data.lastActive ? data.lastActive.toMillis() : 0;
+        if (la && (maintenant - la) < seuilFantome) {
+          auMoinsUnVivant = true;
+          break;
+        }
+      }
+      // Aucun vrai joueur actif → supprimer la party fantome
+      if (!auMoinsUnVivant && docs.length > 0) {
+        supprimerPartieEntiere(p._id);
+      } else if (docs.length === 0) {
+        // Aucun partyPlayer du tout → fantome
+        supprimerPartieEntiere(p._id);
+      }
+    }).catch(function() {});
   });
+}
+
+// Helper : supprimer une party + tous ses elements lies
+function supprimerPartieEntiere(partyId) {
+  db.collection('parties').doc(partyId).delete().catch(function() {});
+  db.collection('partyPlayers').where('partyId', '==', partyId).get().then(function(snap) {
+    snap.forEach(function(d) { d.ref.delete().catch(function() {}); });
+  }).catch(function() {});
+  db.collection('chatMessages').where('partyId', '==', partyId).get().then(function(snap) {
+    snap.forEach(function(d) { d.ref.delete().catch(function() {}); });
+  }).catch(function() {});
+  db.collection('cadavres').where('partyId', '==', partyId).get().then(function(snap) {
+    snap.forEach(function(d) { d.ref.delete().catch(function() {}); });
+  }).catch(function() {});
+  db.collection('meetings').where('partyId', '==', partyId).get().then(function(snap) {
+    snap.forEach(function(d) { d.ref.delete().catch(function() {}); });
+  }).catch(function() {});
+  db.collection('votes').where('partyId', '==', partyId).get().then(function(snap) {
+    snap.forEach(function(d) { d.ref.delete().catch(function() {}); });
+  }).catch(function() {});
 }
 
 // Supprimer UNE partie (admin)

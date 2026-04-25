@@ -368,23 +368,23 @@ function fermerPasseDedie() {
   if (pop) pop.classList.remove('visible');
 }
 
-// Badges saison : seuils plus petits que carriere
+// Badges saison : ligues — kills/wins tous les 100, niveau tous les 50
 var BADGE_PALIERS_SAISON = [
-  { nom: 'Maitre', min: 1000, fichier: 'assets/badges/Badges_maître.svg', couleur: '#9b59b6' },
-  { nom: 'Champion', min: 250, fichier: 'assets/badges/Badges_Chaimpion.svg', couleur: '#e74c3c' },
-  { nom: 'Diamant', min: 100, fichier: 'assets/badges/Badges_diament.svg', couleur: '#2962ff' },
-  { nom: 'Platine', min: 50, fichier: 'assets/badges/Badges_Platine.svg', couleur: '#00e5ff' },
-  { nom: 'Or', min: 25, fichier: 'assets/badges/Bages_or.svg', couleur: '#fdd835' },
-  { nom: 'Argent', min: 10, fichier: 'assets/badges/Badges_argent.svg', couleur: '#bdbdbd' },
+  { nom: 'Maitre', min: 600, fichier: 'assets/badges/Badges_maître.svg', couleur: '#9b59b6' },
+  { nom: 'Champion', min: 500, fichier: 'assets/badges/Badges_Chaimpion.svg', couleur: '#e74c3c' },
+  { nom: 'Diamant', min: 400, fichier: 'assets/badges/Badges_diament.svg', couleur: '#2962ff' },
+  { nom: 'Platine', min: 300, fichier: 'assets/badges/Badges_Platine.svg', couleur: '#00e5ff' },
+  { nom: 'Or', min: 200, fichier: 'assets/badges/Bages_or.svg', couleur: '#fdd835' },
+  { nom: 'Argent', min: 100, fichier: 'assets/badges/Badges_argent.svg', couleur: '#bdbdbd' },
   { nom: 'Bronze', min: 1, fichier: 'assets/badges/Badges_bronze.svg', couleur: '#b8860b' }
 ];
 var BADGE_PALIERS_SAISON_NIVEAU = [
-  { nom: 'Maitre', min: 18, fichier: 'assets/badges/Badges_maître.svg', couleur: '#9b59b6' },
-  { nom: 'Champion', min: 12, fichier: 'assets/badges/Badges_Chaimpion.svg', couleur: '#e74c3c' },
-  { nom: 'Diamant', min: 9, fichier: 'assets/badges/Badges_diament.svg', couleur: '#2962ff' },
-  { nom: 'Platine', min: 6, fichier: 'assets/badges/Badges_Platine.svg', couleur: '#00e5ff' },
-  { nom: 'Or', min: 4, fichier: 'assets/badges/Bages_or.svg', couleur: '#fdd835' },
-  { nom: 'Argent', min: 2, fichier: 'assets/badges/Badges_argent.svg', couleur: '#bdbdbd' },
+  { nom: 'Maitre', min: 300, fichier: 'assets/badges/Badges_maître.svg', couleur: '#9b59b6' },
+  { nom: 'Champion', min: 250, fichier: 'assets/badges/Badges_Chaimpion.svg', couleur: '#e74c3c' },
+  { nom: 'Diamant', min: 200, fichier: 'assets/badges/Badges_diament.svg', couleur: '#2962ff' },
+  { nom: 'Platine', min: 150, fichier: 'assets/badges/Badges_Platine.svg', couleur: '#00e5ff' },
+  { nom: 'Or', min: 100, fichier: 'assets/badges/Bages_or.svg', couleur: '#fdd835' },
+  { nom: 'Argent', min: 50, fichier: 'assets/badges/Badges_argent.svg', couleur: '#bdbdbd' },
   { nom: 'Bronze', min: 1, fichier: 'assets/badges/Badges_bronze.svg', couleur: '#b8860b' }
 ];
 function getBadgePalierSaison(valeur, type) {

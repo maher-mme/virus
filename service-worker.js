@@ -1,6 +1,13 @@
 // Service Worker pour VIRUS PWA
 // CACHE_VERSION : a bumper a chaque release importante pour forcer le refresh
-var CACHE_VERSION = 'virus-v3.3.0';
+var CACHE_VERSION = 'virus-v3.3.1';
+
+// SDK Firebase (cross-origin) : doit etre cache pour que l'app demarre offline
+var FIREBASE_SDK = [
+  'https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js',
+  'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js',
+  'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js'
+];
 
 // Shell pre-cache a l'install pour pouvoir lancer l'app offline meme si l'utilisateur
 // installe la PWA et passe offline immediatement apres.
@@ -52,10 +59,17 @@ var CORE_ASSETS = [
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_VERSION).then(function(cache) {
-      // cache.add individuel : si un asset rate, on continue (au lieu de fail tout)
-      return Promise.all(CORE_ASSETS.map(function(url) {
+      // Pre-cache local
+      var localPromises = CORE_ASSETS.map(function(url) {
         return cache.add(url).catch(function() {});
-      }));
+      });
+      // Pre-cache SDK Firebase (cross-origin → mode no-cors pour eviter CORS errors)
+      var sdkPromises = FIREBASE_SDK.map(function(url) {
+        return fetch(url, { mode: 'no-cors' }).then(function(resp) {
+          return cache.put(url, resp);
+        }).catch(function() {});
+      });
+      return Promise.all(localPromises.concat(sdkPromises));
     })
   );
   // Ne pas skipWaiting auto : on attend le message du client (controle propre)
@@ -79,8 +93,14 @@ self.addEventListener('activate', function(event) {
 
 self.addEventListener('fetch', function(event) {
   var url = event.request.url;
-  // Ne pas intercepter Firebase / API externes
-  if (url.indexOf('firestore') >= 0 || url.indexOf('firebase') >= 0 || url.indexOf('googleapis') >= 0 || url.indexOf('gstatic') >= 0) {
+  // Ne pas intercepter les RPC Firebase live (Firestore / Auth / Realtime)
+  // → ces endpoints DOIVENT echouer naturellement quand offline pour que le code
+  //   passe en mode degrade. Mais on doit cacher le SDK gstatic (statique).
+  if (url.indexOf('firestore.googleapis.com') >= 0 ||
+      url.indexOf('firebaseio.com') >= 0 ||
+      url.indexOf('identitytoolkit.googleapis.com') >= 0 ||
+      url.indexOf('securetoken.googleapis.com') >= 0 ||
+      url.indexOf('firebaseinstallations.googleapis.com') >= 0) {
     return;
   }
   // Ne pas intercepter les requetes non-GET
@@ -94,7 +114,8 @@ self.addEventListener('fetch', function(event) {
     caches.open(CACHE_VERSION).then(function(cache) {
       return cache.match(event.request).then(function(cached) {
         var networkFetch = fetch(event.request).then(function(response) {
-          if (response && response.status === 200 && response.type === 'basic') {
+          // Cache same-origin (basic) ET cross-origin cachable (cors/opaque pour gstatic)
+          if (response && (response.status === 200 || response.type === 'opaque')) {
             cache.put(event.request, response.clone());
           }
           return response;

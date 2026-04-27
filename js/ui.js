@@ -87,12 +87,56 @@ function forcerMajPWA() {
   }
 }
 
+// Pre-charge tous les skins/pets/badges/musiques en arriere-plan apres le load
+// → le SW les capture et les met en cache pour permettre un offline complet
+function prechargerAssetsOffline() {
+  if (!navigator.onLine) return;
+  var urls = [];
+  function pushAll(arr, keys) {
+    if (!arr || !arr.length) return;
+    arr.forEach(function(item) {
+      keys.forEach(function(k) { if (item[k]) urls.push(item[k]); });
+    });
+  }
+  if (typeof SKINS !== 'undefined') pushAll(SKINS, ['fichier']);
+  if (typeof SKINS_BOUTIQUE !== 'undefined') pushAll(SKINS_BOUTIQUE, ['fichier']);
+  if (typeof SKINS_PASSE !== 'undefined') pushAll(SKINS_PASSE, ['fichier']);
+  if (typeof PETS !== 'undefined') pushAll(PETS, ['idle', 'walk1', 'walk2']);
+  if (typeof PETS_BOUTIQUE !== 'undefined') pushAll(PETS_BOUTIQUE, ['idle', 'walk1', 'walk2']);
+  if (typeof PETS_PASSE !== 'undefined') pushAll(PETS_PASSE, ['idle', 'walk1', 'walk2']);
+  if (typeof MUSIQUES !== 'undefined') pushAll(MUSIQUES, ['fichier', 'image']);
+  if (typeof MUSIQUES_BOUTIQUE !== 'undefined') pushAll(MUSIQUES_BOUTIQUE, ['fichier', 'image']);
+  // Badges saison
+  ['Badges_bronze.svg','Badges_argent.svg','Bages_or.svg','Badges_Platine.svg','Badges_diament.svg','Badges_Chaimpion.svg','Badges_maître.svg'].forEach(function(f) {
+    urls.push('assets/badges/' + f);
+  });
+  // Backgrounds
+  ['centre_commercial.svg','menu_online.svg','menu_principal.svg','salle_attente.svg','pfp_de_base.png'].forEach(function(f) {
+    urls.push('assets/' + f);
+  });
+  // Fetch silencieusement par batch de 5 pour ne pas saturer
+  var i = 0;
+  function fetchBatch() {
+    var batch = urls.slice(i, i + 5);
+    if (!batch.length) return;
+    Promise.all(batch.map(function(u) {
+      return fetch(u, { cache: 'no-cache' }).catch(function() {});
+    })).then(function() {
+      i += 5;
+      setTimeout(fetchBatch, 100);
+    });
+  }
+  fetchBatch();
+}
+
 // Enregistrer le Service Worker + detecter MAJ
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' }).then(function(reg) {
       // Verifier les MAJ toutes les 30 minutes (au lieu de 24h par defaut)
       setInterval(function() { reg.update().catch(function() {}); }, 1800000);
+      // Pre-cache des skins/pets/badges en arriere-plan (5s apres le load)
+      setTimeout(prechargerAssetsOffline, 5000);
       // Quand un nouveau SW est installe, demander a l'utilisateur de recharger
       reg.addEventListener('updatefound', function() {
         var newWorker = reg.installing;
@@ -122,7 +166,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.3.1';
+var CURRENT_VERSION = '3.3.2';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 

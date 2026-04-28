@@ -147,6 +147,18 @@ function masquerLoadingScreen() {
     loading.style.opacity = '0';
     setTimeout(function() { loading.style.display = 'none'; }, 400);
   }
+  // Lancer la musique du menu une fois le loading termine
+  setTimeout(function() {
+    var audio = document.getElementById('musique-menu');
+    if (audio && !musiqueMuted) {
+      // Determiner l'ecran actif et lancer la musique si on est sur le menu
+      var screens = document.querySelectorAll('.screen.active');
+      var ecranActif = screens.length ? screens[0].id : 'menu-principal';
+      if (ecranActif !== 'jeu' && ecranActif !== 'salle-attente') {
+        audio.play().catch(function() {});
+      }
+    }
+  }, 450);
 }
 
 // Enregistrer le Service Worker + detecter MAJ
@@ -228,7 +240,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.3.5';
+var CURRENT_VERSION = '3.3.6';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -478,6 +490,11 @@ var _lobbyAudio = null;
 function gererMusiqueMenu(ecranId) {
   var audio = document.getElementById('musique-menu');
   if (!audio) return;
+  // Pas de musique tant que l'ecran de chargement est visible
+  if (_bootPhaseActive) {
+    audio.pause();
+    return;
+  }
   if (ecranId === 'jeu' || ecranId === 'salle-attente') {
     audio.pause();
     audio.currentTime = 0;

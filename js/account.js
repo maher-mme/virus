@@ -220,12 +220,65 @@ function connecterCompte() {
     if (typeof apiLogin === 'function') {
       apiLogin(monPlayerId, pin).catch(function() {});
     }
+    // Lancer la sync temps reel du profil (cross-device)
+    initPlayerSync();
     showScreen('menu-principal');
     showNotif(t('loggedIn'), 'success');
   }).catch(function(err) {
     console.error('Erreur connexion:', err);
     showNotif(t('connectionError'), 'error');
   });
+}
+
+// ============================
+// SYNC TEMPS REEL DU PROFIL (cross-device)
+// ============================
+// Listener Firestore qui detecte les changements sur le doc joueur
+// → quand l'utilisateur change sa pfp/cadre/skin sur un autre appareil,
+//   les valeurs locales sont synchronisees automatiquement.
+var _playerSyncUnsub = null;
+
+function initPlayerSync() {
+  if (typeof db === 'undefined' || !monPlayerId) return;
+  if (_playerSyncUnsub) { try { _playerSyncUnsub(); } catch(e) {} _playerSyncUnsub = null; }
+  _playerSyncUnsub = db.collection('players').doc(monPlayerId).onSnapshot(function(doc) {
+    if (!doc.exists) return;
+    var data = doc.data();
+    var changed = false;
+
+    // PFP
+    var localPfp = localStorage.getItem('virusPfp') || '';
+    var remotePfp = data.pfp || '';
+    if (remotePfp !== localPfp) {
+      if (remotePfp) localStorage.setItem('virusPfp', remotePfp);
+      else localStorage.removeItem('virusPfp');
+      changed = true;
+    }
+
+    // Cadre PFP
+    var localCadre = localStorage.getItem('virusPfpCadre') || '';
+    var remoteCadre = data.pfpCadre || '';
+    if (remoteCadre && remoteCadre !== localCadre) {
+      localStorage.setItem('virusPfpCadre', remoteCadre);
+      changed = true;
+    }
+
+    // Gold
+    if (typeof data.gold === 'number') {
+      var localGold = parseInt(localStorage.getItem('virusGold')) || 0;
+      if (data.gold !== localGold) {
+        localStorage.setItem('virusGold', data.gold);
+        if (typeof playerGold !== 'undefined') playerGold = data.gold;
+        var goldEl = document.getElementById('gold-display');
+        if (goldEl) goldEl.textContent = data.gold;
+      }
+    }
+
+    if (changed) {
+      if (typeof afficherPfpPartout === 'function') afficherPfpPartout();
+      if (typeof appliquerCadrePartout === 'function') appliquerCadrePartout();
+    }
+  }, function() { /* erreur silencieuse */ });
 }
 
 // Convertir fichier skin -> id skin
@@ -244,6 +297,8 @@ function getSkinIdFromFichier(fichier) {
 // ============================
 function deconnecterCompte() {
   if (!confirm(t('confirmLogout'))) return;
+  // Stopper le listener de sync profil
+  if (_playerSyncUnsub) { try { _playerSyncUnsub(); } catch(e) {} _playerSyncUnsub = null; }
   // Sauvegarder gold et achats sur Firebase avant deconnexion
   var goldActuel = parseInt(localStorage.getItem('virusGold')) || 0;
   var skinsActuels = [];
@@ -663,6 +718,8 @@ function initCompteEtFirebase() {
     if (typeof debloquerToutAdmin === 'function') debloquerToutAdmin();
     if (typeof initEchangeListener === 'function') initEchangeListener();
     if (typeof initEchangeAccepteListener === 'function') initEchangeAccepteListener();
+    // Lancer la sync temps reel du profil (pour cross-device)
+    initPlayerSync();
     showScreen('menu-principal');
     // Verifier ban + PIN
     setTimeout(function() {

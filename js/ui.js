@@ -240,9 +240,15 @@ if ('serviceWorker' in navigator) {
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.3.6';
+var CURRENT_VERSION = '3.3.7';
 var _updateDismissed = false;
 var _updateForceTimer = null;
+
+// MAJ du numero de version affiche sur l'ecran de chargement
+(function() {
+  var lv = document.getElementById('loading-version');
+  if (lv) lv.textContent = CURRENT_VERSION + ' - ALPHA';
+})();
 
 function initVersionCheck() {
   if (typeof db === 'undefined') {

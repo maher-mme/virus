@@ -145,27 +145,26 @@ function masquerLoadingScreen() {
   var loading = document.getElementById('loading-screen');
   if (loading) {
     loading.style.opacity = '0';
-    setTimeout(function() { loading.style.display = 'none'; }, 400);
+    setTimeout(function() { loading.style.display = 'none'; }, 250);
   }
   // Lancer la musique du menu une fois le loading termine
   setTimeout(function() {
     var audio = document.getElementById('musique-menu');
     if (audio && !musiqueMuted) {
-      // Determiner l'ecran actif et lancer la musique si on est sur le menu
       var screens = document.querySelectorAll('.screen.active');
       var ecranActif = screens.length ? screens[0].id : 'menu-principal';
       if (ecranActif !== 'jeu' && ecranActif !== 'salle-attente') {
         audio.play().catch(function() {});
       }
     }
-  }, 450);
+  }, 280);
 }
 
 // Enregistrer le Service Worker + detecter MAJ
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     var bootStart = Date.now();
-    var MIN_LOADING_MS = 1200; // duree minimum d'affichage de l'ecran (eviter le flash)
+    var MIN_LOADING_MS = 400; // duree minimum d'affichage de l'ecran (eviter le flash)
     setLoadingProgress(15, 'Chargement...');
 
     navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' }).then(function(reg) {
@@ -228,7 +227,7 @@ if ('serviceWorker' in navigator) {
       var attente = Math.max(0, MIN_LOADING_MS - elapsed);
       setTimeout(function() {
         setLoadingProgress(100, 'Pret');
-        setTimeout(masquerLoadingScreen, 200);
+        setTimeout(masquerLoadingScreen, 80);
       }, attente);
     }
   });
@@ -240,7 +239,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.3.7';
+var CURRENT_VERSION = '3.3.8';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 

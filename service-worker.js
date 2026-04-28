@@ -1,6 +1,6 @@
 // Service Worker pour VIRUS PWA
 // CACHE_VERSION : a bumper a chaque release importante pour forcer le refresh
-var CACHE_VERSION = 'virus-v3.3.2';
+var CACHE_VERSION = 'virus-v3.3.5';
 
 // SDK Firebase (cross-origin) : doit etre cache pour que l'app demarre offline
 var FIREBASE_SDK = [
@@ -16,6 +16,7 @@ var CORE_ASSETS = [
   '/index.html',
   '/manifest.json',
   '/assets/favicon.svg',
+  '/assets/écran_de_chargement.png',
   // CSS
   '/css/base.css',
   '/css/components.css',
@@ -106,21 +107,34 @@ self.addEventListener('fetch', function(event) {
   // Ne pas intercepter les requetes non-GET
   if (event.request.method !== 'GET') return;
 
-  // Strategie : stale-while-revalidate
-  // - repond instantanement depuis cache si dispo
-  // - met a jour le cache en arriere-plan
-  // - si pas en cache et offline → fallback sur index.html pour la navigation
+  // Detecte si la requete est une page HTML (navigation ou .html)
+  var isHTML = event.request.mode === 'navigate' ||
+               (event.request.headers.get('accept') || '').indexOf('text/html') >= 0 ||
+               url.indexOf('.html') >= 0;
+
   event.respondWith(
     caches.open(CACHE_VERSION).then(function(cache) {
+      // HTML : NETWORK-FIRST → toujours frais quand online, cache en fallback offline
+      if (isHTML) {
+        return fetch(event.request).then(function(response) {
+          if (response && response.status === 200) {
+            cache.put(event.request, response.clone());
+          }
+          return response;
+        }).catch(function() {
+          return cache.match(event.request).then(function(c) {
+            return c || cache.match('/index.html');
+          });
+        });
+      }
+      // Autres assets : STALE-WHILE-REVALIDATE → cache immediat + maj en arriere-plan
       return cache.match(event.request).then(function(cached) {
         var networkFetch = fetch(event.request).then(function(response) {
-          // Cache same-origin (basic) ET cross-origin cachable (cors/opaque pour gstatic)
           if (response && (response.status === 200 || response.type === 'opaque')) {
             cache.put(event.request, response.clone());
           }
           return response;
         }).catch(function() {
-          if (event.request.mode === 'navigate') return cache.match('/index.html');
           return cached || null;
         });
         return cached || networkFetch;

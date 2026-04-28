@@ -129,32 +129,80 @@ function prechargerAssetsOffline() {
   fetchBatch();
 }
 
+// === ECRAN DE CHARGEMENT + GESTION MAJ AU BOOT ===
+var _bootPhaseActive = true; // True tant que l'ecran de chargement est visible
+
+function setLoadingProgress(percent, texte) {
+  var bar = document.getElementById('loading-bar');
+  var txt = document.getElementById('loading-text');
+  if (bar) bar.style.width = Math.min(100, Math.max(0, percent)) + '%';
+  if (txt && texte) txt.textContent = texte;
+}
+
+function masquerLoadingScreen() {
+  if (!_bootPhaseActive) return;
+  _bootPhaseActive = false;
+  var loading = document.getElementById('loading-screen');
+  if (loading) {
+    loading.style.opacity = '0';
+    setTimeout(function() { loading.style.display = 'none'; }, 400);
+  }
+}
+
 // Enregistrer le Service Worker + detecter MAJ
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
+    var bootStart = Date.now();
+    var MIN_LOADING_MS = 1200; // duree minimum d'affichage de l'ecran (eviter le flash)
+    setLoadingProgress(15, 'Chargement...');
+
     navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' }).then(function(reg) {
-      // Verifier les MAJ toutes les 30 minutes (au lieu de 24h par defaut)
+      setLoadingProgress(40, 'Verification des mises a jour...');
+
+      // 1) Si un SW est deja en attente (update detectee a la session precedente) → l'appliquer
+      if (reg.waiting && navigator.serviceWorker.controller) {
+        setLoadingProgress(70, 'Application de la mise a jour...');
+        reg.waiting.postMessage({ action: 'skipWaiting' });
+        // controllerchange va declencher un reload
+        return;
+      }
+
+      // 2) Forcer un check de MAJ au boot
+      reg.update().catch(function() {}).then(function() {
+        // Apres update(), si un nouveau SW arrive, il sera capte par updatefound ci-dessous
+        // Sinon on continue le boot normalement
+        setLoadingProgress(90, 'Pret');
+        finirBoot();
+      });
+
+      // Verifier les MAJ toutes les 30 minutes en runtime
       setInterval(function() { reg.update().catch(function() {}); }, 1800000);
-      // Pre-cache des skins/pets/badges en arriere-plan (5s apres le load)
+      // Pre-cache des skins/pets/badges en arriere-plan
       setTimeout(prechargerAssetsOffline, 5000);
-      // Quand un nouveau SW est installe, demander a l'utilisateur de recharger
+
+      // Detection d'une nouvelle MAJ
       reg.addEventListener('updatefound', function() {
         var newWorker = reg.installing;
         if (!newWorker) return;
         newWorker.addEventListener('statechange', function() {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            // Nouvelle version disponible
+          if (newWorker.state !== 'installed') return;
+          if (!navigator.serviceWorker.controller) return; // 1ere install, pas une MAJ
+          if (_bootPhaseActive) {
+            // MAJ detectee pendant le boot → applique direct, controllerchange va reload
+            setLoadingProgress(70, 'Telechargement de la mise a jour...');
+            newWorker.postMessage({ action: 'skipWaiting' });
+          } else {
+            // MAJ pendant le jeu → notif discrete, sera appliquee au prochain lancement
             if (typeof showNotif === 'function') {
-              showNotif('Nouvelle version disponible ! Rechargement...', 'info');
+              showNotif('Mise a jour disponible au prochain lancement', 'info');
             }
-            setTimeout(function() {
-              newWorker.postMessage({ action: 'skipWaiting' });
-              window.location.reload();
-            }, 2000);
           }
         });
       });
-    }).catch(function() {});
+    }).catch(function() {
+      finirBoot();
+    });
+
     // Reload auto quand le SW change (nouveau controleur)
     var refreshing = false;
     navigator.serviceWorker.addEventListener('controllerchange', function() {
@@ -162,11 +210,25 @@ if ('serviceWorker' in navigator) {
       refreshing = true;
       window.location.reload();
     });
+
+    function finirBoot() {
+      var elapsed = Date.now() - bootStart;
+      var attente = Math.max(0, MIN_LOADING_MS - elapsed);
+      setTimeout(function() {
+        setLoadingProgress(100, 'Pret');
+        setTimeout(masquerLoadingScreen, 200);
+      }, attente);
+    }
+  });
+} else {
+  // Pas de SW (vieux navigateur) : juste cacher l'ecran apres 1s
+  window.addEventListener('load', function() {
+    setTimeout(masquerLoadingScreen, 1000);
   });
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.3.2';
+var CURRENT_VERSION = '3.3.5';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 

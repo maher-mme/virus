@@ -36,6 +36,16 @@
 </head>
 <body>
 
+  <!-- ============================== -->
+  <!-- ECRAN DE CHARGEMENT (boot)     -->
+  <!-- ============================== -->
+  <div id="loading-screen" style="position:fixed;inset:0;background:#0f0f1a url('assets/écran_de_chargement.png') center/cover no-repeat;z-index:99999;display:flex;align-items:flex-end;justify-content:center;flex-direction:column;color:#fff;font-family:Arial,sans-serif;transition:opacity 0.4s;padding-bottom:60px;">
+    <div style="width:60%;max-width:400px;height:8px;background:rgba(0,0,0,0.5);border-radius:4px;overflow:hidden;margin:0 auto 12px;border:1px solid rgba(255,255,255,0.2);">
+      <div id="loading-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#e74c3c,#f39c12);transition:width 0.3s;box-shadow:0 0 10px rgba(231,76,60,0.6);"></div>
+    </div>
+    <div id="loading-text" style="font-size:13px;color:#ecf0f1;letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;width:100%;">Chargement...</div>
+  </div>
+
   <!-- Emoji Picker -->
   <div class="emoji-picker" id="emoji-picker" style="display:none;"></div>
 
@@ -121,7 +131,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS 3.3.2 - ALPHA</span>
+    <span class="version">VIRUS 3.3.5 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -200,7 +210,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.3.2 - ALPHA</span>
+    <span class="version">VIRUS 3.3.5 - ALPHA</span>
     </div>
   </div>
 
@@ -285,7 +295,7 @@
             <button class="btn-sauver-pseudo" data-i18n="cancelBtn" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.3.2 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.3.5 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -718,7 +728,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS 3.3.2 - ALPHA</span>
+    <span class="version">VIRUS 3.3.5 - ALPHA</span>
     </div>
   </div>
 
@@ -809,7 +819,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.3.2 - ALPHA</span>
+    <span class="version">VIRUS 3.3.5 - ALPHA</span>
     </div>
   </div>
 
@@ -855,7 +865,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS 3.3.2 - ALPHA</span>
+    <span class="version">VIRUS 3.3.5 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -2023,7 +2033,7 @@
 <script src="js/skins.js?v=10"></script>
 <script src="js/music.js?v=2"></script>
 <script src="js/account.js?v=26"></script>
-<script src="js/ui.js?v=20260427a"></script>
+<script src="js/ui.js?v=20260428a"></script>
 <script src="js/chat.js?v=7"></script>
 <script src="js/comments.js?v=5"></script>
 <script src="js/translation.js?v=20260422b"></script>

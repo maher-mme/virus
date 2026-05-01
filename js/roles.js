@@ -1042,6 +1042,15 @@ function afficherFinPartie(gagnant) {
     lancerConfettis(couleurs);
   }
 
+  // Particules confettis supplementaires depuis le centre haut (effet wow)
+  if (joueurAGagne && typeof spawnConfettis === 'function') {
+    var cx = window.innerWidth / 2;
+    setTimeout(function() { spawnConfettis(cx, 50); }, 0);
+    setTimeout(function() { spawnConfettis(cx - 200, 80); }, 250);
+    setTimeout(function() { spawnConfettis(cx + 200, 80); }, 500);
+    setTimeout(function() { spawnConfettis(cx, 50); }, 750);
+  }
+
   // Afficher le bouton "Continuer a jouer" si mode en ligne
   var btnContinuer = document.getElementById('fin-btn-continuer');
   if (btnContinuer) btnContinuer.style.display = (!modeHorsLigne && partieActuelleId) ? 'block' : 'none';

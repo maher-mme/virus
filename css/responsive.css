@@ -610,11 +610,15 @@
   /* FIN DE PARTIE                  */
   /* ============================== */
   .fin-partie-overlay {
-    padding: 20px 10px 100px;
+    padding: 20px 10px 10px;
     gap: 12px;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
     overscroll-behavior: contain;
+  }
+  .fin-partie-actions {
+    padding: 12px 0 20px;
+    gap: 8px;
   }
   .fin-partie-titre::before {
     width: 250px;

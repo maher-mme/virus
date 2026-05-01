@@ -328,6 +328,15 @@ function terminerMission(missionIdx) {
   partieMissions++;
   if (typeof incrementerQueteStat === 'function') incrementerQueteStat('missions', 1);
 
+  // Particules etincelles autour du joueur
+  if (typeof spawnEtincelles === 'function') {
+    var joueurEl = document.getElementById('joueur');
+    if (joueurEl) {
+      var rect = joueurEl.getBoundingClientRect();
+      spawnEtincelles(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    }
+  }
+
   var btn = document.getElementById('btn-mission');
   if (btn) {
     resetBtnMission(btn);

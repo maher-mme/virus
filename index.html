@@ -26,11 +26,11 @@
   <link rel="stylesheet" href="css/components.css?v=7">
   <link rel="stylesheet" href="css/menu.css?v=20">
   <link rel="stylesheet" href="css/lobby.css?v=20260412">
-  <link rel="stylesheet" href="css/game.css?v=19">
+  <link rel="stylesheet" href="css/game.css?v=20">
   <link rel="stylesheet" href="css/hud.css?v=17">
   <link rel="stylesheet" href="css/meeting.css?v=6">
   <link rel="stylesheet" href="css/friends.css?v=7">
-  <link rel="stylesheet" href="css/responsive.css?v=20260421b">
+  <link rel="stylesheet" href="css/responsive.css?v=20260501a">
   <link rel="stylesheet" href="css/minigames.css?v=1">
   <link rel="stylesheet" href="css/passe.css?v=1">
 </head>
@@ -44,7 +44,7 @@
       <div id="loading-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#e74c3c,#f39c12);transition:width 0.3s;box-shadow:0 0 10px rgba(231,76,60,0.6);"></div>
     </div>
     <div id="loading-text" style="font-size:13px;color:#ecf0f1;letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;width:100%;">Chargement...</div>
-    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.4.0 - ALPHA</div>
+    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.4.1 - ALPHA</div>
   </div>
 
   <!-- Emoji Picker -->
@@ -132,7 +132,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS 3.4.0 - ALPHA</span>
+    <span class="version">VIRUS 3.4.1 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -211,7 +211,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.4.0 - ALPHA</span>
+    <span class="version">VIRUS 3.4.1 - ALPHA</span>
     </div>
   </div>
 
@@ -296,7 +296,7 @@
             <button class="btn-sauver-pseudo" data-i18n="cancelBtn" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.4.0 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.4.1 - ALPHA</p>
       </div>
     </div>
   </div>
@@ -729,7 +729,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS 3.4.0 - ALPHA</span>
+    <span class="version">VIRUS 3.4.1 - ALPHA</span>
     </div>
   </div>
 
@@ -820,7 +820,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.4.0 - ALPHA</span>
+    <span class="version">VIRUS 3.4.1 - ALPHA</span>
     </div>
   </div>
 
@@ -866,7 +866,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS 3.4.0 - ALPHA</span>
+    <span class="version">VIRUS 3.4.1 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -1846,9 +1846,11 @@
         <div class="fin-partie-titre" id="fin-partie-titre">VICTOIRE DES VIRUS</div>
         <div class="fin-partie-sous-titre" id="fin-partie-sous-titre"></div>
         <div class="fin-partie-roles" id="fin-partie-roles"></div>
-        <button class="fin-partie-btn fin-btn-continuer" id="fin-btn-continuer" onclick="retourLobbyFinPartie()" style="display:none;">CONTINUER A JOUER</button>
-        <button class="fin-partie-btn fin-btn-replay" id="fin-btn-replay" onclick="ouvrirReplay()" style="display:none;background:linear-gradient(180deg,#3498db,#2980b9);border-color:#3498db;">&#127909; VOIR LE REPLAY</button>
-        <button class="fin-partie-btn" onclick="retourMenuFinPartie()" data-i18n="mainMenu">MENU PRINCIPAL</button>
+        <div class="fin-partie-actions">
+          <button class="fin-partie-btn fin-btn-continuer" id="fin-btn-continuer" onclick="retourLobbyFinPartie()" style="display:none;">CONTINUER A JOUER</button>
+          <button class="fin-partie-btn fin-btn-replay" id="fin-btn-replay" onclick="ouvrirReplay()" style="display:none;background:linear-gradient(180deg,#3498db,#2980b9);border-color:#3498db;">&#127909; VOIR LE REPLAY</button>
+          <button class="fin-partie-btn" onclick="retourMenuFinPartie()" data-i18n="mainMenu">MENU PRINCIPAL</button>
+        </div>
       </div>
 
       <!-- Indicateur de direction mission -->
@@ -2034,22 +2036,23 @@
 <script src="js/skins.js?v=10"></script>
 <script src="js/music.js?v=2"></script>
 <script src="js/account.js?v=27"></script>
-<script src="js/ui.js?v=20260428d"></script>
+<script src="js/ui.js?v=20260501a"></script>
 <script src="js/chat.js?v=7"></script>
 <script src="js/comments.js?v=5"></script>
 <script src="js/translation.js?v=20260422b"></script>
 <script src="js/firebase-sync.js?v=51"></script>
 <script src="js/replay.js?v=2"></script>
 <script src="js/emotes.js?v=7"></script>
+<script src="js/particles.js?v=1"></script>
 <script src="js/passe.js?v=9"></script>
-<script src="js/decorations.js?v=2"></script>
+<script src="js/decorations.js?v=3"></script>
 <script src="js/player.js?v=11"></script>
 <script src="js/shop.js?v=18"></script>
 <script src="js/bots.js?v=11"></script>
 <script src="js/game.js?v=20260422e"></script>
-<script src="js/roles.js?v=31"></script>
+<script src="js/roles.js?v=32"></script>
 <script src="js/meeting.js?v=16"></script>
-<script src="js/missions.js?v=12"></script>
+<script src="js/missions.js?v=13"></script>
 <script src="js/minigames.js?v=2"></script>
 <script src="js/cameras.js?v=2"></script>
 <script src="js/stats.js?v=33"></script>

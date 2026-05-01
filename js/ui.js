@@ -239,7 +239,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.4.0';
+var CURRENT_VERSION = '3.4.1';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -810,6 +810,7 @@ var VISITE_ETAPES = [
   { selector: '.btn-casier', titreKey: 'tutoLockerTitle', texteKey: 'tutoLockerText', position: 'auto' },
   { selector: '.btn-side-quetes', titreKey: 'tutoQuestsTitle', texteKey: 'tutoQuestsText', position: 'auto' },
   { selector: '.btn-side-profil', titreKey: 'tutoProfileTitle', texteKey: 'tutoProfileText', position: 'auto' },
+  { selector: '#btn-amis', titre: 'Tes amis', texte: 'Ajoute des amis pour jouer ensemble, voir leur statut en ligne et echanger des skins.', position: 'auto' },
   { selector: '#btn-voir-regles', titreKey: 'tutoRulesTitle', texteKey: 'tutoRulesText', position: 'auto' },
   { selector: '.btn-tuto', titreKey: 'tutoEndTitle', texteKey: 'tutoEndText', position: 'auto' }
 ];
@@ -1838,6 +1839,42 @@ function afficherBanniereRole(role, coPlayers) {
     '</div>';
   document.body.appendChild(div);
   setTimeout(function() { if (div && div.parentNode) div.remove(); }, 3100);
+
+  // 1ere fois que le joueur joue ce role : afficher un tuto detaille apres la banniere
+  var flagKey = 'virusTutoRole_' + role;
+  if (!localStorage.getItem(flagKey)) {
+    setTimeout(function() { afficherTutoRole(role, couleur, nomRole); }, 3200);
+    localStorage.setItem(flagKey, '1');
+  }
+}
+
+// Tutoriel detaille pour la 1ere fois qu'un role est joue
+function afficherTutoRole(role, couleur, nomRole) {
+  var explanations = {
+    virus: 'Tu es le **Virus** ! Approche-toi des innocents pour les contaminer (bouton "Tuer"). Si tu te fais voter ou si tous les sains sont contamines/elimines, tu perds. Sois discret et accuse les autres pour brouiller les pistes !',
+    innocent: 'Tu es un **Innocent**. Accomplis tes missions partout dans le centre commercial (icones oranges). Si tu vois un cadavre, signale-le pour declencher un vote. Discute, accuse, vote. Survis !',
+    journaliste: 'Tu es le **Journaliste**. Comme un innocent, fais tes missions. Mais tu as un pouvoir : enquete sur les autres pour decouvrir leur role. Partage les infos pendant les votes pour aider l\'equipe.',
+    fanatique: 'Tu es le **Fanatique** ! Ton but : te faire eliminer par vote. Tu dois donc te faire suspecter mais sans gagner la confiance. Une fois mort, tu gagnes ! Strategie unique : etre louche sans en faire trop.',
+    espion: 'Tu es l\'**Espion**. Tu peux choisir ton camp en cours de partie. Observe les autres, calcule de quel cote tu seras gagnant. Tu peux aussi gagner avec le Fanatique s\'il se fait eliminer.',
+    cherif: 'Tu es le **Cherif** ! Tu as 3 balles et tu peux tirer sur n\'importe qui. ATTENTION : si tu tues un innocent, tu meurs aussi. Cherche le Virus et neutralise-le. Tape sur un joueur pour tirer.'
+  };
+  var texte = explanations[role] || sousTitre;
+  // Convertir les ** en bold
+  texte = texte.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+  var pop = document.createElement('div');
+  pop.id = 'tuto-role-popup';
+  pop.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(1);background:linear-gradient(180deg,' + couleur + ',rgba(0,0,0,0.85));color:white;padding:20px 24px;border-radius:14px;border:3px solid ' + couleur + ';box-shadow:0 8px 30px rgba(0,0,0,0.7),0 0 25px ' + couleur + ';max-width:400px;width:90%;z-index:99995;font-family:Arial,sans-serif;transition:transform 0.3s ease-out, opacity 0.3s;opacity:0;';
+  // Trigger entree animation
+  requestAnimationFrame(function() { pop.style.opacity = '1'; pop.style.transform = 'translate(-50%,-50%) scale(1)'; });
+  pop.innerHTML =
+    '<div style="font-size:11px;opacity:0.8;letter-spacing:2px;margin-bottom:6px;">PREMIERE FOIS</div>' +
+    '<h2 style="margin:0 0 12px;font-size:24px;letter-spacing:1px;">' + nomRole + '</h2>' +
+    '<p style="margin:0 0 16px;font-size:14px;line-height:1.5;">' + texte + '</p>' +
+    '<button onclick="document.getElementById(\'tuto-role-popup\').remove()" style="background:white;color:' + couleur + ';border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:bold;cursor:pointer;width:100%;">J\'AI COMPRIS</button>';
+  document.body.appendChild(pop);
+  // Auto-close apres 15s si pas clique
+  setTimeout(function() { var el = document.getElementById('tuto-role-popup'); if (el) el.remove(); }, 15000);
 }
 
 // === CONFETTIS (fin de partie victoire) ===

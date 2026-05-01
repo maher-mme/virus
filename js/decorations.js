@@ -20,6 +20,41 @@ var DECO_NB_MIN = 120;
 var DECO_NB_MAX = 180;
 var DECO_MARGIN = 100; // px de marge par rapport aux bords
 
+// Props de mall (peu importe la saison) : objets plus gros, ambiance centre commercial
+var DECORATIONS_PROPS = [
+  { icone: '🪑' },  // chaise (banc)
+  { icone: '🪴' },  // plante en pot
+  { icone: '🌱' },  // pousse / herbe
+  { icone: '🛒' },  // chariot
+  { icone: '🛑' },  // panneau stop
+  { icone: '🎉' },  // confettis
+  { icone: '💼' },  // mallette
+  { icone: '🛗' },  // panneau interdit
+  { icone: '🗑' },  // poubelle
+  { icone: '🛖' },  // bouton lumiere
+  { icone: '📱' },  // telephone
+  { icone: '🔋' },  // batterie
+  { icone: '🎰' },  // machine a sous (arcade)
+  { icone: '🎮' },  // manette (arcade)
+  { icone: '☕' },        // cafe
+  { icone: '🍔' },  // hamburger (food court)
+  { icone: '🍕' },  // pizza
+  { icone: '🍦' },  // glace
+  { icone: '💻' },  // ordi (boutique tech)
+  { icone: '📚' },  // livres
+  { icone: '👔' },  // chemise (boutique vetement)
+  { icone: '👠' },  // talon (boutique mode)
+  { icone: '💍' },  // bague (bijouterie)
+  { icone: '🎨' },  // peinture
+  { icone: '🎸' },  // guitare
+  { icone: '🧸' },  // peluche
+  { icone: '🧺' },  // panier
+  { icone: '🚪' }   // porte
+];
+
+var PROPS_NB_MIN = 35;
+var PROPS_NB_MAX = 50;
+
 function getSaisonActiveDeco() {
   if (typeof getSaisonActive === 'function') {
     var s = getSaisonActive();
@@ -58,6 +93,24 @@ function genererDecorations() {
     deco.textContent = elem.icone;
     container.appendChild(deco);
   }
+
+  // Couche props : objets de centre commercial plus gros pour donner de la vie
+  var nbProps = PROPS_NB_MIN + Math.floor(Math.random() * (PROPS_NB_MAX - PROPS_NB_MIN + 1));
+  for (var p = 0; p < nbProps; p++) {
+    var prop = DECORATIONS_PROPS[Math.floor(Math.random() * DECORATIONS_PROPS.length)];
+    var px = DECO_MARGIN + Math.floor(Math.random() * (mapW - 2 * DECO_MARGIN));
+    var py = DECO_MARGIN + Math.floor(Math.random() * (mapH - 2 * DECO_MARGIN));
+    var pTaille = 55 + Math.floor(Math.random() * 30); // 55 a 85 px (gros)
+    var pRot = Math.floor(Math.random() * 20) - 10;    // legere rotation
+    var pOpacity = 0.85 + Math.random() * 0.1;
+
+    var propEl = document.createElement('div');
+    propEl.className = 'decoration-prop';
+    propEl.style.cssText = 'position:absolute;left:' + px + 'px;top:' + py + 'px;font-size:' + pTaille + 'px;transform:rotate(' + pRot + 'deg);opacity:' + pOpacity + ';pointer-events:none;user-select:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.4));';
+    propEl.textContent = prop.icone;
+    container.appendChild(propEl);
+  }
+
   mallMap.appendChild(container);
 }
 

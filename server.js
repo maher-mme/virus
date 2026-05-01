@@ -7,8 +7,14 @@ const PORT = process.env.PORT || 8080;
 app.use(express.static(path.join(__dirname), {
   maxAge: "1d",
   setHeaders(res, filePath) {
-    if (filePath.endsWith(".html")) {
-      res.setHeader("Cache-Control", "no-cache");
+    // HTML, service-worker et manifest doivent toujours etre frais
+    // pour que les MAJ soient detectees rapidement
+    if (filePath.endsWith(".html") ||
+        filePath.endsWith("service-worker.js") ||
+        filePath.endsWith("manifest.json")) {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      res.setHeader("Pragma", "no-cache");
+      res.setHeader("Expires", "0");
     }
   }
 }));

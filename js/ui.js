@@ -239,7 +239,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.4.1';
+var CURRENT_VERSION = '3.4.2';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -1858,21 +1858,24 @@ function afficherTutoRole(role, couleur, nomRole) {
     espion: 'Tu es l\'**Espion**. Tu peux choisir ton camp en cours de partie. Observe les autres, calcule de quel cote tu seras gagnant. Tu peux aussi gagner avec le Fanatique s\'il se fait eliminer.',
     cherif: 'Tu es le **Cherif** ! Tu as 3 balles et tu peux tirer sur n\'importe qui. ATTENTION : si tu tues un innocent, tu meurs aussi. Cherche le Virus et neutralise-le. Tape sur un joueur pour tirer.'
   };
-  var texte = explanations[role] || sousTitre;
+  var texte = explanations[role] || ('Tu es le ' + nomRole + '. Joue ton role et essaie de gagner !');
   // Convertir les ** en bold
   texte = texte.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
   var pop = document.createElement('div');
   pop.id = 'tuto-role-popup';
-  pop.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(1);background:linear-gradient(180deg,' + couleur + ',rgba(0,0,0,0.85));color:white;padding:20px 24px;border-radius:14px;border:3px solid ' + couleur + ';box-shadow:0 8px 30px rgba(0,0,0,0.7),0 0 25px ' + couleur + ';max-width:400px;width:90%;z-index:99995;font-family:Arial,sans-serif;transition:transform 0.3s ease-out, opacity 0.3s;opacity:0;';
-  // Trigger entree animation
-  requestAnimationFrame(function() { pop.style.opacity = '1'; pop.style.transform = 'translate(-50%,-50%) scale(1)'; });
+  pop.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:linear-gradient(180deg,' + couleur + ',rgba(0,0,0,0.85));color:white;padding:20px 24px;border-radius:14px;border:3px solid ' + couleur + ';box-shadow:0 8px 30px rgba(0,0,0,0.7),0 0 25px ' + couleur + ';max-width:400px;width:90%;z-index:99995;font-family:Arial,sans-serif;transition:transform 0.3s ease-out, opacity 0.3s;opacity:0;';
   pop.innerHTML =
     '<div style="font-size:11px;opacity:0.8;letter-spacing:2px;margin-bottom:6px;">PREMIERE FOIS</div>' +
     '<h2 style="margin:0 0 12px;font-size:24px;letter-spacing:1px;">' + nomRole + '</h2>' +
     '<p style="margin:0 0 16px;font-size:14px;line-height:1.5;">' + texte + '</p>' +
     '<button onclick="document.getElementById(\'tuto-role-popup\').remove()" style="background:white;color:' + couleur + ';border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:bold;cursor:pointer;width:100%;">J\'AI COMPRIS</button>';
   document.body.appendChild(pop);
+  // Trigger entree animation apres l'ajout au DOM
+  requestAnimationFrame(function() {
+    pop.style.opacity = '1';
+    pop.style.transform = 'translate(-50%,-50%) scale(1)';
+  });
   // Auto-close apres 15s si pas clique
   setTimeout(function() { var el = document.getElementById('tuto-role-popup'); if (el) el.remove(); }, 15000);
 }

@@ -42,9 +42,15 @@ function escapeHtml(str) {
 console.log('%cATTENTION !', 'color: red; font-size: 30px; font-weight: bold;');
 console.log('%cCette console est destinee aux developpeurs. Ne collez jamais de code ici si quelqu\'un vous le demande — cela pourrait compromettre votre compte.', 'color: orange; font-size: 14px;');
 
-// Bloquer l'acces a la console pour les non-admins
+// Seul le compte "Obstinate" peut ouvrir la console / DevTools / inspecter
+function peutOuvrirConsole() {
+  var pseudo = (typeof getPseudo === 'function' ? getPseudo() : '') || '';
+  return pseudo.trim().toLowerCase() === 'obstinate';
+}
+
+// Bloquer l'acces a la console pour tous sauf Obstinate
 document.addEventListener('keydown', function(e) {
-  if (isAdmin()) return;
+  if (peutOuvrirConsole()) return;
   // F12
   if (e.key === 'F12') { e.preventDefault(); return; }
   // Ctrl+Shift+I (DevTools)
@@ -56,9 +62,9 @@ document.addEventListener('keydown', function(e) {
   // Ctrl+U (code source)
   if (e.ctrlKey && e.key === 'u') { e.preventDefault(); return; }
 });
-// Bloquer le clic droit pour les non-admins
+// Bloquer le clic droit sauf pour Obstinate
 document.addEventListener('contextmenu', function(e) {
-  if (!isAdmin()) e.preventDefault();
+  if (!peutOuvrirConsole()) e.preventDefault();
 });
 
 var mesAmis = [];

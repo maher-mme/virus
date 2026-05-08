@@ -1,12 +1,18 @@
 // ============================
 // API ANTI-TRICHE (client)
 // ============================
-var API_URL = 'https://maher-mme.github.io'; // A remplacer par l'URL du serveur Python
+// Mettre l'URL du serveur Python ici quand il sera deploye (ex: 'https://virus-api.onrender.com')
+// Tant que vide, le client tourne en "mode local" (gold/XP/stats geres cote client)
+var API_URL = '';
 var sessionToken = localStorage.getItem('virus_api_token') || '';
 var apiDisponible = false;
 
 // Verifier si l'API est en ligne au demarrage
 function verifierApi() {
+  if (!API_URL) {
+    apiDisponible = false;
+    return;
+  }
   fetch(API_URL + '/', { method: 'GET' }).then(function(r) {
     if (r.ok) {
       apiDisponible = true;

@@ -736,11 +736,7 @@ function initCompteEtFirebase() {
             doc.ref.update({ banned: false, banExpire: '', banRaison: '' });
           }
         }
-        // Verifier PIN
-        var pin = data.pin;
-        if (pin === undefined || pin === null || pin === '') {
-          showNotif(t('setPinNotif'), 'warn');
-        }
+        // (Notification "set ton pin" desactivee : trop intrusive)
       }).catch(function() {});
     }, 2000);
   } else {

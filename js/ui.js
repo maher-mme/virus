@@ -129,6 +129,65 @@ function prechargerAssetsOffline() {
   fetchBatch();
 }
 
+// === MODE ONLINE SELECTIONNE (virus | cachecache) ===
+var currentOnlineMode = 'virus';
+function selectionnerModeOnline(mode) {
+  currentOnlineMode = mode;
+  var titreEl = document.getElementById('moa-titre');
+  if (titreEl) {
+    if (mode === 'cachecache') {
+      titreEl.textContent = 'CACHE-CACHE';
+      titreEl.style.color = '#3498db';
+    } else {
+      titreEl.textContent = 'VIRUS';
+      titreEl.style.color = '';
+    }
+  }
+  showScreen('menu-online-actions');
+}
+
+// Adapter le formulaire creer-partie au mode actuel
+function adapterFormCreerPartie() {
+  var isCacheCache = currentOnlineMode === 'cachecache';
+  // Cacher les elements specifiques au mode VIRUS
+  document.querySelectorAll('[data-virus-only]').forEach(function(el) {
+    el.style.display = isCacheCache ? 'none' : '';
+  });
+  // Adapter les bornes du nb max joueurs selon le mode
+  var selJoueurs = document.getElementById('cp-max-joueurs');
+  if (selJoueurs) {
+    var min = isCacheCache ? 10 : 4;
+    var max = isCacheCache ? 30 : 15;
+    var defaut = isCacheCache ? 12 : 10;
+    selJoueurs.innerHTML = '';
+    for (var n = min; n <= max; n++) {
+      var opt = document.createElement('option');
+      opt.value = n;
+      opt.textContent = n + ' joueurs';
+      if (n === defaut) opt.selected = true;
+      selJoueurs.appendChild(opt);
+    }
+  }
+  // Adapter le titre
+  var ecran = document.getElementById('creer-partie');
+  if (ecran) {
+    var titre = ecran.querySelector('.online-titre');
+    if (titre) {
+      titre.textContent = isCacheCache ? 'CACHE-CACHE' : 'VIRUS';
+      titre.style.color = isCacheCache ? '#3498db' : '';
+    }
+  }
+  // Adapter le titre de liste-parties aussi
+  var liste = document.getElementById('liste-parties');
+  if (liste) {
+    var titreLp = liste.querySelector('.online-titre');
+    if (titreLp) {
+      titreLp.textContent = isCacheCache ? 'CACHE-CACHE' : 'VIRUS';
+      titreLp.style.color = isCacheCache ? '#3498db' : '';
+    }
+  }
+}
+
 // === ECRAN DE CHARGEMENT + GESTION MAJ AU BOOT ===
 var _bootPhaseActive = true; // True tant que l'ecran de chargement est visible
 
@@ -239,7 +298,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.4.3';
+var CURRENT_VERSION = '3.4.5';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -359,6 +418,7 @@ function forceHardReload() {
 var ROUTES = {
   '/': 'menu-principal',
   '/online/': 'menu-online',
+  '/online/mode/': 'menu-online-actions',
   '/offline/': 'config-horsline',
   '/shop/': 'boutique-skins',
   '/settings/': 'ecran-compte',
@@ -599,10 +659,15 @@ function showScreen(id, fromPopstate) {
 
   // Rafraichir la liste quand on arrive sur l'ecran
   if (id === 'liste-parties') {
+    adapterFormCreerPartie();
     rafraichirListeParties();
     // Bouton purge admin
     var btnPurge = document.getElementById('btn-purge-parties');
     if (btnPurge) btnPurge.style.display = isAdmin() ? 'flex' : 'none';
+  }
+  // Adapter le form de creer-partie selon le mode (virus / cachecache)
+  if (id === 'creer-partie') {
+    adapterFormCreerPartie();
   }
 
   // Generer la boutique quand on l'ouvre
@@ -1514,8 +1579,8 @@ function verifierCapteurs() {
 }
 
 function declencherAlarme(capteur) {
-  // Son d'alarme
-  try { var sAlarme = new Audio('Audio/reunion-urgence.mp3'); sAlarme.volume = 0.7; sAlarme.play(); } catch(e) {}
+  // Son d'alarme (genere via Web Audio)
+  if (typeof playSfx === 'function') playSfx('reunion');
   // Notification
   showNotif('ALARME ! Zone ' + capteur.nom, 'warn');
   // Afficher fleche vers la zone
@@ -1805,10 +1870,16 @@ function afficherBanniereRole(role, coPlayers) {
     journaliste: '#3498db',
     fanatique: '#8e44ad',
     espion: '#9b59b6',
-    cherif: '#f39c12'
+    cherif: '#f39c12',
+    chercheur: '#e74c3c',
+    cache: '#3498db'
   };
   var couleur = couleurs[role] || '#27ae60';
-  var nomRole = (typeof t === 'function') ? t('role' + role.charAt(0).toUpperCase() + role.slice(1)) : role.toUpperCase();
+  // Nom du role : pour cache-cache on a pas de cle de traduction, on utilise un fallback
+  var nomRole;
+  if (role === 'chercheur') nomRole = 'CHERCHEUR';
+  else if (role === 'cache') nomRole = 'CACHE';
+  else nomRole = (typeof t === 'function') ? t('role' + role.charAt(0).toUpperCase() + role.slice(1)) : role.toUpperCase();
   var sousTitre = '';
   if (role === 'virus') sousTitre = 'Elimine tous les innocents';
   else if (role === 'innocent') sousTitre = 'Accomplis tes missions';
@@ -1816,6 +1887,8 @@ function afficherBanniereRole(role, coPlayers) {
   else if (role === 'fanatique') sousTitre = 'Fais-toi eliminer pour gagner';
   else if (role === 'espion') sousTitre = 'Choisis ton camp';
   else if (role === 'cherif') sousTitre = 'Abats les Virus avec tes balles';
+  else if (role === 'chercheur') sousTitre = 'Trouve tous les caches avant la fin du timer';
+  else if (role === 'cache') sousTitre = 'Transforme-toi en objet et evite les chercheurs';
 
   var avatarsHtml = '';
   if (coPlayers && coPlayers.length > 0) {

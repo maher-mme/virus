@@ -19,8 +19,8 @@ function ouvrirReunion() {
   nbVotesTotal = 0;
   voteTermine = false;
 
-  // Son reunion d'urgence
-  try { var sReunion = new Audio("Audio/reunion-urgence.mp3"); sReunion.volume = 0.6; sReunion.play(); } catch(e) {}
+  // Son reunion d'urgence (genere via Web Audio, pas de fichier)
+  if (typeof playSfx === 'function') playSfx('reunion');
 
   // Stopper le deplacement tactile pendant la reunion
   touchActif = false;

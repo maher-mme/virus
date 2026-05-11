@@ -549,6 +549,15 @@ function lancerJeu() {
         var j = Math.floor(Math.random() * (i + 1));
         var tmp = rolesCC[i]; rolesCC[i] = rolesCC[j]; rolesCC[j] = tmp;
       }
+      // TEST DEV : forcer le role du host
+      if (typeof _testDevForceRole !== 'undefined' && _testDevForceRole) {
+        var hostIdx = tousCC.findIndex(function(p) { return p.playerId === monPlayerId; });
+        var swapIdx = rolesCC.indexOf(_testDevForceRole);
+        if (hostIdx >= 0 && swapIdx >= 0 && hostIdx !== swapIdx) {
+          var tmp2 = rolesCC[hostIdx]; rolesCC[hostIdx] = rolesCC[swapIdx]; rolesCC[swapIdx] = tmp2;
+        }
+        _testDevForceRole = null; // reset apres utilisation
+      }
       var batchCC = db.batch();
       tousCC.forEach(function(p, idx) {
         if (p._docId) {
@@ -624,6 +633,21 @@ function lancerJeu() {
     for (var i = rolesVrais.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
       var tmp = rolesVrais[i]; rolesVrais[i] = rolesVrais[j]; rolesVrais[j] = tmp;
+    }
+
+    // TEST DEV : forcer le role du host
+    if (typeof _testDevForceRole !== 'undefined' && _testDevForceRole) {
+      var hostIdxV = vraisJoueurs.findIndex(function(p) { return p.playerId === monPlayerId; });
+      var swapIdxV = rolesVrais.indexOf(_testDevForceRole);
+      // Si le role demande n'est pas dans la liste (ex: cherif pas active), l'ajouter
+      if (swapIdxV < 0 && rolesVrais.length > 0) {
+        rolesVrais[0] = _testDevForceRole;
+        swapIdxV = 0;
+      }
+      if (hostIdxV >= 0 && swapIdxV >= 0 && hostIdxV !== swapIdxV) {
+        var tmpV = rolesVrais[hostIdxV]; rolesVrais[hostIdxV] = rolesVrais[swapIdxV]; rolesVrais[swapIdxV] = tmpV;
+      }
+      _testDevForceRole = null; // reset apres utilisation
     }
 
     // Roles des bots : innocent (les bots recoivent leurs vrais roles localement)

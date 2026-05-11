@@ -51,6 +51,50 @@
   <!-- Emoji Picker -->
   <div class="emoji-picker" id="emoji-picker" style="display:none;"></div>
 
+  <!-- ============================== -->
+  <!-- POPUP TEST DEV (admin uniquement) -->
+  <!-- ============================== -->
+  <div class="popup-overlay" id="popup-test-dev">
+    <div class="popup-box" style="max-width:480px;">
+      <div class="popup-header" style="background:linear-gradient(180deg,#8e44ad,#6c3483);">
+        <h3>&#128295; TEST DEV — Lancer une partie</h3>
+        <button class="popup-close" onclick="fermerTestDev()">&times;</button>
+      </div>
+      <div class="popup-body" style="padding:20px;">
+        <p style="font-size:12px;color:#bdc3c7;margin:0 0 16px;line-height:1.5;">
+          Lance une partie de test avec des bots. Choisis ton mode, ton role et le nombre de bots. La partie est creee online comme normale, juste avec bots et role force.
+        </p>
+
+        <div class="popup-section">
+          <label>MODE</label>
+          <div style="display:flex;gap:8px;margin-top:6px;">
+            <button class="testdev-mode-btn active" id="testdev-mode-virus" onclick="testDevSetMode('virus')"
+                    style="flex:1;background:#e74c3c;color:white;border:2px solid #e74c3c;border-radius:8px;padding:10px;font-weight:bold;cursor:pointer;">VIRUS</button>
+            <button class="testdev-mode-btn" id="testdev-mode-cc" onclick="testDevSetMode('cachecache')"
+                    style="flex:1;background:rgba(52,152,219,0.2);color:white;border:2px solid #3498db;border-radius:8px;padding:10px;font-weight:bold;cursor:pointer;">CACHE-CACHE</button>
+          </div>
+        </div>
+
+        <div class="popup-section">
+          <label>TON ROLE</label>
+          <select id="testdev-role" style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px;color:#ecf0f1;font-size:14px;margin-top:6px;">
+            <!-- Rempli par JS selon le mode -->
+          </select>
+        </div>
+
+        <div class="popup-section">
+          <label>NOMBRE DE BOTS</label>
+          <input type="number" id="testdev-bots" min="3" max="29" value="6"
+                 style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px;color:#ecf0f1;font-size:14px;margin-top:6px;text-align:center;">
+          <p style="font-size:11px;color:#95a5a6;margin:4px 0 0;">Toi + bots = total joueurs</p>
+        </div>
+
+        <button class="btn-sauver-pseudo" onclick="lancerTestDev()"
+                style="width:100%;padding:14px;background:linear-gradient(180deg,#2ecc71,#27ae60);border-color:#2ecc71;font-size:15px;margin-top:8px;">&#9658; LANCER LE TEST</button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- POPUP HISTORIQUE VS AMI -->
   <div class="popup-overlay" id="popup-historique-vs">
@@ -749,6 +793,10 @@
         <span class="btn-extra-icon">&#128100;</span>
         <span data-i18n="profile">PROFIL</span>
       </button>
+      <button class="btn-online-extra" id="btn-test-dev" onclick="ouvrirTestDev()" style="display:none;background:linear-gradient(180deg,#8e44ad,#6c3483);border-color:#a569bd;">
+        <span class="btn-extra-icon">&#128295;</span>
+        <span>TEST DEV</span>
+      </button>
     </div>
 
     <span class="version">VIRUS 3.4.5 - ALPHA</span>
@@ -885,6 +933,13 @@
           <div class="cp-toggle-row">
             <div class="cp-toggle" id="cp-toggle-prive" onclick="this.classList.toggle('active')"></div>
             <span class="cp-toggle-label" id="cp-toggle-prive-label" data-i18n="privateGameDesc" style="color:#95a5a6;font-size:11px">Seuls vos amis verront la partie</span>
+          </div>
+        </div>
+        <div class="cp-role-item" id="cp-mode-test-row" style="display:none;border:2px solid #8e44ad;background:rgba(142,68,173,0.1);">
+          <label style="color:#a569bd;">&#128295; MODE TEST</label>
+          <div class="cp-toggle-row">
+            <div class="cp-toggle" id="cp-toggle-test" onclick="this.classList.toggle('active')" style="background:#8e44ad;"></div>
+            <span class="cp-toggle-label" id="cp-toggle-test-label" style="color:#bdc3c7;font-size:11px">Partie test : invisible aux joueurs non-dev dans la recherche</span>
           </div>
         </div>
         <button class="btn-valider-creer" onclick="creerPartie()" data-i18n="create">CREER LA PARTIE</button>
@@ -2107,17 +2162,18 @@
 <script src="js/skins.js?v=10"></script>
 <script src="js/music.js?v=2"></script>
 <script src="js/account.js?v=29"></script>
-<script src="js/ui.js?v=20260511a"></script>
+<script src="js/ui.js?v=20260511b"></script>
 <script src="js/chat.js?v=7"></script>
 <script src="js/comments.js?v=5"></script>
 <script src="js/translation.js?v=20260422b"></script>
-<script src="js/firebase-sync.js?v=56"></script>
+<script src="js/firebase-sync.js?v=57"></script>
 <script src="js/replay.js?v=2"></script>
 <script src="js/emotes.js?v=7"></script>
 <script src="js/particles.js?v=1"></script>
 <script src="js/cachecache.js?v=4"></script>
 <script src="js/sfx.js?v=2"></script>
 <script src="js/featureFlags.js?v=2"></script>
+<script src="js/testdev.js?v=1"></script>
 <script src="js/passe.js?v=9"></script>
 <script src="js/decorations.js?v=3"></script>
 <script src="js/player.js?v=11"></script>

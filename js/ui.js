@@ -164,6 +164,12 @@ function adapterFormCreerPartie() {
   document.querySelectorAll('[data-virus-only]').forEach(function(el) {
     el.style.display = isCacheCache ? 'none' : '';
   });
+  // Afficher la ligne MODE TEST uniquement pour les admins dev
+  var rowTest = document.getElementById('cp-mode-test-row');
+  if (rowTest) {
+    var estDev = (typeof peutOuvrirConsole === 'function') && peutOuvrirConsole();
+    rowTest.style.display = estDev ? '' : 'none';
+  }
   // Adapter les bornes du nb max joueurs selon le mode
   var selJoueurs = document.getElementById('cp-max-joueurs');
   if (selJoueurs) {
@@ -691,6 +697,7 @@ function showScreen(id, fromPopstate) {
     }
     var btnCC = document.getElementById('mode-cachecache-btn');
     if (btnCC) btnCC.style.display = '';
+    if (typeof majBoutonTestDev === 'function') majBoutonTestDev();
   }
 
   // Generer la boutique quand on l'ouvre

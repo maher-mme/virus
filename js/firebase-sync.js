@@ -1362,6 +1362,7 @@ function creerPartie() {
   }, { merge: true }).then(function() {
     // Creer la partie
     var estPrive = document.getElementById('cp-toggle-prive') && document.getElementById('cp-toggle-prive').classList.contains('active');
+    var estTest = document.getElementById('cp-toggle-test') && document.getElementById('cp-toggle-test').classList.contains('active');
     return db.collection('parties').add({
       nom: nom, hostPlayerId: monPlayerId, hostPseudo: pseudo,
       maxJoueurs: maxJoueurs, mechants: mechants,
@@ -1369,6 +1370,7 @@ function creerPartie() {
       langue: cpLang, couleur: COULEURS_PARTIES[Math.floor(Math.random() * COULEURS_PARTIES.length)],
       phase: 'lobby', joueurs: 1, listeJoueurs: [pseudo],
       private: estPrive,
+      isTestDev: estTest,
       gameMode: (typeof currentOnlineMode !== 'undefined') ? currentOnlineMode : 'virus',
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
@@ -1554,9 +1556,12 @@ function rafraichirListeParties() {
   var amisIds = (typeof mesAmis !== 'undefined') ? mesAmis.map(function(a) { return a.uid; }) : [];
   // Filtrer aussi par mode de jeu actuel (virus / cachecache)
   var modeFiltre = (typeof currentOnlineMode !== 'undefined') ? currentOnlineMode : 'virus';
+  var estDev = (typeof peutOuvrirConsole === 'function') && peutOuvrirConsole();
   const parties = toutesParties.filter(function(p) {
     var pMode = p.gameMode || 'virus'; // parties anciennes = virus par defaut
     if (pMode !== modeFiltre) return false;
+    // Cacher les parties TEST DEV aux non-admins
+    if (p.isTestDev && !estDev) return false;
     if (!p.private) return true; // Partie publique
     if (p.hostPlayerId === monPlayerId) return true; // C'est ma partie
     return amisIds.indexOf(p.hostPlayerId) >= 0; // Je suis ami du host

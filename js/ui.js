@@ -319,10 +319,12 @@ var CURRENT_VERSION = '3.5.0';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
-// MAJ du numero de version affiche sur l'ecran de chargement
+// MAJ du numero de version partout (loading screen + menu principal)
 (function() {
   var lv = document.getElementById('loading-version');
   if (lv) lv.textContent = CURRENT_VERSION + ' - ALPHA';
+  var vi = document.getElementById('version-inline');
+  if (vi) vi.textContent = CURRENT_VERSION + ' - ALPHA';
 })();
 
 function initVersionCheck() {

@@ -1082,6 +1082,8 @@ function retourMenuFinPartie() {
   document.getElementById('fin-partie-overlay').classList.remove('visible');
   var confC = document.getElementById('confetti-container');
   if (confC) confC.remove();
+  // Cleanup mode cache-cache
+  if (typeof quitterCacheCacheMode === 'function') quitterCacheCacheMode();
   // Retirer le visuel fantome du joueur
   var joueurEl = document.getElementById('joueur');
   if (joueurEl) joueurEl.classList.remove('bot-mort');

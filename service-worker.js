@@ -1,6 +1,6 @@
 // Service Worker pour VIRUS PWA
 // CACHE_VERSION : a bumper a chaque release importante pour forcer le refresh
-var CACHE_VERSION = 'virus-v3.4.3';
+var CACHE_VERSION = 'virus-v3.4.5';
 
 // SDK Firebase (cross-origin) : doit etre cache pour que l'app demarre offline
 var FIREBASE_SDK = [
@@ -123,7 +123,11 @@ self.addEventListener('fetch', function(event) {
           return response;
         }).catch(function() {
           return cache.match(event.request).then(function(c) {
-            return c || cache.match('/index.html');
+            if (c) return c;
+            return cache.match('/index.html').then(function(idx) {
+              // Toujours retourner une Response valide pour eviter le crash du SW
+              return idx || new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
+            });
           });
         });
       }
@@ -135,7 +139,8 @@ self.addEventListener('fetch', function(event) {
           }
           return response;
         }).catch(function() {
-          return cached || null;
+          // Si echec reseau + pas en cache, retourner une Response vide (404)
+          return cached || new Response('Not Found', { status: 404, statusText: 'Not Found' });
         });
         return cached || networkFetch;
       });

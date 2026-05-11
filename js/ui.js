@@ -131,6 +131,17 @@ function prechargerAssetsOffline() {
 
 // === MODE ONLINE SELECTIONNE (virus | cachecache) ===
 var currentOnlineMode = 'virus';
+
+// Retour depuis menu-online-actions : si cache-cache pas actif, on saute la selection de mode
+function retourDepuisMenuOnlineActions() {
+  var ccActive = (typeof isFeatureActive === 'function') && isFeatureActive('cachecache');
+  if (ccActive) {
+    showScreen('menu-online');
+  } else {
+    showScreen('menu-principal');
+  }
+}
+
 function selectionnerModeOnline(mode) {
   currentOnlineMode = mode;
   var titreEl = document.getElementById('moa-titre');
@@ -156,9 +167,9 @@ function adapterFormCreerPartie() {
   // Adapter les bornes du nb max joueurs selon le mode
   var selJoueurs = document.getElementById('cp-max-joueurs');
   if (selJoueurs) {
-    var min = isCacheCache ? 10 : 4;
+    var min = isCacheCache ? 7 : 4;
     var max = isCacheCache ? 30 : 15;
-    var defaut = isCacheCache ? 12 : 10;
+    var defaut = isCacheCache ? 10 : 10;
     selJoueurs.innerHTML = '';
     for (var n = min; n <= max; n++) {
       var opt = document.createElement('option');
@@ -668,6 +679,18 @@ function showScreen(id, fromPopstate) {
   // Adapter le form de creer-partie selon le mode (virus / cachecache)
   if (id === 'creer-partie') {
     adapterFormCreerPartie();
+  }
+  // Menu online : si le mode CACHE-CACHE n'est pas active (feature flag),
+  // bypass l'ecran de mode et aller direct au sous-menu VIRUS
+  if (id === 'menu-online') {
+    var ccActive = (typeof isFeatureActive === 'function') && isFeatureActive('cachecache');
+    if (!ccActive) {
+      currentOnlineMode = 'virus';
+      setTimeout(function() { showScreen('menu-online-actions'); }, 0);
+      return;
+    }
+    var btnCC = document.getElementById('mode-cachecache-btn');
+    if (btnCC) btnCC.style.display = '';
   }
 
   // Generer la boutique quand on l'ouvre

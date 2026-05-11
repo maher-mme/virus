@@ -312,6 +312,8 @@ function subscribeToParty(partyId) {
         data._docId = doc.id;
         firebasePartyPlayers.push(data);
       });
+      // Cache-cache : re-appliquer la visibilite des pseudos quand un role change
+      if (typeof cacheCacheMajPseudoVisibility === 'function') cacheCacheMajPseudoVisibility();
 
       // Verifier si MOI je suis encore dans la liste (sinon j'ai ete kick)
       if (partieActuelleId === partyId && myPartyPlayerDocId) {
@@ -582,6 +584,29 @@ function _attendreRolesEtLancer(state) {
   });
 }
 
+// === MODE CACHE-CACHE : visibilite des pseudos selon l'equipe ===
+// En cache-cache : un joueur ne voit le pseudo que des joueurs de son camp.
+// Appele apres assignation des roles + a chaque creation/MAJ de remote player.
+function cacheCacheMajPseudoVisibility() {
+  var partyData = firebaseParties.find(function(p) { return p._id === partieActuelleId; });
+  if (!partyData || partyData.gameMode !== 'cachecache') {
+    // Hors cache-cache : tous les pseudos visibles (reset au cas ou)
+    document.querySelectorAll('.bot-pseudo').forEach(function(el) {
+      el.style.visibility = '';
+    });
+    return;
+  }
+  if (!monRole) return;
+  firebasePartyPlayers.forEach(function(p) {
+    if (p.playerId === monPlayerId) return;
+    var el = document.getElementById('remote-' + p.playerId);
+    if (!el) return;
+    var pseudoLabel = el.querySelector('.bot-pseudo');
+    if (!pseudoLabel) return;
+    pseudoLabel.style.visibility = (p.role && p.role === monRole) ? 'visible' : 'hidden';
+  });
+}
+
 function _demarrerJeuMultiplayer(state) {
   // Trouver mon role depuis les partyPlayers (maintenant a jour)
   var myPlayer = firebasePartyPlayers.find(function(p) { return p.playerId === monPlayerId; });
@@ -589,6 +614,11 @@ function _demarrerJeuMultiplayer(state) {
   modeHorsLigne = false;
   showScreen('jeu');
   jeuActif = true;
+  // Mode cache-cache : appliquer la visibilite des pseudos selon les equipes + init du mode
+  setTimeout(cacheCacheMajPseudoVisibility, 100);
+  if (state && state.gameMode === 'cachecache' && typeof initCacheCacheMode === 'function') {
+    initCacheCacheMode(state);
+  }
 
   // Reset stats partie + lumieres
   partieKills = 0; partieMissions = 0; partieStartTime = Date.now(); partieMortTime = 0;
@@ -836,6 +866,8 @@ function createRemotePlayerElement(p) {
     '<img src="' + (p.skin || 'skin/gratuit/skin-de-base-garcon.svg') +
     '" class="bot-skin" style="width:60px;height:60px;">';
   container.appendChild(div);
+  // En cache-cache : adapter la visibilite du pseudo selon les equipes
+  if (typeof cacheCacheMajPseudoVisibility === 'function') cacheCacheMajPseudoVisibility();
 
   // Creer le pet du joueur distant si equipe
   if (p.pet && typeof creerPetElement === 'function' && typeof PETS_BOUTIQUE !== 'undefined') {
@@ -1240,6 +1272,7 @@ function mettreAJourOptionsVirus() {
 var cpJournaliste = false;
 var cpFanatique = false;
 var cpEspion = false;
+var cpCherif = false;
 var cpLang = 'fr';
 
 function toggleCpJournaliste() {
@@ -1278,6 +1311,18 @@ function toggleCpEspion() {
     lbl.textContent = t('zeroSpy');
   }
 }
+function toggleCpCherif() {
+  cpCherif = !cpCherif;
+  var el = document.getElementById('cp-toggle-cherif');
+  var lbl = document.getElementById('cp-toggle-cherif-label');
+  if (cpCherif) {
+    el.classList.add('active'); lbl.classList.add('active');
+    lbl.textContent = '1 CHERIF';
+  } else {
+    el.classList.remove('active'); lbl.classList.remove('active');
+    lbl.textContent = '0 CHERIF';
+  }
+}
 function setCpLang(lang) {
   cpLang = lang;
   document.querySelectorAll('#creer-partie .lang-btn').forEach(function(b) { b.classList.remove('active'); });
@@ -1302,10 +1347,11 @@ function creerPartie() {
     showNotif(t('need10For3Virus'), 'warn');
     return;
   }
-  if (maxJoueurs < 7 && (cpJournaliste || cpFanatique || cpEspion)) {
+  if (maxJoueurs < 7 && (cpJournaliste || cpFanatique || cpEspion || cpCherif)) {
     if (cpJournaliste) { showNotif(t('notEnoughJournalist'), 'warn'); return; }
     if (cpFanatique) { showNotif(t('notEnoughFanatic'), 'warn'); return; }
     if (cpEspion) { showNotif(t('notEnoughSpy'), 'warn'); return; }
+    if (cpCherif) { showNotif('Il faut au moins 7 joueurs pour activer le cherif', 'warn'); return; }
   }
 
   // Enregistrer le joueur sur Firebase
@@ -1319,10 +1365,11 @@ function creerPartie() {
     return db.collection('parties').add({
       nom: nom, hostPlayerId: monPlayerId, hostPseudo: pseudo,
       maxJoueurs: maxJoueurs, mechants: mechants,
-      journaliste: cpJournaliste, fanatique: cpFanatique, espion: cpEspion,
+      journaliste: cpJournaliste, fanatique: cpFanatique, espion: cpEspion, cherif: cpCherif,
       langue: cpLang, couleur: COULEURS_PARTIES[Math.floor(Math.random() * COULEURS_PARTIES.length)],
       phase: 'lobby', joueurs: 1, listeJoueurs: [pseudo],
       private: estPrive,
+      gameMode: (typeof currentOnlineMode !== 'undefined') ? currentOnlineMode : 'virus',
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
   }).then(function(docRef) {
@@ -1505,7 +1552,11 @@ function rafraichirListeParties() {
   var toutesParties = getParties();
   // Filtrer les parties privees : ne montrer que celles dont le host est ami
   var amisIds = (typeof mesAmis !== 'undefined') ? mesAmis.map(function(a) { return a.uid; }) : [];
+  // Filtrer aussi par mode de jeu actuel (virus / cachecache)
+  var modeFiltre = (typeof currentOnlineMode !== 'undefined') ? currentOnlineMode : 'virus';
   const parties = toutesParties.filter(function(p) {
+    var pMode = p.gameMode || 'virus'; // parties anciennes = virus par defaut
+    if (pMode !== modeFiltre) return false;
     if (!p.private) return true; // Partie publique
     if (p.hostPlayerId === monPlayerId) return true; // C'est ma partie
     return amisIds.indexOf(p.hostPlayerId) >= 0; // Je suis ami du host

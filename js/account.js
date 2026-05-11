@@ -425,6 +425,10 @@ function ouvrirParams() {
   if (typeof majToggleDyslexie === 'function') majToggleDyslexie();
   if (typeof majToggleControleMobile === 'function') majToggleControleMobile();
   chargerJoinMode();
+  // Afficher l'onglet DEV uniquement pour les admins dev
+  if (typeof majVisibiliteOngletDev === 'function') majVisibiliteOngletDev();
+  // Toujours ouvrir sur l'onglet COMPTE par defaut
+  if (typeof switchParamsTab === 'function') switchParamsTab('compte');
   // Verifier si le joueur a un PIN, sinon afficher la section set-pin
   var sectionPin = document.getElementById('section-set-pin');
   if (sectionPin) {

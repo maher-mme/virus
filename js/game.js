@@ -531,14 +531,54 @@ function lancerJeu() {
   // Mode en ligne : demarrer la partie (host assigne les roles)
   if (partieActuelleId && !modeHorsLigne) {
     if (!estHost) { showNotif(t('mjHostOnly'), 'warn'); return; }
+
+    var partyData = firebaseParties.find(function(p) { return p._id === partieActuelleId; });
+    var gameMode = partyData && partyData.gameMode ? partyData.gameMode : 'virus';
+
+    // === MODE CACHE-CACHE : distribution chercheur / cache ===
+    if (gameMode === 'cachecache') {
+      if (firebasePartyPlayers.length < 7) { showNotif('Il faut au moins 7 joueurs en cache-cache', 'warn'); return; }
+      var tousCC = firebasePartyPlayers.slice();
+      var nbCC = tousCC.length;
+      var nbChercheurs = Math.max(2, Math.ceil(nbCC / 3)); // 33% chercheurs, min 2
+      var rolesCC = [];
+      for (var c = 0; c < nbChercheurs; c++) rolesCC.push('chercheur');
+      while (rolesCC.length < nbCC) rolesCC.push('cache');
+      // Melange Fisher-Yates
+      for (var i = rolesCC.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = rolesCC[i]; rolesCC[i] = rolesCC[j]; rolesCC[j] = tmp;
+      }
+      var batchCC = db.batch();
+      tousCC.forEach(function(p, idx) {
+        if (p._docId) {
+          batchCC.update(db.collection('partyPlayers').doc(p._docId), {
+            role: rolesCC[idx], alive: true, x: 3800, y: 3050
+          });
+        }
+      });
+      batchCC.update(db.collection('parties').doc(partieActuelleId), {
+        phase: 'playing',
+        ccPhase: 'setup', // sous-phase cache-cache : setup → chasse
+        ccSetupEnd: Date.now() + 30000 // 30s pour se cacher
+      });
+      batchCC.commit().then(function() {
+        console.log('Partie cache-cache demarree : ' + nbChercheurs + ' chercheurs / ' + (nbCC - nbChercheurs) + ' caches');
+      }).catch(function(err) {
+        console.error('Erreur start cache-cache', err);
+      });
+      return;
+    }
+
+    // === MODE VIRUS classique ===
     if (firebasePartyPlayers.length < 4) { showNotif(t('need4Players'), 'warn'); return; }
 
     // Assigner les roles cote client (host)
-    var partyData = firebaseParties.find(function(p) { return p._id === partieActuelleId; });
     var nbVirus = partyData ? partyData.mechants : 1;
     var hasJournaliste = partyData ? partyData.journaliste : false;
     var hasFanatique = partyData ? partyData.fanatique : false;
     var hasEspion = partyData ? partyData.espion : false;
+    var hasCherif = partyData ? partyData.cherif : false;
 
     // Separer vrais joueurs et bots
     var vraisJoueurs = firebasePartyPlayers.filter(function(p) { return !p.isBot; });
@@ -553,10 +593,11 @@ function lancerJeu() {
       hasJournaliste = false;
       hasFanatique = false;
       hasEspion = false;
+      hasCherif = false;
     }
 
     // S'assurer qu'il reste au moins 1 innocent
-    var totalSpeciaux = nbVirus + (hasJournaliste ? 1 : 0) + (hasFanatique ? 1 : 0) + (hasEspion ? 1 : 0);
+    var totalSpeciaux = nbVirus + (hasJournaliste ? 1 : 0) + (hasFanatique ? 1 : 0) + (hasEspion ? 1 : 0) + (hasCherif ? 1 : 0);
     while (totalSpeciaux >= nbJoueurs && nbVirus > 1) {
       nbVirus--;
       totalSpeciaux--;
@@ -574,6 +615,7 @@ function lancerJeu() {
     if (hasJournaliste) rolesVrais.push('journaliste');
     if (hasFanatique) rolesVrais.push('fanatique');
     if (hasEspion) rolesVrais.push('espion');
+    if (hasCherif) rolesVrais.push('cherif');
     while (rolesVrais.length < vraisJoueurs.length) rolesVrais.push('innocent');
     // Si trop de roles speciaux pour les vrais joueurs, tronquer
     if (rolesVrais.length > vraisJoueurs.length) rolesVrais.length = vraisJoueurs.length;
@@ -1328,6 +1370,8 @@ function gameLoop() {
 function updateJoueur() {
   var joueur = document.getElementById('joueur');
   if (!joueur) return;
+  // Cache-cache : contraindre les chercheurs a leur zone pendant le setup
+  if (typeof cacheCacheClampJoueur === 'function') cacheCacheClampJoueur();
   joueur.style.left = joueurX + 'px';
   joueur.style.top = joueurY + 'px';
 

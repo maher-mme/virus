@@ -25,6 +25,29 @@
   background: #c9c1b3;
 }
 
+/* === MODE CACHE-CACHE : sol noir uni, masquer tout le decor du mall === */
+body.mode-cachecache .mall-map {
+  background: #0a0a0a !important;
+}
+/* On cache TOUT par defaut dans la map en cache-cache... */
+body.mode-cachecache .mall-map > * {
+  display: none !important;
+}
+/* ...puis on re-affiche selectivement ce qui doit rester visible */
+body.mode-cachecache .mall-map > #joueur,
+body.mode-cachecache .mall-map > .bot,
+body.mode-cachecache .mall-map > .cadavre,
+body.mode-cachecache .mall-map > .pet-element,
+body.mode-cachecache .mall-map > #decorations-layer,
+body.mode-cachecache .mall-map > #cc-zone-chercheurs,
+body.mode-cachecache .mall-map > .cc-room,
+body.mode-cachecache .mall-map > .cc-prop {
+  display: revert !important;
+}
+body.mode-cachecache #jeu {
+  background: #000;
+}
+
 /* Sol du centre commercial - carrelage realiste */
 .mall-sol {
   width: 100%;

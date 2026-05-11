@@ -25,9 +25,9 @@
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css?v=4">
   <link rel="stylesheet" href="css/components.css?v=7">
-  <link rel="stylesheet" href="css/menu.css?v=20">
+  <link rel="stylesheet" href="css/menu.css?v=21">
   <link rel="stylesheet" href="css/lobby.css?v=20260412">
-  <link rel="stylesheet" href="css/game.css?v=20">
+  <link rel="stylesheet" href="css/game.css?v=22">
   <link rel="stylesheet" href="css/hud.css?v=17">
   <link rel="stylesheet" href="css/meeting.css?v=6">
   <link rel="stylesheet" href="css/friends.css?v=7">
@@ -45,11 +45,12 @@
       <div id="loading-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#e74c3c,#f39c12);transition:width 0.3s;box-shadow:0 0 10px rgba(231,76,60,0.6);"></div>
     </div>
     <div id="loading-text" style="font-size:13px;color:#ecf0f1;letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;width:100%;">Chargement...</div>
-    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.4.3 - ALPHA</div>
+    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.4.5 - ALPHA</div>
   </div>
 
   <!-- Emoji Picker -->
   <div class="emoji-picker" id="emoji-picker" style="display:none;"></div>
+
 
   <!-- POPUP HISTORIQUE VS AMI -->
   <div class="popup-overlay" id="popup-historique-vs">
@@ -133,7 +134,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS 3.4.3 - ALPHA</span>
+    <span class="version">VIRUS 3.4.5 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -212,7 +213,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.4.3 - ALPHA</span>
+    <span class="version">VIRUS 3.4.5 - ALPHA</span>
     </div>
   </div>
 
@@ -225,7 +226,18 @@
         <h3 data-i18n="settings">PARAMETRES</h3>
         <button class="popup-close" onclick="fermerParams()">&times;</button>
       </div>
+      <!-- Tabs : COMPTE (tout le monde) / DEV (admin dev uniquement) -->
+      <div class="params-tabs" style="display:flex;gap:0;border-bottom:1px solid #34495e;background:#1a252f;">
+        <button class="params-tab-btn active" id="params-tab-btn-compte" onclick="switchParamsTab('compte')"
+                style="flex:1;background:transparent;border:none;color:#ecf0f1;padding:12px;font-size:13px;font-weight:bold;cursor:pointer;border-bottom:3px solid #f39c12;">
+          &#128100; COMPTE
+        </button>
+        <button class="params-tab-btn" id="params-tab-btn-dev" onclick="switchParamsTab('dev')" style="display:none;flex:1;background:transparent;border:none;color:#95a5a6;padding:12px;font-size:13px;font-weight:bold;cursor:pointer;border-bottom:3px solid transparent;">
+          &#128295; DEV
+        </button>
+      </div>
       <div class="popup-body">
+        <div id="params-tab-compte" class="params-tab-content">
         <div class="popup-section">
           <label data-i18n="pseudo">PSEUDO</label>
           <div class="pseudo-edit-row">
@@ -297,7 +309,28 @@
             <button class="btn-sauver-pseudo" data-i18n="cancelBtn" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.4.3 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.4.5 - ALPHA</p>
+        </div><!-- /params-tab-compte -->
+
+        <!-- ONGLET DEV (admin dev uniquement : Obstinate) -->
+        <div id="params-tab-dev" class="params-tab-content" style="display:none;">
+          <div class="popup-section">
+            <label>&#128295; GESTION DES FEATURES</label>
+            <p style="font-size:12px;color:#95a5a6;line-height:1.5;margin:6px 0 12px;">
+              <strong style="color:#f39c12;">Dev</strong> = visible uniquement par les admins dev (toi).<br>
+              <strong style="color:#2ecc71;">Live</strong> = visible par tous les joueurs.<br>
+              Les changements se synchronisent en temps reel via Firestore.
+            </p>
+            <div id="admin-features-list" style="display:flex;flex-direction:column;gap:10px;">
+              <!-- Genere par JS via majAdminFeaturesList() -->
+            </div>
+          </div>
+          <div class="popup-section">
+            <label>&#9888; ADMIN ACTIONS</label>
+            <p style="font-size:11px;color:#95a5a6;margin:6px 0;">Actions reservees aux admins dev.</p>
+            <button class="btn-sauver-pseudo" onclick="purgerToutesLesParties()" style="background:linear-gradient(180deg,#e74c3c,#c0392b);border-color:#e74c3c;width:100%;padding:10px;">&#128465; PURGER TOUTES LES PARTIES</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -682,13 +715,54 @@
   </div>
 
   <!-- ============================== -->
-  <!-- ECRAN 2 : MENU ONLINE         -->
+  <!-- ECRAN 2 : SELECTION DE MODE   -->
   <!-- ============================== -->
   <div id="menu-online" class="screen bg-mall">
     <div class="online-scroll">
     <button class="btn-retour" onclick="showScreen('menu-principal')" data-i18n="back">&#9664; RETOUR</button>
 
-    <h1 class="online-titre">VIRUS</h1>
+    <h1 class="online-titre">ONLINE</h1>
+    <span class="online-sous-titre">CHOISIS TON MODE</span>
+
+    <div class="modes-grid">
+      <button class="mode-card mode-virus" onclick="selectionnerModeOnline('virus')">
+        <div class="mode-icon">&#129440;</div>
+        <div class="mode-titre">VIRUS</div>
+        <div class="mode-sous">Mode classique<br>Trouve le virus avant qu'il ne te contamine</div>
+        <div class="mode-tag">DÉDUCTION</div>
+      </button>
+
+      <button class="mode-card mode-cachecache" id="mode-cachecache-btn" onclick="selectionnerModeOnline('cachecache')" style="display:none;">
+        <div class="mode-icon">&#128373;</div>
+        <div class="mode-titre">CACHE-CACHE</div>
+        <div class="mode-sous">Transforme-toi en objet<br>Échappe aux chercheurs</div>
+        <div class="mode-tag">FURTIVITÉ</div>
+      </button>
+    </div>
+
+    <div class="online-extras">
+      <button class="btn-online-extra btn-classement" onclick="ouvrirClassement()">
+        <span class="btn-extra-icon">&#127942;</span>
+        <span data-i18n="leaderboard">CLASSEMENT</span>
+      </button>
+      <button class="btn-online-extra btn-profil" onclick="ouvrirProfil()">
+        <span class="btn-extra-icon">&#128100;</span>
+        <span data-i18n="profile">PROFIL</span>
+      </button>
+    </div>
+
+    <span class="version">VIRUS 3.4.5 - ALPHA</span>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- ECRAN 2b : MENU ONLINE PAR MODE (creer / trouver) -->
+  <!-- ============================== -->
+  <div id="menu-online-actions" class="screen bg-mall">
+    <div class="online-scroll">
+    <button class="btn-retour" onclick="retourDepuisMenuOnlineActions()" data-i18n="back">&#9664; RETOUR</button>
+
+    <h1 class="online-titre" id="moa-titre">VIRUS</h1>
     <span class="online-sous-titre" data-i18n="online">ONLINE</span>
 
     <div class="panneau-central">
@@ -715,22 +789,11 @@
       </button>
     </div>
 
-    <div class="online-extras">
-      <button class="btn-online-extra btn-classement" onclick="ouvrirClassement()">
-        <span class="btn-extra-icon">&#127942;</span>
-        <span data-i18n="leaderboard">CLASSEMENT</span>
-      </button>
-      <button class="btn-online-extra btn-profil" onclick="ouvrirProfil()">
-        <span class="btn-extra-icon">&#128100;</span>
-        <span data-i18n="profile">PROFIL</span>
-      </button>
-    </div>
-
     <div class="info-bas" data-i18n="createDesc">
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS 3.4.3 - ALPHA</span>
+    <span class="version">VIRUS 3.4.5 - ALPHA</span>
     </div>
   </div>
 
@@ -739,7 +802,7 @@
   <!-- ============================== -->
   <div id="creer-partie" class="screen bg-mall">
     <div class="cp-scroll">
-    <button class="btn-retour" onclick="showScreen('menu-online')" data-i18n="back">&#9664; RETOUR</button>
+    <button class="btn-retour" onclick="showScreen('menu-online-actions')" data-i18n="back">&#9664; RETOUR</button>
 
     <h1 class="online-titre">VIRUS</h1>
     <span class="online-sous-titre" data-i18n="createGame">CREER UNE PARTIE</span>
@@ -768,7 +831,7 @@
             <option value="15">15 joueurs</option>
           </select>
         </div>
-        <div class="cp-champ">
+        <div class="cp-champ" data-virus-only="1">
           <label data-i18n="nbVillains">NOMBRE DE MECHANTS (VIRUS)</label>
           <select id="cp-mechants">
             <option value="1" selected>1 virus</option>
@@ -777,25 +840,32 @@
           </select>
         </div>
         <div class="cp-roles-grid">
-          <div class="cp-role-item">
+          <div class="cp-role-item" data-virus-only="1">
             <label data-i18n="journalist">JOURNALISTE</label>
             <div class="cp-toggle-row">
               <div class="cp-toggle" id="cp-toggle-journaliste" onclick="toggleCpJournaliste()"></div>
               <span class="cp-toggle-label" id="cp-toggle-journaliste-label" data-i18n="zeroJournalist">0 JOURNALISTE</span>
             </div>
           </div>
-          <div class="cp-role-item">
+          <div class="cp-role-item" data-virus-only="1">
             <label><span data-i18n="fanaticRole">FANATIQUE</span> <span style="color:#8e44ad;font-size:10px" data-i18n="fanaticNeutral">(NEUTRE)</span></label>
             <div class="cp-toggle-row">
               <div class="cp-toggle cp-fanatic" id="cp-toggle-fanatique" onclick="toggleCpFanatique()"></div>
               <span class="cp-toggle-label cp-fanatic-label" id="cp-toggle-fanatique-label" data-i18n="zeroFanatic">0 FANATIQUE</span>
             </div>
           </div>
-          <div class="cp-role-item">
+          <div class="cp-role-item" data-virus-only="1">
             <label><span data-i18n="spyRole">ESPION</span> <span style="color:#9b59b6;font-size:10px" data-i18n="spyNeutral">(NEUTRE)</span></label>
             <div class="cp-toggle-row">
               <div class="cp-toggle cp-spy" id="cp-toggle-espion" onclick="toggleCpEspion()"></div>
               <span class="cp-toggle-label cp-spy-label" id="cp-toggle-espion-label" data-i18n="zeroSpy">0 ESPION</span>
+            </div>
+          </div>
+          <div class="cp-role-item" data-virus-only="1">
+            <label><span>CHERIF</span></label>
+            <div class="cp-toggle-row">
+              <div class="cp-toggle cp-cherif" id="cp-toggle-cherif" onclick="toggleCpCherif()"></div>
+              <span class="cp-toggle-label cp-cherif-label" id="cp-toggle-cherif-label">0 CHERIF</span>
             </div>
           </div>
           <div class="cp-role-item">
@@ -821,7 +891,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.4.3 - ALPHA</span>
+    <span class="version">VIRUS 3.4.5 - ALPHA</span>
     </div>
   </div>
 
@@ -829,7 +899,7 @@
   <!-- ECRAN 4 : LISTE DES PARTIES   -->
   <!-- ============================== -->
   <div id="liste-parties" class="screen bg-mall">
-    <button class="btn-retour" onclick="showScreen('menu-online')" data-i18n="back">&#9664; RETOUR</button>
+    <button class="btn-retour" onclick="showScreen('menu-online-actions')" data-i18n="back">&#9664; RETOUR</button>
 
     <h1 class="online-titre">VIRUS</h1>
     <span class="online-sous-titre" data-i18n="findGame">TROUVER UNE PARTIE</span>
@@ -867,7 +937,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS 3.4.3 - ALPHA</span>
+    <span class="version">VIRUS 3.4.5 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -2036,23 +2106,24 @@
 <script src="js/api.js?v=2"></script>
 <script src="js/skins.js?v=10"></script>
 <script src="js/music.js?v=2"></script>
-<script src="js/account.js?v=28"></script>
-<script src="js/ui.js?v=20260510a"></script>
+<script src="js/account.js?v=29"></script>
+<script src="js/ui.js?v=20260511a"></script>
 <script src="js/chat.js?v=7"></script>
 <script src="js/comments.js?v=5"></script>
 <script src="js/translation.js?v=20260422b"></script>
-<script src="js/firebase-sync.js?v=52"></script>
+<script src="js/firebase-sync.js?v=56"></script>
 <script src="js/replay.js?v=2"></script>
 <script src="js/emotes.js?v=7"></script>
 <script src="js/particles.js?v=1"></script>
-<script src="js/cachecache.js?v=1"></script>
-<script src="js/sfx.js?v=1"></script>
+<script src="js/cachecache.js?v=4"></script>
+<script src="js/sfx.js?v=2"></script>
+<script src="js/featureFlags.js?v=2"></script>
 <script src="js/passe.js?v=9"></script>
 <script src="js/decorations.js?v=3"></script>
 <script src="js/player.js?v=11"></script>
 <script src="js/shop.js?v=18"></script>
 <script src="js/bots.js?v=11"></script>
-<script src="js/game.js?v=20260507c"></script>
+<script src="js/game.js?v=20260511a"></script>
 <script src="js/roles.js?v=33"></script>
 <script src="js/meeting.js?v=17"></script>
 <script src="js/missions.js?v=13"></script>

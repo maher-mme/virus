@@ -47,6 +47,16 @@ body.mode-cachecache .mall-map > .cc-prop {
 body.mode-cachecache #jeu {
   background: #000;
 }
+/* Masquer les elements UI specifiques au mode VIRUS quand on est en cache-cache */
+body.mode-cachecache .hud-missions,
+body.mode-cachecache #mission-indicator,
+body.mode-cachecache .hud-role,
+body.mode-cachecache .btn-reparer-lumieres,
+body.mode-cachecache .panel-signalement,
+body.mode-cachecache .minimap-mission,
+body.mode-cachecache .alarme-fleche {
+  display: none !important;
+}
 
 /* Sol du centre commercial - carrelage realiste */
 .mall-sol {

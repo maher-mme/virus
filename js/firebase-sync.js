@@ -721,8 +721,10 @@ function _demarrerJeuMultiplayer(state) {
     if (typeof buildCollisionData === 'function') buildCollisionData();
   });
 
-  // Initialiser les missions
-  initMissions();
+  // Initialiser les missions (sauf en mode cache-cache)
+  if (!state || state.gameMode !== 'cachecache') {
+    initMissions();
+  }
 
   // Bouton lumieres pour l'espion
   if (typeof initBoutonLumieres === 'function') initBoutonLumieres();

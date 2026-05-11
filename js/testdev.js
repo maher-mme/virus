@@ -119,10 +119,14 @@ function lancerTestDev() {
       estHost = true;
       partieActuelleId = partyId;
       db.collection('players').doc(monPlayerId).update({ currentPartyId: partyId }).catch(function() {});
-      // Ajouter les bots
+      // Ajouter les bots avec positions etalees en salle d'attente
       var batch = db.batch();
       for (var i = 0; i < nbBots; i++) {
         var botRef = db.collection('partyPlayers').doc();
+        // Repartir les bots en cercle autour du centre (50%, 70%)
+        var angle = (i / nbBots) * Math.PI * 2;
+        var saX = 50 + Math.cos(angle) * 25;
+        var saY = 60 + Math.sin(angle) * 15;
         batch.set(botRef, {
           partyId: partyId,
           playerId: 'bot_' + i + '_' + Date.now(),
@@ -130,7 +134,7 @@ function lancerTestDev() {
           skin: 'skin/gratuit/skin-de-base-garcon.svg',
           pet: '',
           isHost: false, isBot: true, role: '', alive: true,
-          x: 0, y: 0, direction: 1, saX: 50, saY: 70, saDirection: 1,
+          x: 0, y: 0, direction: 1, saX: saX, saY: saY, saDirection: 1,
           lastActive: firebase.firestore.FieldValue.serverTimestamp()
         });
       }

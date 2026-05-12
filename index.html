@@ -45,7 +45,7 @@
       <div id="loading-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#e74c3c,#f39c12);transition:width 0.3s;box-shadow:0 0 10px rgba(231,76,60,0.6);"></div>
     </div>
     <div id="loading-text" style="font-size:13px;color:#ecf0f1;letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;width:100%;">Chargement...</div>
-    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.5.0 - ALPHA</div>
+    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.5.2 - ALPHA</div>
   </div>
 
   <!-- Emoji Picker -->
@@ -178,7 +178,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS 3.5.0 - ALPHA</span>
+    <span class="version">VIRUS 3.5.2 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -257,7 +257,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.5.0 - ALPHA</span>
+    <span class="version">VIRUS 3.5.2 - ALPHA</span>
     </div>
   </div>
 
@@ -270,11 +270,15 @@
         <h3 data-i18n="settings">PARAMETRES</h3>
         <button class="popup-close" onclick="fermerParams()">&times;</button>
       </div>
-      <!-- Tabs : COMPTE (tout le monde) / DEV (admin dev uniquement) -->
+      <!-- Tabs : COMPTE (tout le monde) / BUG / DEV (admin dev uniquement) -->
       <div class="params-tabs" style="display:flex;gap:0;border-bottom:1px solid #34495e;background:#1a252f;">
         <button class="params-tab-btn active" id="params-tab-btn-compte" onclick="switchParamsTab('compte')"
                 style="flex:1;background:transparent;border:none;color:#ecf0f1;padding:12px;font-size:13px;font-weight:bold;cursor:pointer;border-bottom:3px solid #f39c12;">
-          &#128100; COMPTE
+          &#128100; <span data-i18n="paramTabAccount">COMPTE</span>
+        </button>
+        <button class="params-tab-btn" id="params-tab-btn-bug" onclick="switchParamsTab('bug')"
+                style="flex:1;background:transparent;border:none;color:#95a5a6;padding:12px;font-size:13px;font-weight:bold;cursor:pointer;border-bottom:3px solid transparent;">
+          &#128027; <span data-i18n="paramTabBug">BUG</span>
         </button>
         <button class="params-tab-btn" id="params-tab-btn-dev" onclick="switchParamsTab('dev')" style="display:none;flex:1;background:transparent;border:none;color:#95a5a6;padding:12px;font-size:13px;font-weight:bold;cursor:pointer;border-bottom:3px solid transparent;">
           &#128295; DEV
@@ -353,11 +357,52 @@
             <button class="btn-sauver-pseudo" data-i18n="cancelBtn" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.5.0 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.5.2 - ALPHA</p>
         </div><!-- /params-tab-compte -->
+
+        <!-- ONGLET BUG / SIGNALEMENT (tout le monde) -->
+        <div id="params-tab-bug" class="params-tab-content" style="display:none;">
+          <div class="popup-section">
+            <label data-i18n="reportTitle">SIGNALER UN BUG OU UN JOUEUR</label>
+            <p style="font-size:12px;color:#95a5a6;line-height:1.5;margin:6px 0 12px;" data-i18n="reportDesc">
+              Aide-nous a ameliorer le jeu en signalant les bugs, ou signale un joueur qui ne respecte pas les regles.
+            </p>
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+              <button id="report-type-bug" class="active" onclick="reportSetType('bug')"
+                      style="flex:1;background:#f39c12;color:white;border:2px solid #f39c12;border-radius:8px;padding:10px;font-weight:bold;cursor:pointer;">
+                &#128027; <span data-i18n="reportBug">BUG</span>
+              </button>
+              <button id="report-type-sig" onclick="reportSetType('signalement')"
+                      style="flex:1;background:rgba(231,76,60,0.2);color:white;border:2px solid #e74c3c;border-radius:8px;padding:10px;font-weight:bold;cursor:pointer;">
+                &#128681; <span data-i18n="reportSig">SIGNALEMENT</span>
+              </button>
+            </div>
+            <div id="report-cible-row" style="display:none;margin-bottom:10px;">
+              <label data-i18n="reportTargetLabel" style="font-size:11px;color:#95a5a6;">PSEUDO DU JOUEUR A SIGNALER</label>
+              <input type="text" id="report-cible" maxlength="20" data-i18n="reportTargetPh" data-i18n-attr="placeholder" placeholder="Pseudo..."
+                     style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px;color:#ecf0f1;font-size:14px;margin-top:4px;">
+            </div>
+            <label data-i18n="reportMessage" style="font-size:11px;color:#95a5a6;">MESSAGE (max 500 caracteres)</label>
+            <textarea id="report-message" maxlength="500" rows="5" data-i18n="reportMessagePh" data-i18n-attr="placeholder" placeholder="Decris le bug ou explique pourquoi tu signales ce joueur..."
+                      style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px;color:#ecf0f1;font-size:13px;margin-top:4px;resize:vertical;font-family:Arial,sans-serif;"></textarea>
+            <button class="btn-sauver-pseudo" onclick="envoyerReport()" data-i18n="reportSend"
+                    style="width:100%;padding:12px;margin-top:10px;background:linear-gradient(180deg,#2ecc71,#27ae60);border-color:#2ecc71;font-size:14px;">
+              &#9993; ENVOYER
+            </button>
+          </div>
+        </div><!-- /params-tab-bug -->
 
         <!-- ONGLET DEV (admin dev uniquement : Obstinate) -->
         <div id="params-tab-dev" class="params-tab-content" style="display:none;">
+          <div class="popup-section">
+            <label>&#128235; BOITE A LETTRES</label>
+            <p style="font-size:11px;color:#95a5a6;margin:6px 0;">
+              Bugs et signalements des joueurs. Les messages marques "VUS" sont auto-supprimes apres 1h.
+            </p>
+            <div id="reports-admin-list" style="max-height:320px;overflow-y:auto;margin-top:10px;padding-right:4px;">
+              <!-- Genere par JS via chargerReportsAdmin() -->
+            </div>
+          </div>
           <div class="popup-section">
             <label>&#128295; GESTION DES FEATURES</label>
             <p style="font-size:12px;color:#95a5a6;line-height:1.5;margin:6px 0 12px;">
@@ -579,7 +624,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline" id="version-inline">3.5.0 - ALPHA</span>
+        <span class="version-inline" id="version-inline">3.5.2 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -616,7 +661,7 @@
       <button class="btn-side btn-side-passe" onclick="ouvrirPasse()" title="Passe de combat">
         &#127942; <span data-i18n="passBtn">PASSE</span>
       </button>
-      <button class="btn-side btn-side-commentaires" onclick="ouvrirCommentaires()" title="Commentaires">
+      <button class="btn-side btn-side-commentaires" onclick="ouvrirCommentaires()" title="Commentaires" style="display:none;">
         &#9998; <span data-i18n="comments">COMMENTAIRES</span>
       </button>
     </div>
@@ -649,7 +694,7 @@
       </button>
     </div>
 
-    <button class="btn-commentaires" onclick="ouvrirCommentaires()">
+    <button class="btn-commentaires" onclick="ouvrirCommentaires()" style="display:none;">
       &#9998; <span data-i18n="comments">COMMENTAIRES</span>
     </button>
 
@@ -799,7 +844,7 @@
       </button>
     </div>
 
-    <span class="version">VIRUS 3.5.0 - ALPHA</span>
+    <span class="version">VIRUS 3.5.2 - ALPHA</span>
     </div>
   </div>
 
@@ -841,7 +886,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS 3.5.0 - ALPHA</span>
+    <span class="version">VIRUS 3.5.2 - ALPHA</span>
     </div>
   </div>
 
@@ -946,7 +991,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.5.0 - ALPHA</span>
+    <span class="version">VIRUS 3.5.2 - ALPHA</span>
     </div>
   </div>
 
@@ -992,7 +1037,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS 3.5.0 - ALPHA</span>
+    <span class="version">VIRUS 3.5.2 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -2174,6 +2219,7 @@
 <script src="js/sfx.js?v=2"></script>
 <script src="js/featureFlags.js?v=2"></script>
 <script src="js/testdev.js?v=1"></script>
+<script src="js/reports.js?v=1"></script>
 <script src="js/passe.js?v=9"></script>
 <script src="js/decorations.js?v=3"></script>
 <script src="js/player.js?v=11"></script>

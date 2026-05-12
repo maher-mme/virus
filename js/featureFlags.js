@@ -94,7 +94,7 @@ function majAdminFeaturesList() {
 
 // === SWITCHER D'ONGLETS DANS POPUP-PARAMS ===
 function switchParamsTab(tabName) {
-  var tabs = ['compte', 'dev'];
+  var tabs = ['compte', 'bug', 'dev'];
   tabs.forEach(function(t) {
     var content = document.getElementById('params-tab-' + t);
     var btn = document.getElementById('params-tab-btn-' + t);
@@ -111,8 +111,16 @@ function switchParamsTab(tabName) {
       }
     }
   });
-  // Si on ouvre l'onglet DEV, rafraichir la liste des features
-  if (tabName === 'dev') majAdminFeaturesList();
+  // Si on ouvre l'onglet DEV, rafraichir la liste des features + reports
+  if (tabName === 'dev') {
+    majAdminFeaturesList();
+    if (typeof chargerReportsAdmin === 'function') chargerReportsAdmin();
+  } else {
+    // Quitter l'onglet DEV : stopper le listener reports
+    if (typeof stopReportsListener === 'function') stopReportsListener();
+  }
+  // Si on ouvre BUG : reset le type a 'bug' par defaut
+  if (tabName === 'bug' && typeof reportSetType === 'function') reportSetType('bug');
 }
 
 // Afficher/cacher l'onglet DEV selon le statut admin dev

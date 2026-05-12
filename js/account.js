@@ -429,18 +429,9 @@ function ouvrirParams() {
   if (typeof majVisibiliteOngletDev === 'function') majVisibiliteOngletDev();
   // Toujours ouvrir sur l'onglet COMPTE par defaut
   if (typeof switchParamsTab === 'function') switchParamsTab('compte');
-  // Verifier si le joueur a un PIN, sinon afficher la section set-pin
+  // (Section "Choisir un mot de passe" desactivee : l'utilisateur peut utiliser le bouton CHANGER LE MOT DE PASSE)
   var sectionPin = document.getElementById('section-set-pin');
-  if (sectionPin) {
-    db.collection('players').doc(monPlayerId).get().then(function(doc) {
-      var p = doc.exists ? doc.data().pin : null;
-      if (doc.exists && (p === undefined || p === null || p === '')) {
-        sectionPin.style.display = '';
-      } else {
-        sectionPin.style.display = 'none';
-      }
-    }).catch(function() {});
-  }
+  if (sectionPin) sectionPin.style.display = 'none';
 }
 
 function fermerParams() {

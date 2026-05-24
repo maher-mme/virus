@@ -94,7 +94,7 @@ function majAdminFeaturesList() {
 
 // === SWITCHER D'ONGLETS DANS POPUP-PARAMS ===
 function switchParamsTab(tabName) {
-  var tabs = ['compte', 'bug', 'dev'];
+  var tabs = ['compte', 'bug', 'credits', 'dev'];
   tabs.forEach(function(t) {
     var content = document.getElementById('params-tab-' + t);
     var btn = document.getElementById('params-tab-btn-' + t);

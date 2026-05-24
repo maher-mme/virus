@@ -45,7 +45,7 @@
       <div id="loading-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#e74c3c,#f39c12);transition:width 0.3s;box-shadow:0 0 10px rgba(231,76,60,0.6);"></div>
     </div>
     <div id="loading-text" style="font-size:13px;color:#ecf0f1;letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;width:100%;">Chargement...</div>
-    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.5.3 - ALPHA</div>
+    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.5.4 - ALPHA</div>
   </div>
 
   <!-- Emoji Picker -->
@@ -178,7 +178,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS 3.5.3 - ALPHA</span>
+    <span class="version">VIRUS 3.5.4 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -257,7 +257,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.5.3 - ALPHA</span>
+    <span class="version">VIRUS 3.5.4 - ALPHA</span>
     </div>
   </div>
 
@@ -279,6 +279,10 @@
         <button class="params-tab-btn" id="params-tab-btn-bug" onclick="switchParamsTab('bug')"
                 style="flex:1;background:transparent;border:none;color:#95a5a6;padding:12px;font-size:13px;font-weight:bold;cursor:pointer;border-bottom:3px solid transparent;">
           &#128027; <span data-i18n="paramTabBug">BUG</span>
+        </button>
+        <button class="params-tab-btn" id="params-tab-btn-credits" onclick="switchParamsTab('credits')"
+                style="flex:1;background:transparent;border:none;color:#95a5a6;padding:12px;font-size:13px;font-weight:bold;cursor:pointer;border-bottom:3px solid transparent;">
+          &#127942; <span data-i18n="paramTabCredits">CREDITS</span>
         </button>
         <button class="params-tab-btn" id="params-tab-btn-dev" onclick="switchParamsTab('dev')" style="display:none;flex:1;background:transparent;border:none;color:#95a5a6;padding:12px;font-size:13px;font-weight:bold;cursor:pointer;border-bottom:3px solid transparent;">
           &#128295; DEV
@@ -357,7 +361,7 @@
             <button class="btn-sauver-pseudo" data-i18n="cancelBtn" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.5.3 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.5.4 - ALPHA</p>
         </div><!-- /params-tab-compte -->
 
         <!-- ONGLET BUG / SIGNALEMENT (tout le monde) -->
@@ -391,6 +395,67 @@
             </button>
           </div>
         </div><!-- /params-tab-bug -->
+
+        <!-- ONGLET CREDITS (tout le monde) -->
+        <div id="params-tab-credits" class="params-tab-content" style="display:none;">
+          <div class="popup-section" style="text-align:center;padding-bottom:8px;">
+            <h2 style="color:#e74c3c;margin:0 0 4px;letter-spacing:3px;font-family:Impact,sans-serif;">VIRUS</h2>
+            <p style="font-size:11px;color:#95a5a6;margin:0;letter-spacing:1px;" data-i18n="creditsSubtitle">JEU MULTIJOUEUR DE DEDUCTION</p>
+          </div>
+
+          <div class="popup-section">
+            <label style="color:#f39c12;">&#127912; <span data-i18n="creditsCreator">CREATEUR & COSMETIQUES</span></label>
+            <div onclick="ouvrirProfilParPseudo('Obstinate')" style="cursor:pointer;background:#1a252f;border:1px solid #34495e;border-left:4px solid #f39c12;border-radius:8px;padding:12px;margin-top:6px;transition:background 0.2s;" onmouseover="this.style.background='#243341'" onmouseout="this.style.background='#1a252f'">
+              <div style="font-weight:bold;color:#f1c40f;font-size:16px;">Obstinate</div>
+              <div style="font-size:11px;color:#95a5a6;margin-top:2px;" data-i18n="creditsCreatorRole">Design, skins, pets, decorations, gameplay</div>
+              <div style="font-size:10px;color:#3498db;margin-top:4px;" data-i18n="creditsClickProfile">&#9654; Cliquer pour voir le profil</div>
+            </div>
+          </div>
+
+          <div class="popup-section">
+            <label style="color:#9b59b6;">&#128187; <span data-i18n="creditsCode">CODE</span></label>
+            <div style="background:#1a252f;border:1px solid #34495e;border-left:4px solid #d97757;border-radius:8px;padding:12px;margin-top:6px;display:flex;align-items:center;gap:12px;">
+              <div style="width:38px;height:38px;background:#d97757;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg viewBox="0 0 32 32" width="24" height="24" fill="white">
+                  <path d="M9.2 7.2 C7 7.2 5.5 9 5.5 11 c0 2 1.5 3.8 3.7 3.8 c0.8 0 1.6-0.2 2.2-0.6 l0 -2.8 c-0.4 0.4 -1.2 0.7 -1.9 0.7 c-1.1 0 -1.9-0.8 -1.9-1.9 c0-1.1 0.8-1.9 1.9-1.9 c0.7 0 1.5 0.3 1.9 0.7 V7.8 C10.8 7.4 10 7.2 9.2 7.2 z M22.8 7.4 l-3.4 7.2 h2.1 l0.5 -1.2 h3.2 l0.5 1.2 h2.1 l-3.4 -7.2 H22.8 z M23.5 9.7 l1 2.4 h-2 L23.5 9.7 z M6 17 l3.2 7.6 h2.2 L14.6 17 h-2.2 l-1.9 4.8 L8.6 17 H6 z M16 17 v7.6 h2 V17 H16 z M20.5 17 v7.6 h2.1 V21.8 h0.5 l1.5 2.8 h2.4 l-1.9 -3.1 c0.9 -0.4 1.4 -1.4 1.4 -2.4 c0 -1.4 -1 -2.3 -2.7 -2.3 H20.5 z M22.6 18.7 h0.9 c0.5 0 0.9 0.3 0.9 0.8 c0 0.5 -0.4 0.8 -0.9 0.8 h-0.9 V18.7 z"/>
+                </svg>
+              </div>
+              <div>
+                <div style="font-weight:bold;color:#d97757;font-size:15px;">Claude</div>
+                <div style="font-size:11px;color:#95a5a6;margin-top:2px;">Anthropic AI</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="popup-section">
+            <label style="color:#3498db;">&#127925; <span data-i18n="creditsMusic">MUSIQUE</span></label>
+            <div onclick="ouvrirProfilParPseudo('roalteck')" style="cursor:pointer;background:#1a252f;border:1px solid #34495e;border-left:4px solid #3498db;border-radius:8px;padding:12px;margin-top:6px;transition:background 0.2s;" onmouseover="this.style.background='#243341'" onmouseout="this.style.background='#1a252f'">
+              <div style="font-weight:bold;color:#5dade2;font-size:16px;">Roalteck</div>
+              <div style="font-size:11px;color:#95a5a6;margin-top:2px;" data-i18n="creditsMusicRole">Compositions originales (Multiverse, Flute Flailed, Enough Silence, I'm... INFECTED!)</div>
+              <div style="font-size:10px;color:#3498db;margin-top:4px;" data-i18n="creditsClickProfile">&#9654; Cliquer pour voir le profil</div>
+            </div>
+          </div>
+
+          <div class="popup-section">
+            <label style="color:#2ecc71;">&#128266; <span data-i18n="creditsSfx">EFFETS SONORES</span></label>
+            <div style="background:#1a252f;border:1px solid #34495e;border-left:4px solid #2ecc71;border-radius:8px;padding:12px;margin-top:6px;">
+              <div style="font-size:13px;color:#ecf0f1;" data-i18n="creditsSfxRole">Sons generes en temps reel via Web Audio API</div>
+            </div>
+          </div>
+
+          <div class="popup-section">
+            <label style="color:#e67e22;">&#9729; <span data-i18n="creditsBackend">BACKEND & INFRASTRUCTURE</span></label>
+            <div style="background:#1a252f;border:1px solid #34495e;border-left:4px solid #e67e22;border-radius:8px;padding:12px;margin-top:6px;">
+              <div style="font-size:13px;color:#ecf0f1;">Firebase / Google Cloud</div>
+              <div style="font-size:11px;color:#95a5a6;margin-top:2px;" data-i18n="creditsBackendRole">Base de donnees temps reel + authentification + hosting</div>
+            </div>
+          </div>
+
+          <div class="popup-section" style="text-align:center;">
+            <p style="font-size:13px;color:#bdc3c7;margin:8px 0;" data-i18n="creditsThanks">&#10084; Merci a tous les joueurs et testeurs !</p>
+            <p style="font-size:11px;color:#7f8c8d;margin:4px 0;">VIRUS 3.5.4 - ALPHA</p>
+          </div>
+        </div><!-- /params-tab-credits -->
 
         <!-- ONGLET DEV (admin dev uniquement : Obstinate) -->
         <div id="params-tab-dev" class="params-tab-content" style="display:none;">
@@ -624,7 +689,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline" id="version-inline">3.5.3 - ALPHA</span>
+        <span class="version-inline" id="version-inline">3.5.4 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -844,7 +909,7 @@
       </button>
     </div>
 
-    <span class="version">VIRUS 3.5.3 - ALPHA</span>
+    <span class="version">VIRUS 3.5.4 - ALPHA</span>
     </div>
   </div>
 
@@ -886,7 +951,7 @@
       Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
     </div>
 
-    <span class="version">VIRUS 3.5.3 - ALPHA</span>
+    <span class="version">VIRUS 3.5.4 - ALPHA</span>
     </div>
   </div>
 
@@ -991,7 +1056,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.5.3 - ALPHA</span>
+    <span class="version">VIRUS 3.5.4 - ALPHA</span>
     </div>
   </div>
 
@@ -1037,7 +1102,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS 3.5.3 - ALPHA</span>
+    <span class="version">VIRUS 3.5.4 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -2209,14 +2274,14 @@
 <script src="js/account.js?v=30"></script>
 <script src="js/ui.js?v=20260511b"></script>
 <script src="js/chat.js?v=7"></script>
-<script src="js/translation.js?v=20260512e"></script>
+<script src="js/translation.js?v=20260512f"></script>
 <script src="js/firebase-sync.js?v=58"></script>
 <script src="js/replay.js?v=2"></script>
 <script src="js/emotes.js?v=7"></script>
 <script src="js/particles.js?v=1"></script>
 <script src="js/cachecache.js?v=4"></script>
 <script src="js/sfx.js?v=2"></script>
-<script src="js/featureFlags.js?v=2"></script>
+<script src="js/featureFlags.js?v=3"></script>
 <script src="js/testdev.js?v=1"></script>
 <script src="js/reports.js?v=1"></script>
 <script src="js/passe.js?v=9"></script>
@@ -2230,7 +2295,7 @@
 <script src="js/missions.js?v=13"></script>
 <script src="js/minigames.js?v=2"></script>
 <script src="js/cameras.js?v=2"></script>
-<script src="js/stats.js?v=33"></script>
+<script src="js/stats.js?v=34"></script>
 <script src="js/friends.js?v=13"></script>
 
 <script>

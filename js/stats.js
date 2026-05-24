@@ -353,6 +353,26 @@ function ouvrirProfilJoueur(playerId) {
   ouvrirProfil(playerId);
 }
 
+// Ouvrir le profil d'un joueur par son pseudo (utilise dans l'onglet CREDITS)
+function ouvrirProfilParPseudo(pseudo) {
+  if (typeof db === 'undefined' || !pseudo) return;
+  db.collection('players').where('pseudoLower', '==', pseudo.toLowerCase()).limit(1).get().then(function(snap) {
+    if (snap.empty) {
+      if (typeof showNotif === 'function') showNotif('Profil "' + pseudo + '" introuvable', 'warn');
+      return;
+    }
+    var doc = snap.docs[0];
+    var data = doc.data();
+    var pid = data.playerId || doc.id;
+    // Fermer le popup parametres avant d'ouvrir le profil
+    var popParams = document.getElementById('popup-params');
+    if (popParams) popParams.classList.remove('visible');
+    ouvrirProfil(pid);
+  }).catch(function() {
+    if (typeof showNotif === 'function') showNotif('Erreur chargement profil', 'error');
+  });
+}
+
 // Systeme de badges
 var BADGE_PALIERS_COMBAT = [
   { nom: 'Maitre', min: 5000, fichier: 'assets/badges/Badges_maître.svg', couleur: '#9b59b6' },

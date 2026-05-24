@@ -315,7 +315,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.5.3';
+var CURRENT_VERSION = '3.5.4';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 

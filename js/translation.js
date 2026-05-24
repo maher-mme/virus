@@ -181,7 +181,8 @@ var TR = {
     skinNinja: 'Ninja',
     skinFilleChat: 'Fille-chat',
     skinJojo: 'JoJo',
-    skinCatScratchy: 'Chat Griffeur',
+    skinCatScratchy: 'Cat Scratchy',
+    skinKatanaGaming: 'Katana Gaming',
 
     // PETS (noms traduits)
     petChienSpatial: 'Chien Spatial',
@@ -998,7 +999,8 @@ var TR = {
     skinNinja: 'Ninja',
     skinFilleChat: 'Cat Girl',
     skinJojo: 'JoJo',
-    skinCatScratchy: 'Scratchy Cat',
+    skinCatScratchy: 'Cat Scratchy',
+    skinKatanaGaming: 'Katana Gaming',
 
     // PETS (noms traduits)
     petChienSpatial: 'Space Dog',
@@ -1814,7 +1816,8 @@ var TR = {
     skinNinja: 'Ninja',
     skinFilleChat: 'Chica Gato',
     skinJojo: 'JoJo',
-    skinCatScratchy: 'Gato Rascador',
+    skinCatScratchy: 'Cat Scratchy',
+    skinKatanaGaming: 'Katana Gaming',
 
     // PETS (noms traduits)
     petChienSpatial: 'Perro Espacial',
@@ -2542,7 +2545,8 @@ var TR = {
     skinNinja: 'ニンジャ',
     skinFilleChat: '猫娘',
     skinJojo: 'ジョジョ',
-    skinCatScratchy: 'ひっかきねこ',
+    skinCatScratchy: 'Cat Scratchy',
+    skinKatanaGaming: 'Katana Gaming',
 
     // PETS (noms traduits)
     petChienSpatial: '宇宙犬',
@@ -3270,7 +3274,8 @@ var TR = {
     skinNinja: 'Ninja',
     skinFilleChat: 'Katzenmadchen',
     skinJojo: 'JoJo',
-    skinCatScratchy: 'Kratzkatze',
+    skinCatScratchy: 'Cat Scratchy',
+    skinKatanaGaming: 'Katana Gaming',
 
     // PETS (noms traduits)
     petChienSpatial: 'Weltraumhund',
@@ -3998,7 +4003,8 @@ var TR = {
     skinNinja: 'نينجا',
     skinFilleChat: 'فتاة القطة',
     skinJojo: 'JoJo',
-    skinCatScratchy: 'القط الخدّاش',
+    skinCatScratchy: 'Cat Scratchy',
+    skinKatanaGaming: 'Katana Gaming',
 
     // PETS (noms traduits)
     petChienSpatial: 'كلب الفضاء',

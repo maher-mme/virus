@@ -51,7 +51,8 @@ var SKINS_BOUTIQUE = [
   { id: 'ninja', nom: 'Ninja', nomKey: 'skinNinja', fichier: 'skin/boutique/ninja.svg', prix: 200, rarete: 'rare' },
   { id: 'fille_chat', nom: 'Fille-chat', nomKey: 'skinFilleChat', fichier: 'skin/boutique/fille-chat.svg', prix: 350, rarete: 'epic' },
   { id: 'jojo', nom: 'JoJo', nomKey: 'skinJojo', fichier: 'skin/boutique/jojo.svg', prix: 250, rarete: 'rare' },
-  { id: 'cat_scratchy', nom: 'Chat Griffeur', nomKey: 'skinCatScratchy', fichier: 'skin/boutique/Cat_scratchy.svg', prix: 400, rarete: 'epic' }
+  { id: 'cat_scratchy', nom: 'Cat Scratchy', nomKey: 'skinCatScratchy', fichier: 'skin/boutique/Cat_scratchy.svg', prix: 400, rarete: 'epic' },
+  { id: 'katana_gaming', nom: 'Katana Gaming', nomKey: 'skinKatanaGaming', fichier: 'skin/boutique/katanat_gaming.svg', prix: 450, rarete: 'epic' }
 ];
 
 function getSkinsAchetes() {

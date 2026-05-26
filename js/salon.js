@@ -49,19 +49,20 @@ function salonRafraichir() {
     pfpEl.src = pfp || 'assets/pfp_de_base.png';
   }
 
-  // Niveau (depuis Firestore - source de verite)
+  // Niveau (calcule depuis l'XP, comme dans le profil)
   var niveauEl = document.getElementById('salon-niveau');
   if (niveauEl && typeof db !== 'undefined' && typeof monPlayerId !== 'undefined' && monPlayerId) {
     db.collection('players').doc(monPlayerId).get().then(function(doc) {
-      if (!doc.exists) return;
+      if (!doc.exists) { niveauEl.textContent = 'Niv. 1'; return; }
       var data = doc.data();
-      var level = data.level || 1;
-      // Si pas de level direct, le calculer depuis l'XP
-      if (!data.level && typeof calculerNiveau === 'function') {
+      var level = 1;
+      if (typeof calculerNiveau === 'function') {
         var xp = data.xp || 0;
         var info = calculerNiveau(xp);
         if (info && info.niveau) level = info.niveau;
       }
+      // data.level prend la priorite seulement s'il est superieur (cas reset XP)
+      if (data.level && data.level > level) level = data.level;
       niveauEl.textContent = 'Niv. ' + level;
     }).catch(function() {
       niveauEl.textContent = 'Niv. 1';

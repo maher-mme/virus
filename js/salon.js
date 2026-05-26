@@ -49,11 +49,23 @@ function salonRafraichir() {
     pfpEl.src = pfp || 'assets/pfp_de_base.png';
   }
 
-  // Niveau (depuis localStorage virusLevel ou Firebase)
+  // Niveau (depuis Firestore - source de verite)
   var niveauEl = document.getElementById('salon-niveau');
-  if (niveauEl) {
-    var level = parseInt(localStorage.getItem('virusLevel')) || 1;
-    niveauEl.textContent = 'Niv. ' + level;
+  if (niveauEl && typeof db !== 'undefined' && typeof monPlayerId !== 'undefined' && monPlayerId) {
+    db.collection('players').doc(monPlayerId).get().then(function(doc) {
+      if (!doc.exists) return;
+      var data = doc.data();
+      var level = data.level || 1;
+      // Si pas de level direct, le calculer depuis l'XP
+      if (!data.level && typeof calculerNiveau === 'function') {
+        var xp = data.xp || 0;
+        var info = calculerNiveau(xp);
+        if (info && info.niveau) level = info.niveau;
+      }
+      niveauEl.textContent = 'Niv. ' + level;
+    }).catch(function() {
+      niveauEl.textContent = 'Niv. 1';
+    });
   }
 
   // Avatar (skin equipe)
@@ -90,6 +102,7 @@ function salonSwitchTab(tab) {
     case 'passe':     if (typeof ouvrirPasse === 'function') ouvrirPasse(); break;
     case 'quetes':    if (typeof ouvrirQuetes === 'function') ouvrirQuetes(); break;
     case 'classement':if (typeof ouvrirClassement === 'function') ouvrirClassement(); break;
+    case 'profil':    if (typeof ouvrirProfil === 'function') ouvrirProfil(); break;
     case 'params':    if (typeof ouvrirParams === 'function') ouvrirParams(); break;
   }
 }
@@ -104,7 +117,7 @@ function salonSetVisualActiveTab(tab) {
 
 // Ferme toutes les popups associees aux onglets du salon
 function salonFermerToutesPopups() {
-  var popups = ['popup-cabine', 'popup-passe-dedie', 'popup-quetes', 'popup-classement', 'popup-params'];
+  var popups = ['popup-cabine', 'popup-passe-dedie', 'popup-quetes', 'popup-classement', 'popup-profil', 'popup-params'];
   popups.forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.classList.remove('visible');
@@ -122,6 +135,7 @@ function salonAutoUpdateActiveTab() {
     'popup-passe-dedie': 'passe',
     'popup-quetes': 'quetes',
     'popup-classement': 'classement',
+    'popup-profil': 'profil',
     'popup-params': 'params'
   };
   var openTab = 'jouer';

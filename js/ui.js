@@ -655,9 +655,12 @@ function choisirCampEspion(camp) {
 }
 
 function showScreen(id, fromPopstate) {
-  // Redirection : menu-principal → menu-salon si feature flag active
-  if (id === 'menu-principal' && typeof salonEstActif === 'function' && salonEstActif()) {
-    id = 'menu-salon';
+  // Redirection : si le salon est actif, les anciens ecrans de selection (menu-principal, menu-online)
+  // sont court-circuites vers le salon (qui contient deja les selecteurs de mode).
+  if (typeof salonEstActif === 'function' && salonEstActif()) {
+    if (id === 'menu-principal' || id === 'menu-online') {
+      id = 'menu-salon';
+    }
   }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const screen = document.getElementById(id);
@@ -669,9 +672,12 @@ function showScreen(id, fromPopstate) {
     navigateTo(SCREEN_TO_ROUTE[id]);
   }
 
-  // Rafraichir le salon a l'ouverture
-  if (id === 'menu-salon' && typeof salonRafraichir === 'function') {
-    salonRafraichir();
+  // Rafraichir le salon a l'ouverture + ajouter classe salon-mode sur body
+  if (id === 'menu-salon') {
+    document.body.classList.add('salon-mode');
+    if (typeof salonRafraichir === 'function') salonRafraichir();
+  } else {
+    document.body.classList.remove('salon-mode');
   }
 
   // Gerer la musique du menu

@@ -2085,3 +2085,24 @@
   .salon-tab { font-size: 11px; padding: 6px 10px; }
 }
 
+/* === Popups en plein ecran quand le salon est actif === */
+body.salon-mode .popup-overlay.visible {
+  align-items: stretch;
+  justify-content: stretch;
+  padding-top: 120px; /* sous la topbar du salon */
+  background: rgba(0, 0, 0, 0.35);
+}
+body.salon-mode .popup-overlay.visible .popup-box {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  border-radius: 16px 16px 0 0;
+  border-bottom: none;
+}
+@media (max-width: 700px) {
+  body.salon-mode .popup-overlay.visible {
+    padding-top: 110px;
+  }
+}
+

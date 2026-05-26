@@ -74,16 +74,15 @@ function salonRafraichir() {
 function salonSwitchTab(tab) {
   _salonTabActive = tab;
   // MAJ visuel des boutons d'onglets
-  document.querySelectorAll('.salon-tab').forEach(function(btn) {
-    if (btn.dataset.tab === tab) btn.classList.add('active');
-    else btn.classList.remove('active');
-  });
-  // Comportement selon l'onglet
+  salonSetVisualActiveTab(tab);
+  // Si on clique sur l'onglet actuellement actif (JOUER) et qu'une popup est ouverte → la fermer
   if (tab === 'jouer') {
-    // Reste sur le salon, juste rafraichir
+    salonFermerToutesPopups();
     salonRafraichir();
     return;
   }
+  // Fermer les autres popups avant d'ouvrir la nouvelle
+  salonFermerToutesPopups();
   // Pour les autres onglets : ouvrir les popups/screens existants
   switch (tab) {
     case 'casier':    if (typeof ouvrirCabine === 'function') ouvrirCabine(); break;
@@ -93,16 +92,51 @@ function salonSwitchTab(tab) {
     case 'classement':if (typeof ouvrirClassement === 'function') ouvrirClassement(); break;
     case 'params':    if (typeof ouvrirParams === 'function') ouvrirParams(); break;
   }
-  // Apres avoir ouvert la popup, revenir visuellement sur l'onglet JOUER
-  // (sinon l'onglet reste "actif" alors que la popup est par-dessus)
-  setTimeout(function() {
-    document.querySelectorAll('.salon-tab').forEach(function(btn) {
-      if (btn.dataset.tab === 'jouer') btn.classList.add('active');
-      else btn.classList.remove('active');
-    });
-    _salonTabActive = 'jouer';
-  }, 100);
 }
+
+// MAJ visuelle de l'onglet actif (sans changer le comportement)
+function salonSetVisualActiveTab(tab) {
+  document.querySelectorAll('.salon-tab').forEach(function(btn) {
+    if (btn.dataset.tab === tab) btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
+}
+
+// Ferme toutes les popups associees aux onglets du salon
+function salonFermerToutesPopups() {
+  var popups = ['popup-cabine', 'popup-passe-dedie', 'popup-quetes', 'popup-classement', 'popup-params'];
+  popups.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.remove('visible');
+  });
+}
+
+// Detecte automatiquement quelle popup est ouverte et MAJ l'onglet actif
+// (utile quand l'utilisateur ferme une popup via son X et qu'on doit retomber sur JOUER)
+function salonAutoUpdateActiveTab() {
+  if (!salonEstActif()) return;
+  var menuSalon = document.getElementById('menu-salon');
+  if (!menuSalon || !menuSalon.classList.contains('active')) return;
+  var tabsByPopup = {
+    'popup-cabine': 'casier',
+    'popup-passe-dedie': 'passe',
+    'popup-quetes': 'quetes',
+    'popup-classement': 'classement',
+    'popup-params': 'params'
+  };
+  var openTab = 'jouer';
+  for (var popupId in tabsByPopup) {
+    var el = document.getElementById(popupId);
+    if (el && el.classList.contains('visible')) { openTab = tabsByPopup[popupId]; break; }
+  }
+  if (openTab !== _salonTabActive) {
+    _salonTabActive = openTab;
+    salonSetVisualActiveTab(openTab);
+  }
+}
+
+// Poller pour suivre les fermetures de popups
+setInterval(salonAutoUpdateActiveTab, 250);
 
 // === LANCER UNE PARTIE DEPUIS LE SALON ===
 function salonJouer() {

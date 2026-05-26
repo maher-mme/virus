@@ -2087,17 +2087,25 @@
 
 /* === Popups en plein ecran quand le salon est actif === */
 body.salon-mode .popup-overlay.visible {
-  align-items: stretch;
-  justify-content: stretch;
-  padding-top: 120px; /* sous la topbar du salon */
   background: rgba(0, 0, 0, 0.35);
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 body.salon-mode .popup-overlay.visible .popup-box,
-body.salon-mode .popup-overlay.visible .popup-box-profil {
+body.salon-mode .popup-overlay.visible .popup-box-profil,
+body.salon-mode .popup-overlay.visible .popup-box-classement,
+body.salon-mode .popup-overlay.visible .popup-box-quetes,
+body.salon-mode .popup-overlay.visible .popup-box-commentaires,
+body.salon-mode .popup-overlay.visible .popup-box-tuto {
+  position: fixed !important;
+  top: 120px !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
   width: 100% !important;
   max-width: 100% !important;
-  height: 100% !important;
-  max-height: 100% !important;
+  height: calc(100% - 120px) !important;
+  max-height: calc(100% - 120px) !important;
   border-radius: 16px 16px 0 0 !important;
   border-bottom: none !important;
 }

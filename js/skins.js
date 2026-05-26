@@ -124,6 +124,12 @@ function ouvrirCabine() {
   document.getElementById('cabine-popup').classList.add('visible');
   switchCasierTab('skin');
   genererSkinSelector('cabine-skin-selector');
+  // Synchroniser le toggle mute musique du casier
+  var t = document.getElementById('casier-toggle-mute-musique');
+  if (t) {
+    if (typeof musiqueMuted !== 'undefined' && musiqueMuted) t.classList.add('active');
+    else t.classList.remove('active');
+  }
 }
 function fermerCabine() {
   document.getElementById('cabine-overlay').classList.remove('visible');

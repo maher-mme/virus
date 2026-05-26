@@ -547,7 +547,7 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-var musiqueMuted = false;
+var musiqueMuted = localStorage.getItem('virusMusiqueMuted') === '1';
 function toggleMusique() {
   var audio = document.getElementById('musique-menu');
   var btn = document.getElementById('btn-musique');
@@ -557,16 +557,26 @@ function toggleMusique() {
     if (_lobbyAudio && document.getElementById('salle-attente') && document.getElementById('salle-attente').classList.contains('active')) {
       playLobbyMusic();
     }
-    btn.classList.remove('muted');
-    btn.innerHTML = '&#9835;';
+    if (btn) { btn.classList.remove('muted'); btn.innerHTML = '&#9835;'; }
     musiqueMuted = false;
   } else {
     audio.pause();
     stopLobbyMusic();
-    btn.classList.add('muted');
-    btn.innerHTML = '&#9835;';
+    if (btn) { btn.classList.add('muted'); btn.innerHTML = '&#9835;'; }
     musiqueMuted = true;
   }
+  localStorage.setItem('virusMusiqueMuted', musiqueMuted ? '1' : '0');
+  // MAJ toggle du casier
+  var t = document.getElementById('casier-toggle-mute-musique');
+  if (t) {
+    if (musiqueMuted) t.classList.add('active');
+    else t.classList.remove('active');
+  }
+}
+
+// Toggle accessible depuis le casier (synchronise avec le bouton du menu)
+function toggleMusiqueFromCasier() {
+  toggleMusique();
 }
 
 var _lobbyAudio = null;

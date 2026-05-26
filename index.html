@@ -25,7 +25,7 @@
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css?v=4">
   <link rel="stylesheet" href="css/components.css?v=8">
-  <link rel="stylesheet" href="css/menu.css?v=25">
+  <link rel="stylesheet" href="css/menu.css?v=26">
   <link rel="stylesheet" href="css/lobby.css?v=20260412">
   <link rel="stylesheet" href="css/game.css?v=23">
   <link rel="stylesheet" href="css/hud.css?v=17">
@@ -1344,6 +1344,13 @@
 
     <div class="casier-tab-content" id="casier-content-musique">
       <p data-i18n="chooseMusic">Choisis ta musique !</p>
+      <div style="background:rgba(44,62,80,0.5);border:1px solid #34495e;border-radius:10px;padding:12px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div>
+          <div style="font-size:13px;color:#ecf0f1;font-weight:bold;letter-spacing:1px;">DESACTIVER LA MUSIQUE</div>
+          <div style="font-size:11px;color:#95a5a6;margin-top:2px;">Coupe la musique du menu</div>
+        </div>
+        <div class="config-hl-toggle" id="casier-toggle-mute-musique" onclick="toggleMusiqueFromCasier()"></div>
+      </div>
       <div class="musique-list" id="casier-musique-list"></div>
       <button class="cabine-popup-close" onclick="fermerCabine()" data-i18n="close">FERMER</button>
     </div>
@@ -2324,10 +2331,10 @@
 <!-- JS -->
 <script src="js/config.js?v=11"></script>
 <script src="js/api.js?v=2"></script>
-<script src="js/skins.js?v=10"></script>
+<script src="js/skins.js?v=11"></script>
 <script src="js/music.js?v=2"></script>
 <script src="js/account.js?v=30"></script>
-<script src="js/ui.js?v=20260526b"></script>
+<script src="js/ui.js?v=20260526c"></script>
 <script src="js/chat.js?v=7"></script>
 <script src="js/translation.js?v=20260512f"></script>
 <script src="js/firebase-sync.js?v=58"></script>

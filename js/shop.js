@@ -11,18 +11,26 @@ function getCosmeticNom(item) {
 }
 
 function sauvegarderGold() {
+  // Cap : pas plus de 3000 gold (eviter accumulation excessive)
+  if (typeof GOLD_MAX !== 'undefined' && playerGold > GOLD_MAX) playerGold = GOLD_MAX;
   localStorage.setItem('virusGold', playerGold);
   var el = document.getElementById('gold-display');
   if (el) el.textContent = playerGold;
   var bel = document.getElementById('boutique-gold-display');
   if (bel) bel.textContent = playerGold;
+  var sgel = document.getElementById('salon-gold-val');
+  if (sgel) sgel.textContent = playerGold;
   // Sync Firebase
   if (monPlayerId) {
     db.collection('players').doc(monPlayerId).update({ gold: playerGold }).catch(function() {});
   }
 }
+// Cap maximum de gold pour eviter l'accumulation excessive
+var GOLD_MAX = 3000;
+
 function gagnerGold(montant) {
   playerGold += montant;
+  if (playerGold > GOLD_MAX) playerGold = GOLD_MAX;
   sauvegarderGold();
 }
 // Initialiser l'affichage des golds au chargement

@@ -586,9 +586,14 @@
   margin-bottom: 12px;
   border-bottom: 2px solid #34495e;
   padding-bottom: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.casier-tabs::-webkit-scrollbar { display: none; }
 .casier-tab {
-  flex: 1;
+  flex: 1 0 auto;
+  min-width: 70px;
   padding: 8px 12px;
   background: transparent;
   border: none;
@@ -600,6 +605,7 @@
   letter-spacing: 1px;
   cursor: pointer;
   transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
 }
 .casier-tab:hover { color: #bdc3c7; }
 .casier-tab.active {

@@ -655,6 +655,10 @@ function choisirCampEspion(camp) {
 }
 
 function showScreen(id, fromPopstate) {
+  // Redirection : menu-principal → menu-salon si feature flag active
+  if (id === 'menu-principal' && typeof salonEstActif === 'function' && salonEstActif()) {
+    id = 'menu-salon';
+  }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const screen = document.getElementById(id);
   screen.classList.add('active', 'fade-in');
@@ -663,6 +667,11 @@ function showScreen(id, fromPopstate) {
   // Mettre a jour l'URL
   if (!fromPopstate && SCREEN_TO_ROUTE[id]) {
     navigateTo(SCREEN_TO_ROUTE[id]);
+  }
+
+  // Rafraichir le salon a l'ouverture
+  if (id === 'menu-salon' && typeof salonRafraichir === 'function') {
+    salonRafraichir();
   }
 
   // Gerer la musique du menu

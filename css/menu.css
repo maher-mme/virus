@@ -2085,11 +2085,20 @@
   .salon-tab { font-size: 11px; padding: 6px 10px; }
 }
 
-/* === Popups en plein ecran quand le salon est actif === */
+/* === Popups en plein ecran sous la topbar quand le salon est actif === */
+/* L'overlay est positionne SOUS la topbar (top: 120px) → la topbar reste cliquable */
 body.salon-mode .popup-overlay.visible {
-  background: rgba(0, 0, 0, 0.35);
+  top: 120px !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  background: transparent !important;
+  pointer-events: none;
   align-items: flex-start;
-  justify-content: flex-start;
+  justify-content: stretch;
+  padding: 0;
 }
 body.salon-mode .popup-overlay.visible .popup-box,
 body.salon-mode .popup-overlay.visible .popup-box-profil,
@@ -2097,19 +2106,25 @@ body.salon-mode .popup-overlay.visible .popup-box-classement,
 body.salon-mode .popup-overlay.visible .popup-box-quetes,
 body.salon-mode .popup-overlay.visible .popup-box-commentaires,
 body.salon-mode .popup-overlay.visible .popup-box-tuto {
-  position: fixed !important;
-  top: 120px !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
+  position: relative !important;
   width: 100% !important;
   max-width: 100% !important;
-  height: calc(100% - 120px) !important;
-  max-height: calc(100% - 120px) !important;
-  border-radius: 16px 16px 0 0 !important;
-  border-bottom: none !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  border-radius: 0 !important;
+  border: none !important;
+  pointer-events: auto;
 }
-/* Casier (cabine-popup) - utilise des classes specifiques */
+
+/* Cacher les X et boutons fermeture dans tous les popups en salon mode */
+body.salon-mode .popup-overlay .popup-close,
+body.salon-mode .cabine-popup .cabine-popup-close { display: none !important; }
+
+/* Casier (cabine-popup) - sous la topbar, pleine largeur, fond transparent */
+body.salon-mode .cabine-popup-overlay {
+  background: transparent !important;
+  pointer-events: none;
+}
 body.salon-mode .cabine-popup.visible {
   top: 120px !important;
   left: 0 !important;
@@ -2117,26 +2132,23 @@ body.salon-mode .cabine-popup.visible {
   bottom: 0 !important;
   transform: none !important;
   min-width: 0;
-  max-width: 100%;
-  width: 100%;
-  height: calc(100% - 120px);
-  border-radius: 16px 16px 0 0;
+  max-width: 100% !important;
+  width: 100% !important;
+  height: calc(100% - 120px) !important;
+  border-radius: 0 !important;
+  border-left: none;
+  border-right: none;
   overflow-y: auto;
+  pointer-events: auto;
 }
-body.salon-mode .cabine-popup-overlay.visible {
-  background: rgba(0, 0, 0, 0.35);
-}
+
 @media (max-width: 700px) {
-  body.salon-mode .popup-overlay.visible,
-  body.salon-mode .cabine-popup.visible {
-    padding-top: 0;
-  }
   body.salon-mode .popup-overlay.visible {
-    padding-top: 110px;
+    top: 100px !important;
   }
   body.salon-mode .cabine-popup.visible {
-    top: 110px !important;
-    height: calc(100% - 110px);
+    top: 100px !important;
+    height: calc(100% - 100px) !important;
   }
 }
 

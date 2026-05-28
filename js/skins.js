@@ -104,6 +104,10 @@ function genererSkinSelector(containerId) {
       skinTempSelection = skin.id;
       container.querySelectorAll('.skin-option').forEach(function(el) { el.classList.remove('skin-selected'); });
       div.classList.add('skin-selected');
+      // En mode salon : auto-confirmer (pas de bouton CONFIRMER visible)
+      if (document.body.classList.contains('salon-mode')) {
+        setSkin(skin.id);
+      }
     };
     var rar = RARETES[skin.rarete] || RARETES.typique;
     var skinNomCasier = (typeof getCosmeticNom === 'function') ? getCosmeticNom(skin) : skin.nom;

@@ -1889,6 +1889,7 @@
   flex-direction: column;
   gap: 10px;
   z-index: 50;
+  position: relative;
 }
 .salon-user-info {
   display: flex;
@@ -2075,14 +2076,63 @@
   50% { transform: translateY(-6px); }
 }
 
-/* Responsive : mobile = vertical */
+/* Burger menu mobile */
+.salon-burger-btn {
+  display: none;
+  background: rgba(52, 73, 94, 0.7);
+  color: white;
+  border: 1px solid #34495e;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 22px;
+  cursor: pointer;
+  margin-left: auto;
+  line-height: 1;
+}
+.salon-burger-btn:hover { background: rgba(52, 73, 94, 0.95); }
+
+/* Responsive : mobile = vertical + burger menu */
 @media (max-width: 700px) {
   .salon-jouer-view { flex-direction: column-reverse; gap: 24px; }
   .salon-jouer-selectors { width: 90%; max-width: 320px; }
   .salon-avatar-skin { height: 140px; }
   .salon-avatar-pseudo { font-size: 18px; }
   .salon-pseudo { font-size: 12px; }
-  .salon-tab { font-size: 11px; padding: 6px 10px; }
+  .salon-niveau { font-size: 10px; }
+  .salon-gold { padding: 3px 10px; font-size: 12px; }
+  .salon-gold-icon { font-size: 14px; }
+  .salon-pfp { width: 28px; height: 28px; }
+  .salon-burger-btn { display: block; }
+  .salon-topbar { gap: 4px; padding: 8px 10px; }
+
+  /* Cacher la barre d'onglets horizontale par defaut */
+  .salon-tabs {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #1a252f;
+    border-bottom: 2px solid #f39c12;
+    flex-direction: column;
+    z-index: 100;
+    padding: 8px;
+    gap: 4px;
+    max-height: 70vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  }
+  .salon-tabs.burger-open {
+    display: flex;
+  }
+  .salon-tabs .salon-tab {
+    width: 100%;
+    flex: 0 0 auto;
+    border-radius: 8px;
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
 }
 
 /* === Popups en plein ecran sous la topbar quand le salon est actif === */
@@ -2119,6 +2169,23 @@ body.salon-mode .popup-overlay.visible .popup-box-tuto {
 /* Cacher les X et boutons fermeture dans tous les popups en salon mode */
 body.salon-mode .popup-overlay .popup-close,
 body.salon-mode .cabine-popup .cabine-popup-close { display: none !important; }
+
+/* Boutique embarquee dans le salon : sous la topbar */
+#boutique-skins.embed-in-salon {
+  top: 120px !important;
+  height: calc(100% - 120px) !important;
+  z-index: 5 !important; /* sous la topbar (z-index: 50) */
+}
+/* Cacher le bouton RETOUR de la boutique quand elle est dans le salon */
+#boutique-skins.embed-in-salon .btn-retour {
+  display: none !important;
+}
+@media (max-width: 700px) {
+  #boutique-skins.embed-in-salon {
+    top: 100px !important;
+    height: calc(100% - 100px) !important;
+  }
+}
 
 /* Casier (cabine-popup) - sous la topbar, pleine largeur, fond transparent */
 body.salon-mode .cabine-popup-overlay {

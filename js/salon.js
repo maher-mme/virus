@@ -83,9 +83,21 @@ function salonRafraichir() {
   }
 }
 
+// === BURGER MENU MOBILE ===
+function toggleSalonBurger() {
+  var tabs = document.querySelector('.salon-tabs');
+  if (tabs) tabs.classList.toggle('burger-open');
+}
+function fermerSalonBurger() {
+  var tabs = document.querySelector('.salon-tabs');
+  if (tabs) tabs.classList.remove('burger-open');
+}
+
 // === SWITCH ENTRE LES ONGLETS ===
 function salonSwitchTab(tab) {
   _salonTabActive = tab;
+  // Fermer le burger menu sur mobile a chaque clic d'onglet
+  fermerSalonBurger();
   // MAJ visuel des boutons d'onglets
   salonSetVisualActiveTab(tab);
   // Si on clique sur l'onglet actuellement actif (JOUER) et qu'une popup est ouverte → la fermer
@@ -96,10 +108,18 @@ function salonSwitchTab(tab) {
   }
   // Fermer les autres popups avant d'ouvrir la nouvelle
   salonFermerToutesPopups();
+  // Cacher la boutique embarquee s'il y avait une autre ouverte
+  var boutiqueEmbed = document.getElementById('boutique-skins');
+  if (boutiqueEmbed) boutiqueEmbed.classList.remove('embed-in-salon');
   // Pour les autres onglets : ouvrir les popups/screens existants
   switch (tab) {
     case 'casier':    if (typeof ouvrirCabine === 'function') ouvrirCabine(); break;
-    case 'boutique':  showScreen('boutique-skins'); break;
+    case 'boutique':
+      // Garder le salon actif + embarquer la boutique sous la topbar
+      if (boutiqueEmbed) {
+        boutiqueEmbed.classList.add('active', 'embed-in-salon');
+      }
+      break;
     case 'passe':     if (typeof ouvrirPasse === 'function') ouvrirPasse(); break;
     case 'quetes':    if (typeof ouvrirQuetes === 'function') ouvrirQuetes(); break;
     case 'classement':if (typeof ouvrirClassement === 'function') ouvrirClassement(); break;
@@ -118,11 +138,22 @@ function salonSetVisualActiveTab(tab) {
 
 // Ferme toutes les popups associees aux onglets du salon
 function salonFermerToutesPopups() {
-  var popups = ['popup-cabine', 'popup-passe-dedie', 'popup-quetes', 'popup-classement', 'popup-profil', 'popup-params'];
+  // Popups standards
+  var popups = ['popup-passe-dedie', 'popup-quetes', 'popup-classement', 'popup-profil', 'popup-params'];
   popups.forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.classList.remove('visible');
   });
+  // Casier : utilise des classes specifiques (cabine-popup + cabine-overlay)
+  var cabinePop = document.getElementById('cabine-popup');
+  var cabineOver = document.getElementById('cabine-overlay');
+  if (cabinePop) cabinePop.classList.remove('visible');
+  if (cabineOver) cabineOver.classList.remove('visible');
+  // Cacher la boutique embarquee
+  var boutique = document.getElementById('boutique-skins');
+  if (boutique && boutique.classList.contains('embed-in-salon')) {
+    boutique.classList.remove('active', 'embed-in-salon');
+  }
 }
 
 // Detecte automatiquement quelle popup est ouverte et MAJ l'onglet actif
@@ -132,7 +163,7 @@ function salonAutoUpdateActiveTab() {
   var menuSalon = document.getElementById('menu-salon');
   if (!menuSalon || !menuSalon.classList.contains('active')) return;
   var tabsByPopup = {
-    'popup-cabine': 'casier',
+    'cabine-popup': 'casier',
     'popup-passe-dedie': 'passe',
     'popup-quetes': 'quetes',
     'popup-classement': 'classement',
@@ -144,6 +175,9 @@ function salonAutoUpdateActiveTab() {
     var el = document.getElementById(popupId);
     if (el && el.classList.contains('visible')) { openTab = tabsByPopup[popupId]; break; }
   }
+  // Boutique embarquee
+  var boutique = document.getElementById('boutique-skins');
+  if (boutique && boutique.classList.contains('embed-in-salon')) openTab = 'boutique';
   if (openTab !== _salonTabActive) {
     _salonTabActive = openTab;
     salonSetVisualActiveTab(openTab);

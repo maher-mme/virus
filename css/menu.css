@@ -1891,7 +1891,7 @@
   -webkit-backdrop-filter: blur(8px);
   border-bottom: 2px solid #34495e;
   padding: 10px 16px;
-  z-index: 9999;
+  z-index: 99999; /* au-dessus de tous les popups (z-index 10001) */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 body.salon-mode .salon-topbar { display: flex; }

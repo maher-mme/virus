@@ -682,10 +682,11 @@ function showScreen(id, fromPopstate) {
     navigateTo(SCREEN_TO_ROUTE[id]);
   }
 
-  // Rafraichir le salon a l'ouverture + ajouter classe salon-mode sur body
-  if (id === 'menu-salon') {
+  // Gerer la classe salon-mode sur body : active sur le salon ET ses sous-ecrans accessibles via les onglets
+  var salonScreens = ['menu-salon', 'boutique-skins'];
+  if (salonScreens.indexOf(id) >= 0 && typeof salonEstActif === 'function' && salonEstActif()) {
     document.body.classList.add('salon-mode');
-    if (typeof salonRafraichir === 'function') salonRafraichir();
+    if (id === 'menu-salon' && typeof salonRafraichir === 'function') salonRafraichir();
   } else {
     document.body.classList.remove('salon-mode');
   }

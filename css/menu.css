@@ -1879,18 +1879,22 @@
 }
 #menu-salon.active { display: flex; }
 
-/* Topbar : pseudo + gold + onglets */
+/* Topbar : overlay fixe en haut, masque uniquement en mode salon */
 .salon-topbar {
-  flex-shrink: 0;
-  background: rgba(0, 0, 0, 0.5);
-  border-bottom: 2px solid #34495e;
-  padding: 10px 16px;
-  display: flex;
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0;
   flex-direction: column;
   gap: 10px;
-  z-index: 50;
-  position: relative;
+  background: rgba(15, 15, 26, 0.97);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 2px solid #34495e;
+  padding: 10px 16px;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
+body.salon-mode .salon-topbar { display: flex; }
 .salon-user-info {
   display: flex;
   align-items: center;
@@ -2135,20 +2139,19 @@
   }
 }
 
-/* === Popups en plein ecran sous la topbar quand le salon est actif === */
-/* L'overlay est positionne SOUS la topbar (top: 120px) → la topbar reste cliquable */
+/* === MODE SALON : popups et ecrans plein ecran avec padding-top pour la topbar === */
+/* Popups standard (popup-overlay/popup-box) : plein ecran, le contenu a un padding-top */
 body.salon-mode .popup-overlay.visible {
-  top: 120px !important;
+  top: 0 !important;
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
-  width: auto !important;
-  height: auto !important;
-  background: transparent !important;
-  pointer-events: none;
-  align-items: flex-start;
+  width: 100% !important;
+  height: 100% !important;
+  background: rgba(15, 15, 26, 0.97) !important;
+  align-items: stretch;
   justify-content: stretch;
-  padding: 0;
+  padding: 120px 0 0 0;
 }
 body.salon-mode .popup-overlay.visible .popup-box,
 body.salon-mode .popup-overlay.visible .popup-box-profil,
@@ -2156,41 +2159,32 @@ body.salon-mode .popup-overlay.visible .popup-box-classement,
 body.salon-mode .popup-overlay.visible .popup-box-quetes,
 body.salon-mode .popup-overlay.visible .popup-box-commentaires,
 body.salon-mode .popup-overlay.visible .popup-box-tuto {
-  position: relative !important;
   width: 100% !important;
   max-width: 100% !important;
   height: 100% !important;
   max-height: 100% !important;
   border-radius: 0 !important;
   border: none !important;
-  pointer-events: auto;
 }
 
 /* Cacher les X et boutons fermeture dans tous les popups en salon mode */
 body.salon-mode .popup-overlay .popup-close,
 body.salon-mode .cabine-popup .cabine-popup-close { display: none !important; }
 
-/* Boutique embarquee dans le salon : sous la topbar */
-#boutique-skins.embed-in-salon {
-  top: 120px !important;
-  height: calc(100% - 120px) !important;
-  z-index: 5 !important; /* sous la topbar (z-index: 50) */
+/* Boutique : ecran plein, contenu avec padding-top */
+body.salon-mode #boutique-skins.active {
+  padding-top: 120px;
+  box-sizing: border-box;
 }
-/* Cacher le bouton RETOUR de la boutique quand elle est dans le salon */
-#boutique-skins.embed-in-salon .btn-retour {
+/* Cacher le bouton RETOUR de la boutique en mode salon */
+body.salon-mode #boutique-skins .btn-retour {
   display: none !important;
 }
-@media (max-width: 700px) {
-  #boutique-skins.embed-in-salon {
-    top: 100px !important;
-    height: calc(100% - 100px) !important;
-  }
-}
 
-/* Casier (cabine-popup) - sous la topbar, pleine largeur, fond transparent */
-body.salon-mode .cabine-popup-overlay {
-  background: transparent !important;
-  pointer-events: none;
+/* Casier (cabine-popup) : plein ecran avec padding-top */
+body.salon-mode .cabine-popup-overlay.visible {
+  background: rgba(15, 15, 26, 0.97) !important;
+  z-index: 5000;
 }
 body.salon-mode .cabine-popup.visible {
   top: 120px !important;
@@ -2206,16 +2200,15 @@ body.salon-mode .cabine-popup.visible {
   border-left: none;
   border-right: none;
   overflow-y: auto;
-  pointer-events: auto;
+  z-index: 5001;
 }
 
 @media (max-width: 700px) {
-  body.salon-mode .popup-overlay.visible {
-    top: 100px !important;
-  }
+  body.salon-mode .popup-overlay.visible { padding-top: 100px; }
   body.salon-mode .cabine-popup.visible {
     top: 100px !important;
     height: calc(100% - 100px) !important;
   }
+  body.salon-mode #boutique-skins.active { padding-top: 100px; }
 }
 

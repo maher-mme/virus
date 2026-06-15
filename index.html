@@ -25,7 +25,7 @@
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css?v=4">
   <link rel="stylesheet" href="css/components.css?v=8">
-  <link rel="stylesheet" href="css/menu.css?v=29">
+  <link rel="stylesheet" href="css/menu.css?v=30">
   <link rel="stylesheet" href="css/lobby.css?v=20260412">
   <link rel="stylesheet" href="css/game.css?v=23">
   <link rel="stylesheet" href="css/hud.css?v=17">
@@ -656,36 +656,38 @@
   <audio id="musique-menu" loop preload="auto" src="musique/Destroyed/destroyed-multiverse-album.mp3"></audio>
 
   <!-- ============================== -->
+  <!-- TOPBAR SALON (overlay fixe au-dessus de tout en mode salon) -->
+  <!-- ============================== -->
+  <div class="salon-topbar" id="salon-topbar">
+    <div class="salon-user-info">
+      <div class="salon-gold">
+        <span class="salon-gold-icon">&#9733;</span>
+        <span class="salon-gold-val" id="salon-gold-val">0</span>
+      </div>
+      <div class="salon-pseudo-bloc">
+        <img class="salon-pfp" id="salon-pfp" src="assets/pfp_de_base.png" alt="pfp">
+        <span class="salon-pseudo" id="salon-pseudo">---</span>
+        <span class="salon-niveau" id="salon-niveau">Niv. 1</span>
+      </div>
+      <button class="salon-burger-btn" onclick="toggleSalonBurger()" title="Menu">&#9776;</button>
+    </div>
+    <div class="salon-tabs">
+      <button class="salon-tab active" data-tab="jouer" onclick="salonSwitchTab('jouer')">&#127918; JOUER</button>
+      <button class="salon-tab" data-tab="casier" onclick="salonSwitchTab('casier')">&#128717; CASIER</button>
+      <button class="salon-tab" data-tab="boutique" onclick="salonSwitchTab('boutique')">&#128722; BOUTIQUE</button>
+      <button class="salon-tab" data-tab="passe" onclick="salonSwitchTab('passe')">&#127942; PASSE</button>
+      <button class="salon-tab" data-tab="quetes" onclick="salonSwitchTab('quetes')">&#128203; QUETES</button>
+      <button class="salon-tab" data-tab="classement" onclick="salonSwitchTab('classement')">&#127942; CLASSEMENT</button>
+      <button class="salon-tab" data-tab="profil" onclick="salonSwitchTab('profil')">&#128100; PROFIL</button>
+      <button class="salon-tab" data-tab="params" onclick="salonSwitchTab('params')">&#9881; PARAMETRE</button>
+    </div>
+  </div>
+
+  <!-- ============================== -->
   <!-- ECRAN SALON (nouveau menu principal style hub) -->
   <!-- ============================== -->
   <div id="menu-salon" class="screen">
     <button class="btn-musique" id="btn-musique-salon" onclick="toggleMusique()" title="Musique">&#9835;</button>
-
-    <!-- Barre du haut : pseudo + gold + onglets -->
-    <div class="salon-topbar">
-      <div class="salon-user-info">
-        <div class="salon-gold">
-          <span class="salon-gold-icon">&#9733;</span>
-          <span class="salon-gold-val" id="salon-gold-val">0</span>
-        </div>
-        <div class="salon-pseudo-bloc">
-          <img class="salon-pfp" id="salon-pfp" src="assets/pfp_de_base.png" alt="pfp">
-          <span class="salon-pseudo" id="salon-pseudo">---</span>
-          <span class="salon-niveau" id="salon-niveau">Niv. 1</span>
-        </div>
-        <button class="salon-burger-btn" onclick="toggleSalonBurger()" title="Menu">&#9776;</button>
-      </div>
-      <div class="salon-tabs">
-        <button class="salon-tab active" data-tab="jouer" onclick="salonSwitchTab('jouer')">&#127918; JOUER</button>
-        <button class="salon-tab" data-tab="casier" onclick="salonSwitchTab('casier')">&#128717; CASIER</button>
-        <button class="salon-tab" data-tab="boutique" onclick="salonSwitchTab('boutique')">&#128722; BOUTIQUE</button>
-        <button class="salon-tab" data-tab="passe" onclick="salonSwitchTab('passe')">&#127942; PASSE</button>
-        <button class="salon-tab" data-tab="quetes" onclick="salonSwitchTab('quetes')">&#128203; QUETES</button>
-        <button class="salon-tab" data-tab="classement" onclick="salonSwitchTab('classement')">&#127942; CLASSEMENT</button>
-        <button class="salon-tab" data-tab="profil" onclick="salonSwitchTab('profil')">&#128100; PROFIL</button>
-        <button class="salon-tab" data-tab="params" onclick="salonSwitchTab('params')">&#9881; PARAMETRE</button>
-      </div>
-    </div>
 
     <!-- Contenu principal (vue JOUER par defaut) -->
     <div class="salon-main" id="salon-main">
@@ -2335,7 +2337,7 @@
 <script src="js/skins.js?v=12"></script>
 <script src="js/music.js?v=2"></script>
 <script src="js/account.js?v=30"></script>
-<script src="js/ui.js?v=20260526c"></script>
+<script src="js/ui.js?v=20260528a"></script>
 <script src="js/chat.js?v=7"></script>
 <script src="js/translation.js?v=20260512f"></script>
 <script src="js/firebase-sync.js?v=58"></script>
@@ -2345,7 +2347,7 @@
 <script src="js/cachecache.js?v=4"></script>
 <script src="js/sfx.js?v=2"></script>
 <script src="js/featureFlags.js?v=4"></script>
-<script src="js/salon.js?v=5"></script>
+<script src="js/salon.js?v=6"></script>
 <script src="js/testdev.js?v=1"></script>
 <script src="js/reports.js?v=1"></script>
 <script src="js/passe.js?v=9"></script>

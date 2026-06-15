@@ -108,18 +108,18 @@ function salonSwitchTab(tab) {
   }
   // Fermer les autres popups avant d'ouvrir la nouvelle
   salonFermerToutesPopups();
-  // Cacher la boutique embarquee s'il y avait une autre ouverte
-  var boutiqueEmbed = document.getElementById('boutique-skins');
-  if (boutiqueEmbed) boutiqueEmbed.classList.remove('embed-in-salon');
+  // Si on n'est pas sur boutique mais qu'on a un autre ecran actif (boutique-skins),
+  // revenir au salon avant d'ouvrir la popup
+  if (tab !== 'boutique') {
+    var boutiqueEl = document.getElementById('boutique-skins');
+    if (boutiqueEl && boutiqueEl.classList.contains('active')) {
+      showScreen('menu-salon');
+    }
+  }
   // Pour les autres onglets : ouvrir les popups/screens existants
   switch (tab) {
     case 'casier':    if (typeof ouvrirCabine === 'function') ouvrirCabine(); break;
-    case 'boutique':
-      // Garder le salon actif + embarquer la boutique sous la topbar
-      if (boutiqueEmbed) {
-        boutiqueEmbed.classList.add('active', 'embed-in-salon');
-      }
-      break;
+    case 'boutique':  showScreen('boutique-skins'); break;
     case 'passe':     if (typeof ouvrirPasse === 'function') ouvrirPasse(); break;
     case 'quetes':    if (typeof ouvrirQuetes === 'function') ouvrirQuetes(); break;
     case 'classement':if (typeof ouvrirClassement === 'function') ouvrirClassement(); break;
@@ -149,11 +149,6 @@ function salonFermerToutesPopups() {
   var cabineOver = document.getElementById('cabine-overlay');
   if (cabinePop) cabinePop.classList.remove('visible');
   if (cabineOver) cabineOver.classList.remove('visible');
-  // Cacher la boutique embarquee
-  var boutique = document.getElementById('boutique-skins');
-  if (boutique && boutique.classList.contains('embed-in-salon')) {
-    boutique.classList.remove('active', 'embed-in-salon');
-  }
 }
 
 // Detecte automatiquement quelle popup est ouverte et MAJ l'onglet actif
@@ -175,9 +170,9 @@ function salonAutoUpdateActiveTab() {
     var el = document.getElementById(popupId);
     if (el && el.classList.contains('visible')) { openTab = tabsByPopup[popupId]; break; }
   }
-  // Boutique embarquee
+  // Boutique : ecran actif
   var boutique = document.getElementById('boutique-skins');
-  if (boutique && boutique.classList.contains('embed-in-salon')) openTab = 'boutique';
+  if (boutique && boutique.classList.contains('active')) openTab = 'boutique';
   if (openTab !== _salonTabActive) {
     _salonTabActive = openTab;
     salonSetVisualActiveTab(openTab);

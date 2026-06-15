@@ -2112,14 +2112,14 @@ body.salon-mode .salon-topbar { display: flex; }
   /* Cacher la barre d'onglets horizontale par defaut */
   .salon-tabs {
     display: none;
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 100px;
     left: 0;
     right: 0;
     background: #1a252f;
     border-bottom: 2px solid #f39c12;
     flex-direction: column;
-    z-index: 100;
+    z-index: 999999; /* au-dessus de la topbar (99999) et de tout le reste */
     padding: 8px;
     gap: 4px;
     max-height: 70vh;

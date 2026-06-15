@@ -315,7 +315,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.5.4';
+var CURRENT_VERSION = '3.5.6';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -677,9 +677,14 @@ function showScreen(id, fromPopstate) {
   screen.classList.add('active', 'fade-in');
   setTimeout(() => screen.classList.remove('fade-in'), 300);
 
-  // Mettre a jour l'URL
-  if (!fromPopstate && SCREEN_TO_ROUTE[id]) {
+  // Mettre a jour l'URL (sauf pour les ecrans embarques dans le salon — eviter auto-redirect au reload)
+  var salonEmbedded = (typeof salonEstActif === 'function') && salonEstActif() && id === 'boutique-skins';
+  if (!fromPopstate && SCREEN_TO_ROUTE[id] && !salonEmbedded) {
     navigateTo(SCREEN_TO_ROUTE[id]);
+  }
+  // Si on revient au salon depuis un sous-ecran salon, nettoyer l'URL
+  if (id === 'menu-salon' && window.location.pathname.indexOf('/shop') >= 0) {
+    try { history.replaceState({}, '', _basePath + '/'); } catch(e) {}
   }
 
   // Gerer la classe salon-mode sur body : active sur le salon ET ses sous-ecrans accessibles via les onglets

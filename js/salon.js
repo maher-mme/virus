@@ -149,6 +149,10 @@ function salonFermerToutesPopups() {
   var cabineOver = document.getElementById('cabine-overlay');
   if (cabinePop) cabinePop.classList.remove('visible');
   if (cabineOver) cabineOver.classList.remove('visible');
+  // Nettoyer l'URL ?profil=... pour eviter le re-open au reload
+  if (window.location.search.indexOf('profil=') >= 0) {
+    try { window.history.replaceState({}, '', window.location.pathname); } catch(e) {}
+  }
 }
 
 // Detecte automatiquement quelle popup est ouverte et MAJ l'onglet actif

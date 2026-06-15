@@ -100,9 +100,13 @@ function salonSwitchTab(tab) {
   fermerSalonBurger();
   // MAJ visuel des boutons d'onglets
   salonSetVisualActiveTab(tab);
-  // Si on clique sur l'onglet actuellement actif (JOUER) et qu'une popup est ouverte → la fermer
+  // Si on clique sur JOUER : fermer toutes les popups + revenir au salon si on etait sur boutique
   if (tab === 'jouer') {
     salonFermerToutesPopups();
+    var boutiqueEl = document.getElementById('boutique-skins');
+    if (boutiqueEl && boutiqueEl.classList.contains('active')) {
+      showScreen('menu-salon');
+    }
     salonRafraichir();
     return;
   }

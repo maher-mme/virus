@@ -218,6 +218,7 @@ function setLoadingProgress(percent, texte) {
 function masquerLoadingScreen() {
   if (!_bootPhaseActive) return;
   _bootPhaseActive = false;
+  document.body.classList.remove('booting');
   var loading = document.getElementById('loading-screen');
   if (loading) {
     loading.style.opacity = '0';
@@ -539,10 +540,17 @@ window.addEventListener('DOMContentLoaded', function() {
       navigateTo('/', true);
       return;
     }
+    // En mode salon : ne pas restaurer les sous-ecrans (boutique, etc.) au reload
     setTimeout(function() {
-      if (typeof monPlayerId !== 'undefined' && monPlayerId) {
-        showScreen(screenId, true);
+      if (typeof monPlayerId === 'undefined' || !monPlayerId) return;
+      var salonActif = (typeof salonEstActif === 'function') && salonEstActif();
+      var sousEcransSalon = ['boutique-skins'];
+      if (salonActif && sousEcransSalon.indexOf(screenId) >= 0) {
+        // Nettoyer l'URL et rester sur le salon
+        try { history.replaceState({}, '', _basePath + '/'); } catch(e) {}
+        return;
       }
+      showScreen(screenId, true);
     }, 800);
   }
 });

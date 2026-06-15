@@ -1895,6 +1895,8 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 body.salon-mode .salon-topbar { display: flex; }
+/* Cacher la topbar pendant le boot/loading screen */
+body.booting .salon-topbar { display: none !important; }
 .salon-user-info {
   display: flex;
   align-items: center;

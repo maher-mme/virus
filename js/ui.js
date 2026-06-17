@@ -347,7 +347,9 @@ function initVersionCheck() {
     console.error('Erreur version check:', err);
   });
 }
-setTimeout(initVersionCheck, 2000);
+// Desactive : le check Firebase interrompait le joueur en partie.
+// Le service worker gere les mises a jour automatiquement au prochain reload.
+// setTimeout(initVersionCheck, 2000);
 
 function afficherPopupMiseAJour(newVersion) {
   if (_updateDismissed) return;

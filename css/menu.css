@@ -1912,6 +1912,16 @@ body.salon-mode #btn-amis {
     width: 40px !important;
     height: 40px !important;
   }
+  /* Panel amis : sous la topbar, pas par-dessus */
+  body.salon-mode #panel-amis {
+    top: 100px !important;
+    height: calc(100vh - 100px) !important;
+  }
+}
+/* Sur desktop aussi : panel sous la topbar */
+body.salon-mode #panel-amis {
+  top: 120px;
+  height: calc(100vh - 120px);
 }
 .salon-user-info {
   display: flex;

@@ -15,6 +15,98 @@ var SALON_GROUP_MAX = 6;
 var _monGroupeId = null;
 var _monGroupeListenerUnsub = null;
 var _monGroupeData = null;
+var _heartbeatInterval = null;
+var SALON_GROUP_TIMEOUT_MS = 30000; // 30s sans heartbeat = considere deconnecte
+
+// === Heartbeat : mise a jour reguliere de lastActive sur mon entree ===
+function demarrerHeartbeatSalonGroup() {
+  if (_heartbeatInterval) clearInterval(_heartbeatInterval);
+  _heartbeatInterval = setInterval(function() {
+    if (!_monGroupeId || typeof db === 'undefined') return;
+    if (!document.body.classList.contains('salon-mode')) return; // pas sur le salon → ne pas heartbeat
+    // Mettre a jour mon lastActive dans le tableau members
+    db.runTransaction(function(transaction) {
+      var ref = db.collection('salonGroups').doc(_monGroupeId);
+      return transaction.get(ref).then(function(doc) {
+        if (!doc.exists) return;
+        var data = doc.data();
+        var newMembers = (data.members || []).map(function(m) {
+          if (m.playerId === monPlayerId) {
+            return Object.assign({}, m, { lastActive: Date.now() });
+          }
+          return m;
+        });
+        transaction.update(ref, { members: newMembers });
+      });
+    }).catch(function() {});
+  }, 10000); // toutes les 10 secondes
+}
+function arreterHeartbeatSalonGroup() {
+  if (_heartbeatInterval) { clearInterval(_heartbeatInterval); _heartbeatInterval = null; }
+}
+
+// === Cleanup des membres deconnectes (lastActive > 30s) ===
+function cleanupMembresInactifs() {
+  if (!_monGroupeId || !_monGroupeData || typeof db === 'undefined') return;
+  // Seul un membre actif peut nettoyer (eviter les writes concurrents)
+  if (!document.body.classList.contains('salon-mode')) return;
+  var maintenant = Date.now();
+  var aRetirer = (_monGroupeData.members || []).filter(function(m) {
+    if (m.playerId === monPlayerId) return false; // pas moi
+    if (!m.lastActive) return false; // ancien format, on ne touche pas
+    return (maintenant - m.lastActive) > SALON_GROUP_TIMEOUT_MS;
+  });
+  if (aRetirer.length === 0) return;
+  // Retirer les membres deconnectes
+  db.runTransaction(function(transaction) {
+    var ref = db.collection('salonGroups').doc(_monGroupeId);
+    return transaction.get(ref).then(function(doc) {
+      if (!doc.exists) return;
+      var data = doc.data();
+      var newMembers = (data.members || []).filter(function(m) {
+        if (m.playerId === monPlayerId) return true; // moi je reste
+        if (!m.lastActive) return true; // ancien format
+        return (maintenant - m.lastActive) <= SALON_GROUP_TIMEOUT_MS;
+      });
+      if (newMembers.length <= 1) {
+        transaction.delete(ref);
+      } else {
+        var update = { members: newMembers };
+        // Si le host a ete retire, choisir un nouveau host
+        var hostStillIn = newMembers.some(function(m) { return m.playerId === data.hostId; });
+        if (!hostStillIn) update.hostId = newMembers[0].playerId;
+        transaction.update(ref, update);
+      }
+    });
+  }).catch(function() {});
+}
+
+// === Sortie propre quand on ferme la page/app ===
+window.addEventListener('beforeunload', function() {
+  if (_monGroupeId && typeof db !== 'undefined') {
+    // Tenter de retirer mon entree (best effort, peut echouer si async)
+    try {
+      db.runTransaction(function(transaction) {
+        var ref = db.collection('salonGroups').doc(_monGroupeId);
+        return transaction.get(ref).then(function(doc) {
+          if (!doc.exists) return;
+          var data = doc.data();
+          var newMembers = (data.members || []).filter(function(m) { return m.playerId !== monPlayerId; });
+          if (newMembers.length <= 1) {
+            transaction.delete(ref);
+          } else {
+            var update = { members: newMembers };
+            if (data.hostId === monPlayerId) update.hostId = newMembers[0].playerId;
+            transaction.update(ref, update);
+          }
+        });
+      });
+    } catch(e) {}
+  }
+});
+
+// === Cleanup periodique (toutes les 15s, par tous les membres actifs) ===
+setInterval(cleanupMembresInactifs, 15000);
 
 // === Crée un nouveau groupe avec moi comme host (et envoie l'invitation a un ami) ===
 function inviterAmiAuSalonGroup(amiPlayerId, amiPseudo) {
@@ -32,6 +124,7 @@ function inviterAmiAuSalonGroup(amiPlayerId, amiPseudo) {
     pet: (typeof getPetEquipe === 'function') ? getPetEquipe() : '',
     joinedAt: Date.now()
   };
+  monMember.lastActive = Date.now();
   db.collection('salonGroups').add({
     hostId: monPlayerId,
     members: [monMember],
@@ -40,6 +133,7 @@ function inviterAmiAuSalonGroup(amiPlayerId, amiPseudo) {
   }).then(function(docRef) {
     _monGroupeId = docRef.id;
     listenMonGroupe(_monGroupeId);
+    demarrerHeartbeatSalonGroup();
     envoyerInvitationGroupe(_monGroupeId, amiPlayerId, amiPseudo);
   }).catch(function(err) {
     console.error('Erreur creation groupe', err);
@@ -158,13 +252,15 @@ function accepterInvitationSalonGroup(inviteId, groupId) {
     pseudo: getPseudo() || '',
     skin: (typeof getSkinFichier === 'function' && typeof getSkin === 'function') ? getSkinFichier(getSkin()) : '',
     pet: (typeof getPetEquipe === 'function') ? getPetEquipe() : '',
-    joinedAt: Date.now()
+    joinedAt: Date.now(),
+    lastActive: Date.now()
   };
   db.collection('salonGroups').doc(groupId).update({
     members: firebase.firestore.FieldValue.arrayUnion(monMember)
   }).then(function() {
     _monGroupeId = groupId;
     listenMonGroupe(groupId);
+    demarrerHeartbeatSalonGroup();
     // Supprimer l'invitation
     db.collection('salonGroupInvites').doc(inviteId).delete().catch(function() {});
     showNotif('Tu as rejoint le groupe', 'success');

@@ -2242,7 +2242,11 @@ body.salon-mode #panel-amis {
     text-align: center;
     max-width: 90vw;
     line-height: 1.5;
-    margin-top: 10px;
+    margin-top: 70px; /* espace pour le bouton QUITTER au-dessus */
+  }
+  /* Bouton quitter : positionne au-dessus de la liste pour eviter overlap */
+  .salon-btn-quitter-groupe {
+    bottom: -42px !important;
   }
   .salon-group-list-mobile strong {
     color: #f1c40f;

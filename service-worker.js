@@ -1,6 +1,6 @@
 // Service Worker pour VIRUS PWA
 // CACHE_VERSION : a bumper a chaque release importante pour forcer le refresh
-var CACHE_VERSION = 'virus-v3.5.6';
+var CACHE_VERSION = 'virus-v3.5.8';
 
 // SDK Firebase (cross-origin) : doit etre cache pour que l'app demarre offline
 var FIREBASE_SDK = [
@@ -16,7 +16,7 @@ var CORE_ASSETS = [
   '/index.html',
   '/manifest.json',
   '/assets/favicon.svg',
-  '/assets/écran_de_chargement.png',
+  '/assets/écran_de_chargement.svg',
   // CSS
   '/css/base.css',
   '/css/components.css',

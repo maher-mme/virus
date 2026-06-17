@@ -1897,6 +1897,22 @@
 body.salon-mode .salon-topbar { display: flex; }
 /* Cacher la topbar pendant le boot/loading screen */
 body.booting .salon-topbar { display: none !important; }
+
+/* Bouton AMIS au premier plan en mode salon (au-dessus de la topbar) */
+body.salon-mode #btn-amis {
+  z-index: 999999 !important;
+  top: 18px !important;
+  right: 18px !important;
+}
+/* Sur mobile : positionner SOUS la topbar pour eviter overlap avec le burger menu et le gold */
+@media (max-width: 700px) {
+  body.salon-mode #btn-amis {
+    top: 110px !important;
+    right: 12px !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
+}
 .salon-user-info {
   display: flex;
   align-items: center;
@@ -2057,29 +2073,171 @@ body.booting .salon-topbar { display: none !important; }
 }
 .salon-btn-jouer:active { transform: translateY(0); }
 
-/* Avatar du joueur */
+/* Avatars (moi seul ou groupe) */
+.salon-avatars-wrap {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 10px 8px 60px;
+  scrollbar-width: thin;
+}
+.salon-avatars-wrap::-webkit-scrollbar { height: 6px; }
+.salon-avatars-wrap::-webkit-scrollbar-thumb { background: #34495e; border-radius: 3px; }
 .salon-avatar-area {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
+  position: relative;
   animation: salonAvatarIdle 3s ease-in-out infinite;
 }
+.salon-avatar-area.salon-avatar-me {
+  animation-delay: 0s;
+}
+.salon-avatar-area.salon-avatar-mate-1 { animation-delay: -0.5s; }
+.salon-avatar-area.salon-avatar-mate-2 { animation-delay: -1s; }
+.salon-avatar-area.salon-avatar-mate-3 { animation-delay: -1.5s; }
+.salon-avatar-area.salon-avatar-mate-4 { animation-delay: -2s; }
+.salon-avatar-area.salon-avatar-mate-5 { animation-delay: -2.5s; }
 .salon-avatar-skin {
-  height: 200px;
+  height: 180px;
   width: auto;
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.6));
 }
 .salon-avatar-pseudo {
   font-family: 'Impact', 'Arial Black', sans-serif;
-  font-size: 22px;
-  letter-spacing: 3px;
+  font-size: 20px;
+  letter-spacing: 2px;
   color: #ecf0f1;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.salon-avatar-host-badge {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #f1c40f, #d4a017);
+  color: #1a1a2e;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  z-index: 2;
+  white-space: nowrap;
+}
+.salon-group-info {
+  position: absolute;
+  top: -10px;
+  right: 14px;
+  background: rgba(52, 73, 94, 0.95);
+  color: #f1c40f;
+  padding: 5px 12px;
+  border-radius: 14px;
+  border: 1px solid #f1c40f;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  z-index: 3;
+}
+/* Indicateur "pret" sous chaque avatar */
+.salon-pret-indic {
+  margin-top: 4px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border: 1px solid;
+  user-select: none;
+}
+.salon-pret-indic.pret-oui {
+  background: rgba(46, 204, 113, 0.25);
+  color: #2ecc71;
+  border-color: #2ecc71;
+}
+.salon-pret-indic.pret-non {
+  background: rgba(231, 76, 60, 0.25);
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+.salon-pret-indic[style*="cursor:pointer"]:hover {
+  filter: brightness(1.2);
+}
+
+.salon-btn-quitter-groupe {
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #e74c3c, #c0392b);
+  color: white;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(231, 76, 60, 0.4);
+}
+.salon-btn-quitter-groupe:hover {
+  background: linear-gradient(180deg, #ec7063, #cd6155);
+  transform: translateX(-50%) translateY(-2px);
 }
 @keyframes salonAvatarIdle {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
+}
+/* Liste textuelle des membres (visible uniquement sur mobile) */
+.salon-group-list-mobile {
+  display: none;
+}
+@media (max-width: 700px) {
+  .salon-avatars-wrap {
+    gap: 12px;
+    padding: 10px 8px 70px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .salon-avatar-skin { height: 130px; }
+  .salon-avatar-pseudo { font-size: 16px; max-width: 200px; }
+  /* Sur mobile : cacher les avatars des autres membres */
+  .salon-avatar-area:not(.salon-avatar-me) {
+    display: none !important;
+  }
+  /* Et afficher la liste textuelle */
+  .salon-group-list-mobile {
+    display: block;
+    background: rgba(44, 62, 80, 0.6);
+    border: 1px solid #34495e;
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: #ecf0f1;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    text-align: center;
+    max-width: 90vw;
+    line-height: 1.5;
+    margin-top: 10px;
+  }
+  .salon-group-list-mobile strong {
+    color: #f1c40f;
+    letter-spacing: 1px;
+  }
 }
 
 /* Burger menu mobile */

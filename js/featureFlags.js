@@ -10,8 +10,9 @@
 
 // Valeurs par defaut (utilisees quand Firestore n'a pas encore charge)
 var FEATURE_FLAGS = {
-  cachecache: 'dev', // Mode cache-cache : encore en developpement
-  salonLobby: 'dev'  // Nouveau menu principal style salon (au lieu des boutons)
+  cachecache: 'dev',  // Mode cache-cache : encore en developpement
+  salonLobby: 'live', // Nouveau menu principal style salon — LIVE pour tous
+  salonGroup: 'dev'   // Inviter des amis dans le salon (groupes)
   // Ajouter d'autres features ici quand on en aura
 };
 

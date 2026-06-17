@@ -370,15 +370,27 @@ var fileInvitations = [];
 
 var _lastInviteTime = 0;
 function inviterAmi(amiPlayerId, amiPseudo) {
-  if (!partieActuelleId) {
-    showNotif(t('mustBeInGame'), 'warn');
-    return;
-  }
   var now = Date.now();
   var cooldown = 15000; // 15 secondes
   if (now - _lastInviteTime < cooldown) {
     var reste = Math.ceil((cooldown - (now - _lastInviteTime)) / 1000);
     showNotif('Attends ' + reste + 's avant de reinviter', 'warn');
+    return;
+  }
+
+  // Mode salon (feature flag salonGroup) : envoyer une invitation de groupe salon
+  var salonGroupActive = (typeof isFeatureActive === 'function') && isFeatureActive('salonGroup');
+  if (!partieActuelleId && salonGroupActive) {
+    _lastInviteTime = now;
+    if (typeof inviterAmiAuSalonGroup === 'function') {
+      inviterAmiAuSalonGroup(amiPlayerId, amiPseudo);
+    }
+    return;
+  }
+
+  // Sinon : invitation classique en partie (besoin d'etre dans une partie)
+  if (!partieActuelleId) {
+    showNotif(t('mustBeInGame'), 'warn');
     return;
   }
   _lastInviteTime = now;

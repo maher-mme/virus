@@ -69,18 +69,109 @@ function salonRafraichir() {
     });
   }
 
-  // Avatar (skin equipe)
-  var avatarSkin = document.getElementById('salon-avatar-skin');
-  if (avatarSkin && typeof getSkinFichier === 'function' && typeof getSkin === 'function') {
-    avatarSkin.src = getSkinFichier(getSkin());
-  }
+  // Avatar(s) : moi seul ou groupe d'amis
+  salonRenderAvatars();
 
-  // Option CACHE-CACHE dans le selecteur de jeu (visible si feature flag active)
+  // Option CACHE-CACHE dans le selecteur de jeu : visible uniquement si flag en LIVE
   var ccOpt = document.getElementById('salon-sel-cachecache-opt');
   if (ccOpt) {
-    var ccActive = (typeof isFeatureActive === 'function') && isFeatureActive('cachecache');
-    ccOpt.style.display = ccActive ? '' : 'none';
+    var ccLive = (typeof FEATURE_FLAGS !== 'undefined') && FEATURE_FLAGS.cachecache === 'live';
+    ccOpt.style.display = ccLive ? '' : 'none';
   }
+}
+
+// === RENDU AVATARS (moi seul ou groupe d'amis) ===
+function salonRenderAvatars() {
+  var wrap = document.getElementById('salon-avatars-wrap');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+
+  var monPseudoLocal = (typeof getPseudo === 'function') ? getPseudo() : '';
+  var monSkin = (typeof getSkinFichier === 'function' && typeof getSkin === 'function')
+    ? getSkinFichier(getSkin()) : '';
+
+  // Si je suis dans un groupe (variable _monGroupeData de salonGroup.js)
+  if (typeof _monGroupeData !== 'undefined' && _monGroupeData && _monGroupeData.members && _monGroupeData.members.length > 0) {
+    // Badge groupe en haut
+    var info = document.createElement('div');
+    info.className = 'salon-group-info';
+    info.textContent = 'GROUPE ' + _monGroupeData.members.length + '/' + (_monGroupeData.maxSize || 6);
+    wrap.appendChild(info);
+
+    // Afficher chaque membre (cache automatiquement sur mobile via CSS sauf moi)
+    var idx = 0;
+    _monGroupeData.members.forEach(function(m) {
+      var isMe = m.playerId === monPlayerId;
+      var skin = isMe ? monSkin : (m.skin || 'skin/gratuit/skin-de-base-garcon.svg');
+      var pseudoAff = isMe ? monPseudoLocal : (m.pseudo || '');
+      var isHost = (_monGroupeData.hostId === m.playerId);
+      wrap.appendChild(creerAvatarMembre(skin, pseudoAff, isMe, isHost, idx, !!m.ready));
+      idx++;
+    });
+
+    // Liste textuelle des membres pour mobile (visible uniquement sur mobile via CSS)
+    var autresMembres = _monGroupeData.members
+      .filter(function(m) { return m.playerId !== monPlayerId; })
+      .map(function(m) { return m.pseudo + (_monGroupeData.hostId === m.playerId ? ' ★' : ''); });
+    if (autresMembres.length > 0) {
+      var liste = document.createElement('div');
+      liste.className = 'salon-group-list-mobile';
+      liste.innerHTML = '<strong>Membres du groupe :</strong> ' + autresMembres.map(function(p) { return escapeHtml(p); }).join(', ');
+      wrap.appendChild(liste);
+    }
+
+    // Bouton rouge QUITTER LE GROUPE (sur mon avatar)
+    var myAvatarEl = wrap.querySelector('.salon-avatar-me');
+    if (myAvatarEl) {
+      var btn = document.createElement('button');
+      btn.className = 'salon-btn-quitter-groupe';
+      btn.textContent = '✕ QUITTER LE GROUPE';
+      btn.onclick = function() {
+        if (confirm('Quitter le groupe ?')) {
+          if (typeof quitterSalonGroup === 'function') quitterSalonGroup();
+        }
+      };
+      myAvatarEl.appendChild(btn);
+    }
+  } else {
+    // Pas dans un groupe : afficher juste mon avatar
+    wrap.appendChild(creerAvatarMembre(monSkin, monPseudoLocal, true, false, 0));
+  }
+}
+
+function creerAvatarMembre(skin, pseudo, isMe, isHost, idx, ready) {
+  var area = document.createElement('div');
+  area.className = 'salon-avatar-area ' + (isMe ? 'salon-avatar-me' : 'salon-avatar-mate-' + Math.min(idx, 5));
+  if (isHost) {
+    var badge = document.createElement('div');
+    badge.className = 'salon-avatar-host-badge';
+    badge.textContent = '★ HOST';
+    area.appendChild(badge);
+  }
+  var img = document.createElement('img');
+  img.className = 'salon-avatar-skin';
+  img.src = skin || 'skin/gratuit/skin-de-base-garcon.svg';
+  img.alt = pseudo;
+  area.appendChild(img);
+  var label = document.createElement('div');
+  label.className = 'salon-avatar-pseudo';
+  label.textContent = pseudo || '---';
+  area.appendChild(label);
+  // Indicateur "pret" : vert si pret, rouge sinon (afficher uniquement en groupe)
+  if (typeof _monGroupeData !== 'undefined' && _monGroupeData) {
+    var indic = document.createElement('div');
+    indic.className = 'salon-pret-indic ' + (ready ? 'pret-oui' : 'pret-non');
+    indic.innerHTML = ready ? '✓ PRET' : '✕ PAS PRET';
+    if (isMe) {
+      indic.style.cursor = 'pointer';
+      indic.title = 'Cliquer pour changer';
+      indic.onclick = function() {
+        if (typeof toggleMaPrete === 'function') toggleMaPrete();
+      };
+    }
+    area.appendChild(indic);
+  }
+  return area;
 }
 
 // === BURGER MENU MOBILE ===

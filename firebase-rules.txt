@@ -147,5 +147,17 @@ service cloud.firestore {
       allow read: if true;
       allow write: if true;
     }
+
+    // Salon groups : groupes d'amis dans le salon
+    match /salonGroups/{groupId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Invitations a un salon group
+    match /salonGroupInvites/{inviteId} {
+      allow read: if true;
+      allow write: if true;
+    }
   }
 }

@@ -49,25 +49,8 @@ function salonRafraichir() {
     pfpEl.src = pfp || 'assets/pfp_de_base.png';
   }
 
-  // Niveau (calcule depuis l'XP, comme dans le profil)
-  var niveauEl = document.getElementById('salon-niveau');
-  if (niveauEl && typeof db !== 'undefined' && typeof monPlayerId !== 'undefined' && monPlayerId) {
-    db.collection('players').doc(monPlayerId).get().then(function(doc) {
-      if (!doc.exists) { niveauEl.textContent = 'Niv. 1'; return; }
-      var data = doc.data();
-      var level = 1;
-      if (typeof calculerNiveau === 'function') {
-        var xp = data.xp || 0;
-        var info = calculerNiveau(xp);
-        if (info && info.niveau) level = info.niveau;
-      }
-      // data.level prend la priorite seulement s'il est superieur (cas reset XP)
-      if (data.level && data.level > level) level = data.level;
-      niveauEl.textContent = 'Niv. ' + level;
-    }).catch(function() {
-      niveauEl.textContent = 'Niv. 1';
-    });
-  }
+  // Niveau (calcule depuis l'XP, comme dans le profil) — retry si pas pret
+  salonMajNiveau();
 
   // Avatar(s) : moi seul ou groupe d'amis
   salonRenderAvatars();
@@ -78,6 +61,37 @@ function salonRafraichir() {
     var ccLive = (typeof FEATURE_FLAGS !== 'undefined') && FEATURE_FLAGS.cachecache === 'live';
     ccOpt.style.display = ccLive ? '' : 'none';
   }
+}
+
+// === MISE A JOUR DU NIVEAU (avec retry) ===
+var _salonNiveauRetryCount = 0;
+var _salonNiveauListenerUnsub = null;
+function salonMajNiveau() {
+  var niveauEl = document.getElementById('salon-niveau');
+  if (!niveauEl) return;
+  if (typeof db === 'undefined' || typeof monPlayerId === 'undefined' || !monPlayerId) {
+    // Retry jusqu'a 10 fois (5 sec total)
+    if (_salonNiveauRetryCount < 10) {
+      _salonNiveauRetryCount++;
+      setTimeout(salonMajNiveau, 500);
+    }
+    return;
+  }
+  _salonNiveauRetryCount = 0;
+  // Listener temps reel : MAJ du niveau quand le doc joueur change
+  if (_salonNiveauListenerUnsub) { try { _salonNiveauListenerUnsub(); } catch(e) {} }
+  _salonNiveauListenerUnsub = db.collection('players').doc(monPlayerId).onSnapshot(function(doc) {
+    if (!doc.exists) { niveauEl.textContent = 'Niv. 1'; return; }
+    var data = doc.data();
+    var level = 1;
+    if (typeof calculerNiveau === 'function') {
+      var xp = data.xp || 0;
+      var info = calculerNiveau(xp);
+      if (info && info.niveau) level = info.niveau;
+    }
+    if (data.level && data.level > level) level = data.level;
+    niveauEl.textContent = 'Niv. ' + level;
+  }, function() {});
 }
 
 // === RENDU AVATARS (moi seul ou groupe d'amis) ===

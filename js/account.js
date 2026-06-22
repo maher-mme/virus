@@ -85,16 +85,23 @@ function creerCompte() {
     var skinAleatoire = Math.random() < 0.5 ? 'garcon' : 'fille';
     setSkin(skinAleatoire);
     // Enregistrer sur Firebase avec PIN
-    db.collection('players').doc(monPlayerId).set({
-      playerId: monPlayerId,
-      pseudo: pseudo,
-      pseudoLower: pseudoLower,
-      pin: pin,
-      skin: getSkinFichier(skinAleatoire),
-      online: true,
-      lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true }).then(function() {
+    // Verifier si le doc existe deja pour ne pas ecraser createdAt
+    db.collection('players').doc(monPlayerId).get().then(function(existingDoc) {
+      var dataSet = {
+        playerId: monPlayerId,
+        pseudo: pseudo,
+        pseudoLower: pseudoLower,
+        pin: pin,
+        skin: getSkinFichier(skinAleatoire),
+        online: true,
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      // createdAt UNIQUEMENT si le compte n'existe pas (premier passage)
+      if (!existingDoc.exists || !existingDoc.data().createdAt) {
+        dataSet.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      }
+      return db.collection('players').doc(monPlayerId).set(dataSet, { merge: true });
+    }).then(function() {
       initAmisListeners();
       var btnAmis = document.getElementById('btn-amis');
       if (btnAmis) btnAmis.style.display = 'flex';

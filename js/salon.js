@@ -306,20 +306,102 @@ function salonJouer() {
     return;
   }
 
-  // Online : definir le mode et aller au sous-menu (creer/trouver)
+  // Online : QUICK PLAY → cherche une partie dispo, sinon en cree une
   if (typeof currentOnlineMode !== 'undefined') {
-    currentOnlineMode = modeJeu; // 'virus' ou 'cachecache'
+    currentOnlineMode = modeJeu;
   }
-  // Adapter le titre du sous-menu
-  var titreEl = document.getElementById('moa-titre');
-  if (titreEl) {
-    if (modeJeu === 'cachecache') {
-      titreEl.textContent = 'CACHE-CACHE';
-      titreEl.style.color = '#3498db';
+  if (typeof showNotif === 'function') showNotif('Recherche d\'une partie...', 'info');
+  salonQuickPlay(modeJeu);
+}
+
+// === QUICK PLAY : auto-join ou auto-create ===
+function salonQuickPlay(modeJeu) {
+  if (typeof db === 'undefined') {
+    if (typeof showNotif === 'function') showNotif('Pas de connexion', 'error');
+    return;
+  }
+  // Chercher les parties disponibles du bon mode (en lobby, pas pleines, publiques)
+  db.collection('parties').where('phase', '==', 'lobby').get().then(function(snap) {
+    var partiesDispo = [];
+    snap.forEach(function(doc) {
+      var p = doc.data();
+      var pMode = p.gameMode || 'virus';
+      if (pMode !== modeJeu) return;
+      if (p.private) return; // pas de partie privee en quick play
+      if (p.isTestDev) return; // pas de partie test dev
+      if (p.joueurs >= p.maxJoueurs) return; // pleine
+      partiesDispo.push({ id: doc.id, data: p });
+    });
+    if (partiesDispo.length > 0) {
+      // Choisir la partie la plus remplie (mais pas pleine) → plus rapide a demarrer
+      partiesDispo.sort(function(a, b) { return b.data.joueurs - a.data.joueurs; });
+      var partie = partiesDispo[0];
+      if (typeof showNotif === 'function') showNotif('Partie trouvee, on te connecte...', 'info');
+      if (typeof rejoindrePartie === 'function') rejoindrePartie(partie.id);
     } else {
-      titreEl.textContent = 'VIRUS';
-      titreEl.style.color = '';
+      // Aucune partie dispo → en creer une automatiquement (toi = host)
+      if (typeof showNotif === 'function') showNotif('Aucune partie, creation en cours...', 'info');
+      salonAutoCreerPartie(modeJeu);
     }
+  }).catch(function() {
+    if (typeof showNotif === 'function') showNotif('Erreur recherche, creation en cours...', 'warn');
+    salonAutoCreerPartie(modeJeu);
+  });
+}
+
+// === Auto-creer une partie avec defaults ===
+function salonAutoCreerPartie(modeJeu) {
+  var pseudo = (typeof getPseudo === 'function') ? getPseudo() : '';
+  if (!pseudo) {
+    if (typeof showNotif === 'function') showNotif('Tu dois etre connecte', 'error');
+    return;
   }
-  showScreen('menu-online-actions');
+  var skin = (typeof getSkinFichier === 'function' && typeof getSkin === 'function')
+    ? getSkinFichier(getSkin()) : 'skin/gratuit/skin-de-base-garcon.svg';
+  var maxJoueurs = (modeJeu === 'cachecache') ? 10 : 8;
+  var nomPartie = 'Partie de ' + pseudo;
+
+  db.collection('players').doc(monPlayerId).set({
+    playerId: monPlayerId, pseudo: pseudo, skin: skin,
+    online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true }).then(function() {
+    return db.collection('parties').add({
+      nom: nomPartie,
+      hostPlayerId: monPlayerId,
+      hostPseudo: pseudo,
+      maxJoueurs: maxJoueurs,
+      mechants: 1,
+      journaliste: false, fanatique: false, espion: false, cherif: false,
+      langue: (typeof currentLang !== 'undefined' ? currentLang : 'fr'),
+      couleur: '#e74c3c',
+      phase: 'lobby',
+      joueurs: 1,
+      listeJoueurs: [pseudo],
+      private: false,
+      isTestDev: false,
+      gameMode: modeJeu,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }).then(function(docRef) {
+    var partyId = docRef.id;
+    var monPet = (typeof getPetEquipe === 'function') ? getPetEquipe() : '';
+    return db.collection('partyPlayers').add({
+      partyId: partyId, playerId: monPlayerId, pseudo: pseudo, skin: skin, pet: monPet,
+      isHost: true, role: '', alive: true, x: 0, y: 0, direction: 1, saX: 50, saY: 70, saDirection: 1,
+      lastActive: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function(ppDoc) {
+      myPartyPlayerDocId = ppDoc.id;
+      modeHorsLigne = false;
+      estHost = true;
+      partieActuelleId = partyId;
+      db.collection('players').doc(monPlayerId).update({ currentPartyId: partyId }).catch(function() {});
+      if (typeof showNotif === 'function') showNotif('Partie creee, attends d\'autres joueurs !', 'success');
+      showScreen('salle-attente');
+      if (typeof subscribeToParty === 'function') subscribeToParty(partyId);
+      if (typeof updateSalleAttente === 'function') updateSalleAttente();
+    });
+  }).catch(function(err) {
+    console.error('Erreur creation auto-partie', err);
+    if (typeof showNotif === 'function') showNotif('Erreur creation partie', 'error');
+  });
 }

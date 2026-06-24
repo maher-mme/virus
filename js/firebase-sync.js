@@ -609,8 +609,14 @@ function _demarrerJeuMultiplayer(state) {
     else if (monRole === 'journaliste') { roleEl.textContent = t('roleJournalist'); }
     else if (monRole === 'fanatique') { roleEl.textContent = t('roleFanatic'); }
     else if (monRole === 'espion') { roleEl.textContent = t('roleSpy'); }
+    else if (monRole === 'cherif') { roleEl.textContent = t('roleSheriff'); }
     else { roleEl.textContent = t('roleInnocent'); }
   }
+
+  // Init balles du cherif (egal au nombre de virus dans la partie)
+  var nbVirusEnPartie = firebasePartyPlayers.filter(function(p) { return p.role === 'virus'; }).length;
+  cherifBalles = (monRole === 'cherif') ? Math.max(1, nbVirusEnPartie) : 0;
+  if (typeof majHudCherif === 'function') majHudCherif();
   joueurX = 3800;
   joueurY = 3050;
   joueursElimines = [];
@@ -822,7 +828,7 @@ function createRemotePlayerElement(p) {
   if (existant) existant.remove();
   var div = document.createElement('div');
   div.id = 'remote-' + p.playerId;
-  div.className = 'bot';
+  div.className = 'joueur-perso bot';
   div.style.position = 'absolute';
   div.style.left = p.x + 'px';
   div.style.top = p.y + 'px';

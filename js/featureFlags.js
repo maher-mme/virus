@@ -23,7 +23,9 @@ function initFeatureFlags() {
     _featureFlagsUnsub = db.collection('featureFlags').onSnapshot(function(snap) {
       snap.forEach(function(doc) {
         var data = doc.data();
-        if (data && data.state) {
+        // On ne synchronise que les flags connus (defaut). Les flags supprimes
+        // restent dans Firestore mais sont ignores.
+        if (data && data.state && FEATURE_FLAGS.hasOwnProperty(doc.id)) {
           FEATURE_FLAGS[doc.id] = data.state;
         }
       });

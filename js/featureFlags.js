@@ -10,7 +10,6 @@
 
 // Valeurs par defaut (utilisees quand Firestore n'a pas encore charge)
 var FEATURE_FLAGS = {
-  cachecache: 'dev',  // Mode cache-cache : encore en developpement
   salonLobby: 'live', // Nouveau menu principal style salon — LIVE pour tous
   salonGroup: 'dev'   // Inviter des amis dans le salon (groupes)
   // Ajouter d'autres features ici quand on en aura
@@ -63,9 +62,6 @@ function setFeatureFlag(flagId, state) {
 // Hook qui rafraichit tous les elements de l'UI dependant des flags.
 // Appele automatiquement au boot et a chaque changement de flag.
 function refreshFeatureFlagUI() {
-  // Bouton CACHE-CACHE dans la selection de mode online
-  var btnCC = document.getElementById('mode-cachecache-btn');
-  if (btnCC) btnCC.style.display = isFeatureActive('cachecache') ? '' : 'none';
   // Rafraichir la liste dans le panneau admin si ouvert
   if (typeof majAdminFeaturesList === 'function') majAdminFeaturesList();
 }

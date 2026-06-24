@@ -2,16 +2,12 @@
 // MODE TEST DEV (admin dev uniquement)
 // ============================
 // Permet de lancer une partie online avec :
-// - Mode choisi (virus / cachecache)
 // - Role force pour le host
 // - Bots automatiques pour remplir la partie
 
-var _testDevMode = 'virus';
-var _testDevForceRole = null; // Quand non-null, le host se voit attribuer ce role au demarrage
+var _testDevForceRole = null;
 
-// === ROLES DISPONIBLES PAR MODE ===
 var TESTDEV_ROLES_VIRUS = ['virus', 'innocent', 'journaliste', 'fanatique', 'espion', 'cherif'];
-var TESTDEV_ROLES_CACHECACHE = ['chercheur', 'cache'];
 
 // === OUVRIR / FERMER ===
 function ouvrirTestDev() {
@@ -21,62 +17,37 @@ function ouvrirTestDev() {
   }
   var pop = document.getElementById('popup-test-dev');
   if (pop) pop.classList.add('visible');
-  _testDevMode = currentOnlineMode || 'virus';
-  testDevSetMode(_testDevMode);
+  testDevInitRoles();
 }
 function fermerTestDev() {
   var pop = document.getElementById('popup-test-dev');
   if (pop) pop.classList.remove('visible');
 }
 
-// === CHOIX DU MODE ===
-function testDevSetMode(mode) {
-  _testDevMode = mode;
-  // MAJ visuel boutons
-  var btnVirus = document.getElementById('testdev-mode-virus');
-  var btnCC = document.getElementById('testdev-mode-cc');
-  if (btnVirus && btnCC) {
-    if (mode === 'cachecache') {
-      btnCC.classList.add('active');
-      btnCC.style.background = '#3498db';
-      btnVirus.classList.remove('active');
-      btnVirus.style.background = 'rgba(231,76,60,0.2)';
-    } else {
-      btnVirus.classList.add('active');
-      btnVirus.style.background = '#e74c3c';
-      btnCC.classList.remove('active');
-      btnCC.style.background = 'rgba(52,152,219,0.2)';
-    }
-  }
-  // MAJ liste des roles selon le mode
+function testDevInitRoles() {
   var sel = document.getElementById('testdev-role');
   if (!sel) return;
   sel.innerHTML = '';
-  var roles = (mode === 'cachecache') ? TESTDEV_ROLES_CACHECACHE : TESTDEV_ROLES_VIRUS;
-  roles.forEach(function(r) {
+  TESTDEV_ROLES_VIRUS.forEach(function(r) {
     var opt = document.createElement('option');
     opt.value = r;
     opt.textContent = r.toUpperCase();
     sel.appendChild(opt);
   });
-  // MAJ valeur par defaut nb bots selon mode
   var inpBots = document.getElementById('testdev-bots');
   if (inpBots) {
-    inpBots.value = (mode === 'cachecache') ? 9 : 6;
-    inpBots.min = (mode === 'cachecache') ? 6 : 3;
+    inpBots.value = 6;
+    inpBots.min = 3;
   }
 }
 
 // === LANCER LA PARTIE DE TEST ===
 function lancerTestDev() {
-  var mode = _testDevMode;
   var role = document.getElementById('testdev-role').value;
   var nbBots = parseInt(document.getElementById('testdev-bots').value);
   if (isNaN(nbBots) || nbBots < 3) { showNotif('Min 3 bots', 'warn'); return; }
   if (nbBots > 29) nbBots = 29;
 
-  // Definir le mode online + le role force
-  currentOnlineMode = mode;
   _testDevForceRole = role;
 
   fermerTestDev();
@@ -85,7 +56,7 @@ function lancerTestDev() {
   var pseudo = getPseudo();
   if (!pseudo) { showNotif(t('connectionError'), 'error'); return; }
 
-  var nomPartie = '[TEST] ' + pseudo + ' (' + mode + ')';
+  var nomPartie = '[TEST] ' + pseudo;
   var maxJoueurs = nbBots + 1;
 
   showNotif('Creation de la partie test...', 'info');
@@ -102,7 +73,7 @@ function lancerTestDev() {
       langue: 'fr', couleur: '#8e44ad',
       phase: 'lobby', joueurs: 1, listeJoueurs: [pseudo],
       private: true,
-      gameMode: mode,
+      gameMode: 'virus',
       isTestDev: true,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });

@@ -45,7 +45,7 @@
       <div id="loading-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#e74c3c,#f39c12);transition:width 0.3s;box-shadow:0 0 10px rgba(231,76,60,0.6);"></div>
     </div>
     <div id="loading-text" style="font-size:13px;color:#ecf0f1;letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;width:100%;">Chargement...</div>
-    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.5.9 - ALPHA</div>
+    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.6.0 - ALPHA</div>
   </div>
 
   <!-- Emoji Picker -->
@@ -64,16 +64,6 @@
         <p style="font-size:12px;color:#bdc3c7;margin:0 0 16px;line-height:1.5;">
           Lance une partie de test avec des bots. Choisis ton mode, ton role et le nombre de bots. La partie est creee online comme normale, juste avec bots et role force.
         </p>
-
-        <div class="popup-section">
-          <label>MODE</label>
-          <div style="display:flex;gap:8px;margin-top:6px;">
-            <button class="testdev-mode-btn active" id="testdev-mode-virus" onclick="testDevSetMode('virus')"
-                    style="flex:1;background:#e74c3c;color:white;border:2px solid #e74c3c;border-radius:8px;padding:10px;font-weight:bold;cursor:pointer;">VIRUS</button>
-            <button class="testdev-mode-btn" id="testdev-mode-cc" onclick="testDevSetMode('cachecache')"
-                    style="flex:1;background:rgba(52,152,219,0.2);color:white;border:2px solid #3498db;border-radius:8px;padding:10px;font-weight:bold;cursor:pointer;">CACHE-CACHE</button>
-          </div>
-        </div>
 
         <div class="popup-section">
           <label>TON ROLE</label>
@@ -178,7 +168,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS 3.5.9 - ALPHA</span>
+    <span class="version">VIRUS 3.6.0 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -257,7 +247,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.5.9 - ALPHA</span>
+    <span class="version">VIRUS 3.6.0 - ALPHA</span>
     </div>
   </div>
 
@@ -360,7 +350,7 @@
             <button class="btn-sauver-pseudo" data-i18n="cancelBtn" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.5.9 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.6.0 - ALPHA</p>
         </div><!-- /params-tab-compte -->
 
         <!-- ONGLET BUG / SIGNALEMENT (tout le monde) -->
@@ -448,7 +438,7 @@
 
           <div class="popup-section" style="text-align:center;">
             <p style="font-size:13px;color:#bdc3c7;margin:8px 0;" data-i18n="creditsThanks">&#10084; Merci a tous les joueurs et testeurs !</p>
-            <p style="font-size:11px;color:#7f8c8d;margin:4px 0;">VIRUS 3.5.9 - ALPHA</p>
+            <p style="font-size:11px;color:#7f8c8d;margin:4px 0;">VIRUS 3.6.0 - ALPHA</p>
           </div>
         </div><!-- /params-tab-credits -->
 
@@ -700,7 +690,6 @@
           </select>
           <select class="salon-select" id="salon-sel-jeu">
             <option value="virus">&#129440; VIRUS</option>
-            <option value="cachecache" id="salon-sel-cachecache-opt" style="display:none;">&#128373; CACHE-CACHE</option>
           </select>
           <button class="salon-btn-jouer" onclick="salonJouer()">&#9658; JOUER</button>
         </div>
@@ -712,7 +701,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.5.9 - ALPHA</span>
+    <span class="version">VIRUS 3.6.0 - ALPHA</span>
   </div>
 
   <div id="menu-principal" class="screen bg-mall">
@@ -745,7 +734,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline" id="version-inline">3.5.9 - ALPHA</span>
+        <span class="version-inline" id="version-inline">3.6.0 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -935,19 +924,13 @@
     <span class="online-sous-titre">CHOISIS TON MODE</span>
 
     <div class="modes-grid">
-      <button class="mode-card mode-virus" onclick="selectionnerModeOnline('virus')">
+      <button class="mode-card mode-virus" onclick="showScreen('creer-partie')">
         <div class="mode-icon">&#129440;</div>
         <div class="mode-titre">VIRUS</div>
         <div class="mode-sous">Mode classique<br>Trouve le virus avant qu'il ne te contamine</div>
         <div class="mode-tag">DÉDUCTION</div>
       </button>
 
-      <button class="mode-card mode-cachecache" id="mode-cachecache-btn" onclick="selectionnerModeOnline('cachecache')" style="display:none;">
-        <div class="mode-icon">&#128373;</div>
-        <div class="mode-titre">CACHE-CACHE</div>
-        <div class="mode-sous">Transforme-toi en objet<br>Échappe aux chercheurs</div>
-        <div class="mode-tag">FURTIVITÉ</div>
-      </button>
     </div>
 
     <div class="online-extras">
@@ -965,49 +948,7 @@
       </button>
     </div>
 
-    <span class="version">VIRUS 3.5.9 - ALPHA</span>
-    </div>
-  </div>
-
-  <!-- ============================== -->
-  <!-- ECRAN 2b : MENU ONLINE PAR MODE (creer / trouver) -->
-  <!-- ============================== -->
-  <div id="menu-online-actions" class="screen bg-mall">
-    <div class="online-scroll">
-    <button class="btn-retour" onclick="retourDepuisMenuOnlineActions()" data-i18n="back">&#9664; RETOUR</button>
-
-    <h1 class="online-titre" id="moa-titre">VIRUS</h1>
-    <span class="online-sous-titre" data-i18n="online">ONLINE</span>
-
-    <div class="panneau-central">
-      <button class="btn btn-creer" onclick="showScreen('creer-partie')">
-        <div class="btn-icon">+</div>
-        <div class="btn-content">
-          <span class="btn-label" data-i18n="createGame">CREER UNE PARTIE</span>
-          <span class="btn-sub" data-i18n="inviteFriends">Invitez vos amis a rejoindre</span>
-        </div>
-      </button>
-
-      <div class="separateur-ou">
-        <div class="ligne"></div>
-        <div class="ou-cercle" data-i18n="or">OU</div>
-        <div class="ligne"></div>
-      </div>
-
-      <button class="btn btn-trouver" onclick="showScreen('liste-parties')">
-        <div class="btn-icon">&#128269;</div>
-        <div class="btn-content">
-          <span class="btn-label" data-i18n="findGame">TROUVER UNE PARTIE</span>
-          <span class="btn-sub" data-i18n="joinExisting">Rejoindre une partie existante</span>
-        </div>
-      </button>
-    </div>
-
-    <div class="info-bas" data-i18n="createDesc">
-      Creez votre propre partie et invitez vos amis, ou rejoignez une partie existante.
-    </div>
-
-    <span class="version">VIRUS 3.5.9 - ALPHA</span>
+    <span class="version">VIRUS 3.6.0 - ALPHA</span>
     </div>
   </div>
 
@@ -1016,7 +957,7 @@
   <!-- ============================== -->
   <div id="creer-partie" class="screen bg-mall">
     <div class="cp-scroll">
-    <button class="btn-retour" onclick="showScreen('menu-online-actions')" data-i18n="back">&#9664; RETOUR</button>
+    <button class="btn-retour" onclick="showScreen('menu-salon')" data-i18n="back">&#9664; RETOUR</button>
 
     <h1 class="online-titre">VIRUS</h1>
     <span class="online-sous-titre" data-i18n="createGame">CREER UNE PARTIE</span>
@@ -1112,7 +1053,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.5.9 - ALPHA</span>
+    <span class="version">VIRUS 3.6.0 - ALPHA</span>
     </div>
   </div>
 
@@ -1120,7 +1061,7 @@
   <!-- ECRAN 4 : LISTE DES PARTIES   -->
   <!-- ============================== -->
   <div id="liste-parties" class="screen bg-mall">
-    <button class="btn-retour" onclick="showScreen('menu-online-actions')" data-i18n="back">&#9664; RETOUR</button>
+    <button class="btn-retour" onclick="showScreen('menu-salon')" data-i18n="back">&#9664; RETOUR</button>
 
     <h1 class="online-titre">VIRUS</h1>
     <span class="online-sous-titre" data-i18n="findGame">TROUVER UNE PARTIE</span>
@@ -1158,7 +1099,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS 3.5.9 - ALPHA</span>
+    <span class="version">VIRUS 3.6.0 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -2342,7 +2283,6 @@
 <script src="js/replay.js?v=2"></script>
 <script src="js/emotes.js?v=7"></script>
 <script src="js/particles.js?v=1"></script>
-<script src="js/cachecache.js?v=4"></script>
 <script src="js/sfx.js?v=2"></script>
 <script src="js/featureFlags.js?v=5"></script>
 <script src="js/salon.js?v=12"></script>

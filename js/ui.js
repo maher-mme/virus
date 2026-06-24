@@ -129,40 +129,13 @@ function prechargerAssetsOffline() {
   fetchBatch();
 }
 
-// === MODE ONLINE SELECTIONNE (virus | cachecache) ===
+// === MODE ONLINE SELECTIONNE ===
 var currentOnlineMode = 'virus';
-
-// Retour depuis menu-online-actions : si cache-cache pas actif, on saute la selection de mode
-function retourDepuisMenuOnlineActions() {
-  var ccActive = (typeof isFeatureActive === 'function') && isFeatureActive('cachecache');
-  if (ccActive) {
-    showScreen('menu-online');
-  } else {
-    showScreen('menu-principal');
-  }
-}
-
-function selectionnerModeOnline(mode) {
-  currentOnlineMode = mode;
-  var titreEl = document.getElementById('moa-titre');
-  if (titreEl) {
-    if (mode === 'cachecache') {
-      titreEl.textContent = 'CACHE-CACHE';
-      titreEl.style.color = '#3498db';
-    } else {
-      titreEl.textContent = 'VIRUS';
-      titreEl.style.color = '';
-    }
-  }
-  showScreen('menu-online-actions');
-}
 
 // Adapter le formulaire creer-partie au mode actuel
 function adapterFormCreerPartie() {
-  var isCacheCache = currentOnlineMode === 'cachecache';
-  // Cacher les elements specifiques au mode VIRUS
   document.querySelectorAll('[data-virus-only]').forEach(function(el) {
-    el.style.display = isCacheCache ? 'none' : '';
+    el.style.display = '';
   });
   // Afficher la ligne MODE TEST uniquement pour les admins dev
   var rowTest = document.getElementById('cp-mode-test-row');
@@ -316,7 +289,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.5.9';
+var CURRENT_VERSION = '3.6.0';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
@@ -440,7 +413,6 @@ function forceHardReload() {
 var ROUTES = {
   '/': 'menu-principal',
   '/online/': 'menu-online',
-  '/online/mode/': 'menu-online-actions',
   '/offline/': 'config-horsline',
   '/shop/': 'boutique-skins',
   '/settings/': 'ecran-compte',
@@ -725,22 +697,9 @@ function showScreen(id, fromPopstate) {
     var btnPurge = document.getElementById('btn-purge-parties');
     if (btnPurge) btnPurge.style.display = isAdmin() ? 'flex' : 'none';
   }
-  // Adapter le form de creer-partie selon le mode (virus / cachecache)
+  // Adapter le form de creer-partie au mode actuel
   if (id === 'creer-partie') {
     adapterFormCreerPartie();
-  }
-  // Menu online : si le mode CACHE-CACHE n'est pas active (feature flag),
-  // bypass l'ecran de mode et aller direct au sous-menu VIRUS
-  if (id === 'menu-online') {
-    var ccActive = (typeof isFeatureActive === 'function') && isFeatureActive('cachecache');
-    if (!ccActive) {
-      currentOnlineMode = 'virus';
-      setTimeout(function() { showScreen('menu-online-actions'); }, 0);
-      return;
-    }
-    var btnCC = document.getElementById('mode-cachecache-btn');
-    if (btnCC) btnCC.style.display = '';
-    if (typeof majBoutonTestDev === 'function') majBoutonTestDev();
   }
 
   // Generer la boutique quand on l'ouvre
@@ -1943,16 +1902,10 @@ function afficherBanniereRole(role, coPlayers) {
     journaliste: '#3498db',
     fanatique: '#8e44ad',
     espion: '#9b59b6',
-    cherif: '#f39c12',
-    chercheur: '#e74c3c',
-    cache: '#3498db'
+    cherif: '#f39c12'
   };
   var couleur = couleurs[role] || '#27ae60';
-  // Nom du role : pour cache-cache on a pas de cle de traduction, on utilise un fallback
-  var nomRole;
-  if (role === 'chercheur') nomRole = 'CHERCHEUR';
-  else if (role === 'cache') nomRole = 'CACHE';
-  else nomRole = (typeof t === 'function') ? t('role' + role.charAt(0).toUpperCase() + role.slice(1)) : role.toUpperCase();
+  var nomRole = (typeof t === 'function') ? t('role' + role.charAt(0).toUpperCase() + role.slice(1)) : role.toUpperCase();
   var sousTitre = '';
   if (role === 'virus') sousTitre = 'Elimine tous les innocents';
   else if (role === 'innocent') sousTitre = 'Accomplis tes missions';
@@ -1960,8 +1913,6 @@ function afficherBanniereRole(role, coPlayers) {
   else if (role === 'fanatique') sousTitre = 'Fais-toi eliminer pour gagner';
   else if (role === 'espion') sousTitre = 'Choisis ton camp';
   else if (role === 'cherif') sousTitre = 'Abats les Virus avec tes balles';
-  else if (role === 'chercheur') sousTitre = 'Trouve tous les caches avant la fin du timer';
-  else if (role === 'cache') sousTitre = 'Transforme-toi en objet et evite les chercheurs';
 
   var avatarsHtml = '';
   if (coPlayers && coPlayers.length > 0) {

@@ -514,9 +514,6 @@ function lancerHorsLigne(nbBots, nbVirus, nbJournaliste, nbFanatique, nbEspion, 
   // Protection de 7 secondes au debut
   activerKillProtection();
 
-  // Decorations : desactivees en mode classique (reservees au mode cache-cache)
-  // if (typeof genererDecorations === 'function') genererDecorations();
-
   // Missions
   initMissions();
 
@@ -531,53 +528,6 @@ function lancerJeu() {
   // Mode en ligne : demarrer la partie (host assigne les roles)
   if (partieActuelleId && !modeHorsLigne) {
     if (!estHost) { showNotif(t('mjHostOnly'), 'warn'); return; }
-
-    var partyData = firebaseParties.find(function(p) { return p._id === partieActuelleId; });
-    var gameMode = partyData && partyData.gameMode ? partyData.gameMode : 'virus';
-
-    // === MODE CACHE-CACHE : distribution chercheur / cache ===
-    if (gameMode === 'cachecache') {
-      if (firebasePartyPlayers.length < 7) { showNotif('Il faut au moins 7 joueurs en cache-cache', 'warn'); return; }
-      var tousCC = firebasePartyPlayers.slice();
-      var nbCC = tousCC.length;
-      var nbChercheurs = Math.max(2, Math.ceil(nbCC / 3)); // 33% chercheurs, min 2
-      var rolesCC = [];
-      for (var c = 0; c < nbChercheurs; c++) rolesCC.push('chercheur');
-      while (rolesCC.length < nbCC) rolesCC.push('cache');
-      // Melange Fisher-Yates
-      for (var i = rolesCC.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var tmp = rolesCC[i]; rolesCC[i] = rolesCC[j]; rolesCC[j] = tmp;
-      }
-      // TEST DEV : forcer le role du host
-      if (typeof _testDevForceRole !== 'undefined' && _testDevForceRole) {
-        var hostIdx = tousCC.findIndex(function(p) { return p.playerId === monPlayerId; });
-        var swapIdx = rolesCC.indexOf(_testDevForceRole);
-        if (hostIdx >= 0 && swapIdx >= 0 && hostIdx !== swapIdx) {
-          var tmp2 = rolesCC[hostIdx]; rolesCC[hostIdx] = rolesCC[swapIdx]; rolesCC[swapIdx] = tmp2;
-        }
-        _testDevForceRole = null; // reset apres utilisation
-      }
-      var batchCC = db.batch();
-      tousCC.forEach(function(p, idx) {
-        if (p._docId) {
-          batchCC.update(db.collection('partyPlayers').doc(p._docId), {
-            role: rolesCC[idx], alive: true, x: 3800, y: 3050
-          });
-        }
-      });
-      batchCC.update(db.collection('parties').doc(partieActuelleId), {
-        phase: 'playing',
-        ccPhase: 'setup', // sous-phase cache-cache : setup → chasse
-        ccSetupEnd: Date.now() + 30000 // 30s pour se cacher
-      });
-      batchCC.commit().then(function() {
-        console.log('Partie cache-cache demarree : ' + nbChercheurs + ' chercheurs / ' + (nbCC - nbChercheurs) + ' caches');
-      }).catch(function(err) {
-        console.error('Erreur start cache-cache', err);
-      });
-      return;
-    }
 
     // === MODE VIRUS classique ===
     if (firebasePartyPlayers.length < 4) { showNotif(t('need4Players'), 'warn'); return; }
@@ -1394,8 +1344,6 @@ function gameLoop() {
 function updateJoueur() {
   var joueur = document.getElementById('joueur');
   if (!joueur) return;
-  // Cache-cache : contraindre les chercheurs a leur zone pendant le setup
-  if (typeof cacheCacheClampJoueur === 'function') cacheCacheClampJoueur();
   joueur.style.left = joueurX + 'px';
   joueur.style.top = joueurY + 'px';
 

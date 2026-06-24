@@ -1823,24 +1823,6 @@
   border: 1px solid rgba(255,255,255,0.3);
 }
 
-/* === Theme CACHE-CACHE (bleu mysterieux) === */
-.mode-cachecache {
-  background: radial-gradient(circle at bottom left, #5dade2 0%, #2980b9 40%, #1a3a8a 100%);
-  border: 3px solid #3498db;
-  box-shadow: 0 6px 25px rgba(52,152,219,0.5), inset 0 0 50px rgba(0,0,0,0.4);
-}
-.mode-cachecache:hover {
-  box-shadow: 0 12px 40px rgba(52,152,219,0.7), inset 0 0 50px rgba(0,0,0,0.4);
-}
-.mode-cachecache .mode-titre {
-  color: #fff;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.6), 0 0 25px #3498db, 0 0 50px #2980b9;
-}
-.mode-cachecache .mode-tag {
-  background: rgba(52,152,219,0.6);
-  border: 1px solid rgba(255,255,255,0.3);
-}
-
 /* Mobile : empile les 2 modes */
 @media (max-width: 700px) {
   .modes-grid {

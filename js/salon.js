@@ -54,13 +54,6 @@ function salonRafraichir() {
 
   // Avatar(s) : moi seul ou groupe d'amis
   salonRenderAvatars();
-
-  // Option CACHE-CACHE dans le selecteur de jeu : visible uniquement si flag en LIVE
-  var ccOpt = document.getElementById('salon-sel-cachecache-opt');
-  if (ccOpt) {
-    var ccLive = (typeof FEATURE_FLAGS !== 'undefined') && FEATURE_FLAGS.cachecache === 'live';
-    ccOpt.style.display = ccLive ? '' : 'none';
-  }
 }
 
 // === MISE A JOUR DU NIVEAU (avec retry) ===
@@ -358,7 +351,7 @@ function salonAutoCreerPartie(modeJeu) {
   }
   var skin = (typeof getSkinFichier === 'function' && typeof getSkin === 'function')
     ? getSkinFichier(getSkin()) : 'skin/gratuit/skin-de-base-garcon.svg';
-  var maxJoueurs = (modeJeu === 'cachecache') ? 10 : 8;
+  var maxJoueurs = 8;
   var nomPartie = 'Partie de ' + pseudo;
 
   db.collection('players').doc(monPlayerId).set({

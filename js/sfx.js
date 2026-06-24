@@ -72,25 +72,10 @@ function playSfxReunion() {
   _sfxSweep(ctx, 220, 80, t + d * 4.5, 0.55, 'sawtooth', 0.22);
 }
 
-// === SON COUINEMENT (cache-cache anti-camp) ===
-// Petit chirp aigu type "tsi-tsi" qui revele la position du cache
-function playSfxCouinement() {
-  var ctx = _getSfxCtx();
-  if (!ctx) return;
-  var t = ctx.currentTime;
-  // 1er chirp : sweep rapide aigu
-  _sfxSweep(ctx, 1500, 2300, t,        0.10, 'square', 0.18);
-  // pause 0.05s
-  // 2e chirp : un poil plus aigu pour le "tsi-tsi"
-  _sfxSweep(ctx, 1700, 2500, t + 0.15, 0.12, 'square', 0.18);
-}
-
 // === DISPATCHER GENERIQUE ===
 function playSfx(name) {
   switch (name) {
     case 'reunion': playSfxReunion(); break;
-    case 'couinement': playSfxCouinement(); break;
-    // Autres sons a ajouter ici plus tard (kill, mission, victoire...)
     default: console.warn('Sfx inconnu :', name);
   }
 }

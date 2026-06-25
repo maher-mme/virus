@@ -332,13 +332,15 @@ function salonQuickPlay(modeJeu) {
       if (typeof showNotif === 'function') showNotif('Partie trouvee, on te connecte...', 'info');
       if (typeof rejoindrePartie === 'function') rejoindrePartie(partie.id);
     } else {
-      // Aucune partie dispo → en creer une automatiquement (toi = host)
-      if (typeof showNotif === 'function') showNotif('Aucune partie, creation en cours...', 'info');
-      salonAutoCreerPartie(modeJeu);
+      // Aucune partie dispo → ouvrir l'ecran de creation (host = toi)
+      if (typeof showNotif === 'function') showNotif('Aucune partie dispo — cree la tienne', 'info');
+      currentOnlineMode = modeJeu;
+      showScreen('creer-partie');
     }
   }).catch(function() {
-    if (typeof showNotif === 'function') showNotif('Erreur recherche, creation en cours...', 'warn');
-    salonAutoCreerPartie(modeJeu);
+    if (typeof showNotif === 'function') showNotif('Erreur recherche — cree une partie', 'warn');
+    currentOnlineMode = modeJeu;
+    showScreen('creer-partie');
   });
 }
 

@@ -289,7 +289,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.6.0';
+var CURRENT_VERSION = '3.6.1';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 

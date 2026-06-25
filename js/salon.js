@@ -291,7 +291,7 @@ setInterval(salonAutoUpdateActiveTab, 250);
 // === LANCER UNE PARTIE DEPUIS LE SALON ===
 function salonJouer() {
   var modeOnline = document.getElementById('salon-sel-online').value;
-  var modeJeu = document.getElementById('salon-sel-jeu').value;
+  var modeJeu = 'virus';
 
   if (modeOnline === 'hors-ligne') {
     // Hors ligne : aller a l'ecran config

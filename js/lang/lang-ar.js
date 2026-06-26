@@ -835,4 +835,5 @@ TR['ar'] = {
     reportReasonPseudo: 'اسم مستعار غير لائق',
     totalCosmetics: '{0} عناصر تجميلية ({1} سكين + {2} حيوانات + {3} موسيقى)',
     monthJan: 'ينا', monthFeb: 'فبر', monthMar: 'مار', monthApr: 'أبر', monthMay: 'ماي', monthJun: 'يون', monthJul: 'يول', monthAug: 'أغس', monthSep: 'سبت', monthOct: 'أكت', monthNov: 'نوف', monthDec: 'ديس'
+  tabPlay: 'العب'
   };

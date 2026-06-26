@@ -835,4 +835,5 @@ TR['it'] = {
     mobileJoystick: 'JOYSTICK MOBILE',
     mobileJoystickDesc: 'Attivato: il joystick virtuale appare al tocco. Disattivato: tocca dove vuoi muoverti.',
     pseudoInappropriate: 'Questo soprannome contiene una parola inappropriata. Scegline un altro.'
+  tabPlay: 'GIOCA'
   };

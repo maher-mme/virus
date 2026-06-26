@@ -835,4 +835,5 @@ TR['tr'] = {
     mobileJoystick: 'MOBİL JOYSTICK',
     mobileJoystickDesc: 'Etkin: dokunmada sanal joystick belirir. Devre dışı: hareket etmek istediğin yere dokun.',
     pseudoInappropriate: 'Bu takma ad uygunsuz bir kelime içeriyor. Başka birini seç.'
+  tabPlay: 'OYNA'
   };

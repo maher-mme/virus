@@ -835,4 +835,5 @@ TR['en'] = {
     mobileJoystick: 'MOBILE JOYSTICK',
     mobileJoystickDesc: 'Enabled: virtual joystick appears on touch. Disabled: tap where you want to move.',
     pseudoInappropriate: 'This nickname contains an inappropriate word. Choose another one.'
+  tabPlay: 'PLAY'
   };

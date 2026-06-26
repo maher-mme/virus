@@ -95,6 +95,29 @@ function filtrerLangues(input) {
   }
 }
 
+// === Generer les boutons de langue dans chaque conteneur [data-lang-container] ===
+// Le conteneur indique le prefixe d'ID a utiliser (ex: "lang-" → "lang-fr", "lang-en"...)
+// et l'action onclick a appeler (ex: "setLanguage" ou "setLangueCompte").
+function genererBoutonsLangues() {
+  var conteneurs = document.querySelectorAll('[data-lang-container]');
+  conteneurs.forEach(function(conteneur) {
+    var prefix = conteneur.getAttribute('data-lang-container');
+    var action = conteneur.getAttribute('data-lang-action') || 'setLanguage';
+    if (conteneur.dataset.populated === '1') return;
+    conteneur.innerHTML = '';
+    Object.keys(LANGUES_SUPPORTEES).forEach(function(code) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'lang-btn' + (code === currentLang ? ' active' : '');
+      btn.id = prefix + code;
+      btn.textContent = LANGUES_SUPPORTEES[code].nom;
+      btn.setAttribute('onclick', action + "('" + code + "')");
+      conteneur.appendChild(btn);
+    });
+    conteneur.dataset.populated = '1';
+  });
+}
+
 // === Changer la langue (sauvegarde + re-traduction) ===
 function setLanguage(lang) {
   if (!LANGUES_SUPPORTEES[lang]) lang = 'en';
@@ -161,6 +184,7 @@ function translatePage() {
 (function() {
   document.documentElement.dir = LANGUES_SUPPORTEES[currentLang].dir || 'ltr';
   function appliquerInit() {
+    genererBoutonsLangues();
     document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.remove('active'); });
     ['lang-', 'compte-lang-', 'cp-lang-'].forEach(function(prefix) {
       var btn = document.getElementById(prefix + currentLang);

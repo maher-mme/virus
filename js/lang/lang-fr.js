@@ -833,4 +833,5 @@ TR['fr'] = {
     reportBannedLogin: 'Compte banni pour encore {0} minutes ({1})',
     reportReasonPseudo: 'pseudo inapproprie',
     reportReasonChat: 'messages toxiques'
+  tabPlay: 'JOUER'
   };

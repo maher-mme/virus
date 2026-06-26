@@ -45,7 +45,7 @@
       <div id="loading-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#e74c3c,#f39c12);transition:width 0.3s;box-shadow:0 0 10px rgba(231,76,60,0.6);"></div>
     </div>
     <div id="loading-text" style="font-size:13px;color:#ecf0f1;letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;width:100%;">Chargement...</div>
-    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.6.3 - ALPHA</div>
+    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.6.4 - ALPHA</div>
   </div>
 
   <!-- Emoji Picker -->
@@ -152,14 +152,7 @@
         </div>
         <div class="compte-champ">
           <label>LANGUE / LANGUAGE</label>
-          <div class="lang-selector" style="margin-top:4px;">
-            <button type="button" class="lang-btn active" id="compte-lang-fr" onclick="setLangueCompte('fr')">Francais</button>
-            <button type="button" class="lang-btn" id="compte-lang-en" onclick="setLangueCompte('en')">English</button>
-            <button type="button" class="lang-btn" id="compte-lang-es" onclick="setLangueCompte('es')">Espanol</button>
-            <button type="button" class="lang-btn" id="compte-lang-ja" onclick="setLangueCompte('ja')">日本語</button>
-            <button type="button" class="lang-btn" id="compte-lang-de" onclick="setLangueCompte('de')">Deutsch</button>
-            <button type="button" class="lang-btn" id="compte-lang-ar" onclick="setLangueCompte('ar')">العربية</button>
-          </div>
+          <div class="lang-selector" style="margin-top:4px;" data-lang-container="compte-lang-" data-lang-action="setLangueCompte"></div>
         </div>
         <button type="submit" class="btn-creer-compte" id="btn-creer-compte" data-i18n="play">C'EST PARTI !</button>
         <button type="submit" class="btn-creer-compte" id="btn-connecter" style="display:none; background:linear-gradient(180deg,#3498db,#2980b9); border-color:#5dade2;" data-i18n="login">SE CONNECTER</button>
@@ -168,7 +161,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS 3.6.3 - ALPHA</span>
+    <span class="version">VIRUS 3.6.4 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -247,7 +240,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.3 - ALPHA</span>
+    <span class="version">VIRUS 3.6.4 - ALPHA</span>
     </div>
   </div>
 
@@ -288,14 +281,7 @@
         </div>
         <div class="popup-section">
           <label>LANGUE / LANGUAGE</label>
-          <div class="lang-selector">
-            <button class="lang-btn active" id="lang-fr" onclick="setLanguage('fr')">Francais</button>
-            <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">English</button>
-            <button class="lang-btn" id="lang-es" onclick="setLanguage('es')">Espanol</button>
-            <button class="lang-btn" id="lang-ja" onclick="setLanguage('ja')">日本語</button>
-            <button class="lang-btn" id="lang-de" onclick="setLanguage('de')">Deutsch</button>
-            <button class="lang-btn" id="lang-ar" onclick="setLanguage('ar')">العربية</button>
-          </div>
+          <div class="lang-selector" data-lang-container="lang-" data-lang-action="setLanguage"></div>
         </div>
         <div class="popup-section">
           <label data-i18n="accessibility">ACCESSIBILITE</label>
@@ -350,7 +336,7 @@
             <button class="btn-sauver-pseudo" data-i18n="cancelBtn" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.6.3 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.6.4 - ALPHA</p>
         </div><!-- /params-tab-compte -->
 
         <!-- ONGLET BUG / SIGNALEMENT (tout le monde) -->
@@ -438,7 +424,7 @@
 
           <div class="popup-section" style="text-align:center;">
             <p style="font-size:13px;color:#bdc3c7;margin:8px 0;" data-i18n="creditsThanks">&#10084; Merci a tous les joueurs et testeurs !</p>
-            <p style="font-size:11px;color:#7f8c8d;margin:4px 0;">VIRUS 3.6.3 - ALPHA</p>
+            <p style="font-size:11px;color:#7f8c8d;margin:4px 0;">VIRUS 3.6.4 - ALPHA</p>
           </div>
         </div><!-- /params-tab-credits -->
 
@@ -661,14 +647,14 @@
       <button class="salon-burger-btn" onclick="toggleSalonBurger()" title="Menu">&#9776;</button>
     </div>
     <div class="salon-tabs">
-      <button class="salon-tab active" data-tab="jouer" onclick="salonSwitchTab('jouer')">&#127918; JOUER</button>
-      <button class="salon-tab" data-tab="casier" onclick="salonSwitchTab('casier')">&#128717; CASIER</button>
-      <button class="salon-tab" data-tab="boutique" onclick="salonSwitchTab('boutique')">&#128722; BOUTIQUE</button>
-      <button class="salon-tab" data-tab="passe" onclick="salonSwitchTab('passe')">&#127942; PASSE</button>
-      <button class="salon-tab" data-tab="quetes" onclick="salonSwitchTab('quetes')">&#128203; QUETES</button>
-      <button class="salon-tab" data-tab="classement" onclick="salonSwitchTab('classement')">&#127942; CLASSEMENT</button>
-      <button class="salon-tab" data-tab="profil" onclick="salonSwitchTab('profil')">&#128100; PROFIL</button>
-      <button class="salon-tab" data-tab="params" onclick="salonSwitchTab('params')">&#9881; PARAMETRE</button>
+      <button class="salon-tab active" data-tab="jouer" onclick="salonSwitchTab('jouer')">&#127918; <span data-i18n="tabPlay">JOUER</span></button>
+      <button class="salon-tab" data-tab="casier" onclick="salonSwitchTab('casier')">&#128717; <span data-i18n="locker">CASIER</span></button>
+      <button class="salon-tab" data-tab="boutique" onclick="salonSwitchTab('boutique')">&#128722; <span data-i18n="shop">BOUTIQUE</span></button>
+      <button class="salon-tab" data-tab="passe" onclick="salonSwitchTab('passe')">&#127942; <span data-i18n="passBtn">PASSE</span></button>
+      <button class="salon-tab" data-tab="quetes" onclick="salonSwitchTab('quetes')">&#128203; <span data-i18n="questsBtn">QUETES</span></button>
+      <button class="salon-tab" data-tab="classement" onclick="salonSwitchTab('classement')">&#127942; <span data-i18n="leaderboard">CLASSEMENT</span></button>
+      <button class="salon-tab" data-tab="profil" onclick="salonSwitchTab('profil')">&#128100; <span data-i18n="profile">PROFIL</span></button>
+      <button class="salon-tab" data-tab="params" onclick="salonSwitchTab('params')">&#9881; <span data-i18n="settings">PARAMETRE</span></button>
     </div>
   </div>
 
@@ -698,7 +684,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.3 - ALPHA</span>
+    <span class="version">VIRUS 3.6.4 - ALPHA</span>
   </div>
 
   <div id="menu-principal" class="screen bg-mall">
@@ -731,7 +717,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline" id="version-inline">3.6.3 - ALPHA</span>
+        <span class="version-inline" id="version-inline">3.6.4 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -945,7 +931,7 @@
       </button>
     </div>
 
-    <span class="version">VIRUS 3.6.3 - ALPHA</span>
+    <span class="version">VIRUS 3.6.4 - ALPHA</span>
     </div>
   </div>
 
@@ -1050,7 +1036,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.3 - ALPHA</span>
+    <span class="version">VIRUS 3.6.4 - ALPHA</span>
     </div>
   </div>
 
@@ -1096,7 +1082,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS 3.6.3 - ALPHA</span>
+    <span class="version">VIRUS 3.6.4 - ALPHA</span>
   </div>
 
   <!-- ============================== -->

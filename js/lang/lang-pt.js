@@ -187,7 +187,7 @@ TR['pt'] = {
     creditsClickProfile: '▶ Clique para ver o perfil',
     creditsCode: 'CÓDIGO',
     creditsMusic: 'MÚSICA',
-    creditsMusicRole: 'Composições originais (Multiverse, Flute Flailed, Enough Silence, I\'m... INFECTED!)',
+    creditsMusicRole: 'Composições originais (Multiverse, Flute Flailed, Enough Silence, I\'m... INFECTED!, Kyoto)',
     creditsSfx: 'EFEITOS SONOROS',
     creditsSfxRole: 'Sons gerados em tempo real via Web Audio API',
     creditsBackend: 'BACKEND E INFRAESTRUTURA',
@@ -829,5 +829,10 @@ TR['pt'] = {
     reportNoPlayers: 'Nenhum jogador para reportar.',
     reportBannedLogin: 'Conta banida por mais {0} minutos ({1})',
     reportReasonPseudo: 'apelido inadequado',
-    reportReasonChat: 'mensagens tóxicas'
+    reportReasonChat: 'mensagens tóxicas',
+    chooseFrame: 'Escolha uma moldura para sua foto de perfil!',
+    frameTab: 'MOLDURA',
+    mobileJoystick: 'JOYSTICK MÓVEL',
+    mobileJoystickDesc: 'Ativado: joystick virtual aparece ao tocar. Desativado: toque onde quiser se mover.',
+    pseudoInappropriate: 'Este apelido contém uma palavra inadequada. Escolha outro.'
   };

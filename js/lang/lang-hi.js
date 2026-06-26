@@ -187,7 +187,7 @@ TR['hi'] = {
     creditsClickProfile: '▶ प्रोफ़ाइल देखने के लिए क्लिक करें',
     creditsCode: 'कोड',
     creditsMusic: 'संगीत',
-    creditsMusicRole: 'मूल रचनाएं (Multiverse, Flute Flailed, Enough Silence, I\'m... INFECTED!)',
+    creditsMusicRole: 'मूल रचनाएं (Multiverse, Flute Flailed, Enough Silence, I\'m... INFECTED!, Kyoto)',
     creditsSfx: 'ध्वनि प्रभाव',
     creditsSfxRole: 'Web Audio API के माध्यम से वास्तविक समय में उत्पन्न ध्वनियां',
     creditsBackend: 'बैकएंड और बुनियादी ढांचा',
@@ -829,5 +829,10 @@ TR['hi'] = {
     reportNoPlayers: 'रिपोर्ट करने के लिए कोई खिलाड़ी नहीं।',
     reportBannedLogin: 'खाता {0} और मिनट के लिए प्रतिबंधित ({1})',
     reportReasonPseudo: 'अनुचित उपनाम',
-    reportReasonChat: 'विषाक्त संदेश'
+    reportReasonChat: 'विषाक्त संदेश',
+    chooseFrame: 'अपनी प्रोफ़ाइल फ़ोटो के लिए एक फ़्रेम चुनें!',
+    frameTab: 'फ़्रेम',
+    mobileJoystick: 'मोबाइल जॉयस्टिक',
+    mobileJoystickDesc: 'सक्षम: छूने पर वर्चुअल जॉयस्टिक दिखाई देता है। अक्षम: जहाँ जाना हो वहाँ टैप करें।',
+    pseudoInappropriate: 'इस उपनाम में अनुचित शब्द है। दूसरा चुनें।'
   };

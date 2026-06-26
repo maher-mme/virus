@@ -187,7 +187,7 @@ TR['tr'] = {
     creditsClickProfile: '▶ Profili görüntülemek için tıkla',
     creditsCode: 'KOD',
     creditsMusic: 'MÜZİK',
-    creditsMusicRole: 'Orijinal besteler (Multiverse, Flute Flailed, Enough Silence, I\'m... INFECTED!)',
+    creditsMusicRole: 'Orijinal besteler (Multiverse, Flute Flailed, Enough Silence, I\'m... INFECTED!, Kyoto)',
     creditsSfx: 'SES EFEKTLERİ',
     creditsSfxRole: 'Web Audio API ile gerçek zamanlı üretilen sesler',
     creditsBackend: 'BACKEND VE ALTYAPI',
@@ -829,5 +829,10 @@ TR['tr'] = {
     reportNoPlayers: 'Bildirilecek oyuncu yok.',
     reportBannedLogin: 'Hesap {0} dakika daha yasaklı ({1})',
     reportReasonPseudo: 'uygunsuz takma ad',
-    reportReasonChat: 'toksik mesajlar'
+    reportReasonChat: 'toksik mesajlar',
+    chooseFrame: 'Profil fotoğrafın için bir çerçeve seç!',
+    frameTab: 'ÇERÇEVE',
+    mobileJoystick: 'MOBİL JOYSTICK',
+    mobileJoystickDesc: 'Etkin: dokunmada sanal joystick belirir. Devre dışı: hareket etmek istediğin yere dokun.',
+    pseudoInappropriate: 'Bu takma ad uygunsuz bir kelime içeriyor. Başka birini seç.'
   };

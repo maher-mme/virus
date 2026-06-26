@@ -189,7 +189,7 @@ TR['fr'] = {
     creditsClickProfile: '▶ Cliquer pour voir le profil',
     creditsCode: 'CODE',
     creditsMusic: 'MUSIQUE',
-    creditsMusicRole: 'Compositions originales (Multiverse, Flute Flailed, Enough Silence, I\'m... INFECTED!)',
+    creditsMusicRole: 'Compositions originales (Multiverse, Flute Flailed, Enough Silence, I\'m... INFECTED!, Kyoto)',
     creditsSfx: 'EFFETS SONORES',
     creditsSfxRole: 'Sons generes en temps reel via Web Audio API',
     creditsBackend: 'BACKEND & INFRASTRUCTURE',

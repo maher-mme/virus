@@ -187,7 +187,7 @@ TR['en'] = {
     creditsClickProfile: '▶ Click to view profile',
     creditsCode: 'CODE',
     creditsMusic: 'MUSIC',
-    creditsMusicRole: 'Original compositions (Multiverse, Flute Flailed, Enough Silence, I\'m... INFECTED!)',
+    creditsMusicRole: 'Original compositions (Multiverse, Flute Flailed, Enough Silence, I\'m... INFECTED!, Kyoto)',
     creditsSfx: 'SOUND EFFECTS',
     creditsSfxRole: 'Sounds generated in real-time via Web Audio API',
     creditsBackend: 'BACKEND & INFRASTRUCTURE',
@@ -829,5 +829,10 @@ TR['en'] = {
     reportNoPlayers: 'No players to report.',
     reportBannedLogin: 'Account banned for {0} more minutes ({1})',
     reportReasonPseudo: 'inappropriate nickname',
-    reportReasonChat: 'toxic messages'
+    reportReasonChat: 'toxic messages',
+    chooseFrame: 'Choose a frame for your profile picture!',
+    frameTab: 'FRAME',
+    mobileJoystick: 'MOBILE JOYSTICK',
+    mobileJoystickDesc: 'Enabled: virtual joystick appears on touch. Disabled: tap where you want to move.',
+    pseudoInappropriate: 'This nickname contains an inappropriate word. Choose another one.'
   };

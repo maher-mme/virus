@@ -187,7 +187,7 @@ TR['zh'] = {
     creditsClickProfile: '▶ 点击查看个人资料',
     creditsCode: '代码',
     creditsMusic: '音乐',
-    creditsMusicRole: '原创作品(Multiverse、Flute Flailed、Enough Silence、I\'m... INFECTED!)',
+    creditsMusicRole: '原创作品(Multiverse、Flute Flailed、Enough Silence、I\'m... INFECTED!、Kyoto)',
     creditsSfx: '音效',
     creditsSfxRole: '通过Web Audio API实时生成的声音',
     creditsBackend: '后端与基础设施',
@@ -829,5 +829,10 @@ TR['zh'] = {
     reportNoPlayers: '没有可举报的玩家。',
     reportBannedLogin: '账号被封禁 {0} 分钟({1})',
     reportReasonPseudo: '不当昵称',
-    reportReasonChat: '有毒消息'
+    reportReasonChat: '有毒消息',
+    chooseFrame: '为你的个人资料照片选择一个相框！',
+    frameTab: '相框',
+    mobileJoystick: '移动端摇杆',
+    mobileJoystickDesc: '启用：触摸时出现虚拟摇杆。禁用：点击你想移动到的位置。',
+    pseudoInappropriate: '此昵称包含不当词语，请另选一个。'
   };

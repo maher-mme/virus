@@ -187,7 +187,7 @@ TR['ru'] = {
     creditsClickProfile: '▶ Нажмите, чтобы увидеть профиль',
     creditsCode: 'КОД',
     creditsMusic: 'МУЗЫКА',
-    creditsMusicRole: 'Оригинальные композиции (Multiverse, Flute Flailed, Enough Silence, I\'m... INFECTED!)',
+    creditsMusicRole: 'Оригинальные композиции (Multiverse, Flute Flailed, Enough Silence, I\'m... INFECTED!, Kyoto)',
     creditsSfx: 'ЗВУКОВЫЕ ЭФФЕКТЫ',
     creditsSfxRole: 'Звуки, генерируемые в реальном времени через Web Audio API',
     creditsBackend: 'БЭКЕНД И ИНФРАСТРУКТУРА',
@@ -829,5 +829,10 @@ TR['ru'] = {
     reportNoPlayers: 'Нет игроков для жалобы.',
     reportBannedLogin: 'Аккаунт забанен ещё на {0} минут ({1})',
     reportReasonPseudo: 'неподходящий никнейм',
-    reportReasonChat: 'токсичные сообщения'
+    reportReasonChat: 'токсичные сообщения',
+    chooseFrame: 'Выбери рамку для своего фото профиля!',
+    frameTab: 'РАМКА',
+    mobileJoystick: 'МОБИЛЬНЫЙ ДЖОЙСТИК',
+    mobileJoystickDesc: 'Включено: виртуальный джойстик появляется при касании. Выключено: коснись места, куда хочешь идти.',
+    pseudoInappropriate: 'Этот никнейм содержит недопустимое слово. Выбери другой.'
   };

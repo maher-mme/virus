@@ -187,7 +187,7 @@ TR['ko'] = {
     creditsClickProfile: '▶ 프로필 보기를 클릭하세요',
     creditsCode: '코드',
     creditsMusic: '음악',
-    creditsMusicRole: '오리지널 작곡 (Multiverse, Flute Flailed, Enough Silence, I\'m... INFECTED!)',
+    creditsMusicRole: '오리지널 작곡 (Multiverse, Flute Flailed, Enough Silence, I\'m... INFECTED!, Kyoto)',
     creditsSfx: '효과음',
     creditsSfxRole: 'Web Audio API를 통해 실시간 생성된 사운드',
     creditsBackend: '백엔드 및 인프라',
@@ -829,5 +829,10 @@ TR['ko'] = {
     reportNoPlayers: '신고할 플레이어가 없습니다.',
     reportBannedLogin: '계정이 {0}분 동안 더 차단됨 ({1})',
     reportReasonPseudo: '부적절한 닉네임',
-    reportReasonChat: '독성 메시지'
+    reportReasonChat: '독성 메시지',
+    chooseFrame: '프로필 사진 프레임을 선택하세요!',
+    frameTab: '프레임',
+    mobileJoystick: '모바일 조이스틱',
+    mobileJoystickDesc: '활성화: 터치하면 가상 조이스틱이 나타납니다. 비활성화: 이동하려는 위치를 탭하세요.',
+    pseudoInappropriate: '이 닉네임에 부적절한 단어가 포함되어 있습니다. 다른 닉네임을 선택하세요.'
   };

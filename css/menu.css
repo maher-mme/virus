@@ -1998,21 +1998,17 @@ body.salon-mode #panel-amis {
 /* Zone principale (scrollable verticale, JOUER en haut + hub en dessous) */
 .salon-main {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  padding: 20px 0 0;
+  padding: 32px 20px 0;
   position: relative;
 }
 
-/* Wrapper de la vue JOUER : garde l'ancien centrage horizontal */
-.salon-jouer-view {
-  padding: 0 20px;
-}
-
-/* Vue JOUER */
+/* Vue JOUER : centree horizontalement avec margin auto + max-width */
 .salon-jouer-view {
   display: flex;
   align-items: center;
@@ -2020,6 +2016,7 @@ body.salon-mode #panel-amis {
   gap: 60px;
   width: 100%;
   max-width: 1000px;
+  margin: 0 auto;
   flex-wrap: wrap;
 }
 .salon-jouer-selectors {
@@ -2462,5 +2459,10 @@ div.salon-hub-card-img {
 }
 .salon-hub-card-disabled .salon-hub-card-lock {
   display: flex;
+}
+
+/* Cacher la card CREER sur telephones (mais visible sur tablette / iPad / PC) */
+@media (max-width: 600px) {
+  #salon-hub-card-creer { display: none; }
 }
 

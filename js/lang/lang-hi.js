@@ -834,6 +834,6 @@ TR['hi'] = {
     frameTab: 'फ़्रेम',
     mobileJoystick: 'मोबाइल जॉयस्टिक',
     mobileJoystickDesc: 'सक्षम: छूने पर वर्चुअल जॉयस्टिक दिखाई देता है। अक्षम: जहाँ जाना हो वहाँ टैप करें।',
-    pseudoInappropriate: 'इस उपनाम में अनुचित शब्द है। दूसरा चुनें।'
-  tabPlay: 'खेलें'
+    pseudoInappropriate: 'इस उपनाम में अनुचित शब्द है। दूसरा चुनें।',
+    tabPlay: 'खेलें'
   };

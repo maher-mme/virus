@@ -834,6 +834,6 @@ TR['es'] = {
     reportReasonChat: 'mensajes tóxicos',
     reportReasonPseudo: 'apodo inapropiado',
     totalCosmetics: '{0} cosméticos ({1} skins + {2} pets + {3} músicas)',
-    monthJan: 'Ene', monthFeb: 'Feb', monthMar: 'Mar', monthApr: 'Abr', monthMay: 'May', monthJun: 'Jun', monthJul: 'Jul', monthAug: 'Ago', monthSep: 'Sep', monthOct: 'Oct', monthNov: 'Nov', monthDec: 'Dic'
-  tabPlay: 'JUGAR'
+    monthJan: 'Ene', monthFeb: 'Feb', monthMar: 'Mar', monthApr: 'Abr', monthMay: 'May', monthJun: 'Jun', monthJul: 'Jul', monthAug: 'Ago', monthSep: 'Sep', monthOct: 'Oct', monthNov: 'Nov', monthDec: 'Dic',
+    tabPlay: 'JUGAR'
   };

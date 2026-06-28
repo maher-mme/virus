@@ -51,7 +51,7 @@ function chargerLangue(lang, callback) {
     return;
   }
   var script = document.createElement('script');
-  script.src = 'js/lang/lang-' + lang + '.js?v=1';
+  script.src = 'js/lang/lang-' + lang + '.js?v=2';
   script.onload = function() {
     _langsChargees[lang] = true;
     if (callback) callback();

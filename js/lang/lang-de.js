@@ -834,6 +834,6 @@ TR['de'] = {
     reportReasonChat: 'toxische Nachrichten',
     reportReasonPseudo: 'unangemessener Nickname',
     totalCosmetics: '{0} Kosmetika ({1} Skins + {2} Pets + {3} Musiken)',
-    monthJan: 'Jan', monthFeb: 'Feb', monthMar: 'Mär', monthApr: 'Apr', monthMay: 'Mai', monthJun: 'Jun', monthJul: 'Jul', monthAug: 'Aug', monthSep: 'Sep', monthOct: 'Okt', monthNov: 'Nov', monthDec: 'Dez'
-  tabPlay: 'SPIELEN'
+    monthJan: 'Jan', monthFeb: 'Feb', monthMar: 'Mär', monthApr: 'Apr', monthMay: 'Mai', monthJun: 'Jun', monthJul: 'Jul', monthAug: 'Aug', monthSep: 'Sep', monthOct: 'Okt', monthNov: 'Nov', monthDec: 'Dez',
+    tabPlay: 'SPIELEN'
   };

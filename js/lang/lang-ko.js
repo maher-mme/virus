@@ -834,6 +834,6 @@ TR['ko'] = {
     frameTab: '프레임',
     mobileJoystick: '모바일 조이스틱',
     mobileJoystickDesc: '활성화: 터치하면 가상 조이스틱이 나타납니다. 비활성화: 이동하려는 위치를 탭하세요.',
-    pseudoInappropriate: '이 닉네임에 부적절한 단어가 포함되어 있습니다. 다른 닉네임을 선택하세요.'
-  tabPlay: '플레이'
+    pseudoInappropriate: '이 닉네임에 부적절한 단어가 포함되어 있습니다. 다른 닉네임을 선택하세요.',
+    tabPlay: '플레이'
   };

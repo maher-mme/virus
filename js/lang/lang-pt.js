@@ -834,6 +834,6 @@ TR['pt'] = {
     frameTab: 'MOLDURA',
     mobileJoystick: 'JOYSTICK MÓVEL',
     mobileJoystickDesc: 'Ativado: joystick virtual aparece ao tocar. Desativado: toque onde quiser se mover.',
-    pseudoInappropriate: 'Este apelido contém uma palavra inadequada. Escolha outro.'
-  tabPlay: 'JOGAR'
+    pseudoInappropriate: 'Este apelido contém uma palavra inadequada. Escolha outro.',
+    tabPlay: 'JOGAR'
   };

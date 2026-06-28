@@ -834,6 +834,6 @@ TR['zh'] = {
     frameTab: '相框',
     mobileJoystick: '移动端摇杆',
     mobileJoystickDesc: '启用：触摸时出现虚拟摇杆。禁用：点击你想移动到的位置。',
-    pseudoInappropriate: '此昵称包含不当词语，请另选一个。'
-  tabPlay: '游玩'
+    pseudoInappropriate: '此昵称包含不当词语，请另选一个。',
+    tabPlay: '游玩'
   };

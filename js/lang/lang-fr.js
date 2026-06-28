@@ -832,6 +832,6 @@ TR['fr'] = {
     reportNoPlayers: 'Aucun joueur a signaler.',
     reportBannedLogin: 'Compte banni pour encore {0} minutes ({1})',
     reportReasonPseudo: 'pseudo inapproprie',
-    reportReasonChat: 'messages toxiques'
-  tabPlay: 'JOUER'
+    reportReasonChat: 'messages toxiques',
+    tabPlay: 'JOUER'
   };

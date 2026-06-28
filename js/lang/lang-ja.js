@@ -834,6 +834,6 @@ TR['ja'] = {
     reportReasonChat: '有害なメッセージ',
     reportReasonPseudo: '不適切なニックネーム',
     totalCosmetics: '{0} 個のコスメ ({1} スキン + {2} ペット + {3} ミュージック)',
-    monthJan: '1月', monthFeb: '2月', monthMar: '3月', monthApr: '4月', monthMay: '5月', monthJun: '6月', monthJul: '7月', monthAug: '8月', monthSep: '9月', monthOct: '10月', monthNov: '11月', monthDec: '12月'
-  tabPlay: 'あそぶ'
+    monthJan: '1月', monthFeb: '2月', monthMar: '3月', monthApr: '4月', monthMay: '5月', monthJun: '6月', monthJul: '7月', monthAug: '8月', monthSep: '9月', monthOct: '10月', monthNov: '11月', monthDec: '12月',
+    tabPlay: 'あそぶ'
   };

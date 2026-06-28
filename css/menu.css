@@ -1995,15 +1995,21 @@ body.salon-mode #panel-amis {
   box-shadow: 0 -2px 8px rgba(243, 156, 18, 0.4);
 }
 
-/* Zone principale */
+/* Zone principale (scrollable verticale, JOUER en haut + hub en dessous) */
 .salon-main {
   flex: 1;
   overflow-y: auto;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 20px 0 0;
   position: relative;
+}
+
+/* Wrapper de la vue JOUER : garde l'ancien centrage horizontal */
+.salon-jouer-view {
+  padding: 0 20px;
 }
 
 /* Vue JOUER */
@@ -2366,5 +2372,91 @@ body.salon-mode .cabine-popup.visible {
     height: calc(100% - 100px) !important;
   }
   body.salon-mode #boutique-skins.active { padding-top: 100px; }
+}
+
+/* === HUB DE JEUX (Fortnite/Roblox style) sous l'onglet JOUER === */
+.salon-hub-jeux {
+  margin-top: 32px;
+  padding: 0 16px 32px;
+}
+.salon-hub-titre {
+  color: #f39c12;
+  font-size: 14px;
+  letter-spacing: 3px;
+  margin: 0 0 14px;
+  font-weight: bold;
+}
+.salon-hub-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.salon-hub-card {
+  position: relative;
+  background: linear-gradient(180deg, #2a3845, #1a252f);
+  border: 2px solid #34495e;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.salon-hub-card:hover {
+  transform: translateY(-3px);
+  border-color: #e74c3c;
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.3);
+}
+.salon-hub-card-img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-size: cover;
+  background-position: center;
+  background-color: #0f1419;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.salon-hub-card-img-placeholder {
+  font-size: 64px;
+  color: #95a5a6;
+  background: repeating-linear-gradient(45deg, #1a252f, #1a252f 10px, #243341 10px, #243341 20px);
+}
+.salon-hub-card-titre {
+  color: #ecf0f1;
+  font-weight: bold;
+  font-size: 16px;
+  letter-spacing: 2px;
+  padding: 10px 12px 2px;
+}
+.salon-hub-card-sous {
+  color: #95a5a6;
+  font-size: 11px;
+  padding: 0 12px 12px;
+}
+.salon-hub-card-lock {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  display: none;
+}
+.salon-hub-card-disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  filter: grayscale(0.8);
+}
+.salon-hub-card-disabled:hover {
+  transform: none;
+  border-color: #34495e;
+  box-shadow: none;
+}
+.salon-hub-card-disabled .salon-hub-card-lock {
+  display: flex;
 }
 

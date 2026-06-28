@@ -11,7 +11,8 @@
 // Valeurs par defaut (utilisees quand Firestore n'a pas encore charge)
 var FEATURE_FLAGS = {
   salonLobby: 'live', // Nouveau menu principal style salon — LIVE pour tous
-  salonGroup: 'dev'   // Inviter des amis dans le salon (groupes)
+  salonGroup: 'dev',  // Inviter des amis dans le salon (groupes)
+  creerNiveau: 'dev'  // Editeur de niveaux personnalises (parcours / escape)
   // Ajouter d'autres features ici quand on en aura
 };
 
@@ -64,6 +65,8 @@ function setFeatureFlag(flagId, state) {
 // Hook qui rafraichit tous les elements de l'UI dependant des flags.
 // Appele automatiquement au boot et a chaque changement de flag.
 function refreshFeatureFlagUI() {
+  // Card CREER dans le hub salon
+  if (typeof salonRefreshHub === 'function') salonRefreshHub();
   // Rafraichir la liste dans le panneau admin si ouvert
   if (typeof majAdminFeaturesList === 'function') majAdminFeaturesList();
 }

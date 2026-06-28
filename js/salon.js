@@ -54,6 +54,29 @@ function salonRafraichir() {
 
   // Avatar(s) : moi seul ou groupe d'amis
   salonRenderAvatars();
+
+  // Hub de jeux (card CREER grisee si feature flag inactif)
+  salonRefreshHub();
+}
+
+// === HUB DE JEUX : etat de la card CREER selon le feature flag ===
+function salonRefreshHub() {
+  var card = document.getElementById('salon-hub-card-creer');
+  if (!card) return;
+  var actif = (typeof isFeatureActive === 'function') && isFeatureActive('creerNiveau');
+  card.classList.toggle('salon-hub-card-disabled', !actif);
+  var sous = document.getElementById('salon-hub-card-creer-sous');
+  if (sous) sous.textContent = actif ? 'Cree ton parcours' : 'Bientot disponible';
+}
+
+// === OUVRIR L'EDITEUR DE NIVEAUX (no-op si feature flag inactif) ===
+function salonOuvrirCreer() {
+  if (typeof isFeatureActive !== 'function' || !isFeatureActive('creerNiveau')) {
+    if (typeof showNotif === 'function') showNotif('Bientot disponible !', 'info');
+    return;
+  }
+  // TODO: showScreen('editeur-niveau') quand l'editeur sera pret
+  if (typeof showNotif === 'function') showNotif('Editeur en construction', 'info');
 }
 
 // === MISE A JOUR DU NIVEAU (avec retry) ===

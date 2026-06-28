@@ -2408,9 +2408,13 @@ body.salon-mode .cabine-popup.visible {
 .salon-hub-card-img {
   width: 100%;
   aspect-ratio: 16 / 9;
-  background-size: cover;
-  background-position: center;
+  object-fit: cover;
+  object-position: center;
   background-color: #0f1419;
+  display: block;
+}
+div.salon-hub-card-img {
+  /* fallback pour les placeholders (Cree, etc.) qui ne sont pas des <img> */
   display: flex;
   align-items: center;
   justify-content: center;

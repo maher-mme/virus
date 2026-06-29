@@ -37,7 +37,7 @@ SE.init = function(canvasId, level) {
   SE.level = level;
   SE.player = {
     x: level.spawn.x, y: level.spawn.y,
-    w: 28, h: 40,
+    w: 40, h: 48,
     vx: 0, vy: 0,
     facing: 1,
     onGround: false,
@@ -46,6 +46,13 @@ SE.init = function(canvasId, level) {
     lastGroundTime: -999,
     won: false
   };
+  // Charger le skin du joueur
+  var skinId = (typeof getSkin === 'function') ? getSkin() : null;
+  var skinFile = (typeof getSkinFichier === 'function' && skinId)
+    ? getSkinFichier(skinId)
+    : 'skin/gratuit/skin-de-base-garcon.svg';
+  SE.skinImg = new Image();
+  SE.skinImg.src = skinFile;
   SE._resize();
   window.addEventListener('resize', SE._resize);
   document.addEventListener('keydown', SE._onKeyDown);
@@ -280,14 +287,22 @@ SE._render = function() {
     ctx.fill();
   }
 
-  // Joueur
+  // Joueur : dessiner le skin si charge, sinon rectangle rouge en fallback
   var p = SE.player;
-  ctx.fillStyle = '#e74c3c';
-  ctx.fillRect(p.x, p.y, p.w, p.h);
-  // Petits yeux pour montrer la direction
-  ctx.fillStyle = '#fff';
-  var eyeX = p.x + (p.facing > 0 ? p.w - 8 : 4);
-  ctx.fillRect(eyeX, p.y + 10, 4, 4);
+  if (SE.skinImg && SE.skinImg.complete && SE.skinImg.naturalWidth > 0) {
+    if (p.facing < 0) {
+      ctx.save();
+      ctx.translate(p.x + p.w, p.y);
+      ctx.scale(-1, 1);
+      ctx.drawImage(SE.skinImg, 0, 0, p.w, p.h);
+      ctx.restore();
+    } else {
+      ctx.drawImage(SE.skinImg, p.x, p.y, p.w, p.h);
+    }
+  } else {
+    ctx.fillStyle = '#e74c3c';
+    ctx.fillRect(p.x, p.y, p.w, p.h);
+  }
 
   ctx.restore();
 

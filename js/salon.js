@@ -57,6 +57,9 @@ function salonRafraichir() {
 
   // Hub de jeux (card CREER grisee si feature flag inactif)
   salonRefreshHub();
+
+  // Bouton JOUER / PRET selon le contexte (seul vs en groupe)
+  salonRafraichirBtnJouer();
 }
 
 // === HUB DE JEUX : etat de la card CREER selon le feature flag ===
@@ -311,8 +314,66 @@ function salonAutoUpdateActiveTab() {
 // Poller pour suivre les fermetures de popups
 setInterval(salonAutoUpdateActiveTab, 250);
 
+// === SELECTION DU JEU DANS LE HUB (clic sur une card) ===
+// Met juste a jour le titre + la card active (pas de lancement direct).
+// Le lancement se fait via salonJouer() (bouton JOUER).
+var _salonGameSelected = 'virus';
+
+function salonSelectGame(gameId) {
+  // Card CREER : verifier feature flag (sinon notif et on ne change rien)
+  if (gameId === 'creer') {
+    var actif = (typeof isFeatureActive === 'function') && isFeatureActive('creerNiveau');
+    if (!actif) {
+      if (typeof showNotif === 'function') showNotif('Bientot disponible !', 'info');
+      return;
+    }
+  }
+  _salonGameSelected = gameId;
+  // MAJ titre au-dessus du selecteur ONLINE
+  var titreEl = document.getElementById('salon-jeu-titre');
+  if (titreEl) titreEl.textContent = gameId === 'creer' ? 'CREER' : 'VIRUS';
+  // Marquer la card active
+  ['virus', 'creer'].forEach(function(id) {
+    var card = document.getElementById('salon-hub-card-' + id);
+    if (card) card.classList.toggle('salon-hub-card-selected', id === gameId);
+  });
+}
+
+// === EST-CE QUE JE SUIS DANS UN GROUPE AVEC AU MOINS 1 AUTRE MEMBRE ? ===
+function salonEstEnGroupeMulti() {
+  return typeof _monGroupeData !== 'undefined' && _monGroupeData &&
+         _monGroupeData.members && _monGroupeData.members.length > 1;
+}
+
+// === MAJ DU BOUTON JOUER / PRET selon contexte ===
+function salonRafraichirBtnJouer() {
+  var btn = document.getElementById('salon-btn-jouer');
+  if (!btn) return;
+  if (salonEstEnGroupeMulti()) {
+    // En groupe : afficher PRET (toggle) avec couleur differente si deja pret
+    var moi = _monGroupeData.members.find(function(m) { return m.playerId === monPlayerId; });
+    var jeSuisPret = moi && moi.ready;
+    btn.textContent = jeSuisPret ? '✓ PRET' : '▶ PRET ?';
+    btn.classList.toggle('salon-btn-ready', !!jeSuisPret);
+  } else {
+    btn.textContent = '▶ JOUER';
+    btn.classList.remove('salon-btn-ready');
+  }
+}
+
 // === LANCER UNE PARTIE DEPUIS LE SALON ===
 function salonJouer() {
+  // 1) En groupe avec d'autres membres : le bouton fait toggle "pret" au lieu de lancer
+  if (salonEstEnGroupeMulti()) {
+    if (typeof toggleMaPrete === 'function') toggleMaPrete();
+    return;
+  }
+  // 2) Routing selon le jeu actuellement selectionne dans le hub
+  if (_salonGameSelected === 'creer') {
+    if (typeof salonOuvrirCreer === 'function') salonOuvrirCreer();
+    return;
+  }
+  // 3) VIRUS : flow normal (quick play)
   var modeOnline = document.getElementById('salon-sel-online').value;
   var modeJeu = 'virus';
 

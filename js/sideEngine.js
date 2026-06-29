@@ -315,33 +315,33 @@ SE._render = function() {
 };
 
 // === Niveau de test hardcode ===
+// Decale vers le bas (y plus eleves) pour qu'on voit le sol direct au lancement
 SE.TEST_LEVEL = {
   width: 2400,
-  height: 900,
-  spawn: { x: 80, y: 400 },
+  height: 700,
+  spawn: { x: 80, y: 452 },
   platforms: [
-    // Sol gauche + plateforme de spawn
-    { x: 0,    y: 700, w: 600, h: 200, color: '#6b8e23' },
+    // Sol gauche + plateforme de spawn (le joueur tombe dessus)
+    { x: 0,    y: 500, w: 600, h: 200, color: '#6b8e23' },
     // Plateformes flottantes (saut)
-    { x: 350,  y: 560, w: 90,  h: 18,  color: '#a08056' },
-    { x: 500,  y: 460, w: 90,  h: 18,  color: '#a08056' },
+    { x: 350,  y: 360, w: 90,  h: 18,  color: '#a08056' },
+    { x: 500,  y: 260, w: 90,  h: 18,  color: '#a08056' },
     // Mur bas (test collision laterale)
-    { x: 700,  y: 500, w: 50,  h: 200, color: '#5d4e37' },
+    { x: 700,  y: 300, w: 50,  h: 200, color: '#5d4e37' },
     // Gap + plateforme suivante
-    { x: 900,  y: 700, w: 350, h: 200, color: '#6b8e23' },
-    // Mur haut pour tester wall-jump (de l'autre cote, monter via wall-jump)
-    { x: 1340, y: 250, w: 50,  h: 450, color: '#5d4e37' },
-    // Mur en face pour rebond (corridor wall-jump)
-    { x: 1500, y: 350, w: 50,  h: 450, color: '#5d4e37' },
+    { x: 900,  y: 500, w: 350, h: 200, color: '#6b8e23' },
+    // Mur haut pour tester wall-jump (corridor)
+    { x: 1340, y: 50,  w: 50,  h: 450, color: '#5d4e37' },
+    { x: 1500, y: 150, w: 50,  h: 450, color: '#5d4e37' },
     // Sol final (en haut, accessible via wall-jumps)
-    { x: 1390, y: 200, w: 220, h: 50,  color: '#6b8e23' },
+    { x: 1390, y: 0,   w: 220, h: 50,  color: '#6b8e23' },
     // Sol bas droit (zone d'arrivee)
-    { x: 1600, y: 700, w: 800, h: 200, color: '#6b8e23' },
+    { x: 1600, y: 500, w: 800, h: 200, color: '#6b8e23' },
     // Petits obstacles
-    { x: 1900, y: 640, w: 40,  h: 60,  color: '#5d4e37' },
-    { x: 2100, y: 600, w: 40,  h: 100, color: '#5d4e37' }
+    { x: 1900, y: 440, w: 40,  h: 60,  color: '#5d4e37' },
+    { x: 2100, y: 400, w: 40,  h: 100, color: '#5d4e37' }
   ],
-  endZone: { x: 2280, y: 620, w: 80, h: 80 }
+  endZone: { x: 2280, y: 420, w: 80, h: 80 }
 };
 
 // === Entree depuis le panneau dev ===

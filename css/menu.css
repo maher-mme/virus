@@ -2012,7 +2012,7 @@ body.salon-mode #panel-amis {
   .salon-main { padding: 110px 14px 24px; }
 }
 
-/* Vue JOUER : centree horizontalement avec margin auto + max-width */
+/* Vue JOUER : prend toute la hauteur visible (le hub est en dessous, accessible au scroll) */
 .salon-jouer-view {
   display: flex;
   align-items: center;
@@ -2022,6 +2022,37 @@ body.salon-mode #panel-amis {
   max-width: 1000px;
   margin: 0 auto;
   flex-wrap: wrap;
+  min-height: calc(100vh - 230px);
+}
+@media (max-width: 700px) {
+  .salon-jouer-view {
+    min-height: calc(100vh - 190px);
+    gap: 24px;
+  }
+}
+
+/* Titre du jeu actuellement selectionne (au-dessus de MODE + JOUER) */
+.salon-jeu-titre {
+  font-family: Arial, sans-serif;
+  font-size: 28px;
+  font-weight: bold;
+  color: #e74c3c;
+  letter-spacing: 4px;
+  text-shadow: 0 2px 12px rgba(231, 76, 60, 0.5);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+/* Card selectionnee : surbrillance orange */
+.salon-hub-card-selected {
+  border-color: #f39c12 !important;
+  box-shadow: 0 0 0 2px #f39c12, 0 6px 24px rgba(243, 156, 18, 0.4) !important;
+}
+
+/* Bouton JOUER en mode PRET (vert quand pret) */
+.salon-btn-ready {
+  background: linear-gradient(180deg, #27ae60, #1e8449) !important;
+  border-color: #2ecc71 !important;
 }
 .salon-jouer-selectors {
   display: flex;

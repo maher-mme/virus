@@ -25,7 +25,7 @@
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css?v=4">
   <link rel="stylesheet" href="css/components.css?v=8">
-  <link rel="stylesheet" href="css/menu.css?v=43">
+  <link rel="stylesheet" href="css/menu.css?v=44">
   <link rel="stylesheet" href="css/lobby.css?v=20260412">
   <link rel="stylesheet" href="css/game.css?v=23">
   <link rel="stylesheet" href="css/hud.css?v=17">
@@ -45,7 +45,7 @@
       <div id="loading-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#e74c3c,#f39c12);transition:width 0.3s;box-shadow:0 0 10px rgba(231,76,60,0.6);"></div>
     </div>
     <div id="loading-text" style="font-size:13px;color:#ecf0f1;letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;width:100%;">Chargement...</div>
-    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.6.10 - ALPHA</div>
+    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.6.11 - ALPHA</div>
   </div>
 
   <!-- Emoji Picker -->
@@ -161,7 +161,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS 3.6.10 - ALPHA</span>
+    <span class="version">VIRUS 3.6.11 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -240,7 +240,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.10 - ALPHA</span>
+    <span class="version">VIRUS 3.6.11 - ALPHA</span>
     </div>
   </div>
 
@@ -336,7 +336,7 @@
             <button class="btn-sauver-pseudo" data-i18n="cancelBtn" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.6.10 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.6.11 - ALPHA</p>
         </div><!-- /params-tab-compte -->
 
         <!-- ONGLET BUG / SIGNALEMENT (tout le monde) -->
@@ -424,7 +424,7 @@
 
           <div class="popup-section" style="text-align:center;">
             <p style="font-size:13px;color:#bdc3c7;margin:8px 0;" data-i18n="creditsThanks">&#10084; Merci a tous les joueurs et testeurs !</p>
-            <p style="font-size:11px;color:#7f8c8d;margin:4px 0;">VIRUS 3.6.10 - ALPHA</p>
+            <p style="font-size:11px;color:#7f8c8d;margin:4px 0;">VIRUS 3.6.11 - ALPHA</p>
           </div>
         </div><!-- /params-tab-credits -->
 
@@ -671,12 +671,14 @@
       <div class="salon-jouer-view">
         <!-- Selecteurs a gauche -->
         <div class="salon-jouer-selectors">
+          <!-- Nom du jeu actuellement selectionne (cliquer sur une card en dessous le change) -->
+          <div class="salon-jeu-titre" id="salon-jeu-titre">VIRUS</div>
           <label class="salon-sel-label">MODE</label>
           <select class="salon-select" id="salon-sel-online">
             <option value="online">&#128279; ONLINE</option>
             <option value="hors-ligne">&#128711; HORS LIGNE</option>
           </select>
-          <button class="salon-btn-jouer" onclick="salonJouer()">&#9658; JOUER</button>
+          <button class="salon-btn-jouer" id="salon-btn-jouer" onclick="salonJouer()">&#9658; JOUER</button>
         </div>
 
         <!-- Avatar(s) au centre/droite : moi seul ou groupe d'amis -->
@@ -686,17 +688,18 @@
       </div>
 
       <!-- HUB DE JEUX (style Fortnite/Roblox) -->
+      <!-- Clic sur une card = selectionner le jeu (n'le lance pas). Le bouton JOUER au-dessus lance le jeu selectionne. -->
       <div class="salon-hub-jeux">
         <h3 class="salon-hub-titre">JEUX</h3>
         <div class="salon-hub-cards">
-          <!-- Card VIRUS : lance la quick play classique -->
-          <div class="salon-hub-card" onclick="salonJouer()">
+          <!-- Card VIRUS -->
+          <div class="salon-hub-card salon-hub-card-selected" id="salon-hub-card-virus" onclick="salonSelectGame('virus')">
             <img class="salon-hub-card-img" src="assets/écran_de_chargement.svg" alt="" loading="lazy" decoding="async">
             <div class="salon-hub-card-titre">VIRUS</div>
             <div class="salon-hub-card-sous">Le jeu original</div>
           </div>
           <!-- Card CRÉER : editeur de niveaux (gere par feature flag creerNiveau) -->
-          <div class="salon-hub-card salon-hub-card-disabled" id="salon-hub-card-creer" onclick="salonOuvrirCreer()">
+          <div class="salon-hub-card salon-hub-card-disabled" id="salon-hub-card-creer" onclick="salonSelectGame('creer')">
             <div class="salon-hub-card-img salon-hub-card-img-placeholder">&#128736;</div>
             <div class="salon-hub-card-titre">CRÉER</div>
             <div class="salon-hub-card-sous" id="salon-hub-card-creer-sous">Bientôt disponible</div>
@@ -706,7 +709,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.10 - ALPHA</span>
+    <span class="version">VIRUS 3.6.11 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -747,7 +750,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline" id="version-inline">3.6.10 - ALPHA</span>
+        <span class="version-inline" id="version-inline">3.6.11 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -961,7 +964,7 @@
       </button>
     </div>
 
-    <span class="version">VIRUS 3.6.10 - ALPHA</span>
+    <span class="version">VIRUS 3.6.11 - ALPHA</span>
     </div>
   </div>
 
@@ -1066,7 +1069,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.10 - ALPHA</span>
+    <span class="version">VIRUS 3.6.11 - ALPHA</span>
     </div>
   </div>
 
@@ -1112,7 +1115,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS 3.6.10 - ALPHA</span>
+    <span class="version">VIRUS 3.6.11 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -2298,10 +2301,10 @@
 <script src="js/particles.js?v=1"></script>
 <script src="js/sfx.js?v=2"></script>
 <script src="js/featureFlags.js?v=7"></script>
-<script src="js/salon.js?v=13"></script>
+<script src="js/salon.js?v=14"></script>
 <script src="js/salonGroup.js?v=3"></script>
 <script src="js/testdev.js?v=1"></script>
-<script src="js/sideEngine.js?v=2"></script>
+<script src="js/sideEngine.js?v=3"></script>
 <script src="js/reports.js?v=1"></script>
 <script src="js/passe.js?v=9"></script>
 <script src="js/decorations.js?v=3"></script>

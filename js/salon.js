@@ -78,8 +78,11 @@ function salonOuvrirCreer() {
     if (typeof showNotif === 'function') showNotif('Bientot disponible !', 'info');
     return;
   }
-  // TODO: showScreen('editeur-niveau') quand l'editeur sera pret
-  if (typeof showNotif === 'function') showNotif('Editeur en construction', 'info');
+  if (typeof ED === 'undefined' || typeof ED.open !== 'function') {
+    if (typeof showNotif === 'function') showNotif('Editeur indisponible', 'error');
+    return;
+  }
+  ED.open();
 }
 
 // === MISE A JOUR DU NIVEAU (avec retry) ===

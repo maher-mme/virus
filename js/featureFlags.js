@@ -10,9 +10,9 @@
 
 // Valeurs par defaut (utilisees quand Firestore n'a pas encore charge)
 var FEATURE_FLAGS = {
-  salonLobby: 'live', // Nouveau menu principal style salon — LIVE pour tous
-  salonGroup: 'dev',  // Inviter des amis dans le salon (groupes)
-  creerNiveau: 'dev'  // Editeur de niveaux personnalises (parcours / escape)
+  salonLobby: 'live',   // Nouveau menu principal style salon
+  salonGroup: 'dev',    // Inviter des amis dans le salon (groupes)
+  creerNiveau: 'live'   // Editeur de niveaux personnalises (parcours / escape) — Phase 2 livree
   // Ajouter d'autres features ici quand on en aura
 };
 

@@ -1996,17 +1996,21 @@ body.salon-mode #panel-amis {
 }
 
 /* Zone principale (scrollable verticale, JOUER en haut + hub en dessous) */
-/* padding-top = hauteur de la topbar fixe pour ne pas etre cache dessous */
+/* align-self: stretch override le align-items: center heritie de .screen → toute la largeur */
 .salon-main {
   flex: 1;
   min-height: 0;
+  width: 100%;
+  align-self: stretch;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
   padding: 130px 20px 32px;
   position: relative;
+  box-sizing: border-box;
 }
 @media (max-width: 700px) {
   .salon-main { padding: 110px 14px 24px; }

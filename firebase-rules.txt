@@ -159,5 +159,16 @@ service cloud.firestore {
       allow read: if true;
       allow write: if true;
     }
+
+    // Niveaux custom publies par les joueurs (Phase 3 editeur)
+    // Tout le monde peut lire les niveaux publics
+    // Creation ouverte, mais rate limit et validation cote client
+    // Delete : reserve aux admins dev (par firebase console pour l'instant)
+    match /customLevels/{levelId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;   // pour increment plays/likes
+      allow delete: if false;  // ADMIN uniquement (par console pour l'instant)
+    }
   }
 }

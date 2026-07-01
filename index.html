@@ -25,7 +25,7 @@
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css?v=4">
   <link rel="stylesheet" href="css/components.css?v=8">
-  <link rel="stylesheet" href="css/menu.css?v=47">
+  <link rel="stylesheet" href="css/menu.css?v=48">
   <link rel="stylesheet" href="css/lobby.css?v=20260412">
   <link rel="stylesheet" href="css/game.css?v=23">
   <link rel="stylesheet" href="css/hud.css?v=17">
@@ -45,7 +45,7 @@
       <div id="loading-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#e74c3c,#f39c12);transition:width 0.3s;box-shadow:0 0 10px rgba(231,76,60,0.6);"></div>
     </div>
     <div id="loading-text" style="font-size:13px;color:#ecf0f1;letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;width:100%;">Chargement...</div>
-    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.6.17 - ALPHA</div>
+    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.6.18 - ALPHA</div>
   </div>
 
   <!-- Emoji Picker -->
@@ -85,6 +85,29 @@
     </div>
   </div>
 
+
+  <!-- POPUP PUBLIER UN NIVEAU (Phase 3) -->
+  <div class="popup-overlay" id="popup-publier-niveau">
+    <div class="popup-box" style="max-width:420px;">
+      <div class="popup-header" style="background:#8e44ad;">
+        <h3>&#128228; PUBLIER TON NIVEAU</h3>
+        <button class="popup-close" onclick="ED.fermerPublier()">&times;</button>
+      </div>
+      <div class="popup-body" style="padding:20px;">
+        <div class="popup-section">
+          <label>TITRE DU NIVEAU (3-40 lettres)</label>
+          <input type="text" id="publier-titre" placeholder="Ex: La forteresse" maxlength="40" style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:10px;color:white;font-size:14px;margin-top:6px;box-sizing:border-box;">
+        </div>
+        <p style="font-size:11px;color:#95a5a6;margin:14px 0;line-height:1.5;">
+          &#9888; Une fois publie, ton niveau sera <b>visible par tous les joueurs</b> dans la section MONDES du salon.<br>
+          Tu ne pourras publier un <b>nouveau niveau que tous les 14 jours</b>.
+        </p>
+        <button class="btn-sauver-pseudo" onclick="ED.publierConfirmer()" style="width:100%;padding:12px;background:linear-gradient(180deg,#8e44ad,#6c3483);border-color:#a569bd;font-size:14px;">
+          &#128228; PUBLIER MON NIVEAU
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- POPUP HISTORIQUE VS AMI -->
   <div class="popup-overlay" id="popup-historique-vs">
@@ -161,7 +184,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS 3.6.17 - ALPHA</span>
+    <span class="version">VIRUS 3.6.18 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -240,7 +263,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.17 - ALPHA</span>
+    <span class="version">VIRUS 3.6.18 - ALPHA</span>
     </div>
   </div>
 
@@ -336,7 +359,7 @@
             <button class="btn-sauver-pseudo" data-i18n="cancelBtn" style="background:linear-gradient(180deg,#7f8c8d,#566573);border-color:#7f8c8d;flex:1;padding:8px;" onclick="annulerChangerMotDePasse()">ANNULER</button>
           </div>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.6.17 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.6.18 - ALPHA</p>
         </div><!-- /params-tab-compte -->
 
         <!-- ONGLET BUG / SIGNALEMENT (tout le monde) -->
@@ -429,7 +452,7 @@
 
           <div class="popup-section" style="text-align:center;">
             <p style="font-size:13px;color:#bdc3c7;margin:8px 0;" data-i18n="creditsThanks">&#10084; Merci a tous les joueurs et testeurs !</p>
-            <p style="font-size:11px;color:#7f8c8d;margin:4px 0;">VIRUS 3.6.17 - ALPHA</p>
+            <p style="font-size:11px;color:#7f8c8d;margin:4px 0;">VIRUS 3.6.18 - ALPHA</p>
           </div>
         </div><!-- /params-tab-credits -->
 
@@ -712,9 +735,17 @@
           </div>
         </div>
       </div>
+
+      <!-- MONDES : niveaux publies par la communaute (Phase 3) -->
+      <div class="salon-hub-mondes">
+        <h3 class="salon-hub-titre">MONDES CREES PAR LES JOUEURS</h3>
+        <div class="salon-mondes-list" id="salon-mondes-list">
+          <div class="salon-mondes-empty">Chargement des mondes...</div>
+        </div>
+      </div>
     </div>
 
-    <span class="version">VIRUS 3.6.17 - ALPHA</span>
+    <span class="version">VIRUS 3.6.18 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -724,6 +755,7 @@
     <div class="ed-toolbar">
       <button class="ed-btn ed-btn-test" onclick="ED.test()">&#9658; TESTER</button>
       <button class="ed-btn" onclick="ED.save()">&#128190; SAUVER</button>
+      <button class="ed-btn ed-btn-publish" onclick="ED.publier()">&#128228; PUBLIER</button>
       <button class="ed-btn ed-btn-danger" onclick="ED.clearAll()">&#128465; EFFACER TOUT</button>
       <div style="flex:1;"></div>
       <button class="ed-btn ed-btn-quit" onclick="ED.close()">&#10006; QUITTER</button>
@@ -774,7 +806,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline" id="version-inline">3.6.17 - ALPHA</span>
+        <span class="version-inline" id="version-inline">3.6.18 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -988,7 +1020,7 @@
       </button>
     </div>
 
-    <span class="version">VIRUS 3.6.17 - ALPHA</span>
+    <span class="version">VIRUS 3.6.18 - ALPHA</span>
     </div>
   </div>
 
@@ -1093,7 +1125,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.17 - ALPHA</span>
+    <span class="version">VIRUS 3.6.18 - ALPHA</span>
     </div>
   </div>
 
@@ -1139,7 +1171,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS 3.6.17 - ALPHA</span>
+    <span class="version">VIRUS 3.6.18 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -2325,11 +2357,11 @@
 <script src="js/particles.js?v=1"></script>
 <script src="js/sfx.js?v=2"></script>
 <script src="js/featureFlags.js?v=8"></script>
-<script src="js/salon.js?v=15"></script>
+<script src="js/salon.js?v=16"></script>
 <script src="js/salonGroup.js?v=3"></script>
 <script src="js/testdev.js?v=1"></script>
 <script src="js/sideEngine.js?v=4"></script>
-<script src="js/editeur.js?v=2"></script>
+<script src="js/editeur.js?v=3"></script>
 <script src="js/reports.js?v=1"></script>
 <script src="js/passe.js?v=9"></script>
 <script src="js/decorations.js?v=3"></script>

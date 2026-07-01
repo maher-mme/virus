@@ -126,6 +126,103 @@ ED.test = function() {
   }, 50);
 };
 
+// === PUBLIER LE NIVEAU (Phase 3) ===
+ED.publier = function() {
+  if (!ED.level.spawn) { showNotif('Place un DEPART avant de publier', 'warn'); return; }
+  if (!ED.level.endZone) { showNotif('Place une ARRIVEE avant de publier', 'warn'); return; }
+  if (!ED.level.platforms || ED.level.platforms.length < 3) {
+    showNotif('Ajoute plus de blocs (min 3)', 'warn'); return;
+  }
+  var pop = document.getElementById('popup-publier-niveau');
+  if (!pop) { showNotif('Popup indisponible', 'error'); return; }
+  var input = document.getElementById('publier-titre');
+  if (input) input.value = ED.level.titre || '';
+  pop.classList.add('visible');
+};
+
+ED.fermerPublier = function() {
+  var pop = document.getElementById('popup-publier-niveau');
+  if (pop) pop.classList.remove('visible');
+};
+
+ED.publierConfirmer = function() {
+  var input = document.getElementById('publier-titre');
+  var titre = (input && input.value || '').trim();
+  if (titre.length < 3) { showNotif('Titre trop court (3 min)', 'warn'); return; }
+  if (titre.length > 40) { showNotif('Titre trop long (40 max)', 'warn'); return; }
+  if (typeof db === 'undefined') { showNotif('Firebase indisponible', 'error'); return; }
+  if (typeof monPlayerId === 'undefined' || !monPlayerId) {
+    showNotif('Tu dois etre connecte', 'error'); return;
+  }
+  // Rate limit : 1 publication tous les 14 jours (bypass pour admins dev)
+  var estDev = (typeof peutOuvrirConsole === 'function') && peutOuvrirConsole();
+  var checkLimit = estDev ? Promise.resolve(true) : ED._checkPublishLimit();
+  checkLimit.then(function(ok) {
+    if (!ok) return;
+    ED._doPublier(titre);
+  });
+};
+
+ED._checkPublishLimit = function() {
+  return db.collection('customLevels')
+    .where('creatorId', '==', monPlayerId)
+    .orderBy('createdAt', 'desc')
+    .limit(1)
+    .get()
+    .then(function(snap) {
+      if (snap.empty) return true;
+      var last = snap.docs[0].data();
+      if (!last.createdAt) return true;
+      var ageMs = Date.now() - last.createdAt.toMillis();
+      var days = ageMs / (1000 * 60 * 60 * 24);
+      if (days < 14) {
+        var remaining = Math.ceil(14 - days);
+        showNotif('Prochaine publication dans ' + remaining + ' jours', 'warn');
+        return false;
+      }
+      return true;
+    })
+    .catch(function() { return true; });   // en cas d'erreur, on laisse passer
+};
+
+ED._doPublier = function(titre) {
+  var pseudo = (typeof getPseudo === 'function') ? getPseudo() : 'Anonyme';
+  var code = ED._generateCode();
+  var data = {
+    code: code,
+    titre: titre,
+    creatorId: monPlayerId,
+    creatorPseudo: pseudo,
+    mode: 'parcours',
+    view: 'side',
+    width: ED.level.width,
+    height: ED.level.height,
+    spawn: ED.level.spawn,
+    endZone: ED.level.endZone,
+    platforms: ED.level.platforms,
+    plays: 0,
+    likes: 0,
+    reportCount: 0,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  showNotif('Publication...', 'info');
+  db.collection('customLevels').add(data).then(function() {
+    showNotif('Niveau publie ! Code: ' + code, 'success');
+    ED.fermerPublier();
+    ED.close();
+  }).catch(function(err) {
+    console.error('Publish error', err);
+    showNotif('Erreur publication', 'error');
+  });
+};
+
+ED._generateCode = function() {
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var code = '';
+  for (var i = 0; i < 6; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+  return code;
+};
+
 ED.selectTool = function(id) {
   ED.selectedTool = id;
   // Sync color picker sur la couleur par defaut de l'outil (sauf si outil non colorable)

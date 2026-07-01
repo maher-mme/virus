@@ -60,6 +60,9 @@ function salonRafraichir() {
 
   // Bouton JOUER / PRET selon le contexte (seul vs en groupe)
   salonRafraichirBtnJouer();
+
+  // Charger la galerie des mondes publies (une fois, listener persistent)
+  salonChargerMondes();
 }
 
 // === HUB DE JEUX : etat de la card CREER selon le feature flag ===
@@ -321,6 +324,7 @@ setInterval(salonAutoUpdateActiveTab, 250);
 // Met juste a jour le titre + la card active (pas de lancement direct).
 // Le lancement se fait via salonJouer() (bouton JOUER).
 var _salonGameSelected = 'virus';
+var _salonSelectedMonde = null;   // niveau custom actuellement selectionne (Phase 3)
 
 function salonSelectGame(gameId) {
   // Card CREER : verifier feature flag (sinon notif et on ne change rien)
@@ -332,14 +336,107 @@ function salonSelectGame(gameId) {
     }
   }
   _salonGameSelected = gameId;
+  _salonSelectedMonde = null;
   // MAJ titre au-dessus du selecteur ONLINE
   var titreEl = document.getElementById('salon-jeu-titre');
   if (titreEl) titreEl.textContent = gameId === 'creer' ? 'CREER' : 'VIRUS';
-  // Marquer la card active
+  // Marquer la card active + deselect mondes
   ['virus', 'creer'].forEach(function(id) {
     var card = document.getElementById('salon-hub-card-' + id);
     if (card) card.classList.toggle('salon-hub-card-selected', id === gameId);
   });
+  document.querySelectorAll('.salon-monde-card').forEach(function(c) {
+    c.classList.remove('salon-monde-selected');
+  });
+}
+
+// === SELECTION D'UN MONDE CUSTOM (Phase 3) ===
+function salonSelectMonde(levelData, cardEl) {
+  _salonGameSelected = 'monde';
+  _salonSelectedMonde = levelData;
+  var titreEl = document.getElementById('salon-jeu-titre');
+  if (titreEl) titreEl.textContent = (levelData.titre || 'MONDE').toUpperCase();
+  // Deselect autres cards
+  ['virus', 'creer'].forEach(function(id) {
+    var card = document.getElementById('salon-hub-card-' + id);
+    if (card) card.classList.remove('salon-hub-card-selected');
+  });
+  document.querySelectorAll('.salon-monde-card').forEach(function(c) {
+    c.classList.remove('salon-monde-selected');
+  });
+  if (cardEl) cardEl.classList.add('salon-monde-selected');
+}
+
+// === CHARGEMENT DES MONDES PUBLIES (Firestore) ===
+var _salonMondesUnsub = null;
+function salonChargerMondes() {
+  if (typeof db === 'undefined') return;
+  if (_salonMondesUnsub) return;
+  _salonMondesUnsub = db.collection('customLevels')
+    .orderBy('createdAt', 'desc')
+    .limit(30)
+    .onSnapshot(function(snap) {
+      var container = document.getElementById('salon-mondes-list');
+      if (!container) return;
+      container.innerHTML = '';
+      if (snap.empty) {
+        container.innerHTML = '<div class="salon-mondes-empty">Aucun monde publie pour l\'instant. Sois le premier !</div>';
+        return;
+      }
+      snap.forEach(function(doc) {
+        var lvl = doc.data();
+        lvl._id = doc.id;
+        container.appendChild(salonCreerCardMonde(lvl));
+      });
+    }, function(err) {
+      console.error('Erreur mondes', err);
+    });
+}
+
+function salonCreerCardMonde(lvl) {
+  var div = document.createElement('div');
+  div.className = 'salon-monde-card';
+  var titre = (lvl.titre || 'Sans titre').replace(/[<>]/g, '');
+  var auteur = (lvl.creatorPseudo || '?').replace(/[<>]/g, '');
+  div.innerHTML =
+    '<div class="salon-monde-thumb">&#127918;</div>' +
+    '<div class="salon-monde-info">' +
+      '<div class="salon-monde-title">' + titre + '</div>' +
+      '<div class="salon-monde-author">Par ' + auteur + '</div>' +
+      '<div class="salon-monde-stats">&#9658; ' + (lvl.plays || 0) + '  &#10084; ' + (lvl.likes || 0) + '</div>' +
+    '</div>';
+  div.onclick = function() { salonSelectMonde(lvl, div); };
+  return div;
+}
+
+// === LANCEMENT D'UN MONDE CUSTOM ===
+function salonLancerMonde(lvl) {
+  if (!lvl || !lvl.spawn || !lvl.endZone || !lvl.platforms) {
+    if (typeof showNotif === 'function') showNotif('Niveau invalide', 'error');
+    return;
+  }
+  // Incrementer le compteur de plays (silencieux)
+  if (typeof db !== 'undefined' && lvl._id && typeof firebase !== 'undefined') {
+    db.collection('customLevels').doc(lvl._id).update({
+      plays: firebase.firestore.FieldValue.increment(1)
+    }).catch(function() {});
+  }
+  // Lancer le moteur side avec les donnees du niveau
+  if (typeof SE === 'undefined') {
+    if (typeof showNotif === 'function') showNotif('Moteur indisponible', 'error');
+    return;
+  }
+  if (typeof showScreen === 'function') showScreen('se-test');
+  setTimeout(function() {
+    SE.init('se-canvas', {
+      width: lvl.width,
+      height: lvl.height,
+      spawn: lvl.spawn,
+      endZone: lvl.endZone,
+      platforms: lvl.platforms
+    });
+    SE.start();
+  }, 50);
 }
 
 // === EST-CE QUE JE SUIS DANS UN GROUPE AVEC AU MOINS 1 AUTRE MEMBRE ? ===
@@ -374,6 +471,10 @@ function salonJouer() {
   // 2) Routing selon le jeu actuellement selectionne dans le hub
   if (_salonGameSelected === 'creer') {
     if (typeof salonOuvrirCreer === 'function') salonOuvrirCreer();
+    return;
+  }
+  if (_salonGameSelected === 'monde') {
+    salonLancerMonde(_salonSelectedMonde);
     return;
   }
   // 3) VIRUS : flow normal (quick play)

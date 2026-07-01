@@ -2505,6 +2505,91 @@ div.salon-hub-card-img {
   #salon-hub-card-creer { display: none; }
 }
 
+/* === MONDES : galerie des niveaux publies (Phase 3) === */
+.salon-hub-mondes {
+  margin-top: 24px;
+  padding: 0 16px 40px;
+}
+.salon-mondes-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+.salon-mondes-empty {
+  grid-column: 1 / -1;
+  color: #95a5a6;
+  font-size: 13px;
+  text-align: center;
+  padding: 30px 20px;
+  background: rgba(255,255,255,0.02);
+  border: 1px dashed #34495e;
+  border-radius: 10px;
+}
+.salon-monde-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(180deg, #2a3845, #1a252f);
+  border: 2px solid #34495e;
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.salon-monde-card:hover {
+  transform: translateY(-2px);
+  border-color: #8e44ad;
+  box-shadow: 0 4px 14px rgba(142, 68, 173, 0.35);
+}
+.salon-monde-selected {
+  border-color: #f39c12 !important;
+  box-shadow: 0 0 0 2px #f39c12, 0 4px 16px rgba(243, 156, 18, 0.4) !important;
+}
+.salon-monde-thumb {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, #6c3483, #8e44ad);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 24px;
+}
+.salon-monde-info {
+  flex: 1;
+  min-width: 0;
+}
+.salon-monde-title {
+  font-weight: bold;
+  color: #ecf0f1;
+  font-size: 14px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.salon-monde-author {
+  font-size: 11px;
+  color: #95a5a6;
+  margin-top: 2px;
+}
+.salon-monde-stats {
+  font-size: 11px;
+  color: #f39c12;
+  margin-top: 3px;
+  letter-spacing: 0.5px;
+}
+
+/* Bouton PUBLIER dans la toolbar editeur */
+.ed-btn-publish {
+  background: linear-gradient(180deg, #8e44ad, #6c3483) !important;
+  border-color: #a569bd !important;
+}
+.ed-btn-publish:hover {
+  background: linear-gradient(180deg, #a569bd, #7d3c98) !important;
+}
+
 /* ============================== */
 /* EDITEUR DE NIVEAUX (Phase 2)   */
 /* ============================== */

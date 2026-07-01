@@ -340,6 +340,9 @@ function salonSelectGame(gameId) {
   // MAJ titre au-dessus du selecteur ONLINE
   var titreEl = document.getElementById('salon-jeu-titre');
   if (titreEl) titreEl.textContent = gameId === 'creer' ? 'CREER' : 'VIRUS';
+  // Cacher le selecteur MODE si ce n'est pas VIRUS (pas d'online/offline pour CREER ou MONDE)
+  var modeWrap = document.getElementById('salon-mode-wrap');
+  if (modeWrap) modeWrap.style.display = (gameId === 'virus') ? '' : 'none';
   // Marquer la card active + deselect mondes
   ['virus', 'creer'].forEach(function(id) {
     var card = document.getElementById('salon-hub-card-' + id);
@@ -356,6 +359,9 @@ function salonSelectMonde(levelData, cardEl) {
   _salonSelectedMonde = levelData;
   var titreEl = document.getElementById('salon-jeu-titre');
   if (titreEl) titreEl.textContent = (levelData.titre || 'MONDE').toUpperCase();
+  // Un monde custom = solo local, pas de mode online/offline
+  var modeWrap = document.getElementById('salon-mode-wrap');
+  if (modeWrap) modeWrap.style.display = 'none';
   // Deselect autres cards
   ['virus', 'creer'].forEach(function(id) {
     var card = document.getElementById('salon-hub-card-' + id);

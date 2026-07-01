@@ -8,7 +8,8 @@ var MUSIQUES_BOUTIQUE = [
   { id: 'multiverse', nom: 'Multiverse', artiste: '', fichier: 'musique/multiverse/Multiverse.mp3', image: 'musique/multiverse/affiche_de_multiverse.png', prix: 200, couleur: '#e74c3c' },
   { id: 'flute_flailed', nom: 'Fl\u00fbte flailed', artiste: '', fichier: 'musique/fl\u00fbte_flailed/flute-failed-sondtrack.mp3', image: 'musique/fl\u00fbte_flailed/affiche_de_fl\u00fbte.flailed.png', prix: 200, couleur: '#3b3b98' },
   { id: 'enough_silence', nom: 'Enough silence', artiste: '', fichier: 'musique/Enough_silence/Enough_silence.mp3', image: 'musique/Enough_silence/Enough_silence-image.png', prix: 150, couleur: '#1a3a8a' },
-  { id: 'kyoto', nom: 'Kyoto', artiste: '', fichier: 'musique/Kyoto/Kyoto.mp3', image: 'musique/Kyoto/Kyoto.svg', prix: 200, couleur: '#7fd687' }
+  { id: 'kyoto', nom: 'Kyoto', artiste: '', fichier: 'musique/Kyoto/Kyoto.mp3', image: 'musique/Kyoto/Kyoto.svg', prix: 200, couleur: '#7fd687' },
+  { id: 'light_shadow', nom: 'Light Shadow', artiste: '', fichier: 'musique/Light Shadow/Light_Shadow.wav', image: 'musique/Light Shadow/LIGHT_SHADOW.svg', prix: 200, couleur: '#6c5ce7' }
 ];
 
 function getMusiqueId() {

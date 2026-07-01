@@ -989,8 +989,15 @@
 #ecran-compte {
   justify-content: flex-start;
   padding-top: 20px;
+  padding-bottom: 40px;
   gap: 0;
   z-index: 999;
+  /* Sur ecran court (portable / PC bureau bas), le formulaire depasse.
+     overflow-y sur .screen assure le scroll, mais on force min-height auto
+     pour eviter que flex-shrink coupe le contenu. */
+  min-height: 100%;
+  height: auto;
+  overflow-y: auto;
 }
 
 .compte-carte {

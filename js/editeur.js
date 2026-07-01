@@ -84,6 +84,12 @@ ED.open = function() {
   var saved = localStorage.getItem(ED.STORAGE_KEY);
   try { ED.level = saved ? JSON.parse(saved) : ED.creerNiveauVide(); }
   catch (e) { ED.level = ED.creerNiveauVide(); }
+  // Migration : si le niveau a des dimensions plus petites que le monde actuel, on l'agrandit
+  // (les blocs restent en place, on donne juste plus de terrain pour construire)
+  var curW = ED.WORLD_W * ED.GRID_SIZE;
+  var curH = ED.WORLD_H * ED.GRID_SIZE;
+  if (!ED.level.width || ED.level.width < curW) ED.level.width = curW;
+  if (!ED.level.height || ED.level.height < curH) ED.level.height = curH;
   if (typeof showScreen === 'function') showScreen('editeur-niveau');
   setTimeout(function() {
     ED.canvas = document.getElementById('ed-canvas');
@@ -135,6 +141,17 @@ ED.test = function() {
     return;
   }
   ED._cleanup();
+  // Configurer SE pour revenir a l'editeur apres QUITTER
+  SE.returnScreen = 'editeur-niveau';
+  SE.returnCallback = function() {
+    // Re-init l'editeur (le canvas est encore la dans le DOM mais nos events ont ete cleanup)
+    ED.canvas = document.getElementById('ed-canvas');
+    if (!ED.canvas) return;
+    ED.ctx = ED.canvas.getContext('2d');
+    ED._resize();
+    ED._setupEvents();
+    ED._render();
+  };
   if (typeof showScreen === 'function') showScreen('se-test');
   setTimeout(function() {
     SE.init('se-canvas', ED.level);

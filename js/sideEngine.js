@@ -8,17 +8,20 @@
 var SE = SE || {};
 
 // === Constantes physiques (px / s) ===
-SE.GRAVITY          = 1800;
-SE.MOVE_SPEED       = 320;
-SE.WATER_SPEED_MULT = 0.45;  // vitesse divisee par ~2 dans l'eau
-SE.JUMP_FORCE       = 620;
-SE.TRAMP_FORCE      = 950;   // rebond du trampoline
-SE.WALL_JUMP_X      = 380;
-SE.WALL_SLIDE_MAX   = 100;
-SE.COYOTE_TIME      = 0.10;
-SE.JUMP_BUFFER      = 0.10;
-SE.WALL_JUMP_LOCK   = 0.15;
-SE.TELE_COOLDOWN    = 0.4;   // sec pour eviter loop instantanee entre 2 teles
+SE.GRAVITY           = 1800;
+SE.MOVE_SPEED        = 320;
+SE.WATER_SPEED_MULT  = 0.55;  // vitesse ralentie dans l'eau
+SE.WATER_GRAVITY_MULT = 0.25; // gravite reduite (on flotte)
+SE.WATER_FALL_MAX    = 180;   // vitesse de chute max dans l'eau (nage)
+SE.WATER_SWIM_FORCE  = 340;   // impulsion vers le haut quand on nage
+SE.JUMP_FORCE        = 620;
+SE.TRAMP_FORCE       = 950;   // rebond du trampoline
+SE.WALL_JUMP_X       = 380;
+SE.WALL_SLIDE_MAX    = 100;
+SE.COYOTE_TIME       = 0.10;
+SE.JUMP_BUFFER       = 0.10;
+SE.WALL_JUMP_LOCK    = 0.15;
+SE.TELE_COOLDOWN     = 0.4;
 
 // Types de blocs solides (physique bloque le mouvement)
 // tramp = solide comme un sol (mais rebond gere ailleurs)
@@ -143,33 +146,44 @@ SE._update = function(dt) {
   }
   if (inputX !== 0) p.facing = inputX;
 
-  // 2) Saut (avec coyote time + jump buffer + wall-jump)
+  // 2) Saut / nage (avec coyote time + jump buffer + wall-jump + swim)
   var bufferedJump = (nowS - SE._jumpBufferTime) < SE.JUMP_BUFFER;
   if (bufferedJump) {
-    var canCoyoteJump = (nowS - p.lastGroundTime) < SE.COYOTE_TIME;
-    if (p.onGround || canCoyoteJump) {
-      p.vy = -SE.JUMP_FORCE;
-      p.lastGroundTime = -999;   // consomme le coyote
+    if (p.inWater) {
+      // Dans l'eau : nage vers le haut
+      p.vy = -SE.WATER_SWIM_FORCE;
       SE._jumpBufferTime = -999;
-      p.onGround = false;
-    } else if (p.onWallLeft) {
-      p.vy = -SE.JUMP_FORCE;
-      p.vx = SE.WALL_JUMP_X;
-      SE._wallJumpLockUntil = nowS + SE.WALL_JUMP_LOCK;
-      SE._jumpBufferTime = -999;
-    } else if (p.onWallRight) {
-      p.vy = -SE.JUMP_FORCE;
-      p.vx = -SE.WALL_JUMP_X;
-      SE._wallJumpLockUntil = nowS + SE.WALL_JUMP_LOCK;
-      SE._jumpBufferTime = -999;
+    } else {
+      var canCoyoteJump = (nowS - p.lastGroundTime) < SE.COYOTE_TIME;
+      if (p.onGround || canCoyoteJump) {
+        p.vy = -SE.JUMP_FORCE;
+        p.lastGroundTime = -999;
+        SE._jumpBufferTime = -999;
+        p.onGround = false;
+      } else if (p.onWallLeft) {
+        p.vy = -SE.JUMP_FORCE;
+        p.vx = SE.WALL_JUMP_X;
+        SE._wallJumpLockUntil = nowS + SE.WALL_JUMP_LOCK;
+        SE._jumpBufferTime = -999;
+      } else if (p.onWallRight) {
+        p.vy = -SE.JUMP_FORCE;
+        p.vx = -SE.WALL_JUMP_X;
+        SE._wallJumpLockUntil = nowS + SE.WALL_JUMP_LOCK;
+        SE._jumpBufferTime = -999;
+      }
     }
   }
 
-  // 3) Gravite
-  p.vy += SE.GRAVITY * dt;
+  // 3) Gravite (reduite dans l'eau + cap sur la vitesse de chute)
+  if (p.inWater) {
+    p.vy += SE.GRAVITY * SE.WATER_GRAVITY_MULT * dt;
+    if (p.vy > SE.WATER_FALL_MAX) p.vy = SE.WATER_FALL_MAX;
+  } else {
+    p.vy += SE.GRAVITY * dt;
+  }
 
   // 4) Wall slide : on glisse plus lentement quand on est colle a un mur en chute
-  if ((p.onWallLeft || p.onWallRight) && !p.onGround && p.vy > SE.WALL_SLIDE_MAX) {
+  if ((p.onWallLeft || p.onWallRight) && !p.onGround && !p.inWater && p.vy > SE.WALL_SLIDE_MAX) {
     p.vy = SE.WALL_SLIDE_MAX;
   }
 
@@ -435,8 +449,9 @@ SE.openTest = function() {
     if (typeof showNotif === 'function') showNotif('Reserve aux admins dev', 'warn');
     return;
   }
+  SE.returnScreen = 'menu-salon';
+  SE.returnCallback = null;
   if (typeof showScreen === 'function') showScreen('se-test');
-  // Petit delai pour que le screen soit en place avant init canvas
   setTimeout(function() {
     SE.init('se-canvas', SE.TEST_LEVEL);
     SE.start();
@@ -445,5 +460,10 @@ SE.openTest = function() {
 
 SE.closeTest = function() {
   SE.cleanup();
-  if (typeof showScreen === 'function') showScreen('menu-salon');
+  var ret = SE.returnScreen || 'menu-salon';
+  var cb = SE.returnCallback;
+  SE.returnScreen = null;
+  SE.returnCallback = null;
+  if (typeof showScreen === 'function') showScreen(ret);
+  if (typeof cb === 'function') setTimeout(cb, 60);
 };

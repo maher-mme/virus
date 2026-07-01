@@ -10,12 +10,16 @@ var SE = SE || {};
 // === Constantes physiques (px / s) ===
 SE.GRAVITY          = 1800;
 SE.MOVE_SPEED       = 320;
+SE.WATER_SPEED_MULT = 0.45;  // vitesse divisee par ~2 dans l'eau
 SE.JUMP_FORCE       = 620;
 SE.WALL_JUMP_X      = 380;
-SE.WALL_SLIDE_MAX   = 100;   // vitesse de chute max quand on glisse le long d'un mur
-SE.COYOTE_TIME      = 0.10;  // sec : delai apres avoir quitte le sol pendant lequel on peut encore sauter
-SE.JUMP_BUFFER      = 0.10;  // sec : appui sur saut pris en compte juste avant de toucher le sol
-SE.WALL_JUMP_LOCK   = 0.15;  // sec : pendant lequel le wall-jump empeche de re-coller au mur
+SE.WALL_SLIDE_MAX   = 100;
+SE.COYOTE_TIME      = 0.10;
+SE.JUMP_BUFFER      = 0.10;
+SE.WALL_JUMP_LOCK   = 0.15;
+
+// Types de blocs solides (avec collisions physique)
+SE.SOLID_TYPES = { sol: 1, mur: 1 };
 
 // === Etat global ===
 SE.canvas = null;
@@ -44,7 +48,10 @@ SE.init = function(canvasId, level) {
     onWallLeft: false,
     onWallRight: false,
     lastGroundTime: -999,
-    won: false
+    won: false,
+    inWater: false,
+    respawnX: level.spawn.x,
+    respawnY: level.spawn.y
   };
   // Charger le skin du joueur
   var skinId = (typeof getSkin === 'function') ? getSkin() : null;
@@ -119,11 +126,13 @@ SE._update = function(dt) {
   var inputX = 0;
   if (SE.keys['KeyA'] || SE.keys['ArrowLeft'] || SE.keys['KeyQ']) inputX -= 1;
   if (SE.keys['KeyD'] || SE.keys['ArrowRight']) inputX += 1;
+  // Ralentissement si dans l'eau
+  var speed = SE.MOVE_SPEED * (p.inWater ? SE.WATER_SPEED_MULT : 1);
   // Pendant wall-jump lock, l'input est ignore (sinon le perso reviendrait coller au mur)
   if (nowS < SE._wallJumpLockUntil) {
     // garde la vx imposee par le wall-jump
   } else {
-    p.vx = inputX * SE.MOVE_SPEED;
+    p.vx = inputX * speed;
   }
   if (inputX !== 0) p.facing = inputX;
 
@@ -173,6 +182,28 @@ SE._update = function(dt) {
   // 8) Hors map → respawn
   if (p.y > SE.level.height + 300) SE._respawn();
 
+  // 8b) Blocs speciaux (lave / eau / checkpoint) — pas de collision physique, juste effet
+  p.inWater = false;
+  var plats = SE.level.platforms;
+  for (var i = 0; i < plats.length; i++) {
+    var bl = plats[i];
+    if (!bl.type || SE.SOLID_TYPES[bl.type]) continue;
+    if (!SE._aabb(p, bl)) continue;
+    if (bl.type === 'lave') {
+      SE._respawn();
+      break;
+    } else if (bl.type === 'eau') {
+      p.inWater = true;
+    } else if (bl.type === 'checkpoint') {
+      // Nouveau point de respawn (uniquement si diffrent)
+      if (p.respawnX !== bl.x || p.respawnY !== bl.y) {
+        p.respawnX = bl.x;
+        p.respawnY = bl.y - p.h;
+        if (typeof showNotif === 'function') showNotif('Checkpoint !', 'success');
+      }
+    }
+  }
+
   // 9) Arrivee
   if (SE.level.endZone && SE._aabb(p, SE.level.endZone)) {
     p.won = true;
@@ -194,8 +225,8 @@ SE._update = function(dt) {
 
 SE._respawn = function() {
   var p = SE.player;
-  p.x = SE.level.spawn.x;
-  p.y = SE.level.spawn.y;
+  p.x = p.respawnX;
+  p.y = p.respawnY;
   p.vx = 0; p.vy = 0;
 };
 
@@ -205,11 +236,15 @@ SE._aabb = function(a, b) {
          a.y < b.y + b.h && a.y + a.h > b.y;
 };
 
+SE._isSolid = function(pl) {
+  return !pl.type || SE.SOLID_TYPES[pl.type];
+};
+
 SE._touchSolid = function(x, y, w, h) {
   var box = { x: x, y: y, w: w, h: h };
   var plats = SE.level.platforms;
   for (var i = 0; i < plats.length; i++) {
-    if (SE._aabb(box, plats[i])) return true;
+    if (SE._isSolid(plats[i]) && SE._aabb(box, plats[i])) return true;
   }
   return false;
 };
@@ -219,6 +254,7 @@ SE._resolveX = function() {
   var plats = SE.level.platforms;
   for (var i = 0; i < plats.length; i++) {
     var pl = plats[i];
+    if (!SE._isSolid(pl)) continue;
     if (SE._aabb(p, pl)) {
       if (p.vx > 0)      p.x = pl.x - p.w;
       else if (p.vx < 0) p.x = pl.x + pl.w;
@@ -233,6 +269,7 @@ SE._resolveY = function() {
   var plats = SE.level.platforms;
   for (var i = 0; i < plats.length; i++) {
     var pl = plats[i];
+    if (!SE._isSolid(pl)) continue;
     if (SE._aabb(p, pl)) {
       if (p.vy > 0) {
         p.y = pl.y - p.h;
@@ -258,12 +295,16 @@ SE._render = function() {
   ctx.save();
   ctx.translate(-SE.camera.x, -SE.camera.y);
 
-  // Plateformes
+  // Plateformes (delegue au drawBlock de l'editeur si dispo pour un rendu type-aware)
   var plats = SE.level.platforms;
   for (var i = 0; i < plats.length; i++) {
     var pl = plats[i];
-    ctx.fillStyle = pl.color || '#8b6f47';
-    ctx.fillRect(pl.x, pl.y, pl.w, pl.h);
+    if (typeof ED !== 'undefined' && typeof ED._drawBlock === 'function') {
+      ED._drawBlock(ctx, pl);
+    } else {
+      ctx.fillStyle = pl.color || '#8b6f47';
+      ctx.fillRect(pl.x, pl.y, pl.w, pl.h);
+    }
   }
 
   // Arrivee

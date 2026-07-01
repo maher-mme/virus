@@ -2586,6 +2586,34 @@ div.salon-hub-card-img {
   letter-spacing: 1px;
   font-weight: bold;
 }
+/* Color picker sous les outils */
+.ed-color-wrap {
+  margin-top: 8px;
+  padding: 8px 4px;
+  border-top: 1px solid #34495e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.ed-color-label {
+  font-size: 10px;
+  color: #95a5a6;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+.ed-color-wrap input[type="color"] {
+  width: 100%;
+  height: 36px;
+  border: 2px solid #34495e;
+  border-radius: 6px;
+  background: #1a252f;
+  cursor: pointer;
+  padding: 2px;
+}
+.ed-color-wrap-disabled { opacity: 0.4; }
+.ed-color-wrap-disabled input { cursor: not-allowed; }
+
 .ed-canvas-container {
   flex: 1;
   position: relative;

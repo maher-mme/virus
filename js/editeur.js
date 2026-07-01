@@ -17,6 +17,7 @@ ED.STORAGE_KEY = 'virus_editor_level';
 // === Etat ===
 ED.level = null;
 ED.selectedTool = 'sol';
+ED.customColor = null;   // null = utilise la couleur par defaut de l'outil ; sinon override
 ED.canvas = null;
 ED.ctx = null;
 ED.isDrawing = false;
@@ -25,13 +26,16 @@ ED.camera = { x: 0, y: 0 };
 ED.lastSnap = { x: -1, y: -1 };
 ED.hoverCell = null;
 
-// === Definition des outils ===
+// === Definition des outils (colorables = sol / mur / lave / eau) ===
 ED.TOOLS = [
-  { id: 'sol',     label: 'SOL',      color: '#6b8e23', icon: '⬛' },
-  { id: 'mur',     label: 'MUR',      color: '#5d4e37', icon: '⬛' },
-  { id: 'spawn',   label: 'DEPART',   color: '#3498db', icon: '●' },
-  { id: 'arrivee', label: 'ARRIVEE',  color: '#27ae60', icon: '⚑' },
-  { id: 'eraser',  label: 'EFFACER',  color: '#e74c3c', icon: '✖' }
+  { id: 'sol',        label: 'SOL',      color: '#6b8e23', icon: '⬛', colorable: true  },
+  { id: 'mur',        label: 'MUR',      color: '#5d4e37', icon: '⬛', colorable: true  },
+  { id: 'lave',       label: 'LAVE',     color: '#e74c3c', icon: '🔥', colorable: false },
+  { id: 'eau',        label: 'EAU',      color: '#3498db', icon: '💧', colorable: false },
+  { id: 'checkpoint', label: 'CHECKPT.', color: '#f1c40f', icon: '⚐',  colorable: false },
+  { id: 'spawn',      label: 'DEPART',   color: '#3498db', icon: '●',  colorable: false },
+  { id: 'arrivee',    label: 'ARRIVEE',  color: '#27ae60', icon: '⚑',  colorable: false },
+  { id: 'eraser',     label: 'EFFACER',  color: '#e74c3c', icon: '✖',  colorable: false }
 ];
 
 // === Niveau par defaut (petite plateforme de depart + spawn place dessus) ===
@@ -124,11 +128,21 @@ ED.test = function() {
 
 ED.selectTool = function(id) {
   ED.selectedTool = id;
+  // Sync color picker sur la couleur par defaut de l'outil (sauf si outil non colorable)
+  var def = ED.TOOLS.find(function(t) { return t.id === id; });
+  if (def && def.colorable) {
+    ED.customColor = def.color;
+    var picker = document.getElementById('ed-color-picker');
+    if (picker) picker.value = def.color;
+  }
   ED._renderPalette();
-  // Curseur visuel selon outil
   if (ED.canvas) {
     ED.canvas.style.cursor = (id === 'eraser') ? 'not-allowed' : 'crosshair';
   }
+};
+
+ED.setColor = function(hex) {
+  ED.customColor = hex;
 };
 
 // === Palette UI ===
@@ -145,6 +159,19 @@ ED._renderPalette = function() {
     btn.onclick = function() { ED.selectTool(tool.id); };
     pal.appendChild(btn);
   });
+
+  // Color picker sous les outils (uniquement pour outils colorables)
+  var def = ED.TOOLS.find(function(t) { return t.id === ED.selectedTool; });
+  var colorable = def && def.colorable;
+  var wrap = document.createElement('div');
+  wrap.className = 'ed-color-wrap' + (colorable ? '' : ' ed-color-wrap-disabled');
+  wrap.innerHTML =
+    '<div class="ed-color-label">COULEUR</div>' +
+    '<input type="color" id="ed-color-picker" value="' + (colorable ? (ED.customColor || def.color) : '#888888') + '"' +
+    (colorable ? '' : ' disabled') + '>';
+  pal.appendChild(wrap);
+  var picker = wrap.querySelector('#ed-color-picker');
+  picker.oninput = function(e) { ED.setColor(e.target.value); };
 };
 
 // === Events souris (placement / suppression / pan avec clic droit) ===
@@ -236,16 +263,17 @@ ED._placeAt = function(e) {
   } else if (tool === 'arrivee') {
     ED.level.endZone = { x: cell.gx, y: cell.gy, w: ED.GRID_SIZE * 2, h: ED.GRID_SIZE * 2 };
   } else {
-    // sol ou mur : eviter doublon sur meme cellule
+    // Blocs (sol / mur / lave / eau / checkpoint) : eviter doublon sur meme cellule
     var existe = ED.level.platforms.some(function(p) {
       return p.x === cell.gx && p.y === cell.gy && p.w === ED.GRID_SIZE && p.h === ED.GRID_SIZE;
     });
     if (existe) return;
-    var def = ED.TOOLS.find(function(t) { return t.id === tool; });
+    var toolDef = ED.TOOLS.find(function(t) { return t.id === tool; });
+    var color = (toolDef.colorable && ED.customColor) ? ED.customColor : toolDef.color;
     ED.level.platforms.push({
       x: cell.gx, y: cell.gy,
       w: ED.GRID_SIZE, h: ED.GRID_SIZE,
-      color: def.color, type: tool
+      color: color, type: tool
     });
   }
   ED._render();
@@ -311,10 +339,9 @@ ED._render = function() {
   ctx.lineWidth = 2;
   ctx.strokeRect(0, 0, ED.level.width, ED.level.height);
 
-  // Plateformes
+  // Plateformes : rendu different selon type
   ED.level.platforms.forEach(function(p) {
-    ctx.fillStyle = p.color;
-    ctx.fillRect(p.x, p.y, p.w, p.h);
+    ED._drawBlock(ctx, p);
   });
 
   // Spawn
@@ -348,8 +375,9 @@ ED._render = function() {
   if (ED.hoverCell && !ED.isPanning) {
     var def = ED.TOOLS.find(function(t) { return t.id === ED.selectedTool; });
     if (def) {
-      ctx.fillStyle = def.color + '80';   // alpha
-      ctx.strokeStyle = def.color;
+      var previewColor = (def.colorable && ED.customColor) ? ED.customColor : def.color;
+      ctx.fillStyle = previewColor + '80';
+      ctx.strokeStyle = previewColor;
       ctx.lineWidth = 1;
       ctx.fillRect(ED.hoverCell.gx, ED.hoverCell.gy, ED.GRID_SIZE, ED.GRID_SIZE);
       ctx.strokeRect(ED.hoverCell.gx + 0.5, ED.hoverCell.gy + 0.5, ED.GRID_SIZE - 1, ED.GRID_SIZE - 1);
@@ -364,4 +392,100 @@ ED._render = function() {
   ctx.fillStyle = '#ecf0f1';
   ctx.font = '12px Arial';
   ctx.fillText('Clic = placer  |  Clic-droit + glisser = bouger la vue  |  Echap = quitter', 10, viewH - 10);
+};
+
+// === Rendu d'un bloc selon son type (visuel distinctif) ===
+ED._drawBlock = function(ctx, p) {
+  var t = p.type || 'sol';
+  var col = p.color;
+
+  if (t === 'sol') {
+    // Sol : rectangle + bande d'herbe plus claire sur le dessus
+    ctx.fillStyle = col;
+    ctx.fillRect(p.x, p.y, p.w, p.h);
+    ctx.fillStyle = ED._lighten(col, 25);
+    ctx.fillRect(p.x, p.y, p.w, 5);
+    // Petites touffes d'herbe
+    ctx.fillStyle = ED._lighten(col, 40);
+    ctx.fillRect(p.x + 4, p.y - 2, 3, 4);
+    ctx.fillRect(p.x + p.w / 2 - 1, p.y - 2, 3, 4);
+    ctx.fillRect(p.x + p.w - 7, p.y - 2, 3, 4);
+  } else if (t === 'mur') {
+    // Mur : brique = fond + lignes de mortier
+    ctx.fillStyle = col;
+    ctx.fillRect(p.x, p.y, p.w, p.h);
+    ctx.strokeStyle = ED._darken(col, 30);
+    ctx.lineWidth = 1;
+    // Ligne horizontale au milieu
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y + p.h / 2 + 0.5);
+    ctx.lineTo(p.x + p.w, p.y + p.h / 2 + 0.5);
+    ctx.stroke();
+    // Ligne verticale (decalee entre les deux rangees pour effet briques)
+    ctx.beginPath();
+    ctx.moveTo(p.x + p.w / 2 + 0.5, p.y);
+    ctx.lineTo(p.x + p.w / 2 + 0.5, p.y + p.h / 2);
+    ctx.moveTo(p.x + 0.5, p.y + p.h / 2);
+    ctx.lineTo(p.x + 0.5, p.y + p.h);
+    ctx.moveTo(p.x + p.w - 0.5, p.y + p.h / 2);
+    ctx.lineTo(p.x + p.w - 0.5, p.y + p.h);
+    ctx.stroke();
+  } else if (t === 'lave') {
+    // Lave : rouge/orange avec vaguelettes
+    ctx.fillStyle = col;
+    ctx.fillRect(p.x, p.y, p.w, p.h);
+    ctx.fillStyle = '#ffd93d';
+    for (var i = 0; i < 3; i++) {
+      var wx = p.x + (i * p.w / 3);
+      ctx.beginPath();
+      ctx.arc(wx + p.w / 6, p.y + 4, 3, 0, Math.PI, true);
+      ctx.fill();
+    }
+  } else if (t === 'eau') {
+    // Eau : bleu translucide + reflets
+    ctx.fillStyle = col + 'cc';
+    ctx.fillRect(p.x, p.y, p.w, p.h);
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.fillRect(p.x + 4, p.y + 4, p.w - 8, 2);
+    ctx.fillRect(p.x + 6, p.y + p.h - 8, p.w - 16, 2);
+  } else if (t === 'checkpoint') {
+    // Checkpoint : petit mat + drapeau jaune
+    ctx.fillStyle = '#7f8c8d';
+    ctx.fillRect(p.x + p.w / 2 - 2, p.y + 4, 4, p.h - 8);
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.moveTo(p.x + p.w / 2 + 2, p.y + 4);
+    ctx.lineTo(p.x + p.w - 4, p.y + 8);
+    ctx.lineTo(p.x + p.w / 2 + 2, p.y + 14);
+    ctx.closePath();
+    ctx.fill();
+  } else {
+    ctx.fillStyle = col;
+    ctx.fillRect(p.x, p.y, p.w, p.h);
+  }
+};
+
+// Utils couleur
+ED._lighten = function(hex, pct) {
+  var c = ED._hexToRgb(hex);
+  return 'rgb(' +
+    Math.min(255, c.r + pct * 2) + ',' +
+    Math.min(255, c.g + pct * 2) + ',' +
+    Math.min(255, c.b + pct * 2) + ')';
+};
+ED._darken = function(hex, pct) {
+  var c = ED._hexToRgb(hex);
+  return 'rgb(' +
+    Math.max(0, c.r - pct * 2) + ',' +
+    Math.max(0, c.g - pct * 2) + ',' +
+    Math.max(0, c.b - pct * 2) + ')';
+};
+ED._hexToRgb = function(hex) {
+  hex = (hex || '#000').replace('#', '');
+  if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  return {
+    r: parseInt(hex.substr(0,2), 16) || 0,
+    g: parseInt(hex.substr(2,2), 16) || 0,
+    b: parseInt(hex.substr(4,2), 16) || 0
+  };
 };

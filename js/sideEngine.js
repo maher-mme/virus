@@ -12,14 +12,18 @@ SE.GRAVITY          = 1800;
 SE.MOVE_SPEED       = 320;
 SE.WATER_SPEED_MULT = 0.45;  // vitesse divisee par ~2 dans l'eau
 SE.JUMP_FORCE       = 620;
+SE.TRAMP_FORCE      = 950;   // rebond du trampoline
 SE.WALL_JUMP_X      = 380;
 SE.WALL_SLIDE_MAX   = 100;
 SE.COYOTE_TIME      = 0.10;
 SE.JUMP_BUFFER      = 0.10;
 SE.WALL_JUMP_LOCK   = 0.15;
+SE.TELE_COOLDOWN    = 0.4;   // sec pour eviter loop instantanee entre 2 teles
 
-// Types de blocs solides (avec collisions physique)
-SE.SOLID_TYPES = { sol: 1, mur: 1 };
+// Types de blocs solides (physique bloque le mouvement)
+// tramp = solide comme un sol (mais rebond gere ailleurs)
+// porte = solide seulement si le bouton n'est pas presse (verifie dans _isSolid)
+SE.SOLID_TYPES = { sol: 1, mur: 1, tramp: 1 };
 
 // === Etat global ===
 SE.canvas = null;
@@ -50,6 +54,9 @@ SE.init = function(canvasId, level) {
     lastGroundTime: -999,
     won: false,
     inWater: false,
+    buttonPressed: false,
+    checkpointButtonState: false,   // etat du bouton snapshote au dernier checkpoint
+    lastTeleTime: -999,
     respawnX: level.spawn.x,
     respawnY: level.spawn.y
   };
@@ -182,12 +189,19 @@ SE._update = function(dt) {
   // 8) Hors map → respawn
   if (p.y > SE.level.height + 300) SE._respawn();
 
-  // 8b) Blocs speciaux (lave / eau / checkpoint) — pas de collision physique, juste effet
+  // 8a) Trampoline : si on est au sol ET la plateforme sous nous est un tramp, rebond
+  if (p.onGround && SE._standingOn('tramp')) {
+    p.vy = -SE.TRAMP_FORCE;
+    p.onGround = false;
+  }
+
+  // 8b) Blocs non-solides (lave / eau / checkpoint / tele / bouton) — pas de collision physique, effet uniquement
   p.inWater = false;
   var plats = SE.level.platforms;
   for (var i = 0; i < plats.length; i++) {
     var bl = plats[i];
     if (!bl.type || SE.SOLID_TYPES[bl.type]) continue;
+    if (bl.type === 'porte' && !p.buttonPressed) continue;   // porte fermee = solide, deja gere par collision
     if (!SE._aabb(p, bl)) continue;
     if (bl.type === 'lave') {
       SE._respawn();
@@ -195,11 +209,25 @@ SE._update = function(dt) {
     } else if (bl.type === 'eau') {
       p.inWater = true;
     } else if (bl.type === 'checkpoint') {
-      // Nouveau point de respawn (uniquement si diffrent)
       if (p.respawnX !== bl.x || p.respawnY !== bl.y) {
         p.respawnX = bl.x;
         p.respawnY = bl.y - p.h;
-        if (typeof showNotif === 'function') showNotif('Checkpoint !', 'success');
+        // Snapshot de l'etat des boutons au moment du checkpoint → conserve au respawn
+        p.checkpointButtonState = p.buttonPressed;
+        if (typeof showNotif === 'function') showNotif((typeof t === 'function' ? t('edCheckpoint') : null) || 'Checkpoint !', 'success');
+      }
+    } else if (bl.type === 'bouton' && !p.buttonPressed) {
+      p.buttonPressed = true;
+      if (typeof showNotif === 'function') showNotif((typeof t === 'function' ? t('edButtonPressed') : null) || 'Bouton active !', 'info');
+    } else if (bl.type === 'tele' && (nowS - p.lastTeleTime) > SE.TELE_COOLDOWN) {
+      // Trouve un autre portail du meme linkId
+      var partner = plats.find(function(o) {
+        return o.type === 'tele' && o.linkId === bl.linkId && o !== bl;
+      });
+      if (partner) {
+        p.x = partner.x + (partner.w - p.w) / 2;
+        p.y = partner.y + (partner.h - p.h) / 2;
+        p.lastTeleTime = nowS;
       }
     }
   }
@@ -228,6 +256,9 @@ SE._respawn = function() {
   p.x = p.respawnX;
   p.y = p.respawnY;
   p.vx = 0; p.vy = 0;
+  // Restaurer l'etat du bouton snapshote au dernier checkpoint
+  // → si le joueur avait deja active un bouton avant le checkpoint, la porte reste ouverte
+  p.buttonPressed = p.checkpointButtonState;
 };
 
 // === Collisions AABB ===
@@ -237,6 +268,7 @@ SE._aabb = function(a, b) {
 };
 
 SE._isSolid = function(pl) {
+  if (pl.type === 'porte') return !SE.player.buttonPressed;   // porte s'ouvre si bouton actif
   return !pl.type || SE.SOLID_TYPES[pl.type];
 };
 
@@ -245,6 +277,18 @@ SE._touchSolid = function(x, y, w, h) {
   var plats = SE.level.platforms;
   for (var i = 0; i < plats.length; i++) {
     if (SE._isSolid(plats[i]) && SE._aabb(box, plats[i])) return true;
+  }
+  return false;
+};
+
+// Test si on est debout sur un bloc du type donne (tramp par exemple)
+SE._standingOn = function(type) {
+  var p = SE.player;
+  // On teste juste sous le joueur (1px sous ses pieds)
+  var probe = { x: p.x + 2, y: p.y + p.h, w: p.w - 4, h: 1 };
+  var plats = SE.level.platforms;
+  for (var i = 0; i < plats.length; i++) {
+    if (plats[i].type === type && SE._aabb(probe, plats[i])) return true;
   }
   return false;
 };

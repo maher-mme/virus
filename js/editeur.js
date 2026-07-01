@@ -10,8 +10,9 @@ var ED = ED || {};
 
 // === Constantes ===
 ED.GRID_SIZE = 32;
-ED.WORLD_W   = 80;   // cellules (largeur monde = 2560px)
-ED.WORLD_H   = 20;   // cellules (hauteur monde = 640px)
+// Monde : 200 cellules de large × 30 de haut = 6400 × 960 px (parkours long possible)
+ED.WORLD_W   = 200;
+ED.WORLD_H   = 30;
 ED.STORAGE_KEY = 'virus_editor_level';
 
 // === Etat ===
@@ -26,17 +27,33 @@ ED.camera = { x: 0, y: 0 };
 ED.lastSnap = { x: -1, y: -1 };
 ED.hoverCell = null;
 
-// === Definition des outils (colorables = sol / mur / lave / eau) ===
+// === Definition des outils ===
+// label = clef i18n (edTool_<id>) resolue au rendu via t()
+// colorable = true → le color picker s'applique
 ED.TOOLS = [
-  { id: 'sol',        label: 'SOL',      color: '#6b8e23', icon: '⬛', colorable: true  },
-  { id: 'mur',        label: 'MUR',      color: '#5d4e37', icon: '⬛', colorable: true  },
-  { id: 'lave',       label: 'LAVE',     color: '#e74c3c', icon: '🔥', colorable: false },
-  { id: 'eau',        label: 'EAU',      color: '#3498db', icon: '💧', colorable: false },
-  { id: 'checkpoint', label: 'CHECKPT.', color: '#f1c40f', icon: '⚐',  colorable: false },
-  { id: 'spawn',      label: 'DEPART',   color: '#3498db', icon: '●',  colorable: false },
-  { id: 'arrivee',    label: 'ARRIVEE',  color: '#27ae60', icon: '⚑',  colorable: false },
-  { id: 'eraser',     label: 'EFFACER',  color: '#e74c3c', icon: '✖',  colorable: false }
+  { id: 'sol',        color: '#6b8e23', icon: '⬛', colorable: true  },
+  { id: 'mur',        color: '#5d4e37', icon: '⬛', colorable: true  },
+  { id: 'murp',      color: '#8e7a5f', icon: '⬚', colorable: true  },
+  { id: 'lave',       color: '#e74c3c', icon: '🔥', colorable: false },
+  { id: 'eau',        color: '#3498db', icon: '💧', colorable: false },
+  { id: 'tramp',      color: '#e91e63', icon: '⤴',  colorable: false },
+  { id: 'tele',       color: '#9b59b6', icon: '⧖',  colorable: false },
+  { id: 'porte',      color: '#a0522d', icon: '🚪', colorable: false },
+  { id: 'bouton',     color: '#f1c40f', icon: '⬤',  colorable: false },
+  { id: 'checkpoint', color: '#f1c40f', icon: '⚐',  colorable: false },
+  { id: 'spawn',      color: '#3498db', icon: '●',  colorable: false },
+  { id: 'arrivee',    color: '#27ae60', icon: '⚑',  colorable: false },
+  { id: 'eraser',     color: '#e74c3c', icon: '✖',  colorable: false }
 ];
+
+// Wrapper t() qui tombe sur une valeur par defaut si i18n indispo
+ED._t = function(key, defaultVal) {
+  if (typeof t === 'function') {
+    var val = t(key);
+    if (val && val !== key) return val;
+  }
+  return defaultVal;
+};
 
 // === Niveau par defaut (petite plateforme de depart + spawn place dessus) ===
 ED.creerNiveauVide = function() {
@@ -90,14 +107,14 @@ ED.close = function() {
 ED.save = function(silencieux) {
   try {
     localStorage.setItem(ED.STORAGE_KEY, JSON.stringify(ED.level));
-    if (!silencieux && typeof showNotif === 'function') showNotif('Niveau sauvegarde', 'success');
+    if (!silencieux && typeof showNotif === 'function') showNotif(ED._t('edNotifSaved', 'Niveau sauvegarde'), 'success');
   } catch (e) {
-    if (typeof showNotif === 'function') showNotif('Erreur sauvegarde', 'error');
+    if (typeof showNotif === 'function') showNotif(ED._t('edNotifSaveErr', 'Erreur sauvegarde'), 'error');
   }
 };
 
 ED.clearAll = function() {
-  if (!confirm('Effacer tout le niveau ?')) return;
+  if (!confirm(ED._t('edConfirmClear', 'Effacer tout le niveau ?'))) return;
   ED.level = ED.creerNiveauVide();
   ED.save(true);
   ED._render();
@@ -105,17 +122,16 @@ ED.clearAll = function() {
 
 ED.test = function() {
   if (!ED.level.spawn) {
-    if (typeof showNotif === 'function') showNotif('Place un DEPART avant de tester', 'warn');
+    if (typeof showNotif === 'function') showNotif(ED._t('edNeedSpawn', 'Place un DEPART avant de tester'), 'warn');
     return;
   }
   if (!ED.level.endZone) {
-    if (typeof showNotif === 'function') showNotif('Place une ARRIVEE avant de tester', 'warn');
+    if (typeof showNotif === 'function') showNotif(ED._t('edNeedEnd', 'Place une ARRIVEE avant de tester'), 'warn');
     return;
   }
   ED.save(true);
-  // Lancer le moteur side avec ce niveau
   if (typeof SE === 'undefined') {
-    if (typeof showNotif === 'function') showNotif('Moteur indisponible', 'error');
+    if (typeof showNotif === 'function') showNotif(ED._t('edNoEngine', 'Moteur indisponible'), 'error');
     return;
   }
   ED._cleanup();
@@ -128,10 +144,10 @@ ED.test = function() {
 
 // === PUBLIER LE NIVEAU (Phase 3) ===
 ED.publier = function() {
-  if (!ED.level.spawn) { showNotif('Place un DEPART avant de publier', 'warn'); return; }
-  if (!ED.level.endZone) { showNotif('Place une ARRIVEE avant de publier', 'warn'); return; }
+  if (!ED.level.spawn) { showNotif(ED._t('edNeedSpawn', 'Place un DEPART avant de publier'), 'warn'); return; }
+  if (!ED.level.endZone) { showNotif(ED._t('edNeedEnd', 'Place une ARRIVEE avant de publier'), 'warn'); return; }
   if (!ED.level.platforms || ED.level.platforms.length < 3) {
-    showNotif('Ajoute plus de blocs (min 3)', 'warn'); return;
+    showNotif(ED._t('edNeedMore', 'Ajoute plus de blocs (min 3)'), 'warn'); return;
   }
   var pop = document.getElementById('popup-publier-niveau');
   if (!pop) { showNotif('Popup indisponible', 'error'); return; }
@@ -148,8 +164,8 @@ ED.fermerPublier = function() {
 ED.publierConfirmer = function() {
   var input = document.getElementById('publier-titre');
   var titre = (input && input.value || '').trim();
-  if (titre.length < 3) { showNotif('Titre trop court (3 min)', 'warn'); return; }
-  if (titre.length > 40) { showNotif('Titre trop long (40 max)', 'warn'); return; }
+  if (titre.length < 3) { showNotif(ED._t('edTitleShort', 'Titre trop court (3 min)'), 'warn'); return; }
+  if (titre.length > 40) { showNotif(ED._t('edTitleLong', 'Titre trop long (40 max)'), 'warn'); return; }
   if (typeof db === 'undefined') { showNotif('Firebase indisponible', 'error'); return; }
   if (typeof monPlayerId === 'undefined' || !monPlayerId) {
     showNotif('Tu dois etre connecte', 'error'); return;
@@ -177,7 +193,8 @@ ED._checkPublishLimit = function() {
       var days = ageMs / (1000 * 60 * 60 * 24);
       if (days < 14) {
         var remaining = Math.ceil(14 - days);
-        showNotif('Prochaine publication dans ' + remaining + ' jours', 'warn');
+        var msg = ED._t('edRateLimit', 'Prochaine publication dans {0} jours');
+        showNotif(msg.replace('{0}', remaining), 'warn');
         return false;
       }
       return true;
@@ -205,14 +222,15 @@ ED._doPublier = function(titre) {
     reportCount: 0,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   };
-  showNotif('Publication...', 'info');
+  showNotif(ED._t('edPublishing', 'Publication...'), 'info');
   db.collection('customLevels').add(data).then(function() {
-    showNotif('Niveau publie ! Code: ' + code, 'success');
+    var msg = ED._t('edPublished', 'Niveau publie ! Code: {0}');
+    showNotif(msg.replace('{0}', code), 'success');
     ED.fermerPublier();
     ED.close();
   }).catch(function(err) {
     console.error('Publish error', err);
-    showNotif('Erreur publication', 'error');
+    showNotif(ED._t('edPublishErr', 'Erreur publication'), 'error');
   });
 };
 
@@ -242,6 +260,13 @@ ED.setColor = function(hex) {
   ED.customColor = hex;
 };
 
+// === Labels par defaut (fallback si i18n indispo) ===
+ED._DEFAULT_LABELS = {
+  sol: 'SOL', mur: 'MUR PLEIN', 'murp': 'MUR TRAV.', lave: 'LAVE', eau: 'EAU',
+  tramp: 'RESSORT', tele: 'PORTAIL', porte: 'PORTE', bouton: 'BOUTON',
+  checkpoint: 'CHECKPT.', spawn: 'DEPART', arrivee: 'ARRIVEE', eraser: 'EFFACER'
+};
+
 // === Palette UI ===
 ED._renderPalette = function() {
   var pal = document.getElementById('ed-palette');
@@ -250,9 +275,10 @@ ED._renderPalette = function() {
   ED.TOOLS.forEach(function(tool) {
     var btn = document.createElement('button');
     btn.className = 'ed-tool-btn' + (tool.id === ED.selectedTool ? ' ed-tool-active' : '');
+    var label = ED._t('edTool_' + tool.id, ED._DEFAULT_LABELS[tool.id] || tool.id.toUpperCase());
     btn.innerHTML =
       '<span class="ed-tool-icon" style="background:' + tool.color + ';">' + tool.icon + '</span>' +
-      '<span class="ed-tool-label">' + tool.label + '</span>';
+      '<span class="ed-tool-label">' + label + '</span>';
     btn.onclick = function() { ED.selectTool(tool.id); };
     pal.appendChild(btn);
   });
@@ -263,7 +289,7 @@ ED._renderPalette = function() {
   var wrap = document.createElement('div');
   wrap.className = 'ed-color-wrap' + (colorable ? '' : ' ed-color-wrap-disabled');
   wrap.innerHTML =
-    '<div class="ed-color-label">COULEUR</div>' +
+    '<div class="ed-color-label">' + ED._t('edColor', 'COULEUR') + '</div>' +
     '<input type="color" id="ed-color-picker" value="' + (colorable ? (ED.customColor || def.color) : '#888888') + '"' +
     (colorable ? '' : ' disabled') + '>';
   pal.appendChild(wrap);
@@ -360,20 +386,31 @@ ED._placeAt = function(e) {
   } else if (tool === 'arrivee') {
     ED.level.endZone = { x: cell.gx, y: cell.gy, w: ED.GRID_SIZE * 2, h: ED.GRID_SIZE * 2 };
   } else {
-    // Blocs (sol / mur / lave / eau / checkpoint) : eviter doublon sur meme cellule
+    // Blocs : eviter doublon sur meme cellule
     var existe = ED.level.platforms.some(function(p) {
       return p.x === cell.gx && p.y === cell.gy && p.w === ED.GRID_SIZE && p.h === ED.GRID_SIZE;
     });
     if (existe) return;
     var toolDef = ED.TOOLS.find(function(t) { return t.id === tool; });
     var color = (toolDef.colorable && ED.customColor) ? ED.customColor : toolDef.color;
-    ED.level.platforms.push({
+    var block = {
       x: cell.gx, y: cell.gy,
       w: ED.GRID_SIZE, h: ED.GRID_SIZE,
       color: color, type: tool
-    });
+    };
+    // Auto-paire les portails (tele) : linkId croissant, 2 tele par pair
+    if (tool === 'tele') {
+      block.linkId = ED._nextTeleLinkId();
+    }
+    ED.level.platforms.push(block);
   }
   ED._render();
+};
+
+// Alloue le prochain linkId pour un portail : (nb_tele / 2) + 1, deux teles par groupe
+ED._nextTeleLinkId = function() {
+  var teles = ED.level.platforms.filter(function(p) { return p.type === 'tele'; });
+  return Math.floor(teles.length / 2) + 1;
 };
 
 ED._resize = function() {
@@ -488,7 +525,7 @@ ED._render = function() {
   ctx.fillRect(0, viewH - 28, viewW, 28);
   ctx.fillStyle = '#ecf0f1';
   ctx.font = '12px Arial';
-  ctx.fillText('Clic = placer  |  Clic-droit + glisser = bouger la vue  |  Echap = quitter', 10, viewH - 10);
+  ctx.fillText(ED._t('edHelp', 'Clic = placer  |  Clic-droit + glisser = bouger la vue  |  Echap = quitter'), 10, viewH - 10);
 };
 
 // === Rendu d'un bloc selon son type (visuel distinctif) ===
@@ -507,19 +544,18 @@ ED._drawBlock = function(ctx, p) {
     ctx.fillRect(p.x + 4, p.y - 2, 3, 4);
     ctx.fillRect(p.x + p.w / 2 - 1, p.y - 2, 3, 4);
     ctx.fillRect(p.x + p.w - 7, p.y - 2, 3, 4);
-  } else if (t === 'mur') {
+  } else if (t === 'mur' || t === 'murp' || t === 'mur-p') {
     // Mur : brique = fond + lignes de mortier
+    // Mur-p (traversable) = semi-transparent + contour pointille pour indiquer qu'on passe a travers
+    var passable = (t === 'murp' || t === 'mur-p');   // ancien alias avec tiret
+    ctx.globalAlpha = passable ? 0.4 : 1;
     ctx.fillStyle = col;
     ctx.fillRect(p.x, p.y, p.w, p.h);
     ctx.strokeStyle = ED._darken(col, 30);
     ctx.lineWidth = 1;
-    // Ligne horizontale au milieu
     ctx.beginPath();
     ctx.moveTo(p.x, p.y + p.h / 2 + 0.5);
     ctx.lineTo(p.x + p.w, p.y + p.h / 2 + 0.5);
-    ctx.stroke();
-    // Ligne verticale (decalee entre les deux rangees pour effet briques)
-    ctx.beginPath();
     ctx.moveTo(p.x + p.w / 2 + 0.5, p.y);
     ctx.lineTo(p.x + p.w / 2 + 0.5, p.y + p.h / 2);
     ctx.moveTo(p.x + 0.5, p.y + p.h / 2);
@@ -527,6 +563,15 @@ ED._drawBlock = function(ctx, p) {
     ctx.moveTo(p.x + p.w - 0.5, p.y + p.h / 2);
     ctx.lineTo(p.x + p.w - 0.5, p.y + p.h);
     ctx.stroke();
+    ctx.globalAlpha = 1;
+    // Contour pointille sur mur traversable pour bien le distinguer
+    if (passable) {
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      ctx.strokeRect(p.x + 0.5, p.y + 0.5, p.w - 1, p.h - 1);
+      ctx.setLineDash([]);
+    }
   } else if (t === 'lave') {
     // Lave : rouge/orange avec vaguelettes
     ctx.fillStyle = col;
@@ -556,6 +601,72 @@ ED._drawBlock = function(ctx, p) {
     ctx.lineTo(p.x + p.w / 2 + 2, p.y + 14);
     ctx.closePath();
     ctx.fill();
+  } else if (t === 'tramp') {
+    // Trampoline : plaque rouge + 3 ressorts noirs
+    ctx.fillStyle = col;
+    ctx.fillRect(p.x, p.y + p.h / 2, p.w, p.h / 2);
+    ctx.fillStyle = ED._lighten(col, 30);
+    ctx.fillRect(p.x, p.y + p.h / 2, p.w, 3);
+    ctx.strokeStyle = '#2c3e50';
+    ctx.lineWidth = 2;
+    var cx = p.x + p.w / 2;
+    for (var s = 0; s < 3; s++) {
+      var sx = p.x + 6 + s * (p.w - 12) / 2;
+      ctx.beginPath();
+      for (var i = 0; i < 4; i++) {
+        var yy = p.y + p.h / 2 - 2 - i * 3;
+        ctx.moveTo(sx - 2, yy); ctx.lineTo(sx + 2, yy);
+      }
+      ctx.stroke();
+    }
+  } else if (t === 'tele') {
+    // Portail : anneau violet + centre plus clair (portail interdimensionnel)
+    var rx = p.x + p.w / 2, ry = p.y + p.h / 2;
+    ctx.fillStyle = col + '30';
+    ctx.fillRect(p.x, p.y, p.w, p.h);
+    var grad = ctx.createRadialGradient(rx, ry, 2, rx, ry, p.w / 2);
+    grad.addColorStop(0, '#ecf0f1');
+    grad.addColorStop(0.4, col);
+    grad.addColorStop(1, col + '20');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(rx, ry, p.w / 2 - 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    // ID du link visible
+    if (p.linkId) {
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 10px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(p.linkId), rx, ry + 3);
+      ctx.textAlign = 'left';
+    }
+  } else if (t === 'porte') {
+    // Porte : rectangle bois avec panneaux + poignee
+    ctx.fillStyle = col;
+    ctx.fillRect(p.x, p.y, p.w, p.h);
+    ctx.strokeStyle = ED._darken(col, 30);
+    ctx.lineWidth = 1;
+    ctx.strokeRect(p.x + 4, p.y + 4, p.w - 8, (p.h - 12) / 2);
+    ctx.strokeRect(p.x + 4, p.y + 4 + (p.h - 12) / 2 + 4, p.w - 8, (p.h - 12) / 2);
+    // Poignee
+    ctx.fillStyle = '#f1c40f';
+    ctx.beginPath();
+    ctx.arc(p.x + p.w - 6, p.y + p.h / 2, 2, 0, Math.PI * 2);
+    ctx.fill();
+  } else if (t === 'bouton') {
+    // Bouton : disque jaune sur socle
+    ctx.fillStyle = '#7f8c8d';
+    ctx.fillRect(p.x + 4, p.y + p.h - 8, p.w - 8, 8);
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.arc(p.x + p.w / 2, p.y + p.h - 12, (p.w - 12) / 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = ED._darken(col, 30);
+    ctx.lineWidth = 1;
+    ctx.stroke();
   } else {
     ctx.fillStyle = col;
     ctx.fillRect(p.x, p.y, p.w, p.h);

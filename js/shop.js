@@ -82,7 +82,17 @@ var SKINS_BOUTIQUE = [
   { id: 'cat_scratchy', nom: 'Cat Scratchy', nomKey: 'skinCatScratchy', fichier: 'skin/boutique/Cat_scratchy.svg', prix: 400, rarete: 'epic' },
   { id: 'katana_gaming', nom: 'Katana Gaming', nomKey: 'skinKatanaGaming', fichier: 'skin/boutique/katanat_gaming.svg', prix: 450, rarete: 'epic' },
   { id: 'roalteck', nom: 'Roalteck', nomKey: 'skinRoalteck', fichier: 'skin/boutique/ROALTECK.svg', prix: 250, rarete: 'rare' },
-  { id: 'apiculteur', nom: 'Apiculteur', nomKey: 'skinApiculteur', fichier: 'skin/boutique/apiculteur.svg', prix: 100, rarete: 'commun' }
+  { id: 'apiculteur', nom: 'Apiculteur', nomKey: 'skinApiculteur', fichier: 'skin/boutique/apiculteur.svg', prix: 100, rarete: 'commun' },
+  // === Anciens skins du passe de combat (saison 1 : Les 6 Roles) ===
+  { id: 'infecter',     nom: 'Infecter',     fichier: 'skin/Passe/Saison 1/infecter.svg',     prix: 100, rarete: 'commun' },
+  { id: 'docteur',      nom: 'Docteur',      fichier: 'skin/Passe/Saison 1/Docteur.svg',      prix: 400, rarete: 'epic' },
+  { id: 'detective',    nom: 'Detective',    fichier: 'skin/Passe/Saison 1/detective.svg',    prix: 200, rarete: 'rare' },
+  { id: 'le_fanatique', nom: 'Le Fanatique', fichier: 'skin/Passe/Saison 1/Le_fanatique.svg', prix: 200, rarete: 'rare' },
+  { id: 'enfant',       nom: 'Enfant',       fichier: 'skin/Passe/Saison 1/enfant.svg',       prix: 100, rarete: 'commun' },
+  { id: 'agent_secret', nom: 'Agent Secret', fichier: 'skin/Passe/Saison 1/agent_secret.svg', prix: 200, rarete: 'rare' },
+  { id: 'espionne',     nom: 'Espionne',     fichier: 'skin/Passe/Saison 1/espionne.svg',     prix: 400, rarete: 'epic' },
+  { id: 'cowboy',       nom: 'Cowboy',       fichier: 'skin/Passe/Saison 1/cowboy.svg',       prix: 200, rarete: 'rare' },
+  { id: 'cherif',       nom: 'Cherif',       fichier: 'skin/Passe/Saison 1/cherif.svg',       prix: 800, rarete: 'legendaire' }
 ];
 
 function getSkinsAchetes() {
@@ -470,7 +480,13 @@ var PETS_BOUTIQUE = [
   { id: 'chien-spatial', nom: 'Chien Spatial', nomKey: 'petChienSpatial', idle: 'pets/chien_de_l\'espsace1.svg', walk1: 'pets/chien_de_l\'espsace2.svg', walk2: 'pets/chien_de_l\'espsace3.svg', prix: 50, rarete: 'typique' },
   { id: 'lapin', nom: 'Lapin', nomKey: 'petLapin', idle: 'pets/Rabbit-a.svg', walk1: 'pets/Rabbit-a.svg', walk2: 'pets/Rabbit-b.svg', prix: 100, rarete: 'commun' },
   { id: 'bubble', nom: 'Bulle', nomKey: 'petBulle', idle: 'pets/buble.svg', walk1: 'pets/buble.svg', walk2: 'pets/buble2.svg', prix: 150, rarete: 'rare' },
-  { id: 'dragon-feu', nom: 'Dragon de Feu', nomKey: 'petDragonFeu', idle: 'pets/dragon_de_feu.gif', walk1: 'pets/dragon_de_feu.gif', walk2: 'pets/dragon_de_feu.gif', prix: 150, rarete: 'epic', isGif: true, sizePx: 80 }
+  { id: 'dragon-feu', nom: 'Dragon de Feu', nomKey: 'petDragonFeu', idle: 'pets/dragon_de_feu.gif', walk1: 'pets/dragon_de_feu.gif', walk2: 'pets/dragon_de_feu.gif', prix: 150, rarete: 'epic', isGif: true, sizePx: 80 },
+  // === Anciens pets du passe de combat (saison 1) ===
+  { id: 'virus_pet',        nom: 'Virus',            idle: 'pets/Passe/Saison 1/virus.svg', walk1: 'pets/Passe/Saison 1/virus.svg', walk2: 'pets/Passe/Saison 1/virus.svg', prix: 200, rarete: 'rare' },
+  { id: 'voiture_jouet',    nom: 'Voiture Jouet',    idle: 'pets/Passe/Saison 1/jouet_voiture-immobile.svg', walk1: 'pets/Passe/Saison 1/jouet_voiture-immobile.svg', walk2: 'pets/Passe/Saison 1/jouet_voiture-en-déplacement.svg', prix: 150, rarete: 'commun' },
+  { id: 'pigeon_detective', nom: 'Pigeon Detective', idle: 'pets/Passe/Saison 1/pigeon_detective1.svg', walk1: 'pets/Passe/Saison 1/pigeon_detective1.svg', walk2: 'pets/Passe/Saison 1/pigeon_detective2.svg', prix: 200, rarete: 'rare' },
+  { id: 'petit_robot',      nom: 'Petit Robot',      idle: 'pets/Passe/Saison 1/robot-immobile.svg', walk1: 'pets/Passe/Saison 1/robot-immobile.svg', walk2: 'pets/Passe/Saison 1/robot-en-mouvement.svg', prix: 250, rarete: 'rare' },
+  { id: 'cheval',           nom: 'Cheval',           idle: 'pets/Passe/Saison 1/cheval1.svg', walk1: 'pets/Passe/Saison 1/cheval1.svg', walk2: 'pets/Passe/Saison 1/cheval2.svg', prix: 300, rarete: 'epic' }
 ];
 
 var petEquipe = localStorage.getItem('virusPet') || '';

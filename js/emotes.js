@@ -28,7 +28,14 @@ var EMOTES_BOUTIQUE = [
   { id: 'degoute',    emoji: '🤢', nom: 'Degoute',     anim: 'squashDown', prix: 100, rarete: 'commun' },
   { id: 'rock',       emoji: '🤘', nom: 'Rock',        anim: 'wiggle',     prix: 200, rarete: 'epic' },
   { id: 'arcenciel',  emoji: '🌈', nom: 'Arc-en-ciel', anim: 'stretch',    prix: 250, rarete: 'epic' },
-  { id: 'feu',        emoji: '🔥', nom: 'Feu',         anim: 'jump',       prix: 250, rarete: 'epic' }
+  { id: 'feu',        emoji: '🔥', nom: 'Feu',         anim: 'jump',       prix: 250, rarete: 'epic' },
+  // === Anciens emotes du passe de combat (saison 1 : Les 6 Roles) ===
+  { id: 'tousser',    emoji: '😷', nom: 'Tousser',    anim: 'squashDown', prix: 100, rarete: 'rare' },
+  { id: 'peur',       emoji: '😨', nom: 'Peur',       anim: 'wiggle',     prix: 100, rarete: 'rare' },
+  { id: 'enquete',    emoji: '🔎', nom: 'Enquete',    anim: 'stretch',    prix: 100, rarete: 'rare' },
+  { id: 'rire_demon', emoji: '😈', nom: 'Rire Demon', anim: 'jump',       prix: 150, rarete: 'rare' },
+  { id: 'clin_oeil',  emoji: '😉', nom: 'Clin d\'oeil', anim: 'tilt',     prix: 100, rarete: 'rare' },
+  { id: 'degaine',    emoji: '🔫', nom: 'Degaine',    anim: 'squash',     prix: 200, rarete: 'epic' }
 ];
 
 var _emoteCooldown = 0;

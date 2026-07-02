@@ -161,11 +161,13 @@ service cloud.firestore {
     }
 
     // Niveaux custom publies par les joueurs (Phase 3 editeur)
+    // Delete autorise cote client : la restriction est faite dans l'UI
+    // (seul le createur voit le bouton SUPPRIMER, admin peut aussi via panel)
     match /customLevels/{levelId} {
       allow read: if true;
       allow create: if true;
       allow update: if true;
-      allow delete: if false;
+      allow delete: if true;
     }
 
     // Sessions multi temps reel pour un niveau (Phase 5)

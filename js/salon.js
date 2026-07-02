@@ -421,15 +421,43 @@ function salonCreerCardMonde(lvl) {
   var badge = '';
   if (status === 'pending')      badge = ' <span class="salon-monde-badge badge-pending">EN VERIF.</span>';
   else if (status === 'refused') badge = ' <span class="salon-monde-badge badge-refused">REFUSE</span>';
+  // Bouton supprimer : uniquement pour le createur du niveau (et les admins)
+  var mesId = (typeof monPlayerId !== 'undefined') ? monPlayerId : '';
+  var estAMoi = mesId && lvl.creatorId === mesId;
+  var estAdmin = (typeof peutOuvrirConsole === 'function') && peutOuvrirConsole();
+  var canDelete = estAMoi || estAdmin;
+  var deleteBtn = canDelete ? '<button class="salon-monde-delete" title="Supprimer">&#128465;</button>' : '';
   div.innerHTML =
     '<div class="salon-monde-thumb">&#127918;</div>' +
     '<div class="salon-monde-info">' +
       '<div class="salon-monde-title">' + titre + badge + '</div>' +
       '<div class="salon-monde-author">' + by + ' ' + auteur + '</div>' +
       '<div class="salon-monde-stats">&#9658; ' + (lvl.plays || 0) + '  &#10084; ' + (lvl.likes || 0) + '</div>' +
-    '</div>';
+    '</div>' +
+    deleteBtn;
   div.onclick = function() { salonSelectMonde(lvl, div); };
+  if (canDelete) {
+    var btn = div.querySelector('.salon-monde-delete');
+    btn.onclick = function(e) {
+      e.stopPropagation();
+      salonSupprimerMonde(lvl);
+    };
+  }
   return div;
+}
+
+// === Supprimer un monde publie (createur ou admin uniquement) ===
+function salonSupprimerMonde(lvl) {
+  if (!lvl || !lvl._id) return;
+  if (typeof db === 'undefined') return;
+  var msg = 'Supprimer definitivement "' + (lvl.titre || 'Sans titre') + '" ?';
+  if (!window.confirm(msg)) return;
+  db.collection('customLevels').doc(lvl._id).delete().then(function() {
+    if (typeof showNotif === 'function') showNotif('Monde supprime', 'success');
+  }).catch(function(err) {
+    console.error('Delete monde error', err);
+    if (typeof showNotif === 'function') showNotif('Erreur suppression', 'error');
+  });
 }
 
 // === MODERATION DES MONDES (admin dev uniquement) ===

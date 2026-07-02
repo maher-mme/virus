@@ -2376,6 +2376,28 @@ body.salon-mode .popup-overlay.visible .popup-box-tuto {
 body.salon-mode .popup-overlay .popup-close,
 body.salon-mode .cabine-popup .cabine-popup-close { display: none !important; }
 
+/* Ecran creer-partie sous la topbar salon (fixe) */
+body.salon-mode #creer-partie {
+  padding-top: 130px;
+}
+body.salon-mode #creer-partie .cp-scroll {
+  padding: 10px 0 60px 0;
+  max-height: calc(100vh - 140px);
+}
+body.salon-mode #creer-partie .cp-formulaire {
+  width: min(94vw, 500px);
+  margin-top: 10px;
+}
+@media (max-width: 700px) {
+  body.salon-mode #creer-partie {
+    padding-top: 110px;
+  }
+  body.salon-mode #creer-partie .cp-scroll {
+    padding: 8px 0 80px 0;
+    max-height: calc(100vh - 120px);
+  }
+}
+
 /* Boutique : ecran plein, contenu avec padding-top */
 body.salon-mode #boutique-skins.active {
   padding-top: 120px;
@@ -2547,6 +2569,24 @@ div.salon-hub-card-img {
   font-weight: bold;
   font-size: 12px;
 }
+/* Bouton supprimer dans la card monde (createur ou admin uniquement) */
+.salon-monde-delete {
+  background: rgba(231, 76, 60, 0.15);
+  border: 1px solid rgba(231, 76, 60, 0.4);
+  color: #e74c3c;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.15s, transform 0.15s;
+  align-self: center;
+  flex-shrink: 0;
+}
+.salon-monde-delete:hover {
+  background: rgba(231, 76, 60, 0.35);
+  transform: scale(1.08);
+}
+
 /* Badges dans les cards de mondes */
 .salon-monde-badge {
   display: inline-block;

@@ -111,20 +111,21 @@ function estAdminFirestore() {
 }
 
 // Le joueur a-t-il le droit d'ouvrir l'editeur ?
-// = owner (Obstinate) OU admin Firestore (le flag creerNiveau reste un kill switch global)
+// = owner (Obstinate) OU admin Firestore. Pas de gate par flag intermediaire :
+// les admins ont TOUJOURS acces (pas de risque de blocage par un flag en 'dev').
 function peutCreerNiveaux() {
-  var flagActif = (typeof isFeatureActive === 'function') && isFeatureActive('creerNiveau');
-  if (!flagActif) return false;
   var estOwner = (typeof peutOuvrirConsole === 'function') && peutOuvrirConsole();
   return estOwner || estAdminFirestore();
 }
 
-// === HUB DE JEUX : la card CREER est CACHEE pour les non-admins (non affichee) ===
+// === HUB DE JEUX : la card CREER est CACHEE pour les non-admins ===
+// Aussi retire la classe "disabled" du HTML de base (verrou grise) au cas ou.
 function salonRefreshHub() {
   var card = document.getElementById('salon-hub-card-creer');
   if (!card) return;
   var actif = peutCreerNiveaux();
   card.style.display = actif ? '' : 'none';
+  card.classList.toggle('salon-hub-card-disabled', !actif);
 }
 
 // === OUVRIR L'EDITEUR DE NIVEAUX ===

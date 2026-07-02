@@ -4,16 +4,23 @@
 var _pwaInstallPrompt = null;
 var _pwaIsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
+// Affiche/masque tous les points d'entree pour installer la PWA (ancien menu + parametres)
+function _pwaMajBoutons(visible) {
+  var ids = ['btn-installer-pwa', 'params-install-pwa-wrap'];
+  ids.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = visible ? '' : 'none';
+  });
+}
+
 window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   _pwaInstallPrompt = e;
-  var btn = document.getElementById('btn-installer-pwa');
-  if (btn) btn.style.display = 'block';
+  _pwaMajBoutons(true);
 });
 
 window.addEventListener('appinstalled', function() {
-  var btn = document.getElementById('btn-installer-pwa');
-  if (btn) btn.style.display = 'none';
+  _pwaMajBoutons(false);
   _pwaInstallPrompt = null;
 });
 
@@ -46,21 +53,18 @@ function confirmerInstallPWA() {
   _pwaInstallPrompt.userChoice.then(function(res) {
     if (res.outcome === 'accepted') {
       fermerInstallPWA();
-      var btn = document.getElementById('btn-installer-pwa');
-      if (btn) btn.style.display = 'none';
+      _pwaMajBoutons(false);
     }
     _pwaInstallPrompt = null;
   });
 }
 
-// Afficher le bouton sur iOS aussi (force, car pas de beforeinstallprompt)
+// Afficher les boutons d'install sur iOS aussi (pas de beforeinstallprompt sur Safari)
 (function() {
   if (_pwaIsIos) {
     setTimeout(function() {
-      var btn = document.getElementById('btn-installer-pwa');
-      // Detecter si deja installee (running standalone)
       var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-      if (btn && !standalone) btn.style.display = 'block';
+      if (!standalone) _pwaMajBoutons(true);
     }, 1000);
   }
 })();
@@ -300,7 +304,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.6.22';
+var CURRENT_VERSION = '3.6.23';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 

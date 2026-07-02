@@ -40,6 +40,16 @@ SE.lastTime = 0;
 SE._jumpBufferTime = -999;
 SE._wallJumpLockUntil = 0;
 
+// === Multi temps reel (Phase 5) ===
+SE.sessionId = null;
+SE._sessionUnsub = null;
+SE._syncTimer = null;
+SE._skinCache = {};              // pseudo → HTMLImageElement pour les autres joueurs
+SE.remotePlayers = {};           // playerId → { pseudo, skin, x, y, facing, won }
+SE._lastSyncedX = null;
+SE._lastSyncedY = null;
+SE._playerDocRef = null;         // Firestore ref de mon doc dans la session
+
 // === API ===
 SE.init = function(canvasId, level) {
   SE.canvas = document.getElementById(canvasId);
@@ -92,6 +102,89 @@ SE.cleanup = function() {
   document.removeEventListener('keyup', SE._onKeyUp);
   window.removeEventListener('resize', SE._resize);
   SE.keys = {};
+  SE._teardownMulti();
+};
+
+// === MULTI TEMPS REEL (Phase 5) ===
+// Attache une session en cours a SE. Doit etre appelee APRES SE.init().
+SE.attachSession = function(sessionId) {
+  if (typeof db === 'undefined' || !sessionId) return;
+  SE.sessionId = sessionId;
+  SE.remotePlayers = {};
+  SE._skinCache = {};
+  var pseudo = (typeof getPseudo === 'function') ? getPseudo() : ('Joueur' + Math.floor(Math.random() * 999));
+  var skinFile = (typeof getSkinFichier === 'function' && typeof getSkin === 'function')
+    ? getSkinFichier(getSkin())
+    : 'skin/gratuit/skin-de-base-garcon.svg';
+  var myId = (typeof monPlayerId !== 'undefined' && monPlayerId)
+    ? monPlayerId
+    : ('anon_' + Math.random().toString(36).slice(2, 10));
+  SE.myPlayerId = myId;
+  SE._playerDocRef = db.collection('mondeSessions').doc(sessionId).collection('players').doc(myId);
+  // Ecrire mon etat initial
+  SE._playerDocRef.set({
+    pseudo: pseudo,
+    skin: skinFile,
+    x: SE.player.x, y: SE.player.y,
+    facing: SE.player.facing,
+    won: false,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(function() {});
+  // Ecouter les autres joueurs
+  SE._sessionUnsub = db.collection('mondeSessions').doc(sessionId).collection('players')
+    .onSnapshot(function(snap) {
+      var next = {};
+      snap.forEach(function(doc) {
+        if (doc.id === myId) return;
+        var d = doc.data();
+        if (!d) return;
+        // Ignorer joueurs inactifs (> 15 sec depuis last update)
+        if (d.updatedAt && d.updatedAt.toMillis && (Date.now() - d.updatedAt.toMillis()) > 15000) return;
+        next[doc.id] = d;
+        // Pre-charger le skin
+        if (d.skin && !SE._skinCache[d.skin]) {
+          var img = new Image();
+          img.src = d.skin;
+          SE._skinCache[d.skin] = img;
+        }
+      });
+      SE.remotePlayers = next;
+    });
+  // Sync ma position periodiquement (200 ms)
+  SE._syncTimer = setInterval(SE._syncMyPosition, 200);
+};
+
+SE._syncMyPosition = function() {
+  if (!SE._playerDocRef || !SE.player) return;
+  var p = SE.player;
+  // Skip si on n'a pas bouge significativement (economise des writes)
+  if (SE._lastSyncedX !== null &&
+      Math.abs(p.x - SE._lastSyncedX) < 3 &&
+      Math.abs(p.y - SE._lastSyncedY) < 3 &&
+      !p.won) return;
+  SE._lastSyncedX = p.x;
+  SE._lastSyncedY = p.y;
+  SE._playerDocRef.update({
+    x: p.x, y: p.y,
+    facing: p.facing,
+    won: !!p.won,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(function() {});
+};
+
+SE._teardownMulti = function() {
+  if (SE._syncTimer) { clearInterval(SE._syncTimer); SE._syncTimer = null; }
+  if (SE._sessionUnsub) { try { SE._sessionUnsub(); } catch (e) {} SE._sessionUnsub = null; }
+  // Supprimer mon doc de la session pour ne pas laisser un joueur fantome
+  if (SE._playerDocRef) {
+    SE._playerDocRef.delete().catch(function() {});
+    SE._playerDocRef = null;
+  }
+  SE.remotePlayers = {};
+  SE.sessionId = null;
+  SE._lastSyncedX = null;
+  SE._lastSyncedY = null;
+  SE._winnerAnnounced = false;
 };
 
 // === Input ===
@@ -250,8 +343,23 @@ SE._update = function(dt) {
   if (SE.level.endZone && SE._aabb(p, SE.level.endZone) && !p.won) {
     p.won = true;
     SE.stop();
+    // Broadcast immediat de mon etat "gagne" aux autres joueurs
+    if (SE._playerDocRef) SE._syncMyPosition();
     if (typeof showNotif === 'function') showNotif((typeof t === 'function' ? t('edWon') : null) || 'GAGNE !', 'success');
-    setTimeout(function() { SE.closeTest(); }, 1000);
+    setTimeout(function() { SE.closeTest(); }, 1500);
+  }
+  // 9b) Un autre joueur a gagne avant moi → notif + on stoppe
+  if (!p.won && SE.remotePlayers) {
+    for (var rid in SE.remotePlayers) {
+      var rp = SE.remotePlayers[rid];
+      if (rp.won && !SE._winnerAnnounced) {
+        SE._winnerAnnounced = true;
+        if (typeof showNotif === 'function') showNotif((rp.pseudo || 'Un joueur') + ' a gagne !', 'info');
+        SE.stop();
+        setTimeout(function() { SE.closeTest(); }, 2000);
+        break;
+      }
+    }
   }
 
   // 10) Camera centree sur le joueur, bornee au niveau
@@ -384,6 +492,40 @@ SE._render = function() {
     ctx.fill();
   }
 
+  // Autres joueurs (multi Phase 5) : rendus translucides derriere le mien
+  if (SE.remotePlayers) {
+    for (var rid in SE.remotePlayers) {
+      var rp = SE.remotePlayers[rid];
+      ctx.globalAlpha = 0.55;
+      var rImg = SE._skinCache[rp.skin];
+      if (rImg && rImg.complete && rImg.naturalWidth > 0) {
+        if ((rp.facing || 1) < 0) {
+          ctx.save();
+          ctx.translate(rp.x + 40, rp.y);
+          ctx.scale(-1, 1);
+          ctx.drawImage(rImg, 0, 0, 40, 48);
+          ctx.restore();
+        } else {
+          ctx.drawImage(rImg, rp.x, rp.y, 40, 48);
+        }
+      } else {
+        ctx.fillStyle = '#3498db';
+        ctx.fillRect(rp.x, rp.y, 40, 48);
+      }
+      // Pseudo au-dessus
+      ctx.globalAlpha = 0.9;
+      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+      var pseudoW = ctx.measureText(rp.pseudo || '?').width + 8;
+      ctx.fillRect(rp.x + 20 - pseudoW / 2, rp.y - 16, pseudoW, 14);
+      ctx.fillStyle = rp.won ? '#f1c40f' : '#ecf0f1';
+      ctx.font = 'bold 11px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(rp.pseudo || '?', rp.x + 20, rp.y - 5);
+      ctx.textAlign = 'left';
+      ctx.globalAlpha = 1;
+    }
+  }
+
   // Joueur : dessiner le skin si charge, sinon rectangle rouge en fallback
   var p = SE.player;
   if (SE.skinImg && SE.skinImg.complete && SE.skinImg.naturalWidth > 0) {
@@ -408,7 +550,10 @@ SE._render = function() {
   ctx.fillRect(0, 0, cssW, 30);
   ctx.fillStyle = '#ecf0f1';
   ctx.font = '13px Arial';
-  ctx.fillText('A/D ou ←/→ = bouger | Espace = sauter | Wall-jump : contre mur + Espace | Echap = quitter', 10, 19);
+  var nbOthers = SE.remotePlayers ? Object.keys(SE.remotePlayers).length : 0;
+  var hudTxt = 'A/D = bouger | Espace = sauter | Echap = quitter';
+  if (nbOthers > 0) hudTxt += '  |  ' + (nbOthers + 1) + ' joueurs en ligne';
+  ctx.fillText(hudTxt, 10, 19);
 };
 
 // === Niveau de test hardcode ===

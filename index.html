@@ -25,7 +25,7 @@
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css?v=4">
   <link rel="stylesheet" href="css/components.css?v=8">
-  <link rel="stylesheet" href="css/menu.css?v=51">
+  <link rel="stylesheet" href="css/menu.css?v=52">
   <link rel="stylesheet" href="css/lobby.css?v=20260412">
   <link rel="stylesheet" href="css/game.css?v=23">
   <link rel="stylesheet" href="css/hud.css?v=17">
@@ -45,7 +45,7 @@
       <div id="loading-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#e74c3c,#f39c12);transition:width 0.3s;box-shadow:0 0 10px rgba(231,76,60,0.6);"></div>
     </div>
     <div id="loading-text" style="font-size:13px;color:#ecf0f1;letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;width:100%;">Chargement...</div>
-    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.6.25 - ALPHA</div>
+    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.6.27 - ALPHA</div>
   </div>
 
   <!-- Emoji Picker -->
@@ -85,6 +85,23 @@
     </div>
   </div>
 
+
+  <!-- POPUP MODERATION MONDES (admin dev uniquement) -->
+  <div class="popup-overlay" id="popup-moderation-mondes">
+    <div class="popup-box" style="max-width:520px;">
+      <div class="popup-header" style="background:#8e44ad;">
+        <h3>&#128712; MODERATION DES MONDES</h3>
+        <button class="popup-close" onclick="salonFermerModeration()">&times;</button>
+      </div>
+      <div class="popup-body" style="padding:14px 16px;max-height:60vh;overflow-y:auto;">
+        <p style="font-size:11px;color:#95a5a6;margin:0 0 12px;line-height:1.4;">
+          Teste chaque monde puis <b style="color:#2ecc71;">ACCEPTER</b> pour le rendre visible a tous,
+          ou <b style="color:#e74c3c;">REFUSER</b> pour le laisser en local pour le createur.
+        </p>
+        <div id="moderation-list"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- POPUP PUBLIER UN NIVEAU (Phase 3) -->
   <div class="popup-overlay" id="popup-publier-niveau">
@@ -184,7 +201,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS 3.6.25 - ALPHA</span>
+    <span class="version">VIRUS 3.6.27 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -263,7 +280,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.25 - ALPHA</span>
+    <span class="version">VIRUS 3.6.27 - ALPHA</span>
     </div>
   </div>
 
@@ -367,7 +384,7 @@
             &#128229; <span data-i18n="downloadAppBtn">TELECHARGER</span>
           </button>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.6.25 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.6.27 - ALPHA</p>
         </div><!-- /params-tab-compte -->
 
         <!-- ONGLET BUG / SIGNALEMENT (tout le monde) -->
@@ -460,7 +477,7 @@
 
           <div class="popup-section" style="text-align:center;">
             <p style="font-size:13px;color:#bdc3c7;margin:8px 0;" data-i18n="creditsThanks">&#10084; Merci a tous les joueurs et testeurs !</p>
-            <p style="font-size:11px;color:#7f8c8d;margin:4px 0;">VIRUS 3.6.25 - ALPHA</p>
+            <p style="font-size:11px;color:#7f8c8d;margin:4px 0;">VIRUS 3.6.27 - ALPHA</p>
           </div>
         </div><!-- /params-tab-credits -->
 
@@ -748,14 +765,19 @@
 
       <!-- MONDES : niveaux publies par la communaute (Phase 3) -->
       <div class="salon-hub-mondes">
-        <h3 class="salon-hub-titre" data-i18n="salonMondesTitre">MONDES CREES PAR LES JOUEURS</h3>
+        <div class="salon-mondes-header">
+          <h3 class="salon-hub-titre" data-i18n="salonMondesTitre">MONDES CREES PAR LES JOUEURS</h3>
+          <button class="salon-btn-moderation" id="salon-btn-moderation" onclick="salonOuvrirModeration()" style="display:none;">
+            &#128712; MODERATION <span class="salon-mod-count">0</span>
+          </button>
+        </div>
         <div class="salon-mondes-list" id="salon-mondes-list">
           <div class="salon-mondes-empty" data-i18n="salonMondesLoading">Chargement des mondes...</div>
         </div>
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.25 - ALPHA</span>
+    <span class="version">VIRUS 3.6.27 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -816,7 +838,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline" id="version-inline">3.6.25 - ALPHA</span>
+        <span class="version-inline" id="version-inline">3.6.27 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -1030,7 +1052,7 @@
       </button>
     </div>
 
-    <span class="version">VIRUS 3.6.25 - ALPHA</span>
+    <span class="version">VIRUS 3.6.27 - ALPHA</span>
     </div>
   </div>
 
@@ -1135,7 +1157,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.25 - ALPHA</span>
+    <span class="version">VIRUS 3.6.27 - ALPHA</span>
     </div>
   </div>
 
@@ -1181,7 +1203,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS 3.6.25 - ALPHA</span>
+    <span class="version">VIRUS 3.6.27 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -2367,16 +2389,16 @@
 <script src="js/particles.js?v=1"></script>
 <script src="js/sfx.js?v=2"></script>
 <script src="js/featureFlags.js?v=8"></script>
-<script src="js/salon.js?v=19"></script>
+<script src="js/salon.js?v=21"></script>
 <script src="js/salonGroup.js?v=3"></script>
 <script src="js/testdev.js?v=1"></script>
-<script src="js/sideEngine.js?v=7"></script>
-<script src="js/editeur.js?v=5"></script>
+<script src="js/sideEngine.js?v=8"></script>
+<script src="js/editeur.js?v=7"></script>
 <script src="js/reports.js?v=1"></script>
 <script src="js/passe.js?v=9"></script>
 <script src="js/decorations.js?v=3"></script>
 <script src="js/player.js?v=11"></script>
-<script src="js/shop.js?v=22"></script>
+<script src="js/shop.js?v=23"></script>
 <script src="js/bots.js?v=11"></script>
 <script src="js/game.js?v=20260511a"></script>
 <script src="js/roles.js?v=33"></script>

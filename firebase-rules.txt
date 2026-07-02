@@ -161,14 +161,25 @@ service cloud.firestore {
     }
 
     // Niveaux custom publies par les joueurs (Phase 3 editeur)
-    // Tout le monde peut lire les niveaux publics
-    // Creation ouverte, mais rate limit et validation cote client
-    // Delete : reserve aux admins dev (par firebase console pour l'instant)
     match /customLevels/{levelId} {
       allow read: if true;
       allow create: if true;
-      allow update: if true;   // pour increment plays/likes
-      allow delete: if false;  // ADMIN uniquement (par console pour l'instant)
+      allow update: if true;
+      allow delete: if false;
+    }
+
+    // Sessions multi temps reel pour un niveau (Phase 5)
+    // - Un doc parent = une session (avec createdAt + playerCount)
+    // - Une subcollection players/ avec les positions de chaque joueur
+    match /mondeSessions/{sessionId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if true;
+      match /players/{playerId} {
+        allow read: if true;
+        allow write: if true;
+      }
     }
   }
 }

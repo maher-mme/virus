@@ -63,6 +63,9 @@ function salonRafraichir() {
 
   // Charger la galerie des mondes publies (une fois, listener persistent)
   salonChargerMondes();
+
+  // Moderation (admin dev uniquement) : ecoute les nouveaux niveaux en attente
+  salonStartModListener();
 }
 
 // === HUB DE JEUX : etat de la card CREER selon le feature flag ===
@@ -374,25 +377,33 @@ function salonSelectMonde(levelData, cardEl) {
 }
 
 // === CHARGEMENT DES MONDES PUBLIES (Firestore) ===
+// Filtre : status == 'approved' OU c'est mon niveau (createur voit ses siens meme si refuses)
 var _salonMondesUnsub = null;
 function salonChargerMondes() {
   if (typeof db === 'undefined') return;
   if (_salonMondesUnsub) return;
   _salonMondesUnsub = db.collection('customLevels')
     .orderBy('createdAt', 'desc')
-    .limit(30)
+    .limit(60)
     .onSnapshot(function(snap) {
       var container = document.getElementById('salon-mondes-list');
       if (!container) return;
       container.innerHTML = '';
-      if (snap.empty) {
+      var mesId = (typeof monPlayerId !== 'undefined') ? monPlayerId : '';
+      var items = [];
+      snap.forEach(function(doc) {
+        var lvl = doc.data();
+        lvl._id = doc.id;
+        var status = lvl.status || 'approved';   // Anciens niveaux sans status = valides
+        var estAMoi = mesId && lvl.creatorId === mesId;
+        if (status === 'approved' || estAMoi) items.push(lvl);
+      });
+      if (items.length === 0) {
         var msg = (typeof t === 'function' ? t('salonMondesEmpty') : null) || 'Aucun monde publie pour l\'instant. Sois le premier !';
         container.innerHTML = '<div class="salon-mondes-empty">' + msg + '</div>';
         return;
       }
-      snap.forEach(function(doc) {
-        var lvl = doc.data();
-        lvl._id = doc.id;
+      items.forEach(function(lvl) {
         container.appendChild(salonCreerCardMonde(lvl));
       });
     }, function(err) {
@@ -406,15 +417,117 @@ function salonCreerCardMonde(lvl) {
   var titre = (lvl.titre || 'Sans titre').replace(/[<>]/g, '');
   var auteur = (lvl.creatorPseudo || '?').replace(/[<>]/g, '');
   var by = (typeof t === 'function' ? t('salonMondesBy') : null) || 'Par';
+  var status = lvl.status || 'approved';
+  var badge = '';
+  if (status === 'pending')      badge = ' <span class="salon-monde-badge badge-pending">EN VERIF.</span>';
+  else if (status === 'refused') badge = ' <span class="salon-monde-badge badge-refused">REFUSE</span>';
   div.innerHTML =
     '<div class="salon-monde-thumb">&#127918;</div>' +
     '<div class="salon-monde-info">' +
-      '<div class="salon-monde-title">' + titre + '</div>' +
+      '<div class="salon-monde-title">' + titre + badge + '</div>' +
       '<div class="salon-monde-author">' + by + ' ' + auteur + '</div>' +
       '<div class="salon-monde-stats">&#9658; ' + (lvl.plays || 0) + '  &#10084; ' + (lvl.likes || 0) + '</div>' +
     '</div>';
   div.onclick = function() { salonSelectMonde(lvl, div); };
   return div;
+}
+
+// === MODERATION DES MONDES (admin dev uniquement) ===
+var _salonModUnsub = null;
+var _salonModVus = {};
+function salonStartModListener() {
+  if (typeof db === 'undefined') return;
+  if (typeof peutOuvrirConsole !== 'function' || !peutOuvrirConsole()) return;
+  if (_salonModUnsub) return;
+  var first = true;
+  _salonModUnsub = db.collection('customLevels')
+    .where('status', '==', 'pending')
+    .orderBy('createdAt', 'desc')
+    .onSnapshot(function(snap) {
+      var count = snap.size;
+      var btn = document.getElementById('salon-btn-moderation');
+      if (btn) {
+        btn.style.display = count > 0 ? '' : 'none';
+        var badge = btn.querySelector('.salon-mod-count');
+        if (badge) badge.textContent = count;
+      }
+      if (!first) {
+        snap.docChanges().forEach(function(ch) {
+          if (ch.type === 'added' && !_salonModVus[ch.doc.id]) {
+            _salonModVus[ch.doc.id] = true;
+            var d = ch.doc.data();
+            if (typeof showNotif === 'function') {
+              showNotif('Nouveau monde a moderer : ' + (d.titre || 'Sans titre'), 'info');
+            }
+          }
+        });
+      } else {
+        snap.forEach(function(doc) { _salonModVus[doc.id] = true; });
+      }
+      first = false;
+    }, function(err) { console.error('Erreur mod listener', err); });
+}
+
+function salonOuvrirModeration() {
+  var pop = document.getElementById('popup-moderation-mondes');
+  if (!pop) return;
+  pop.classList.add('visible');
+  var container = document.getElementById('moderation-list');
+  if (!container) return;
+  container.innerHTML = '<div style="color:#95a5a6;text-align:center;padding:20px;">Chargement...</div>';
+  db.collection('customLevels').where('status', '==', 'pending').orderBy('createdAt', 'desc').get()
+    .then(function(snap) {
+      container.innerHTML = '';
+      if (snap.empty) {
+        container.innerHTML = '<div style="color:#95a5a6;text-align:center;padding:20px;">Aucun monde en attente.</div>';
+        return;
+      }
+      snap.forEach(function(doc) {
+        var lvl = doc.data();
+        lvl._id = doc.id;
+        var card = document.createElement('div');
+        card.className = 'moderation-card';
+        card.innerHTML =
+          '<div class="moderation-info">' +
+            '<div class="moderation-titre">' + (lvl.titre || 'Sans titre').replace(/[<>]/g, '') + '</div>' +
+            '<div class="moderation-auteur">Par ' + (lvl.creatorPseudo || '?').replace(/[<>]/g, '') + ' &nbsp;•&nbsp; ' + (lvl.platforms || []).length + ' blocs</div>' +
+          '</div>' +
+          '<div class="moderation-actions">' +
+            '<button class="btn-mod btn-mod-test">&#9658; TESTER</button>' +
+            '<button class="btn-mod btn-mod-ok">&#10004; ACCEPTER</button>' +
+            '<button class="btn-mod btn-mod-ko">&#10006; REFUSER</button>' +
+          '</div>';
+        card.querySelector('.btn-mod-test').onclick = function() {
+          salonFermerModeration();
+          salonLancerMonde(lvl);
+        };
+        card.querySelector('.btn-mod-ok').onclick = function() { salonModererMonde(lvl._id, 'approved', card); };
+        card.querySelector('.btn-mod-ko').onclick = function() { salonModererMonde(lvl._id, 'refused', card); };
+        container.appendChild(card);
+      });
+    }).catch(function() {
+      container.innerHTML = '<div style="color:#e74c3c;text-align:center;">Erreur de chargement.</div>';
+    });
+}
+
+function salonFermerModeration() {
+  var pop = document.getElementById('popup-moderation-mondes');
+  if (pop) pop.classList.remove('visible');
+}
+
+function salonModererMonde(levelId, status, card) {
+  if (typeof db === 'undefined' || !levelId) return;
+  db.collection('customLevels').doc(levelId).update({
+    status: status,
+    moderatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(function() {
+    if (typeof showNotif === 'function') {
+      showNotif(status === 'approved' ? 'Monde approuve' : 'Monde refuse', 'success');
+    }
+    if (card && card.parentNode) card.parentNode.removeChild(card);
+  }).catch(function() {
+    if (typeof showNotif === 'function') showNotif('Erreur moderation', 'error');
+  });
 }
 
 // === LANCEMENT D'UN MONDE CUSTOM ===
@@ -423,28 +536,65 @@ function salonLancerMonde(lvl) {
     if (typeof showNotif === 'function') showNotif('Niveau invalide', 'error');
     return;
   }
+  if (typeof SE === 'undefined') {
+    if (typeof showNotif === 'function') showNotif('Moteur indisponible', 'error');
+    return;
+  }
   // Incrementer le compteur de plays (silencieux)
   if (typeof db !== 'undefined' && lvl._id && typeof firebase !== 'undefined') {
     db.collection('customLevels').doc(lvl._id).update({
       plays: firebase.firestore.FieldValue.increment(1)
     }).catch(function() {});
   }
-  // Lancer le moteur side avec les donnees du niveau
-  if (typeof SE === 'undefined') {
-    if (typeof showNotif === 'function') showNotif('Moteur indisponible', 'error');
-    return;
-  }
-  if (typeof showScreen === 'function') showScreen('se-test');
-  setTimeout(function() {
-    SE.init('se-canvas', {
-      width: lvl.width,
-      height: lvl.height,
-      spawn: lvl.spawn,
-      endZone: lvl.endZone,
-      platforms: lvl.platforms
-    });
-    SE.start();
-  }, 50);
+  // Phase 5 : chercher ou creer une session multi pour ce niveau
+  salonTrouverOuCreerSession(lvl._id, function(sessionId) {
+    if (typeof showScreen === 'function') showScreen('se-test');
+    setTimeout(function() {
+      SE.init('se-canvas', {
+        width: lvl.width,
+        height: lvl.height,
+        spawn: lvl.spawn,
+        endZone: lvl.endZone,
+        platforms: lvl.platforms
+      });
+      SE.start();
+      // Attacher la session multi APRES l'init (SE.player doit exister)
+      if (sessionId) SE.attachSession(sessionId);
+    }, 50);
+  });
+}
+
+// === PHASE 5 : trouver une session active pour ce monde, sinon en creer une ===
+// Une session = un doc dans mondeSessions/{sessionId} + subcollection players/.
+// Reutilisee tant qu'elle est "recente" (< 5 min) et pas pleine (< 8 joueurs).
+function salonTrouverOuCreerSession(levelId, callback) {
+  if (typeof db === 'undefined' || !levelId) { callback(null); return; }
+  var recent = Date.now() - 5 * 60 * 1000;
+  db.collection('mondeSessions')
+    .where('levelId', '==', levelId)
+    .orderBy('createdAt', 'desc')
+    .limit(5)
+    .get()
+    .then(function(snap) {
+      var candidate = null;
+      snap.forEach(function(doc) {
+        if (candidate) return;
+        var d = doc.data();
+        if (!d || !d.createdAt) return;
+        if (d.createdAt.toMillis() < recent) return;   // trop vieille
+        if ((d.playerCount || 0) >= 8) return;         // pleine
+        candidate = doc.id;
+      });
+      if (candidate) { callback(candidate); return; }
+      // Aucune session active : en creer une
+      db.collection('mondeSessions').add({
+        levelId: levelId,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        playerCount: 1
+      }).then(function(ref) { callback(ref.id); })
+        .catch(function() { callback(null); });
+    })
+    .catch(function() { callback(null); });
 }
 
 // === EST-CE QUE JE SUIS DANS UN GROUPE AVEC AU MOINS 1 AUTRE MEMBRE ? ===

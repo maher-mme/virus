@@ -10,9 +10,10 @@ var ED = ED || {};
 
 // === Constantes ===
 ED.GRID_SIZE = 32;
-// Monde : 200 cellules de large × 30 de haut = 6400 × 960 px (parkours long possible)
-ED.WORLD_W   = 200;
-ED.WORLD_H   = 30;
+// Monde : 500 cellules × 50 = 16000 × 1600 px (~25 ecrans de long, 2.5 de haut)
+// On garde une limite pour eviter les niveaux de plusieurs Mo qui exploseraient Firestore
+ED.WORLD_W   = 500;
+ED.WORLD_H   = 50;
 ED.STORAGE_KEY = 'virus_editor_level';
 
 // === Etat ===
@@ -237,12 +238,12 @@ ED._doPublier = function(titre) {
     plays: 0,
     likes: 0,
     reportCount: 0,
+    status: 'pending',   // Moderation : nouveau niveau en attente de validation dev
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   };
   showNotif(ED._t('edPublishing', 'Publication...'), 'info');
   db.collection('customLevels').add(data).then(function() {
-    var msg = ED._t('edPublished', 'Niveau publie ! Code: {0}');
-    showNotif(msg.replace('{0}', code), 'success');
+    showNotif(ED._t('edPublishedPending', 'Envoye en verification. Visible apres validation par un dev.'), 'success');
     ED.fermerPublier();
     ED.close();
   }).catch(function(err) {
@@ -354,11 +355,52 @@ ED._setupEvents = function() {
     ED._render();
   };
   c.oncontextmenu = function(e) { e.preventDefault(); };
+  // Molette : scroll vertical par defaut, horizontal avec Shift
+  c.addEventListener('wheel', ED._onWheel, { passive: false });
+  // Fleches du clavier : navigation dans le monde
+  document.addEventListener('keydown', ED._onKeyDown);
   window.addEventListener('resize', ED._resize);
+};
+
+ED._onWheel = function(e) {
+  e.preventDefault();
+  var step = 40;
+  // Shift → scroll horizontal ; sans Shift → si deltaY existe, on scroll aussi horizontalement
+  // (le monde est plus large que haut, donc horizontal par defaut est plus utile)
+  if (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+    ED.camera.x += (e.deltaX || e.deltaY) > 0 ? step : -step;
+  } else {
+    // Molette normale : horizontal (car parcours long > haut)
+    ED.camera.x += e.deltaY > 0 ? step : -step;
+  }
+  ED._clampCamera();
+  ED._render();
+};
+
+ED._onKeyDown = function(e) {
+  // On ne bouge la camera QUE si le screen editeur est actif (evite d'intercepter dans un input)
+  var screen = document.getElementById('editeur-niveau');
+  if (!screen || !screen.classList.contains('active')) return;
+  if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+  var step = e.shiftKey ? 160 : 60;
+  var handled = true;
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA' || e.code === 'KeyQ')  ED.camera.x -= step;
+  else if (e.code === 'ArrowRight' || e.code === 'KeyD')                 ED.camera.x += step;
+  else if (e.code === 'ArrowUp'    || e.code === 'KeyW' || e.code === 'KeyZ') ED.camera.y -= step;
+  else if (e.code === 'ArrowDown'  || e.code === 'KeyS')                 ED.camera.y += step;
+  else if (e.code === 'Escape')                                          ED.close();
+  else handled = false;
+  if (handled) {
+    e.preventDefault();
+    ED._clampCamera();
+    ED._render();
+  }
 };
 
 ED._cleanup = function() {
   window.removeEventListener('resize', ED._resize);
+  document.removeEventListener('keydown', ED._onKeyDown);
+  if (ED.canvas) ED.canvas.removeEventListener('wheel', ED._onWheel);
 };
 
 ED._cellAt = function(e) {
@@ -542,7 +584,7 @@ ED._render = function() {
   ctx.fillRect(0, viewH - 28, viewW, 28);
   ctx.fillStyle = '#ecf0f1';
   ctx.font = '12px Arial';
-  ctx.fillText(ED._t('edHelp', 'Clic = placer  |  Clic-droit + glisser = bouger la vue  |  Echap = quitter'), 10, viewH - 10);
+  ctx.fillText(ED._t('edHelp', 'Clic = placer | Clic-droit ou fleches = bouger | Molette = scroll | Echap = quitter'), 10, viewH - 10);
 };
 
 // === Rendu d'un bloc selon son type (visuel distinctif) ===
@@ -562,14 +604,14 @@ ED._drawBlock = function(ctx, p) {
     ctx.fillRect(p.x + p.w / 2 - 1, p.y - 2, 3, 4);
     ctx.fillRect(p.x + p.w - 7, p.y - 2, 3, 4);
   } else if (t === 'mur' || t === 'murp' || t === 'mur-p') {
-    // Mur : brique = fond + lignes de mortier
-    // Mur-p (traversable) = semi-transparent + contour pointille pour indiquer qu'on passe a travers
-    var passable = (t === 'murp' || t === 'mur-p');   // ancien alias avec tiret
-    ctx.globalAlpha = passable ? 0.4 : 1;
+    // Mur classique = briques opaques avec lignes de mortier pleines
+    // Mur traversable (murp) = MEMES briques mais toutes les lignes en pointille
+    var passable = (t === 'murp' || t === 'mur-p');
     ctx.fillStyle = col;
     ctx.fillRect(p.x, p.y, p.w, p.h);
-    ctx.strokeStyle = ED._darken(col, 30);
+    ctx.strokeStyle = ED._darken(col, 40);
     ctx.lineWidth = 1;
+    if (passable) ctx.setLineDash([3, 3]);
     ctx.beginPath();
     ctx.moveTo(p.x, p.y + p.h / 2 + 0.5);
     ctx.lineTo(p.x + p.w, p.y + p.h / 2 + 0.5);
@@ -580,12 +622,9 @@ ED._drawBlock = function(ctx, p) {
     ctx.moveTo(p.x + p.w - 0.5, p.y + p.h / 2);
     ctx.lineTo(p.x + p.w - 0.5, p.y + p.h);
     ctx.stroke();
-    ctx.globalAlpha = 1;
-    // Contour pointille sur mur traversable pour bien le distinguer
+    // Contour pointille pour le mur traversable (encadre la brique)
     if (passable) {
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([3, 3]);
+      ctx.strokeStyle = ED._lighten(col, 25);
       ctx.strokeRect(p.x + 0.5, p.y + 0.5, p.w - 1, p.h - 1);
       ctx.setLineDash([]);
     }

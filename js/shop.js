@@ -33,6 +33,26 @@ function gagnerGold(montant) {
   if (playerGold > GOLD_MAX) playerGold = GOLD_MAX;
   sauvegarderGold();
 }
+
+// Rafraichir le gold depuis Firestore (verite source si desync avec localStorage)
+// Utilise pour eviter qu'un bouton ACHETER reste grise a tort apres une partie
+function refreshGoldFromFirestore(callback) {
+  if (!monPlayerId || typeof db === 'undefined') {
+    if (callback) callback();
+    return;
+  }
+  db.collection('players').doc(monPlayerId).get().then(function(doc) {
+    if (doc.exists) {
+      var goldFB = doc.data().gold;
+      if (typeof goldFB === 'number' && goldFB !== playerGold) {
+        playerGold = goldFB;
+        sauvegarderGold();
+      }
+    }
+    if (callback) callback();
+  }).catch(function() { if (callback) callback(); });
+}
+
 // Initialiser l'affichage des golds au chargement
 sauvegarderGold();
 
@@ -114,9 +134,13 @@ function equiperSkinBoutique(skinId) {
 function genererBoutique() {
   var grille = document.getElementById('boutique-grille');
   if (!grille) return;
-  grille.innerHTML = '';
-  // Recharger le gold depuis localStorage au cas ou
+  // Recharger le gold depuis localStorage + resync depuis Firestore (source de verite)
   playerGold = parseInt(localStorage.getItem('virusGold')) || 0;
+  refreshGoldFromFirestore(function() { _genererBoutiqueInterne(grille); });
+}
+
+function _genererBoutiqueInterne(grille) {
+  grille.innerHTML = '';
   var achetes = getSkinsAchetes();
   var currentSkin = getSkin();
   var goldEl = document.getElementById('boutique-gold-display');
@@ -241,8 +265,12 @@ function genererBoutiqueEmotes() {
   var grille = document.getElementById('boutique-grille-emotes');
   if (!grille) return;
   if (typeof EMOTES_BOUTIQUE === 'undefined') return;
-  grille.innerHTML = '';
   playerGold = parseInt(localStorage.getItem('virusGold')) || 0;
+  refreshGoldFromFirestore(function() { _genererBoutiqueEmotesInterne(grille); });
+}
+
+function _genererBoutiqueEmotesInterne(grille) {
+  grille.innerHTML = '';
   var skinFichier = (typeof getSkinFichier === 'function' && typeof getSkin === 'function') ? getSkinFichier(getSkin()) : 'skin/gratuit/skin-de-base-garcon.svg';
   var achetes = getEmotesAchetes();
 
@@ -374,9 +402,12 @@ function equiperMusiqueBoutique(musiqueId) {
 function genererBoutiqueMusique() {
   var grille = document.getElementById('boutique-grille-musique');
   if (!grille) return;
-  grille.innerHTML = '';
-  // Recharger le gold depuis localStorage au cas ou
   playerGold = parseInt(localStorage.getItem('virusGold')) || 0;
+  refreshGoldFromFirestore(function() { _genererBoutiqueMusiqueInterne(grille); });
+}
+
+function _genererBoutiqueMusiqueInterne(grille) {
+  grille.innerHTML = '';
   var achetees = getMusiquesAchetees();
   var currentMusique = getMusiqueId();
   var goldEl = document.getElementById('boutique-gold-display');
@@ -509,8 +540,12 @@ function desequiperPet() {
 function genererBoutiqueAnimaux() {
   var grille = document.getElementById('boutique-grille-animaux');
   if (!grille) return;
-  grille.innerHTML = '';
   playerGold = parseInt(localStorage.getItem('virusGold')) || 0;
+  refreshGoldFromFirestore(function() { _genererBoutiqueAnimauxInterne(grille); });
+}
+
+function _genererBoutiqueAnimauxInterne(grille) {
+  grille.innerHTML = '';
   var achetes = getPetsAchetes();
   var currentPet = getPetEquipe();
   var goldEl = document.getElementById('boutique-gold-display');

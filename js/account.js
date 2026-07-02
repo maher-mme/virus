@@ -1,9 +1,14 @@
 // ============================
 // GESTION DU COMPTE
 // ============================
+// Owner/dev hardcode (jamais retirable, unique proprietaire).
+// Les autres admins sont geres dynamiquement via la collection Firestore 'admins'.
 function isAdmin(pseudoParam) {
   var pseudo = (pseudoParam || getPseudo() || '').trim().toLowerCase();
-  return pseudo === 'obstinate' || pseudo === 'obstinate2.0' || pseudo === 'chrikidd77';
+  if (pseudo === 'obstinate' || pseudo === 'obstinate2.0') return true;
+  // Check Firestore admins list (chargee en memoire par salon.js)
+  if (typeof _adminsPseudos !== 'undefined' && _adminsPseudos[pseudo]) return true;
+  return false;
 }
 
 function getPseudo() {

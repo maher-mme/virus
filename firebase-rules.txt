@@ -170,6 +170,14 @@ service cloud.firestore {
       allow delete: if true;
     }
 
+    // Admins : joueurs promus par l'owner (acces editeur + moderation)
+    // Lecture publique (pour que chaque client verifie ses droits)
+    // Ecriture : autorisee cote client (restriction UI a l'owner Obstinate)
+    match /admins/{playerId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
     // Sessions multi temps reel pour un niveau (Phase 5)
     // - Un doc parent = une session (avec createdAt + playerCount)
     // - Une subcollection players/ avec les positions de chaque joueur

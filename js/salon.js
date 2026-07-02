@@ -68,20 +68,69 @@ function salonRafraichir() {
   salonStartModListener();
 }
 
-// === HUB DE JEUX : etat de la card CREER selon le feature flag ===
+// === SYSTEME D'ADMINS (Firestore) ===
+// admins/{playerId} = { pseudo, grantedBy, grantedAt }
+// Owner Obstinate reste hardcode (jamais dans cette liste, mais toujours admin).
+var _admins = {};             // playerId → { pseudo, grantedBy, grantedAt }
+var _adminsPseudos = {};      // pseudo lowercase → true (utilise par isAdmin() dans account.js)
+var _adminsUnsub = null;
+var _adminsIsFirstLoad = true;
+function initAdmins() {
+  if (typeof db === 'undefined') return;
+  if (_adminsUnsub) return;
+  _adminsUnsub = db.collection('admins').onSnapshot(function(snap) {
+    _admins = {};
+    _adminsPseudos = {};
+    snap.forEach(function(doc) {
+      var d = doc.data() || {};
+      _admins[doc.id] = d;
+      if (d.pseudo) _adminsPseudos[String(d.pseudo).trim().toLowerCase()] = true;
+    });
+    // Detecter si MOI je viens d'etre promu → notification bienvenue
+    if (!_adminsIsFirstLoad && typeof monPlayerId !== 'undefined' && _admins[monPlayerId]) {
+      var deja = localStorage.getItem('virus_admin_notified');
+      if (deja !== '1') {
+        localStorage.setItem('virus_admin_notified', '1');
+        if (typeof showNotif === 'function') {
+          showNotif('Tu es maintenant admin ! Editeur et moderation debloques.', 'success');
+        }
+      }
+    } else if (!_admins[typeof monPlayerId !== 'undefined' ? monPlayerId : '']) {
+      // Si je ne suis plus admin, reset le flag notif
+      localStorage.removeItem('virus_admin_notified');
+    }
+    _adminsIsFirstLoad = false;
+    if (typeof salonRefreshHub === 'function') salonRefreshHub();
+    if (typeof majAdminsListUI === 'function') majAdminsListUI();
+  }, function() {});
+}
+
+function estAdminFirestore() {
+  if (typeof monPlayerId === 'undefined' || !monPlayerId) return false;
+  return !!_admins[monPlayerId];
+}
+
+// Le joueur a-t-il le droit d'ouvrir l'editeur ?
+// = owner (Obstinate) OU admin Firestore (le flag creerNiveau reste un kill switch global)
+function peutCreerNiveaux() {
+  var flagActif = (typeof isFeatureActive === 'function') && isFeatureActive('creerNiveau');
+  if (!flagActif) return false;
+  var estOwner = (typeof peutOuvrirConsole === 'function') && peutOuvrirConsole();
+  return estOwner || estAdminFirestore();
+}
+
+// === HUB DE JEUX : la card CREER est CACHEE pour les non-admins (non affichee) ===
 function salonRefreshHub() {
   var card = document.getElementById('salon-hub-card-creer');
   if (!card) return;
-  var actif = (typeof isFeatureActive === 'function') && isFeatureActive('creerNiveau');
-  card.classList.toggle('salon-hub-card-disabled', !actif);
-  var sous = document.getElementById('salon-hub-card-creer-sous');
-  if (sous) sous.textContent = actif ? 'Cree ton parcours' : 'Bientot disponible';
+  var actif = peutCreerNiveaux();
+  card.style.display = actif ? '' : 'none';
 }
 
-// === OUVRIR L'EDITEUR DE NIVEAUX (no-op si feature flag inactif) ===
+// === OUVRIR L'EDITEUR DE NIVEAUX ===
 function salonOuvrirCreer() {
-  if (typeof isFeatureActive !== 'function' || !isFeatureActive('creerNiveau')) {
-    if (typeof showNotif === 'function') showNotif('Bientot disponible !', 'info');
+  if (!peutCreerNiveaux()) {
+    if (typeof showNotif === 'function') showNotif('Reserve aux admins', 'info');
     return;
   }
   if (typeof ED === 'undefined' || typeof ED.open !== 'function') {
@@ -90,6 +139,63 @@ function salonOuvrirCreer() {
   }
   ED.open();
 }
+
+// === GESTION DES ADMINS (UI dev owner) ===
+function ajouterAdmin() {
+  if (typeof peutOuvrirConsole !== 'function' || !peutOuvrirConsole()) return;
+  var input = document.getElementById('input-admin-pseudo');
+  var pseudo = (input && input.value || '').trim();
+  if (!pseudo) { showNotif('Entre un pseudo', 'warn'); return; }
+  if (typeof db === 'undefined') return;
+  db.collection('players').where('pseudo', '==', pseudo).limit(1).get()
+    .then(function(snap) {
+      if (snap.empty) { showNotif('Joueur introuvable', 'error'); return; }
+      var doc = snap.docs[0];
+      var pid = doc.id;
+      var monPseudo = (typeof getPseudo === 'function') ? getPseudo() : 'owner';
+      return db.collection('admins').doc(pid).set({
+        pseudo: pseudo,
+        grantedBy: monPseudo,
+        grantedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(function() {
+        showNotif(pseudo + ' est maintenant admin', 'success');
+        if (input) input.value = '';
+      });
+    }).catch(function() { showNotif('Erreur', 'error'); });
+}
+
+function retirerAdmin(playerId) {
+  if (typeof peutOuvrirConsole !== 'function' || !peutOuvrirConsole()) return;
+  var pseudo = _admins[playerId] && _admins[playerId].pseudo;
+  if (!window.confirm('Retirer ' + (pseudo || 'ce joueur') + ' des admins ?')) return;
+  db.collection('admins').doc(playerId).delete().then(function() {
+    showNotif('Retire', 'success');
+  }).catch(function() { showNotif('Erreur', 'error'); });
+}
+
+function majAdminsListUI() {
+  var container = document.getElementById('admins-list');
+  if (!container) return;
+  container.innerHTML = '';
+  var ids = Object.keys(_admins);
+  if (ids.length === 0) {
+    container.innerHTML = '<div style="color:#95a5a6;font-size:11px;padding:8px;">Aucun admin pour l\'instant.</div>';
+    return;
+  }
+  ids.forEach(function(pid) {
+    var d = _admins[pid];
+    var row = document.createElement('div');
+    row.className = 'admin-row';
+    row.innerHTML =
+      '<span class="admin-pseudo">' + (d.pseudo || '?') + '</span>' +
+      '<button class="admin-remove" title="Retirer">&times;</button>';
+    row.querySelector('.admin-remove').onclick = function() { retirerAdmin(pid); };
+    container.appendChild(row);
+  });
+}
+
+// Auto-init
+setTimeout(initAdmins, 2000);
 
 // === MISE A JOUR DU NIVEAU (avec retry) ===
 var _salonNiveauRetryCount = 0;

@@ -25,7 +25,7 @@
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css?v=4">
   <link rel="stylesheet" href="css/components.css?v=8">
-  <link rel="stylesheet" href="css/menu.css?v=54">
+  <link rel="stylesheet" href="css/menu.css?v=55">
   <link rel="stylesheet" href="css/lobby.css?v=20260412">
   <link rel="stylesheet" href="css/game.css?v=23">
   <link rel="stylesheet" href="css/hud.css?v=17">
@@ -45,7 +45,7 @@
       <div id="loading-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#e74c3c,#f39c12);transition:width 0.3s;box-shadow:0 0 10px rgba(231,76,60,0.6);"></div>
     </div>
     <div id="loading-text" style="font-size:13px;color:#ecf0f1;letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;width:100%;">Chargement...</div>
-    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.6.29 - ALPHA</div>
+    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.6.30 - ALPHA</div>
   </div>
 
   <!-- Emoji Picker -->
@@ -201,7 +201,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS 3.6.29 - ALPHA</span>
+    <span class="version">VIRUS 3.6.30 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -280,7 +280,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.29 - ALPHA</span>
+    <span class="version">VIRUS 3.6.30 - ALPHA</span>
     </div>
   </div>
 
@@ -384,7 +384,7 @@
             &#128229; <span data-i18n="downloadAppBtn">TELECHARGER</span>
           </button>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.6.29 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.6.30 - ALPHA</p>
         </div><!-- /params-tab-compte -->
 
         <!-- ONGLET BUG / SIGNALEMENT (tout le monde) -->
@@ -477,7 +477,7 @@
 
           <div class="popup-section" style="text-align:center;">
             <p style="font-size:13px;color:#bdc3c7;margin:8px 0;" data-i18n="creditsThanks">&#10084; Merci a tous les joueurs et testeurs !</p>
-            <p style="font-size:11px;color:#7f8c8d;margin:4px 0;">VIRUS 3.6.29 - ALPHA</p>
+            <p style="font-size:11px;color:#7f8c8d;margin:4px 0;">VIRUS 3.6.30 - ALPHA</p>
           </div>
         </div><!-- /params-tab-credits -->
 
@@ -509,6 +509,18 @@
             <button class="btn-sauver-pseudo" onclick="purgerToutesLesParties()" style="background:linear-gradient(180deg,#e74c3c,#c0392b);border-color:#e74c3c;width:100%;padding:10px;">&#128465; PURGER TOUTES LES PARTIES</button>
             <button class="btn-sauver-pseudo" onclick="SE.openTest()" style="background:linear-gradient(180deg,#3498db,#2980b9);border-color:#3498db;width:100%;padding:10px;margin-top:8px;">&#127918; TEST SIDE ENGINE (parcours)</button>
             <button class="btn-sauver-pseudo" onclick="forcerMajPWA()" style="background:linear-gradient(180deg,#f39c12,#e67e22);border-color:#f39c12;width:100%;padding:10px;margin-top:8px;">&#128260; FORCER MAJ PWA (vider cache + reload)</button>
+          </div>
+          <div class="popup-section">
+            <label>&#128273; ADMINS</label>
+            <p style="font-size:11px;color:#95a5a6;margin:6px 0 8px;line-height:1.4;">
+              Les admins ont acces a l'editeur, la moderation et le badge admin.
+              Ajoute-en un en tapant son pseudo (il doit avoir un compte).
+            </p>
+            <div style="display:flex;gap:6px;">
+              <input type="text" id="input-admin-pseudo" placeholder="Pseudo a promouvoir" maxlength="20" style="flex:1;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:8px;color:white;font-size:13px;">
+              <button class="btn-sauver-pseudo" onclick="ajouterAdmin()" style="background:#27ae60;border-color:#2ecc71;padding:8px 12px;">&#43; AJOUTER</button>
+            </div>
+            <div id="admins-list" style="margin-top:10px;display:flex;flex-direction:column;gap:6px;"></div>
           </div>
         </div>
       </div>
@@ -777,7 +789,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.29 - ALPHA</span>
+    <span class="version">VIRUS 3.6.30 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -838,7 +850,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline" id="version-inline">3.6.29 - ALPHA</span>
+        <span class="version-inline" id="version-inline">3.6.30 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -1052,7 +1064,7 @@
       </button>
     </div>
 
-    <span class="version">VIRUS 3.6.29 - ALPHA</span>
+    <span class="version">VIRUS 3.6.30 - ALPHA</span>
     </div>
   </div>
 
@@ -1157,7 +1169,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.29 - ALPHA</span>
+    <span class="version">VIRUS 3.6.30 - ALPHA</span>
     </div>
   </div>
 
@@ -1203,7 +1215,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS 3.6.29 - ALPHA</span>
+    <span class="version">VIRUS 3.6.30 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -2389,7 +2401,7 @@
 <script src="js/particles.js?v=1"></script>
 <script src="js/sfx.js?v=2"></script>
 <script src="js/featureFlags.js?v=8"></script>
-<script src="js/salon.js?v=22"></script>
+<script src="js/salon.js?v=23"></script>
 <script src="js/salonGroup.js?v=3"></script>
 <script src="js/testdev.js?v=1"></script>
 <script src="js/sideEngine.js?v=8"></script>

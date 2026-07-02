@@ -2569,6 +2569,34 @@ div.salon-hub-card-img {
   font-weight: bold;
   font-size: 12px;
 }
+/* Liste des admins (panneau DEV) */
+.admin-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #1a252f;
+  border: 1px solid #34495e;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+.admin-pseudo {
+  flex: 1;
+  color: #ecf0f1;
+  font-size: 13px;
+  font-weight: bold;
+}
+.admin-remove {
+  background: rgba(231, 76, 60, 0.2);
+  border: 1px solid #e74c3c;
+  color: #e74c3c;
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+}
+.admin-remove:hover { background: #e74c3c; color: white; }
+
 /* Bouton supprimer dans la card monde (createur ou admin uniquement) */
 .salon-monde-delete {
   background: rgba(231, 76, 60, 0.15);

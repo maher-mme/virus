@@ -417,48 +417,6 @@ function salonCreerCardMonde(lvl) {
   return div;
 }
 
-// === REJOINDRE UN MONDE PAR CODE ===
-function salonOuvrirRejoindreParCode() {
-  var pop = document.getElementById('popup-rejoindre-code');
-  if (!pop) return;
-  pop.classList.add('visible');
-  var inp = document.getElementById('rejoindre-code-input');
-  if (inp) { inp.value = ''; setTimeout(function(){ inp.focus(); }, 100); }
-}
-
-function salonFermerRejoindreParCode() {
-  var pop = document.getElementById('popup-rejoindre-code');
-  if (pop) pop.classList.remove('visible');
-}
-
-function salonRejoindreParCode() {
-  var inp = document.getElementById('rejoindre-code-input');
-  var code = (inp && inp.value || '').trim().toUpperCase();
-  if (code.length !== 6) {
-    if (typeof showNotif === 'function') showNotif(
-      (typeof t === 'function' ? t('edCodeInvalid') : null) || 'Code invalide (6 caracteres)', 'warn');
-    return;
-  }
-  if (typeof db === 'undefined') return;
-  showNotif((typeof t === 'function' ? t('edCodeSearching') : null) || 'Recherche...', 'info');
-  db.collection('customLevels').where('code', '==', code).limit(1).get()
-    .then(function(snap) {
-      if (snap.empty) {
-        showNotif((typeof t === 'function' ? t('edCodeNotFound') : null) || 'Code introuvable', 'error');
-        return;
-      }
-      var doc = snap.docs[0];
-      var lvl = doc.data();
-      lvl._id = doc.id;
-      salonFermerRejoindreParCode();
-      salonLancerMonde(lvl);
-    })
-    .catch(function(err) {
-      console.error(err);
-      showNotif((typeof t === 'function' ? t('edCodeError') : null) || 'Erreur recherche', 'error');
-    });
-}
-
 // === LANCEMENT D'UN MONDE CUSTOM ===
 function salonLancerMonde(lvl) {
   if (!lvl || !lvl.spawn || !lvl.endZone || !lvl.platforms) {

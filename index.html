@@ -25,7 +25,7 @@
   <!-- CSS -->
   <link rel="stylesheet" href="css/base.css?v=4">
   <link rel="stylesheet" href="css/components.css?v=8">
-  <link rel="stylesheet" href="css/menu.css?v=50">
+  <link rel="stylesheet" href="css/menu.css?v=51">
   <link rel="stylesheet" href="css/lobby.css?v=20260412">
   <link rel="stylesheet" href="css/game.css?v=23">
   <link rel="stylesheet" href="css/hud.css?v=17">
@@ -45,7 +45,7 @@
       <div id="loading-bar" style="width:0%;height:100%;background:linear-gradient(90deg,#e74c3c,#f39c12);transition:width 0.3s;box-shadow:0 0 10px rgba(231,76,60,0.6);"></div>
     </div>
     <div id="loading-text" style="font-size:13px;color:#ecf0f1;letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;width:100%;">Chargement...</div>
-    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.6.23 - ALPHA</div>
+    <div id="loading-version" style="position:absolute;bottom:15px;right:20px;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-shadow:0 1px 3px rgba(0,0,0,0.8);">3.6.24 - ALPHA</div>
   </div>
 
   <!-- Emoji Picker -->
@@ -85,25 +85,6 @@
     </div>
   </div>
 
-
-  <!-- POPUP REJOINDRE UN MONDE PAR CODE (Phase 4) -->
-  <div class="popup-overlay" id="popup-rejoindre-code">
-    <div class="popup-box" style="max-width:380px;">
-      <div class="popup-header" style="background:#f39c12;">
-        <h3>&#128273; <span data-i18n="edJoinByCode">REJOINDRE PAR CODE</span></h3>
-        <button class="popup-close" onclick="salonFermerRejoindreParCode()">&times;</button>
-      </div>
-      <div class="popup-body" style="padding:20px;">
-        <div class="popup-section">
-          <label data-i18n="edCodeLabel">CODE DU NIVEAU (6 caracteres)</label>
-          <input type="text" id="rejoindre-code-input" placeholder="A3B7X2" maxlength="6" autocomplete="off" style="width:100%;background:#1a252f;border:2px solid #34495e;border-radius:8px;padding:12px;color:white;font-size:20px;letter-spacing:6px;text-align:center;text-transform:uppercase;margin-top:6px;box-sizing:border-box;font-family:monospace;">
-        </div>
-        <button class="btn-sauver-pseudo" onclick="salonRejoindreParCode()" style="width:100%;padding:12px;background:linear-gradient(180deg,#f39c12,#e67e22);border-color:#f5b041;font-size:14px;margin-top:12px;">
-          &#9658; <span data-i18n="edJoinBtn">JOINDRE LE MONDE</span>
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- POPUP PUBLIER UN NIVEAU (Phase 3) -->
   <div class="popup-overlay" id="popup-publier-niveau">
@@ -203,7 +184,7 @@
       </form>
     </div>
 
-    <span class="version">VIRUS 3.6.23 - ALPHA</span>
+    <span class="version">VIRUS 3.6.24 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -282,7 +263,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.23 - ALPHA</span>
+    <span class="version">VIRUS 3.6.24 - ALPHA</span>
     </div>
   </div>
 
@@ -386,7 +367,7 @@
             &#128229; <span data-i18n="downloadAppBtn">TELECHARGER</span>
           </button>
         </div>
-        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.6.23 - ALPHA</p>
+        <p class="popup-info" data-i18n="savedAuto" data-i18n-html>Les changements sont sauvegardes automatiquement.<br>VIRUS 3.6.24 - ALPHA</p>
         </div><!-- /params-tab-compte -->
 
         <!-- ONGLET BUG / SIGNALEMENT (tout le monde) -->
@@ -479,7 +460,7 @@
 
           <div class="popup-section" style="text-align:center;">
             <p style="font-size:13px;color:#bdc3c7;margin:8px 0;" data-i18n="creditsThanks">&#10084; Merci a tous les joueurs et testeurs !</p>
-            <p style="font-size:11px;color:#7f8c8d;margin:4px 0;">VIRUS 3.6.23 - ALPHA</p>
+            <p style="font-size:11px;color:#7f8c8d;margin:4px 0;">VIRUS 3.6.24 - ALPHA</p>
           </div>
         </div><!-- /params-tab-credits -->
 
@@ -767,17 +748,14 @@
 
       <!-- MONDES : niveaux publies par la communaute (Phase 3) -->
       <div class="salon-hub-mondes">
-        <div class="salon-hub-mondes-header">
-          <h3 class="salon-hub-titre" data-i18n="salonMondesTitre">MONDES CREES PAR LES JOUEURS</h3>
-          <button class="salon-btn-code" onclick="salonOuvrirRejoindreParCode()">&#128273; <span data-i18n="edJoinByCode">REJOINDRE PAR CODE</span></button>
-        </div>
+        <h3 class="salon-hub-titre" data-i18n="salonMondesTitre">MONDES CREES PAR LES JOUEURS</h3>
         <div class="salon-mondes-list" id="salon-mondes-list">
           <div class="salon-mondes-empty" data-i18n="salonMondesLoading">Chargement des mondes...</div>
         </div>
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.23 - ALPHA</span>
+    <span class="version">VIRUS 3.6.24 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -838,7 +816,7 @@
 
       <div class="titre-virus-container">
         <h1 class="titre-virus">VIRUS</h1>
-        <span class="version-inline" id="version-inline">3.6.23 - ALPHA</span>
+        <span class="version-inline" id="version-inline">3.6.24 - ALPHA</span>
       </div>
 
       <svg class="virus-icon" viewBox="-35 -35 70 70">
@@ -1052,7 +1030,7 @@
       </button>
     </div>
 
-    <span class="version">VIRUS 3.6.23 - ALPHA</span>
+    <span class="version">VIRUS 3.6.24 - ALPHA</span>
     </div>
   </div>
 
@@ -1157,7 +1135,7 @@
       </div>
     </div>
 
-    <span class="version">VIRUS 3.6.23 - ALPHA</span>
+    <span class="version">VIRUS 3.6.24 - ALPHA</span>
     </div>
   </div>
 
@@ -1203,7 +1181,7 @@
       &#128465; PURGER TOUTES LES PARTIES
     </button>
 
-    <span class="version">VIRUS 3.6.23 - ALPHA</span>
+    <span class="version">VIRUS 3.6.24 - ALPHA</span>
   </div>
 
   <!-- ============================== -->
@@ -2389,7 +2367,7 @@
 <script src="js/particles.js?v=1"></script>
 <script src="js/sfx.js?v=2"></script>
 <script src="js/featureFlags.js?v=8"></script>
-<script src="js/salon.js?v=18"></script>
+<script src="js/salon.js?v=19"></script>
 <script src="js/salonGroup.js?v=3"></script>
 <script src="js/testdev.js?v=1"></script>
 <script src="js/sideEngine.js?v=6"></script>

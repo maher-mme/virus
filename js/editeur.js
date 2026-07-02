@@ -14,13 +14,16 @@ ED.GRID_SIZE = 32;
 // On garde une limite pour eviter les niveaux de plusieurs Mo qui exploseraient Firestore
 ED.WORLD_W   = 500;
 ED.WORLD_H   = 50;
-// Cle base ; la vraie cle est calculee dynamiquement par joueur (voir ED._storageKey)
+// Cle base ; la vraie cle est calculee dynamiquement par pseudo (voir ED._storageKey)
 ED.STORAGE_KEY_BASE = 'virus_editor_level';
 
-// Cle de stockage par joueur (isole les brouillons entre comptes sur le meme appareil)
+// Cle de stockage par compte (pseudo). Le pseudo est le seul truc qui change
+// vraiment quand on switche de compte sur le meme appareil. monPlayerId
+// pouvait etre le meme entre deux comptes selon comment le login a ete fait.
 ED._storageKey = function() {
-  var pid = (typeof monPlayerId !== 'undefined' && monPlayerId) ? monPlayerId : 'anon';
-  return ED.STORAGE_KEY_BASE + '__' + pid;
+  var pseudo = (typeof getPseudo === 'function' && getPseudo()) || '';
+  var slug = pseudo.trim().toLowerCase() || 'anon';
+  return ED.STORAGE_KEY_BASE + '__' + slug;
 };
 
 // === Etat ===
@@ -119,17 +122,30 @@ ED.close = function() {
   if (typeof showScreen === 'function') showScreen('menu-salon');
 };
 
-// One-shot : migrer l'ancienne cle globale 'virus_editor_level' vers la nouvelle par joueur.
-// Ainsi le brouillon en cours du compte courant n'est pas perdu au premier lancement de v3.6.34.
+// One-shot : migrer l'ancienne cle globale + la cle par playerId (v3.6.34) vers
+// la nouvelle cle par pseudo (v3.6.35). Evite de perdre le brouillon en cours.
 ED._migrerAncienneStorageKey = function() {
   try {
-    var old = localStorage.getItem(ED.STORAGE_KEY_BASE);
-    if (!old) return;
     var nouvelleCle = ED._storageKey();
-    if (!localStorage.getItem(nouvelleCle)) {
-      localStorage.setItem(nouvelleCle, old);
+    if (localStorage.getItem(nouvelleCle)) {
+      // Deja migre pour ce compte : nettoyer les vieilles cles fantomes
+      localStorage.removeItem(ED.STORAGE_KEY_BASE);
+      return;
     }
+    // 1) Migration cle globale (versions < 3.6.34)
+    var oldGlobal = localStorage.getItem(ED.STORAGE_KEY_BASE);
+    // 2) Migration cle par playerId (version 3.6.34)
+    var oldByPid = null;
+    if (typeof monPlayerId !== 'undefined' && monPlayerId) {
+      oldByPid = localStorage.getItem(ED.STORAGE_KEY_BASE + '__' + monPlayerId);
+    }
+    var source = oldByPid || oldGlobal;
+    if (source) localStorage.setItem(nouvelleCle, source);
+    // Nettoyer les vieilles cles pour ne plus les partager entre comptes
     localStorage.removeItem(ED.STORAGE_KEY_BASE);
+    if (typeof monPlayerId !== 'undefined' && monPlayerId) {
+      localStorage.removeItem(ED.STORAGE_KEY_BASE + '__' + monPlayerId);
+    }
   } catch (e) {}
 };
 

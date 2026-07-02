@@ -228,7 +228,7 @@ SE._update = function(dt) {
         p.respawnY = bl.y - p.h;
         // Snapshot de l'etat des boutons au moment du checkpoint → conserve au respawn
         p.checkpointButtonState = p.buttonPressed;
-        if (typeof showNotif === 'function') showNotif((typeof t === 'function' ? t('edCheckpoint') : null) || 'Checkpoint !', 'success');
+        // Pas de notification (feedback visuel implicite : le checkpoint est passe)
       }
     } else if (bl.type === 'bouton' && !p.buttonPressed) {
       p.buttonPressed = true;
@@ -246,14 +246,12 @@ SE._update = function(dt) {
     }
   }
 
-  // 9) Arrivee
-  if (SE.level.endZone && SE._aabb(p, SE.level.endZone)) {
+  // 9) Arrivee → victoire, on stoppe et on retourne a l'editeur (ou menu-salon)
+  if (SE.level.endZone && SE._aabb(p, SE.level.endZone) && !p.won) {
     p.won = true;
-    setTimeout(function() {
-      if (typeof showNotif === 'function') showNotif('GAGNE !', 'success');
-      SE._respawn();
-      p.won = false;
-    }, 100);
+    SE.stop();
+    if (typeof showNotif === 'function') showNotif((typeof t === 'function' ? t('edWon') : null) || 'GAGNE !', 'success');
+    setTimeout(function() { SE.closeTest(); }, 1000);
   }
 
   // 10) Camera centree sur le joueur, bornee au niveau

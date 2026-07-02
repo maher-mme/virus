@@ -14,7 +14,14 @@ ED.GRID_SIZE = 32;
 // On garde une limite pour eviter les niveaux de plusieurs Mo qui exploseraient Firestore
 ED.WORLD_W   = 500;
 ED.WORLD_H   = 50;
-ED.STORAGE_KEY = 'virus_editor_level';
+// Cle base ; la vraie cle est calculee dynamiquement par joueur (voir ED._storageKey)
+ED.STORAGE_KEY_BASE = 'virus_editor_level';
+
+// Cle de stockage par joueur (isole les brouillons entre comptes sur le meme appareil)
+ED._storageKey = function() {
+  var pid = (typeof monPlayerId !== 'undefined' && monPlayerId) ? monPlayerId : 'anon';
+  return ED.STORAGE_KEY_BASE + '__' + pid;
+};
 
 // === Etat ===
 ED.level = null;
@@ -81,8 +88,10 @@ ED.creerNiveauVide = function() {
 
 // === Ouvrir l'editeur (depuis card CREER du hub salon) ===
 ED.open = function() {
-  // Charger le dernier niveau sauve ou en creer un nouveau
-  var saved = localStorage.getItem(ED.STORAGE_KEY);
+  // Migration one-shot : ancienne cle globale → nouvelle cle par joueur
+  ED._migrerAncienneStorageKey();
+  // Charger le dernier niveau sauve (par joueur) ou en creer un nouveau
+  var saved = localStorage.getItem(ED._storageKey());
   try { ED.level = saved ? JSON.parse(saved) : ED.creerNiveauVide(); }
   catch (e) { ED.level = ED.creerNiveauVide(); }
   // Migration : si le niveau a des dimensions plus petites que le monde actuel, on l'agrandit
@@ -110,10 +119,24 @@ ED.close = function() {
   if (typeof showScreen === 'function') showScreen('menu-salon');
 };
 
+// One-shot : migrer l'ancienne cle globale 'virus_editor_level' vers la nouvelle par joueur.
+// Ainsi le brouillon en cours du compte courant n'est pas perdu au premier lancement de v3.6.34.
+ED._migrerAncienneStorageKey = function() {
+  try {
+    var old = localStorage.getItem(ED.STORAGE_KEY_BASE);
+    if (!old) return;
+    var nouvelleCle = ED._storageKey();
+    if (!localStorage.getItem(nouvelleCle)) {
+      localStorage.setItem(nouvelleCle, old);
+    }
+    localStorage.removeItem(ED.STORAGE_KEY_BASE);
+  } catch (e) {}
+};
+
 // === Actions toolbar ===
 ED.save = function(silencieux) {
   try {
-    localStorage.setItem(ED.STORAGE_KEY, JSON.stringify(ED.level));
+    localStorage.setItem(ED._storageKey(), JSON.stringify(ED.level));
     if (!silencieux && typeof showNotif === 'function') showNotif(ED._t('edNotifSaved', 'Niveau sauvegarde'), 'success');
   } catch (e) {
     if (typeof showNotif === 'function') showNotif(ED._t('edNotifSaveErr', 'Erreur sauvegarde'), 'error');

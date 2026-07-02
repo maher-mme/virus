@@ -65,26 +65,37 @@ function confirmerInstallPWA() {
   }
 })();
 
-// Forcer la MAJ : desenregistre le SW + vide les caches + reload
+// Forcer la MAJ : desenregistre le SW + vide les caches + reload avec cache-bust
+// Utile sur PWA installe ou le navigateur peut ne pas re-fetch le HTML meme apres SW unregister.
 function forcerMajPWA() {
   if (typeof showNotif === 'function') showNotif('Mise a jour en cours...', 'info');
+  var taches = [];
+  // 1) Desabonner tous les SW
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function(regs) {
-      return Promise.all(regs.map(function(r) { return r.unregister(); }));
-    }).then(function() {
-      if ('caches' in window) {
-        return caches.keys().then(function(keys) {
-          return Promise.all(keys.map(function(k) { return caches.delete(k); }));
-        });
-      }
-    }).then(function() {
-      window.location.reload(true);
-    }).catch(function() {
-      window.location.reload(true);
-    });
-  } else {
-    window.location.reload(true);
+    taches.push(
+      navigator.serviceWorker.getRegistrations().then(function(regs) {
+        return Promise.all(regs.map(function(r) { return r.unregister(); }));
+      }).catch(function() {})
+    );
   }
+  // 2) Vider tous les caches (SW cache + HTTP cache si possible)
+  if ('caches' in window) {
+    taches.push(
+      caches.keys().then(function(keys) {
+        return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+      }).catch(function() {})
+    );
+  }
+  // 3) Vider localStorage.virusVersion pour forcer re-check
+  try { localStorage.removeItem('virusVersion'); } catch (e) {}
+  // 4) Vider IndexedDB Firebase (au cas ou)
+  // — laisse Firebase se re-hydrater proprement
+  Promise.all(taches).finally(function() {
+    // Reload avec un query cache-bust : force le navigateur a refetch le HTML
+    // meme sur PWA installee. Le SW etant unregister, aucune interception.
+    var base = window.location.pathname + '?_v=' + Date.now();
+    window.location.replace(base);
+  });
 }
 
 // Pre-charge tous les skins/pets/badges/musiques en arriere-plan apres le load
@@ -289,7 +300,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.6.21';
+var CURRENT_VERSION = '3.6.22';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 

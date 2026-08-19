@@ -1905,12 +1905,14 @@ body.salon-mode #btn-amis {
   body.salon-mode #panel-amis {
     top: 100px !important;
     height: calc(100vh - 100px) !important;
+    height: calc(100dvh - 100px) !important;
   }
 }
 /* Sur desktop aussi : panel sous la topbar */
 body.salon-mode #panel-amis {
   top: 120px;
   height: calc(100vh - 120px);
+  height: calc(100dvh - 120px);
 }
 .salon-user-info {
   display: flex;
@@ -2016,14 +2018,23 @@ body.salon-mode #panel-amis {
   align-items: stretch;
   justify-content: flex-start;
   padding: 130px 20px 32px;
+  padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
   position: relative;
   box-sizing: border-box;
 }
 @media (max-width: 700px) {
-  .salon-main { padding: 110px 14px 24px; }
+  .salon-main {
+    padding: 110px 14px 24px;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 /* Vue JOUER : prend toute la hauteur visible (le hub est en dessous, accessible au scroll) */
+/* IMPORTANT : la hauteur se calcule en dvh, pas en vh. Sur mobile/tablette, 100vh vaut
+   la hauteur "barres du navigateur retractees" — donc plus que la zone reellement
+   visible. En <=700px la vue passe en column-reverse : le bouton JOUER est le
+   DERNIER element, cale sur le bas de cette boite. Avec vh il finissait sous le
+   bord bas de l'ecran (barre d'outils du navigateur), hors de vue. */
 .salon-jouer-view {
   display: flex;
   align-items: center;
@@ -2034,10 +2045,12 @@ body.salon-mode #panel-amis {
   margin: 0 auto;
   flex-wrap: wrap;
   min-height: calc(100vh - 230px);
+  min-height: calc(100dvh - 230px);
 }
 @media (max-width: 700px) {
   .salon-jouer-view {
     min-height: calc(100vh - 190px);
+    min-height: calc(100dvh - 190px);
     gap: 24px;
   }
 }

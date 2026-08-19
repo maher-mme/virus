@@ -75,9 +75,15 @@ var _admins = {};             // playerId → { pseudo, grantedBy, grantedAt }
 var _adminsPseudos = {};      // pseudo lowercase → true (utilise par isAdmin() dans account.js)
 var _adminsUnsub = null;
 var _adminsIsFirstLoad = true;
+var _adminsInitTries = 0;
 function initAdmins() {
-  if (typeof db === 'undefined') return;
   if (_adminsUnsub) return;
+  if (typeof db === 'undefined' || !db) {
+    // Firebase pas encore pret : on retente au lieu d'abandonner definitivement
+    // (sinon aucun admin promu n'obtient jamais ses droits sur cette session)
+    if (_adminsInitTries++ < 15) setTimeout(initAdmins, 1000);
+    return;
+  }
   _adminsUnsub = db.collection('admins').onSnapshot(function(snap) {
     _admins = {};
     _adminsPseudos = {};
@@ -102,12 +108,21 @@ function initAdmins() {
     _adminsIsFirstLoad = false;
     if (typeof salonRefreshHub === 'function') salonRefreshHub();
     if (typeof majAdminsListUI === 'function') majAdminsListUI();
+    // Une promotion/retrogradation doit prendre effet sans recharger la page
+    if (typeof salonStartModListener === 'function') salonStartModListener();
   }, function() {});
 }
 
+// Suis-je dans la liste d'admins Firestore ?
+// On teste le playerId ET le pseudo : la promotion cible le doc players/{id},
+// mais le monPlayerId local peut differer (ancien compte, appareil different).
+// isAdmin() (badge, skins) etant deja base sur le pseudo, on aligne les deux —
+// sinon un admin promu voit son badge mais reste bloque hors de l'editeur.
+// Les pseudos sont uniques (verifies sur pseudoLower a la creation de compte).
 function estAdminFirestore() {
-  if (typeof monPlayerId === 'undefined' || !monPlayerId) return false;
-  return !!_admins[monPlayerId];
+  if (typeof monPlayerId !== 'undefined' && monPlayerId && _admins[monPlayerId]) return true;
+  var pseudo = ((typeof getPseudo === 'function' ? getPseudo() : '') || '').trim().toLowerCase();
+  return !!(pseudo && _adminsPseudos[pseudo]);
 }
 
 // Le joueur a-t-il le droit d'ouvrir l'editeur ?
@@ -118,6 +133,13 @@ function peutCreerNiveaux() {
   return estOwner || estAdminFirestore();
 }
 
+// Moderation des mondes : meme perimetre que l'editeur. Le panneau DEV annonce
+// "Les admins ont acces a l'editeur, la moderation et le badge admin" — avant,
+// la moderation etait en fait reservee a l'owner seul.
+function peutModererMondes() {
+  return peutCreerNiveaux();
+}
+
 // === HUB DE JEUX : la card CREER est CACHEE pour les non-admins ===
 // Aussi retire la classe "disabled" du HTML de base (verrou grise) au cas ou.
 function salonRefreshHub() {
@@ -126,6 +148,12 @@ function salonRefreshHub() {
   var actif = peutCreerNiveaux();
   card.style.display = actif ? '' : 'none';
   card.classList.toggle('salon-hub-card-disabled', !actif);
+  // La card est debloquee pour les admins : ne pas leur afficher "Bientot disponible"
+  var sous = document.getElementById('salon-hub-card-creer-sous');
+  if (sous) sous.textContent = actif ? 'Editeur de niveaux' : 'Bientot disponible';
+  // Si CREER etait selectionne et qu'on a perdu le droit (changement de compte),
+  // repasser sur VIRUS — sinon le bouton JOUER ne fait plus rien d'utile.
+  if (!actif && _salonGameSelected === 'creer') salonSelectGame('virus');
 }
 
 // === OUVRIR L'EDITEUR DE NIVEAUX ===
@@ -148,11 +176,15 @@ function ajouterAdmin() {
   var pseudo = (input && input.value || '').trim();
   if (!pseudo) { showNotif('Entre un pseudo', 'warn'); return; }
   if (typeof db === 'undefined') return;
-  db.collection('players').where('pseudo', '==', pseudo).limit(1).get()
+  // Recherche sur pseudoLower comme partout ailleurs (connexion, creation de compte) :
+  // sur le champ 'pseudo' la casse devait etre exacte → "Joueur introuvable" a tort.
+  db.collection('players').where('pseudoLower', '==', pseudo.toLowerCase()).limit(1).get()
     .then(function(snap) {
       if (snap.empty) { showNotif('Joueur introuvable', 'error'); return; }
       var doc = snap.docs[0];
       var pid = doc.id;
+      // Pseudo canonique du compte (bonne casse), pas celui tape par l'owner
+      pseudo = (doc.data() && doc.data().pseudo) || pseudo;
       var monPseudo = (typeof getPseudo === 'function') ? getPseudo() : 'owner';
       return db.collection('admins').doc(pid).set({
         pseudo: pseudo,
@@ -167,6 +199,7 @@ function ajouterAdmin() {
 
 function retirerAdmin(playerId) {
   if (typeof peutOuvrirConsole !== 'function' || !peutOuvrirConsole()) return;
+  if (typeof db === 'undefined') return;
   var pseudo = _admins[playerId] && _admins[playerId].pseudo;
   if (!window.confirm('Retirer ' + (pseudo || 'ce joueur') + ' des admins ?')) return;
   db.collection('admins').doc(playerId).delete().then(function() {
@@ -187,8 +220,9 @@ function majAdminsListUI() {
     var d = _admins[pid];
     var row = document.createElement('div');
     row.className = 'admin-row';
+    var pseudoAff = (typeof escapeHtml === 'function') ? escapeHtml(d.pseudo || '?') : (d.pseudo || '?');
     row.innerHTML =
-      '<span class="admin-pseudo">' + (d.pseudo || '?') + '</span>' +
+      '<span class="admin-pseudo">' + pseudoAff + '</span>' +
       '<button class="admin-remove" title="Retirer">&times;</button>';
     row.querySelector('.admin-remove').onclick = function() { retirerAdmin(pid); };
     container.appendChild(row);
@@ -437,13 +471,12 @@ var _salonGameSelected = 'virus';
 var _salonSelectedMonde = null;   // niveau custom actuellement selectionne (Phase 3)
 
 function salonSelectGame(gameId) {
-  // Card CREER : verifier feature flag (sinon notif et on ne change rien)
-  if (gameId === 'creer') {
-    var actif = (typeof isFeatureActive === 'function') && isFeatureActive('creerNiveau');
-    if (!actif) {
-      if (typeof showNotif === 'function') showNotif('Bientot disponible !', 'info');
-      return;
-    }
+  // Card CREER : reservee aux admins. On verifiait le feature flag 'creerNiveau',
+  // qui est en 'live' → il laissait passer tout le monde. Le vrai critere c'est
+  // le statut admin (celui qu'applique salonOuvrirCreer juste apres).
+  if (gameId === 'creer' && !peutCreerNiveaux()) {
+    if (typeof showNotif === 'function') showNotif('Bientot disponible !', 'info');
+    return;
   }
   _salonGameSelected = gameId;
   _salonSelectedMonde = null;
@@ -531,8 +564,7 @@ function salonCreerCardMonde(lvl) {
   // Bouton supprimer : uniquement pour le createur du niveau (et les admins)
   var mesId = (typeof monPlayerId !== 'undefined') ? monPlayerId : '';
   var estAMoi = mesId && lvl.creatorId === mesId;
-  var estAdmin = (typeof peutOuvrirConsole === 'function') && peutOuvrirConsole();
-  var canDelete = estAMoi || estAdmin;
+  var canDelete = estAMoi || peutModererMondes();
   var deleteBtn = canDelete ? '<button class="salon-monde-delete" title="Supprimer">&#128465;</button>' : '';
   div.innerHTML =
     '<div class="salon-monde-thumb">&#127918;</div>' +
@@ -557,6 +589,13 @@ function salonCreerCardMonde(lvl) {
 function salonSupprimerMonde(lvl) {
   if (!lvl || !lvl._id) return;
   if (typeof db === 'undefined') return;
+  // Re-verifier le droit ici aussi : le bouton est cache, mais la fonction est globale
+  var mesId = (typeof monPlayerId !== 'undefined') ? monPlayerId : '';
+  var estAMoi = mesId && lvl.creatorId === mesId;
+  if (!estAMoi && !peutModererMondes()) {
+    if (typeof showNotif === 'function') showNotif('Reserve aux admins', 'info');
+    return;
+  }
   var msg = 'Supprimer definitivement "' + (lvl.titre || 'Sans titre') + '" ?';
   if (!window.confirm(msg)) return;
   db.collection('customLevels').doc(lvl._id).delete().then(function() {
@@ -572,7 +611,15 @@ var _salonModUnsub = null;
 var _salonModVus = {};
 function salonStartModListener() {
   if (typeof db === 'undefined') return;
-  if (typeof peutOuvrirConsole !== 'function' || !peutOuvrirConsole()) return;
+  // Plus admin (deconnexion, changement de compte, retrogradation) : couper le
+  // listener et cacher le bouton, sinon il restait affiche pour le compte suivant.
+  if (!peutModererMondes()) {
+    if (_salonModUnsub) { try { _salonModUnsub(); } catch (e) {} _salonModUnsub = null; }
+    _salonModVus = {};
+    var btnOff = document.getElementById('salon-btn-moderation');
+    if (btnOff) btnOff.style.display = 'none';
+    return;
+  }
   if (_salonModUnsub) return;
   var first = true;
   _salonModUnsub = db.collection('customLevels')
@@ -604,6 +651,10 @@ function salonStartModListener() {
 }
 
 function salonOuvrirModeration() {
+  if (!peutModererMondes()) {
+    if (typeof showNotif === 'function') showNotif('Reserve aux admins', 'info');
+    return;
+  }
   var pop = document.getElementById('popup-moderation-mondes');
   if (!pop) return;
   pop.classList.add('visible');
@@ -652,6 +703,10 @@ function salonFermerModeration() {
 
 function salonModererMonde(levelId, status, card) {
   if (typeof db === 'undefined' || !levelId) return;
+  if (!peutModererMondes()) {
+    if (typeof showNotif === 'function') showNotif('Reserve aux admins', 'info');
+    return;
+  }
   db.collection('customLevels').doc(levelId).update({
     status: status,
     moderatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -681,6 +736,11 @@ function salonLancerMonde(lvl) {
       plays: firebase.firestore.FieldValue.increment(1)
     }).catch(function() {});
   }
+  // Un monde communautaire se quitte vers le salon. Sans ce reset, un
+  // SE.returnCallback laisse par un test d'editeur interrompu rouvrirait
+  // l'editeur a la fin de la partie — y compris pour un non-admin.
+  SE.returnScreen = 'menu-salon';
+  SE.returnCallback = null;
   // Phase 5 : chercher ou creer une session multi pour ce niveau
   salonTrouverOuCreerSession(lvl._id, function(sessionId) {
     if (typeof showScreen === 'function') showScreen('se-test');

@@ -4,9 +4,24 @@
 // Permet de creer un niveau parcours en placant des blocs sur une grille 32x32.
 // Outils dispo : sol, mur, spawn, arrivee, gomme.
 // Sauvegarde locale (localStorage). Test via SE.init() sur le niveau actuel.
-// Acces depuis le hub salon → card CREER (active via feature flag creerNiveau).
+// Acces RESERVE AUX ADMINS (owner Obstinate + admins promus via Firestore).
+// Le hub salon cache la card CREER, mais chaque point d'entree de ED revalide
+// le droit lui-meme : cacher un bouton n'est pas une protection.
 
 var ED = ED || {};
+
+// === CONTROLE D'ACCES ===
+// Source de verite : peutCreerNiveaux() (salon.js) = owner OU admin Firestore.
+// Fallback owner-only si salon.js n'est pas charge — on ne veut jamais "ouvert par defaut".
+ED.peutEditer = function() {
+  if (typeof peutCreerNiveaux === 'function') return peutCreerNiveaux();
+  return (typeof peutOuvrirConsole === 'function') && peutOuvrirConsole();
+};
+
+ED._refuser = function() {
+  if (typeof showNotif === 'function') showNotif('Reserve aux admins', 'info');
+  return false;
+};
 
 // === Constantes ===
 ED.GRID_SIZE = 32;
@@ -89,14 +104,32 @@ ED.creerNiveauVide = function() {
   };
 };
 
+// Remet un niveau charge (localStorage, potentiellement corrompu ou d'un ancien
+// format) dans une forme exploitable — sinon _render() plante sur platforms.forEach.
+ED._normaliser = function(lvl) {
+  if (!lvl || typeof lvl !== 'object') return ED.creerNiveauVide();
+  if (!Array.isArray(lvl.platforms)) lvl.platforms = [];
+  lvl.platforms = lvl.platforms.filter(function(p) {
+    return p && typeof p.x === 'number' && typeof p.y === 'number' &&
+           typeof p.w === 'number' && typeof p.h === 'number' && p.w > 0 && p.h > 0;
+  });
+  if (lvl.spawn && (typeof lvl.spawn.x !== 'number' || typeof lvl.spawn.y !== 'number')) lvl.spawn = null;
+  if (lvl.endZone && (typeof lvl.endZone.x !== 'number' || typeof lvl.endZone.y !== 'number' ||
+                      !lvl.endZone.w || !lvl.endZone.h)) lvl.endZone = null;
+  if (typeof lvl.titre !== 'string') lvl.titre = 'Mon niveau';
+  return lvl;
+};
+
 // === Ouvrir l'editeur (depuis card CREER du hub salon) ===
 ED.open = function() {
+  if (!ED.peutEditer()) return ED._refuser();
   // Migration one-shot : ancienne cle globale → nouvelle cle par joueur
   ED._migrerAncienneStorageKey();
   // Charger le dernier niveau sauve (par joueur) ou en creer un nouveau
   var saved = localStorage.getItem(ED._storageKey());
   try { ED.level = saved ? JSON.parse(saved) : ED.creerNiveauVide(); }
   catch (e) { ED.level = ED.creerNiveauVide(); }
+  ED.level = ED._normaliser(ED.level);
   // Migration : si le niveau a des dimensions plus petites que le monde actuel, on l'agrandit
   // (les blocs restent en place, on donne juste plus de terrain pour construire)
   var curW = ED.WORLD_W * ED.GRID_SIZE;
@@ -167,6 +200,8 @@ ED.clearAll = function() {
 };
 
 ED.test = function() {
+  if (!ED.peutEditer()) return ED._refuser();
+  if (!ED.level) return;
   if (!ED.level.spawn) {
     if (typeof showNotif === 'function') showNotif(ED._t('edNeedSpawn', 'Place un DEPART avant de tester'), 'warn');
     return;
@@ -201,6 +236,8 @@ ED.test = function() {
 
 // === PUBLIER LE NIVEAU (Phase 3) ===
 ED.publier = function() {
+  if (!ED.peutEditer()) return ED._refuser();
+  if (!ED.level) return;
   if (!ED.level.spawn) { showNotif(ED._t('edNeedSpawn', 'Place un DEPART avant de publier'), 'warn'); return; }
   if (!ED.level.endZone) { showNotif(ED._t('edNeedEnd', 'Place une ARRIVEE avant de publier'), 'warn'); return; }
   if (!ED.level.platforms || ED.level.platforms.length < 3) {
@@ -219,6 +256,9 @@ ED.fermerPublier = function() {
 };
 
 ED.publierConfirmer = function() {
+  // Deuxieme controle : la popup peut rester ouverte apres un changement de compte
+  if (!ED.peutEditer()) { ED.fermerPublier(); return ED._refuser(); }
+  if (!ED.level) return;
   var input = document.getElementById('publier-titre');
   var titre = (input && input.value || '').trim();
   if (titre.length < 3) { showNotif(ED._t('edTitleShort', 'Titre trop court (3 min)'), 'warn'); return; }
@@ -260,6 +300,7 @@ ED._checkPublishLimit = function() {
 };
 
 ED._doPublier = function(titre) {
+  if (!ED.peutEditer()) return ED._refuser();
   var pseudo = (typeof getPseudo === 'function') ? getPseudo() : 'Anonyme';
   var code = ED._generateCode();
   var data = {
@@ -354,20 +395,43 @@ ED._renderPalette = function() {
   picker.oninput = function(e) { ED.setColor(e.target.value); };
 };
 
-// === Events souris (placement / suppression / pan avec clic droit) ===
+// === Events pointeur (souris + tactile) ===
+// Souris  : clic gauche = placer, clic droit/milieu = deplacer la vue.
+// Tactile : 1 doigt = placer, 2 doigts = deplacer la vue.
+// (avant : uniquement des events souris → editeur inutilisable sur tablette/iPad,
+//  alors que la card CREER y est visible)
+ED._pointers = {};
+
 ED._setupEvents = function() {
   var c = ED.canvas;
-  c.onmousedown = function(e) {
-    if (e.button === 2) {
-      // Clic droit : pan
+  // Toujours repartir propre : _setupEvents peut etre rappele (retour de test,
+  // reouverture) et les addEventListener s'empileraient sinon.
+  ED._cleanup();
+  ED._pointers = {};
+  // Empeche le navigateur de scroller/zoomer pendant qu'on dessine au doigt
+  c.style.touchAction = 'none';
+
+  c.onpointerdown = function(e) {
+    ED._pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+    var nb = Object.keys(ED._pointers).length;
+    // Clic droit / molette, ou 2e doigt pose → mode deplacement
+    if (e.button === 1 || e.button === 2 || nb >= 2) {
+      ED.isDrawing = false;
       ED.isPanning = true;
       ED._panStart = { x: e.clientX, y: e.clientY, cx: ED.camera.x, cy: ED.camera.y };
       return;
     }
+    e.preventDefault();
+    try { c.setPointerCapture(e.pointerId); } catch (err) {}
     ED.isDrawing = true;
     ED._placeAt(e);
   };
-  c.onmousemove = function(e) {
+
+  c.onpointermove = function(e) {
+    if (ED._pointers[e.pointerId]) {
+      ED._pointers[e.pointerId].x = e.clientX;
+      ED._pointers[e.pointerId].y = e.clientY;
+    }
     if (ED.isPanning && ED._panStart) {
       ED.camera.x = ED._panStart.cx - (e.clientX - ED._panStart.x);
       ED.camera.y = ED._panStart.cy - (e.clientY - ED._panStart.y);
@@ -377,22 +441,34 @@ ED._setupEvents = function() {
     }
     var snap = ED._cellAt(e);
     if (snap) ED.hoverCell = snap;
-    if (ED.isDrawing) ED._placeAt(e);
+    if (ED.isDrawing) { e.preventDefault(); ED._placeAt(e); }
     else ED._render();
   };
-  c.onmouseup = function() {
+
+  c.onpointerup = c.onpointercancel = function(e) {
+    delete ED._pointers[e.pointerId];
+    try { c.releasePointerCapture(e.pointerId); } catch (err) {}
     if (ED.isDrawing) ED.save(true);
-    ED.isDrawing = false;
-    ED.isPanning = false;
-    ED.lastSnap.x = -1;
-    ED.lastSnap.y = -1;
+    var restants = Object.keys(ED._pointers);
+    if (restants.length === 0) {
+      ED.isDrawing = false;
+      ED.isPanning = false;
+      ED.lastSnap.x = -1;
+      ED.lastSnap.y = -1;
+    } else if (ED.isPanning) {
+      // Un doigt reste : re-ancrer le pan sur lui pour eviter un saut de camera
+      var p0 = ED._pointers[restants[0]];
+      ED._panStart = { x: p0.x, y: p0.y, cx: ED.camera.x, cy: ED.camera.y };
+    }
   };
-  c.onmouseleave = function() {
-    ED.isDrawing = false;
-    ED.isPanning = false;
+
+  c.onpointerleave = function(e) {
+    // Uniquement pour la souris : au tactile, pointerleave suit chaque lever de doigt
+    if (e.pointerType && e.pointerType !== 'mouse') return;
     ED.hoverCell = null;
     ED._render();
   };
+
   c.oncontextmenu = function(e) { e.preventDefault(); };
   // Molette : scroll vertical par defaut, horizontal avec Shift
   c.addEventListener('wheel', ED._onWheel, { passive: false });
@@ -440,6 +516,9 @@ ED._cleanup = function() {
   window.removeEventListener('resize', ED._resize);
   document.removeEventListener('keydown', ED._onKeyDown);
   if (ED.canvas) ED.canvas.removeEventListener('wheel', ED._onWheel);
+  ED._pointers = {};
+  ED.isDrawing = false;
+  ED.isPanning = false;
 };
 
 ED._cellAt = function(e) {
@@ -490,6 +569,7 @@ ED._placeAt = function(e) {
     });
     if (existe) return;
     var toolDef = ED.TOOLS.find(function(t) { return t.id === tool; });
+    if (!toolDef) return;   // outil inconnu (ex: selectTool appele avec un id invalide)
     var color = (toolDef.colorable && ED.customColor) ? ED.customColor : toolDef.color;
     var block = {
       x: cell.gx, y: cell.gy,
@@ -505,10 +585,18 @@ ED._placeAt = function(e) {
   ED._render();
 };
 
-// Alloue le prochain linkId pour un portail : (nb_tele / 2) + 1, deux teles par groupe
+// Alloue le prochain linkId pour un portail. On compte les portails deja poses par
+// linkId et on rend le plus petit id qui n'a pas encore ses 2 portails.
+// (avant : (nb_tele / 2) + 1 → effacer un portail au milieu recreait des ids en
+//  double et SE se teleportait vers le mauvais portail)
 ED._nextTeleLinkId = function() {
-  var teles = ED.level.platforms.filter(function(p) { return p.type === 'tele'; });
-  return Math.floor(teles.length / 2) + 1;
+  var counts = {};
+  ED.level.platforms.forEach(function(p) {
+    if (p.type === 'tele' && p.linkId) counts[p.linkId] = (counts[p.linkId] || 0) + 1;
+  });
+  var id = 1;
+  while (counts[id] >= 2) id++;
+  return id;
 };
 
 ED._resize = function() {
@@ -550,29 +638,36 @@ ED._render = function() {
   ctx.save();
   ctx.translate(-ED.camera.x, -ED.camera.y);
 
-  // Grille
+  // Zone visible (le monde fait 16000x1600 px : on ne dessine que ce qu'on voit,
+  // sinon chaque mousemove trace 550 lignes de grille sur toute la largeur)
+  var vx0 = ED.camera.x, vy0 = ED.camera.y;
+  var vx1 = Math.min(ED.level.width,  vx0 + viewW);
+  var vy1 = Math.min(ED.level.height, vy0 + viewH);
+
+  // Grille : un seul path pour toutes les lignes visibles
+  var gx0 = Math.max(0, Math.floor(vx0 / ED.GRID_SIZE) * ED.GRID_SIZE);
+  var gy0 = Math.max(0, Math.floor(vy0 / ED.GRID_SIZE) * ED.GRID_SIZE);
   ctx.strokeStyle = 'rgba(255,255,255,0.05)';
   ctx.lineWidth = 1;
-  for (var x = 0; x <= ED.level.width; x += ED.GRID_SIZE) {
-    ctx.beginPath();
-    ctx.moveTo(x + 0.5, 0);
-    ctx.lineTo(x + 0.5, ED.level.height);
-    ctx.stroke();
+  ctx.beginPath();
+  for (var x = gx0; x <= vx1; x += ED.GRID_SIZE) {
+    ctx.moveTo(x + 0.5, gy0);
+    ctx.lineTo(x + 0.5, vy1);
   }
-  for (var y = 0; y <= ED.level.height; y += ED.GRID_SIZE) {
-    ctx.beginPath();
-    ctx.moveTo(0, y + 0.5);
-    ctx.lineTo(ED.level.width, y + 0.5);
-    ctx.stroke();
+  for (var y = gy0; y <= vy1; y += ED.GRID_SIZE) {
+    ctx.moveTo(gx0, y + 0.5);
+    ctx.lineTo(vx1, y + 0.5);
   }
+  ctx.stroke();
 
   // Bordure du monde
   ctx.strokeStyle = '#3498db';
   ctx.lineWidth = 2;
   ctx.strokeRect(0, 0, ED.level.width, ED.level.height);
 
-  // Plateformes : rendu different selon type
+  // Plateformes : rendu different selon type (hors ecran = ignore)
   ED.level.platforms.forEach(function(p) {
+    if (p.x + p.w < vx0 || p.x > vx1 || p.y + p.h < vy0 || p.y > vy1) return;
     ED._drawBlock(ctx, p);
   });
 

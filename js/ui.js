@@ -1,8 +1,42 @@
 // Navigation entre ecrans
 
 // === PWA : INSTALL + SERVICE WORKER ===
+// Dossier racine de l'app, quel que soit le deploiement :
+//   https://virus.solyntek.io/          → '/'
+//   https://maher-mme.github.io/virus/  → '/virus/'
+// Deduit de l'URL de ce script (js/ui.js). Indispensable : register('/service-worker.js')
+// pointait la racine du domaine, donc 404 sous /virus/ → aucun SW enregistre
+// → Chrome ne propose jamais d'installer l'app.
+// Calcule ici, au parsing du script : document.currentScript est null plus tard.
+var _appBase = (function() {
+  try {
+    var src = document.currentScript && document.currentScript.src;
+    if (src) {
+      var path = new URL(src, window.location.href).pathname;
+      var i = path.lastIndexOf('/js/');
+      if (i >= 0) return path.slice(0, i + 1);
+    }
+  } catch (e) {}
+  return '/';
+})();
+
 var _pwaInstallPrompt = null;
-var _pwaIsIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+// iPadOS 13+ annonce un UA macOS ("Macintosh") : sans le test maxTouchPoints,
+// un iPad n'etait pas reconnu comme iOS → aucun point d'entree pour installer
+// (Safari ne declenche jamais beforeinstallprompt).
+var _pwaIsIos = (function() {
+  var ua = navigator.userAgent || '';
+  if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) return true;
+  return /Macintosh/.test(ua) && (navigator.maxTouchPoints || 0) > 1;
+})();
+// L'app tourne-t-elle deja en mode installe ?
+function _pwaEstInstallee() {
+  try {
+    return window.matchMedia('(display-mode: standalone)').matches ||
+           window.matchMedia('(display-mode: fullscreen)').matches ||
+           window.navigator.standalone === true;
+  } catch (e) { return false; }
+}
 
 // Affiche/masque tous les points d'entree pour installer la PWA (ancien menu + parametres)
 function _pwaMajBoutons(visible) {
@@ -13,10 +47,24 @@ function _pwaMajBoutons(visible) {
   });
 }
 
+// Visibilite des points d'entree :
+// - deja installe → rien
+// - dans les PARAMETRES → toujours propose si non installe, meme sans prompt
+//   automatique (le popup explique alors la manip manuelle). Avant, Safari et
+//   Firefox n'avaient aucune entree : impossible de savoir comment installer.
+// - gros bouton du menu → seulement si l'installation en 1 clic est possible
+function _pwaMajVisibilite() {
+  var installee = _pwaEstInstallee();
+  var wrap = document.getElementById('params-install-pwa-wrap');
+  if (wrap) wrap.style.display = installee ? 'none' : '';
+  var btn = document.getElementById('btn-installer-pwa');
+  if (btn) btn.style.display = (!installee && (_pwaInstallPrompt || _pwaIsIos)) ? '' : 'none';
+}
+
 window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   _pwaInstallPrompt = e;
-  _pwaMajBoutons(true);
+  _pwaMajVisibilite();
 });
 
 window.addEventListener('appinstalled', function() {
@@ -24,21 +72,66 @@ window.addEventListener('appinstalled', function() {
   _pwaInstallPrompt = null;
 });
 
+// t() avec repli : les textes du popup sont ecrits par JS, on ne veut pas
+// re-franciser l'UI d'un joueur anglophone au passage.
+function _pwaT(key, defaut) {
+  if (typeof t === 'function') {
+    var v = t(key);
+    if (v && v !== key) return v;
+  }
+  return defaut;
+}
+
+// Aide manuelle selon le navigateur, quand l'installation automatique est
+// indisponible (Safari, Firefox, prompt Chrome deja consomme...).
+function _pwaAideManuelle() {
+  var ua = navigator.userAgent || '';
+  if (_pwaIsIos) {
+    return _pwaT('installAppIosHelp',
+      'Sur iPhone/iPad : appuie sur l\'icone Partager en bas de Safari, puis "Sur l\'ecran d\'accueil".');
+  }
+  if (/Firefox/.test(ua)) {
+    return 'Sur Firefox : ouvre le menu (⋮) puis "Installer" ou "Ajouter a l\'ecran d\'accueil".';
+  }
+  if (/Android/.test(ua)) {
+    return 'Ouvre le menu (⋮) de ton navigateur puis "Installer l\'application" / "Ajouter a l\'ecran d\'accueil".';
+  }
+  return 'Dans Chrome ou Edge, clique sur l\'icone d\'installation dans la barre d\'adresse, ou menu (⋮) → "Installer VIRUS".';
+}
+
 // Bouton du menu : ouvre le popup
 function declencherInstallPWA() {
   var pop = document.getElementById('popup-installer-pwa');
   if (pop) pop.classList.add('visible');
-  // Adapter les instructions selon l'appareil
   var iosHelp = document.getElementById('install-pwa-ios-help');
   var btnDownload = document.getElementById('install-pwa-download-btn');
   var instructions = document.getElementById('install-pwa-instructions');
-  if (_pwaIsIos) {
-    if (iosHelp) iosHelp.style.display = 'block';
+
+  // TOUJOURS repartir de l'etat par defaut. Sans ce reset, un premier passage
+  // "pas installable" cachait le bouton TELECHARGER definitivement, meme quand
+  // beforeinstallprompt arrivait juste apres → bouton introuvable / mort.
+  if (iosHelp) iosHelp.style.display = 'none';
+  if (btnDownload) btnDownload.style.display = '';
+  if (instructions) {
+    instructions.textContent = _pwaT('installAppInstructions',
+      'Clique sur TELECHARGER pour installer l\'application sur ton appareil.');
+  }
+
+  if (_pwaEstInstallee()) {
     if (btnDownload) btnDownload.style.display = 'none';
-    if (instructions) instructions.textContent = 'Pour installer VIRUS sur ton iPhone/iPad :';
-  } else if (!_pwaInstallPrompt) {
-    if (instructions) instructions.textContent = 'Ouvre ce site dans Chrome ou Edge sur ton appareil pour pouvoir l\'installer.';
+    if (instructions) instructions.textContent = 'VIRUS est deja installe sur cet appareil. Tu joues deja depuis l\'application !';
+    _pwaMajBoutons(false);
+    return;
+  }
+  // Pas de prompt automatique disponible (Safari/iOS, Firefox, prompt deja
+  // consomme) : on cache le bouton et on explique la marche a suivre.
+  if (!_pwaInstallPrompt) {
     if (btnDownload) btnDownload.style.display = 'none';
+    if (instructions) instructions.textContent = 'Installation manuelle sur ce navigateur :';
+    if (iosHelp) {
+      iosHelp.style.display = 'block';
+      iosHelp.textContent = _pwaAideManuelle();
+    }
   }
 }
 
@@ -48,25 +141,50 @@ function fermerInstallPWA() {
 }
 
 function confirmerInstallPWA() {
-  if (!_pwaInstallPrompt) return;
-  _pwaInstallPrompt.prompt();
-  _pwaInstallPrompt.userChoice.then(function(res) {
-    if (res.outcome === 'accepted') {
+  // Avant : `if (!_pwaInstallPrompt) return;` → clic sans aucun effet ni message.
+  // Le prompt n'est utilisable qu'UNE fois : apres un refus, il etait null et le
+  // bouton restait affiche mais totalement mort.
+  if (!_pwaInstallPrompt) {
+    if (typeof showNotif === 'function') showNotif(_pwaAideManuelle(), 'info');
+    var instructions = document.getElementById('install-pwa-instructions');
+    var iosHelp = document.getElementById('install-pwa-ios-help');
+    if (instructions) instructions.textContent = 'Installation manuelle sur ce navigateur :';
+    if (iosHelp) { iosHelp.style.display = 'block'; iosHelp.textContent = _pwaAideManuelle(); }
+    var btnDownload = document.getElementById('install-pwa-download-btn');
+    if (btnDownload) btnDownload.style.display = 'none';
+    return;
+  }
+  var evtPrompt = _pwaInstallPrompt;
+  // Consomme immediatement : un double-clic sur TELECHARGER leverait sinon
+  // une InvalidStateError ("prompt() already called").
+  _pwaInstallPrompt = null;
+  var choix;
+  try {
+    choix = evtPrompt.prompt();
+  } catch (e) {
+    if (typeof showNotif === 'function') showNotif(_pwaAideManuelle(), 'info');
+    return;
+  }
+  // prompt() rend une promesse sur les navigateurs recents ; sinon on retombe
+  // sur l'ancienne propriete userChoice.
+  var attente = (choix && typeof choix.then === 'function') ? choix : evtPrompt.userChoice;
+  if (!attente || typeof attente.then !== 'function') return;
+  attente.then(function(res) {
+    if (res && res.outcome === 'accepted') {
       fermerInstallPWA();
       _pwaMajBoutons(false);
+    } else {
+      // Refus : on garde le point d'entree mais on dit comment faire a la main,
+      // car le navigateur ne redonnera pas de prompt tout de suite.
+      if (typeof showNotif === 'function') showNotif('Installation annulee. ' + _pwaAideManuelle(), 'info');
     }
-    _pwaInstallPrompt = null;
-  });
+  }).catch(function() {});
 }
 
-// Afficher les boutons d'install sur iOS aussi (pas de beforeinstallprompt sur Safari)
+// Etat initial des points d'entree (Safari/Firefox ne declenchent jamais
+// beforeinstallprompt : sans ca, aucune entree n'apparaissait).
 (function() {
-  if (_pwaIsIos) {
-    setTimeout(function() {
-      var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-      if (!standalone) _pwaMajBoutons(true);
-    }, 1000);
-  }
+  setTimeout(_pwaMajVisibilite, 1000);
 })();
 
 // Forcer la MAJ : desenregistre le SW + vide les caches + reload avec cache-bust
@@ -232,7 +350,7 @@ if ('serviceWorker' in navigator) {
     var MIN_LOADING_MS = 400; // duree minimum d'affichage de l'ecran (eviter le flash)
     setLoadingProgress(15, 'Chargement...');
 
-    navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' }).then(function(reg) {
+    navigator.serviceWorker.register(_appBase + 'service-worker.js', { scope: _appBase, updateViaCache: 'none' }).then(function(reg) {
       setLoadingProgress(40, 'Verification des mises a jour...');
 
       // 1) Si un SW est deja en attente (update detectee a la session precedente) → l'appliquer
@@ -304,7 +422,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.6.36';
+var CURRENT_VERSION = '3.6.37';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 

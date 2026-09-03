@@ -1,6 +1,6 @@
 // Service Worker pour VIRUS PWA
 // CACHE_VERSION : a bumper a chaque release importante pour forcer le refresh
-var CACHE_VERSION = 'virus-v3.6.36';
+var CACHE_VERSION = 'virus-v3.6.37';
 
 // SDK Firebase (cross-origin) : doit etre cache pour que l'app demarre offline
 var FIREBASE_SDK = [
@@ -12,49 +12,52 @@ var FIREBASE_SDK = [
 // Shell pre-cache a l'install pour pouvoir lancer l'app offline meme si l'utilisateur
 // installe la PWA et passe offline immediatement apres.
 var CORE_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/assets/favicon.svg',
-  '/assets/écran_de_chargement.svg',
+  './',
+  './index.html',
+  './manifest.json',
+  './assets/favicon.svg',
+  './assets/icon-192.png',
+  './assets/icon-512.png',
+  './assets/icon-maskable-512.png',
+  './assets/écran_de_chargement.svg',
   // CSS
-  '/css/base.css',
-  '/css/components.css',
-  '/css/friends.css',
-  '/css/game.css',
-  '/css/hud.css',
-  '/css/lobby.css',
-  '/css/meeting.css',
-  '/css/menu.css',
-  '/css/minigames.css',
-  '/css/passe.css',
-  '/css/responsive.css',
+  './css/base.css',
+  './css/components.css',
+  './css/friends.css',
+  './css/game.css',
+  './css/hud.css',
+  './css/lobby.css',
+  './css/meeting.css',
+  './css/menu.css',
+  './css/minigames.css',
+  './css/passe.css',
+  './css/responsive.css',
   // JS
-  '/js/config.js',
-  '/js/translation.js',
-  '/js/account.js',
-  '/js/api.js',
-  '/js/bots.js',
-  '/js/cameras.js',
-  '/js/chat.js',
-  '/js/comments.js',
-  '/js/decorations.js',
-  '/js/emotes.js',
-  '/js/firebase-sync.js',
-  '/js/friends.js',
-  '/js/game.js',
-  '/js/meeting.js',
-  '/js/minigames.js',
-  '/js/missions.js',
-  '/js/music.js',
-  '/js/passe.js',
-  '/js/player.js',
-  '/js/replay.js',
-  '/js/roles.js',
-  '/js/shop.js',
-  '/js/skins.js',
-  '/js/stats.js',
-  '/js/ui.js'
+  './js/config.js',
+  './js/translation.js',
+  './js/account.js',
+  './js/api.js',
+  './js/bots.js',
+  './js/cameras.js',
+  './js/chat.js',
+  './js/comments.js',
+  './js/decorations.js',
+  './js/emotes.js',
+  './js/firebase-sync.js',
+  './js/friends.js',
+  './js/game.js',
+  './js/meeting.js',
+  './js/minigames.js',
+  './js/missions.js',
+  './js/music.js',
+  './js/passe.js',
+  './js/player.js',
+  './js/replay.js',
+  './js/roles.js',
+  './js/shop.js',
+  './js/skins.js',
+  './js/stats.js',
+  './js/ui.js'
 ];
 
 self.addEventListener('install', function(event) {
@@ -124,7 +127,7 @@ self.addEventListener('fetch', function(event) {
         }).catch(function() {
           return cache.match(event.request).then(function(c) {
             if (c) return c;
-            return cache.match('/index.html').then(function(idx) {
+            return cache.match('./index.html').then(function(idx) {
               // Toujours retourner une Response valide pour eviter le crash du SW
               return idx || new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
             });

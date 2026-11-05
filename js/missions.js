@@ -348,6 +348,7 @@ function terminerMission(missionIdx) {
     if (partieActuelleId && typeof db !== 'undefined') {
       db.collection('missionsCompletees').add({
         partyId: partieActuelleId,
+        roundId: (typeof currentRoundId !== 'undefined' ? currentRoundId : ''),
         playerId: monPlayerId,
         pseudo: getPseudo() || '',
         missionIdx: missionIdx,

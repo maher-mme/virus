@@ -431,7 +431,7 @@ var enquetesRestantes = 1; // nombre d'enquetes restantes (= nombre de virus)
 
 function detecterCibleEnquete() {
   var pseudo = getPseudo() || t('player');
-  if (bots.length === 0 || monRole !== 'journaliste' || reunionEnCours || joueursElimines.indexOf(pseudo) >= 0 || enquetesRestantes <= 0) {
+  if (monRole !== 'journaliste' || reunionEnCours || joueursElimines.indexOf(pseudo) >= 0 || enquetesRestantes <= 0) {
     enqueteCiblePseudo = null;
     return;
   }
@@ -448,22 +448,53 @@ function detecterCibleEnquete() {
       enqueteCiblePseudo = bots[i].pseudo;
     }
   }
+  // Joueurs distants (mode en ligne)
+  if (!modeHorsLigne && typeof remotePlayers !== 'undefined') {
+    for (var pid in remotePlayers) {
+      var rp = remotePlayers[pid];
+      if (!rp || !rp.pseudo || !rp.alive) continue;
+      if (joueursElimines.indexOf(rp.pseudo) >= 0) continue;
+      if (botsEnquetes.indexOf(rp.pseudo) >= 0) continue;
+      var rdx = joueurX - rp.x;
+      var rdy = joueurY - rp.y;
+      var rdist = Math.sqrt(rdx * rdx + rdy * rdy);
+      if (rdist < ENQUETE_DISTANCE && rdist < minDist) {
+        minDist = rdist;
+        enqueteCiblePseudo = rp.pseudo;
+      }
+    }
+  }
 }
 
 function enqueterCible() {
   if (!enqueteCiblePseudo || enquetesRestantes <= 0) return;
-  var bot = null;
+  if (joueursElimines.indexOf(enqueteCiblePseudo) >= 0) return;
+  // Chercher la cible : bot local, sinon joueur distant (online)
+  var cible = null; // { pseudo, role, el }
   for (var ei = 0; ei < bots.length; ei++) {
-    if (bots[ei].pseudo === enqueteCiblePseudo) { bot = bots[ei]; break; }
+    if (bots[ei].pseudo === enqueteCiblePseudo) {
+      cible = { pseudo: bots[ei].pseudo, role: bots[ei].role, el: bots[ei].element };
+      break;
+    }
   }
-  if (!bot || joueursElimines.indexOf(enqueteCiblePseudo) >= 0) return;
-  botsEnquetes.push(bot.pseudo);
+  if (!cible && !modeHorsLigne && typeof firebasePartyPlayers !== 'undefined') {
+    var fpEnq = firebasePartyPlayers.find(function(p) { return p.pseudo === enqueteCiblePseudo; });
+    if (fpEnq) {
+      cible = {
+        pseudo: fpEnq.pseudo,
+        role: fpEnq.role || 'innocent',
+        el: document.getElementById('remote-' + fpEnq.playerId)
+      };
+    }
+  }
+  if (!cible) return;
+  botsEnquetes.push(cible.pseudo);
   enquetesRestantes--;
-  var roleText = bot.role.toUpperCase();
-  var couleur = bot.role === 'virus' ? '#e74c3c' : (bot.role === 'journaliste' ? '#3498db' : '#2ecc71');
-  showNotif(t('playerIs', bot.pseudo, roleText), bot.role === 'virus' ? 'warn' : 'info');
-  // Changer la couleur du pseudo du bot pour indiquer qu'il a ete enquete
-  var pseudoEl = bot.element ? bot.element.querySelector('.joueur-pseudo') : null;
+  var roleText = (cible.role || 'innocent').toUpperCase();
+  var couleur = cible.role === 'virus' ? '#e74c3c' : (cible.role === 'journaliste' ? '#3498db' : '#2ecc71');
+  showNotif(t('playerIs', cible.pseudo, roleText), cible.role === 'virus' ? 'warn' : 'info');
+  // Changer la couleur du pseudo pour indiquer qu'il a ete enquete
+  var pseudoEl = cible.el ? (cible.el.querySelector('.joueur-pseudo') || cible.el.querySelector('.bot-pseudo')) : null;
   if (pseudoEl) pseudoEl.style.color = couleur;
   enqueteCiblePseudo = null;
   // Notifier si plus d'enquetes
@@ -479,7 +510,7 @@ var SIGNALER_DISTANCE = 120;
 var cadavreProche = -1; // index du cadavre le plus proche
 var killProtection = false; // protection de 7s au debut et apres reunion
 
-function creerCadavre(x, y, pseudo, skin, roleVictime) {
+function creerCadavre(x, y, pseudo, skin, roleVictime, noSync) {
   var mallMap = document.getElementById('mall-map');
   var div = document.createElement('div');
   div.className = 'cadavre';
@@ -495,8 +526,9 @@ function creerCadavre(x, y, pseudo, skin, roleVictime) {
     if (div.parentNode) div.parentNode.removeChild(div);
     cadavres.pop();
   }
-  // Sync cadavre en Firebase pour le mode en ligne
-  if (!modeHorsLigne && partieActuelleId && typeof db !== 'undefined') {
+  // Sync cadavre en Firebase pour le mode en ligne (sauf si le cadavre vient
+  // deja de Firebase - evite que chaque client recree un doc en double)
+  if (!noSync && !modeHorsLigne && partieActuelleId && typeof db !== 'undefined') {
     db.collection('cadavres').add({
       partyId: partieActuelleId,
       victimPseudo: pseudo,
@@ -508,7 +540,9 @@ function creerCadavre(x, y, pseudo, skin, roleVictime) {
   }
 }
 
-function eliminerBot(pseudoVictime) {
+function eliminerBot(pseudoVictime, opts) {
+  opts = opts || {};
+  var creerCorps = opts.creerCorps !== false; // par defaut : cadavre cree
   if (joueursElimines.indexOf(pseudoVictime) >= 0) return;
   // Verifier si c'est un fanatique (victoire personnelle, la partie continue)
   var estFanatique = false;
@@ -535,8 +569,10 @@ function eliminerBot(pseudoVictime) {
       var broleDeath = bots[b].role;
       botsMorts.push(bots[b]);
       bots.splice(b, 1);
-      if (typeof playSound3D === 'function') playSound3D('Audio/kill.mp3', bx, by, 0.6);
-      creerCadavre(bx, by, pseudoVictime, bskin, broleDeath);
+      if (creerCorps) {
+        if (typeof playSound3D === 'function') playSound3D('Audio/kill.mp3', bx, by, 0.6);
+        creerCadavre(bx, by, pseudoVictime, bskin, broleDeath, opts.sync === false);
+      }
       break;
     }
   }
@@ -666,7 +702,7 @@ function tuerVictime() {
 }
 
 function detecterCadavreProche() {
-  if (bots.length === 0 || reunionEnCours) { cadavreProche = -1; return; }
+  if (reunionEnCours) { cadavreProche = -1; return; }
   // Les fantomes ne peuvent pas signaler
   var pseudo = getPseudo() || t('player');
   if (joueursElimines.indexOf(pseudo) >= 0) { cadavreProche = -1; return; }
@@ -705,7 +741,22 @@ function signalerCadavre() {
   cadavres.splice(cadavreProche, 1);
   cadavreProche = -1;
   document.getElementById('btn-signaler').style.display = 'none';
-  // Declencher reunion
+  // Mode en ligne : creer la reunion via Firebase pour que TOUS les joueurs la voient
+  // (avant, la reunion ne s'ouvrait que chez le signaleur -> desync totale)
+  if (!modeHorsLigne && partieActuelleId && typeof db !== 'undefined') {
+    db.collection('meetings').add({
+      partyId: partieActuelleId,
+      initiatorPlayerId: monPlayerId,
+      callerPseudo: getPseudo() || '',
+      reason: 'report',
+      active: true,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function() {
+      db.collection('parties').doc(partieActuelleId).update({ phase: 'meeting' });
+    }).catch(function() {});
+    return;
+  }
+  // Mode hors ligne : declencher la reunion locale
   jeuActif = false;
   setTimeout(function() { try { ouvrirReunion(); } catch(e) { jeuActif = true; reunionEnCours = false; gameLoop(); } }, 500);
 }
@@ -979,16 +1030,16 @@ function afficherFinPartie(gagnant) {
   html += '<span class="fp-role fp-role-' + monRole + '">' + monRole.toUpperCase() + '</span>';
   html += '</div>';
   // Utiliser tousLesJoueursPartie (sauvegarde complete) au lieu de joueursReunion (potentiellement incomplet)
+  // Afficher TOUS les autres joueurs (bots ET joueurs distants en ligne), sauf moi (deja affiche)
   for (var i = 0; i < tousLesJoueursPartie.length; i++) {
-    if (tousLesJoueursPartie[i].estBot) {
-      var jr = tousLesJoueursPartie[i];
-      var estElim = joueursElimines.indexOf(jr.pseudo) >= 0;
-      html += '<div class="fin-partie-joueur" style="opacity:' + (estElim ? '0.4' : '1') + '">';
-      html += '<img src="' + jr.skin + '" alt="skin">';
-      html += '<span class="fp-pseudo">' + jr.pseudo.replace(/</g, '&lt;') + '</span>';
-      html += '<span class="fp-role fp-role-' + jr.role + '">' + jr.role.toUpperCase() + '</span>';
-      html += '</div>';
-    }
+    var jr = tousLesJoueursPartie[i];
+    if (!jr.estBot && jr.pseudo === pseudo) continue; // moi-meme
+    var estElim = joueursElimines.indexOf(jr.pseudo) >= 0;
+    html += '<div class="fin-partie-joueur" style="opacity:' + (estElim ? '0.4' : '1') + '">';
+    html += '<img src="' + jr.skin + '" alt="skin">';
+    html += '<span class="fp-pseudo">' + jr.pseudo.replace(/</g, '&lt;') + '</span>';
+    html += '<span class="fp-role fp-role-' + jr.role + '">' + (jr.role || '?').toUpperCase() + '</span>';
+    html += '</div>';
   }
   // Verifier si le joueur a gagne et donner 50 golds
   var joueurAGagne = false;

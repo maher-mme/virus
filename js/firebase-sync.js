@@ -8,6 +8,8 @@ var firebaseParties = [];
 var firebasePartyPlayers = [];
 var _voteConclusion = false;
 var _voteListenerUnsub = null;
+var currentRoundId = '';          // identifiant de la manche en cours (isole les missions)
+var _multiLancementEnCours = false; // garde anti double-lancement de partie
 
 // Listener temps reel sur la liste des parties
 db.collection('parties').orderBy('createdAt', 'desc').onSnapshot(function(snapshot) {
@@ -164,6 +166,15 @@ function retirerBotEnLigne() {
 }
 
 function retourLobbyApresPartie() {
+  // Reset de l'etat de la manche (permet un nouveau lancement propre)
+  _multiLancementEnCours = false;
+  currentRoundId = '';
+  lastGamePhase = 'lobby';
+  if (typeof desactiverSpectateur === 'function') desactiverSpectateur();
+  // Couper les listeners de jeu (sinon ils s'empilent a chaque manche)
+  gameUnsubscribers.forEach(function(unsub) { if (unsub) unsub(); });
+  gameUnsubscribers = [];
+  if (_voteListenerUnsub) { _voteListenerUnsub(); _voteListenerUnsub = null; }
   if (typeof lumieresEteintes !== 'undefined' && lumieresEteintes && typeof desactiverLumieres === 'function') desactiverLumieres();
   if (typeof resetPassagesEtCapteurs === 'function') resetPassagesEtCapteurs();
   if (!partieActuelleId) { showScreen('menu-principal'); return; }
@@ -242,6 +253,9 @@ function quitterPartie() {
     partieActuelleId = null;
   }
   estHost = false;
+  _multiLancementEnCours = false;
+  currentRoundId = '';
+  lastGamePhase = null;
   _lastChatCount = { lobby: -1, meeting: -1 };
   nettoyerChatReunion();
   showScreen('menu-online');
@@ -257,6 +271,9 @@ function ejecterDeLaPartie(raison) {
   estHost = false;
   jeuActif = false;
   reunionEnCours = false;
+  _multiLancementEnCours = false;
+  currentRoundId = '';
+  lastGamePhase = null;
   _lastChatCount = { lobby: -1, meeting: -1 };
   nettoyerChatReunion();
   showScreen('menu-online');
@@ -402,6 +419,10 @@ function unsubscribeFromParty() {
 
 // S'abonner a l'etat du jeu en temps reel (positions, kills, reunions)
 function subscribeToGameState(partyId) {
+  // Purger les anciens listeners de jeu (sinon ils s'empilent a chaque manche)
+  gameUnsubscribers.forEach(function(unsub) { if (unsub) unsub(); });
+  gameUnsubscribers = [];
+  if (_voteListenerUnsub) { _voteListenerUnsub(); _voteListenerUnsub = null; }
   // Etat de la partie (phase, etc.)
   gameUnsubscribers.push(
     db.collection('parties').doc(partyId).onSnapshot(function(doc) {
@@ -457,7 +478,14 @@ function subscribeToGameState(partyId) {
   gameUnsubscribers.push(
     db.collection('missionsCompletees').where('partyId', '==', partyId).onSnapshot(function(snapshot) {
       if (typeof missionsCollectivesCompletees === 'undefined') return;
-      missionsCollectivesCompletees = snapshot.size;
+      // Ne compter que les missions de la manche en cours (les docs des manches
+      // precedentes ne sont pas supprimables -> sans filtre, victoire instantanee)
+      var count = 0;
+      snapshot.forEach(function(d) {
+        var data = d.data();
+        if (!currentRoundId || data.roundId === currentRoundId) count++;
+      });
+      missionsCollectivesCompletees = count;
       if (typeof updateJaugeMissions === 'function') updateJaugeMissions();
       // Verifier victoire
       if (totalMissionsCollectives > 0 && missionsCollectivesCompletees >= totalMissionsCollectives) {
@@ -541,6 +569,11 @@ function handleGameStateUpdate(state) {
 var _lancerMultiTentatives = 0;
 
 function lancerJeuMultiplayer(state) {
+  // Garde anti double-lancement : deux listeners detectent le passage en phase
+  // 'playing' (subscribeToParty + subscribeToGameState) -> un seul lancement
+  if (_multiLancementEnCours) return;
+  _multiLancementEnCours = true;
+  currentRoundId = (state && state.roundId) || '';
   // La partie a demarre, plus dans le lobby
   if (monPlayerId) db.collection('players').doc(monPlayerId).update({ currentPartyId: '' }).catch(function() {});
   // Nettoyer les joueurs distants precedents
@@ -613,13 +646,38 @@ function _demarrerJeuMultiplayer(state) {
     else { roleEl.textContent = t('roleInnocent'); }
   }
 
+  // Sauvegarder tous les joueurs de la partie (ecran de fin + detection fanatique).
+  // Sans ca, tousLesJoueursPartie gardait les donnees d'une ancienne partie hors ligne.
+  tousLesJoueursPartie = firebasePartyPlayers.map(function(p) {
+    return { pseudo: p.pseudo, skin: p.skin, role: p.role || 'innocent', estBot: !!p.isBot };
+  });
+
   // Init balles du cherif (egal au nombre de virus dans la partie)
   var nbVirusEnPartie = firebasePartyPlayers.filter(function(p) { return p.role === 'virus'; }).length;
   cherifBalles = (monRole === 'cherif') ? Math.max(1, nbVirusEnPartie) : 0;
   if (typeof majHudCherif === 'function') majHudCherif();
+
+  // Init enquetes du journaliste (en ligne)
+  if (monRole === 'journaliste') {
+    botsEnquetes = [];
+    enquetesRestantes = Math.max(1, nbVirusEnPartie);
+  }
   joueurX = 3800;
   joueurY = 3050;
   joueursElimines = [];
+  // Nettoyer les cadavres et l'etat de kill de la manche precedente
+  for (var ciM = 0; ciM < cadavres.length; ciM++) {
+    if (cadavres[ciM].element && cadavres[ciM].element.parentNode) {
+      cadavres[ciM].element.parentNode.removeChild(cadavres[ciM].element);
+    }
+  }
+  cadavres = [];
+  var _mmMulti = document.getElementById('mall-map');
+  if (_mmMulti) _mmMulti.querySelectorAll('.cadavre, .cadavre-mp').forEach(function(c) { c.remove(); });
+  killCooldown = false;
+  if (killCountdownInterval) { clearInterval(killCountdownInterval); killCountdownInterval = null; }
+  var cdElMulti = document.getElementById('kill-countdown');
+  if (cdElMulti) cdElMulti.style.display = 'none';
   killProtection = true;
   setTimeout(function() { killProtection = false; }, 10000);
   reunionCooldown = true;
@@ -728,9 +786,9 @@ function _demarrerJeuMultiplayer(state) {
 
 // Gestion d'un joueur distant individuel (velocite + lissage)
 function handleSinglePlayerUpdate(p) {
-  // Detecter la mort du joueur local (tue par un virus distant)
+  // Detecter la mort du joueur local (tue par un virus distant ou vote)
   if (p.playerId === monPlayerId) {
-    if (p.alive === false && jeuActif) {
+    if (p.alive === false && (jeuActif || reunionEnCours)) {
       var pseudo = getPseudo() || '';
       if (joueursElimines.indexOf(pseudo) < 0) {
         joueursElimines.push(pseudo);
@@ -738,8 +796,8 @@ function handleSinglePlayerUpdate(p) {
         showNotif(t('youDiedGhost'), 'warn');
         var joueurEl = document.getElementById('joueur');
         if (joueurEl) joueurEl.classList.add('bot-mort');
-        // Activer le mode spectateur
-        if (typeof activerSpectateur === 'function') {
+        // Activer le mode spectateur (pas pendant une reunion : gere a sa fermeture)
+        if (typeof activerSpectateur === 'function' && !reunionEnCours) {
           var vivants = getJoueursVivants();
           if (vivants.length > 0) {
             activerSpectateur(vivants[0].playerId);
@@ -760,7 +818,9 @@ function handleSinglePlayerUpdate(p) {
   if (p.isBot) {
     if (p.alive === false && typeof eliminerBot === 'function') {
       if (joueursElimines.indexOf(p.pseudo) < 0) {
-        eliminerBot(p.pseudo);
+        // Pas de cadavre si mort par vote (reunion), et pas de re-sync Firebase
+        // (sinon chaque client recreait un doc cadavre -> cadavres dupliques)
+        eliminerBot(p.pseudo, { creerCorps: !reunionEnCours, sync: false });
         // Verifier victoire apres elimination
         if (typeof verifierVictoire === 'function') {
           var gagnant = verifierVictoire();
@@ -905,12 +965,15 @@ function updateRemotePlayers() {
 }
 
 // Mettre a jour les cadavres en multiplayer
-function updateCadavresMultiplayer(cadavres) {
-  if (!cadavres) return;
+function updateCadavresMultiplayer(cadavresFb) {
+  if (!cadavresFb) return;
   var container = document.getElementById('mall-map');
   if (!container) return;
   container.querySelectorAll('.cadavre-mp').forEach(function(el) { el.remove(); });
-  cadavres.forEach(function(c) {
+  if (reunionEnCours) return; // pas de cadavres pendant la reunion
+  cadavresFb.forEach(function(c) {
+    // Ne pas dupliquer un cadavre deja affiche localement (cree par ce client)
+    if (typeof cadavres !== 'undefined' && cadavres.some(function(lc) { return lc.pseudo === c.victimPseudo; })) return;
     var div = document.createElement('div');
     div.className = 'cadavre-mp';
     div.style.position = 'absolute';
@@ -929,6 +992,7 @@ function updateCadavresMultiplayer(cadavres) {
             db.collection('meetings').add({
               partyId: partieActuelleId,
               initiatorPlayerId: monPlayerId,
+              callerPseudo: getPseudo() || '',
               reason: 'report',
               active: true,
               createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -949,6 +1013,7 @@ function ouvrirReunionMultiplayer(meeting) {
   _voteConclusion = false;
   currentMeetingId = meeting._id;
   reunionCreateur = meeting.callerPseudo || '';
+  jeuActif = false; // bloquer le deplacement pendant la reunion (comme en hors ligne)
   if (typeof ouvrirReunion === 'function') {
     ouvrirReunion();
   }
@@ -990,17 +1055,19 @@ function concludeVote(meetingId) {
         eliminated = pid;
       }
     }
-    // Eliminer le joueur vote
+    // Eliminer le joueur vote + preparer le resultat a diffuser
+    var voteResult = { skip: true, ts: Date.now() };
     if (eliminated) {
       firebasePartyPlayers.forEach(function(p) {
-        if (p.playerId === eliminated && p._docId) {
-          db.collection('partyPlayers').doc(p._docId).update({ alive: false });
+        if (p.playerId === eliminated) {
+          if (p._docId) db.collection('partyPlayers').doc(p._docId).update({ alive: false });
+          voteResult = { pseudo: p.pseudo, role: p.role || '', ts: Date.now() };
         }
       });
     }
-    // Fermer la reunion
+    // Fermer la reunion (le resultat est diffuse via le doc de la partie)
     db.collection('meetings').doc(meetingId).update({ active: false });
-    db.collection('parties').doc(partieActuelleId).update({ phase: 'playing' });
+    db.collection('parties').doc(partieActuelleId).update({ phase: 'playing', lastVote: voteResult });
     // Verifier fin de partie
     checkEndGame();
   });
@@ -1022,42 +1089,70 @@ function checkEndGame() {
 }
 
 function fermerReunionMultiplayer(state) {
+  currentMeetingId = null;
+  if (_voteListenerUnsub) { _voteListenerUnsub(); _voteListenerUnsub = null; }
+
+  // Nettoyage complet de l'UI reunion : timer 60s, bulles de vote, bandeau,
+  // resultat, chat, badge createur (avant, le timer continuait a tourner et
+  // affichait un faux resultat en pleine partie)
+  if (reunionEnCours && typeof fermerReunion === 'function') {
+    fermerReunion();
+  }
   reunionEnCours = false;
-  jeuActif = true;
+  voteTermine = false;
   var popup = document.getElementById('popup-reunion');
   if (popup) popup.style.display = 'none';
-  // Remettre le chat et le toggle dans #jeu puis nettoyer
   if (typeof fermerReunionChatMobile === 'function') fermerReunionChatMobile();
   var elChatM = document.getElementById('reunion-chat');
   if (elChatM) { elChatM.classList.remove('visible', 'chat-visible', 'chat-mobile-open'); elChatM.style.cssText = ''; }
   var elToggleM = document.getElementById('reunion-chat-toggle');
   if (elToggleM) { elToggleM.classList.remove('visible', 'active'); elToggleM.style.cssText = ''; }
-  reunionCooldown = true;
-  setTimeout(function() { reunionCooldown = false; }, 15000);
-  killProtection = true;
-  setTimeout(function() { killProtection = false; }, 10000);
+
+  // Afficher le resultat du vote (ecrit par le host dans la partie)
+  if (state && state.lastVote && state.lastVote.ts && Date.now() - state.lastVote.ts < 60000) {
+    if (state.lastVote.pseudo) {
+      showNotif(t('wasEliminated', state.lastVote.pseudo), 'warn');
+    } else {
+      showNotif(t('meetNobodyElim'), 'info');
+    }
+  }
+
+  // Si la partie s'est terminee pendant la fermeture (fermerReunion verifie la
+  // victoire), ne pas relancer le jeu
+  var overlayFin = document.getElementById('fin-partie-overlay');
+  if (overlayFin && overlayFin.classList.contains('visible')) return;
+
+  // Si je suis mort pendant la reunion (vote) : activer le mode spectateur
+  var monPseudoFR = getPseudo() || '';
+  if (joueursElimines.indexOf(monPseudoFR) >= 0 && typeof activerSpectateur === 'function' && !spectateurActif) {
+    var vivantsFR = getJoueursVivants();
+    if (vivantsFR.length > 0) activerSpectateur(vivantsFR[0].playerId);
+  }
+
+  jeuActif = true;
   gameLoop();
   // Reprendre le mini-jeu si un etait en pause
   if (miniJeuPause) reprendreMiniJeu();
 }
 
 function afficherFinPartieMultiplayer(state) {
-  jeuActif = false;
   if (miniJeuOuvert) fermerMiniJeu();
+  // Nettoyer la reunion si elle etait encore ouverte
+  if (reunionEnCours && typeof fermerReunion === 'function') fermerReunion();
   reunionEnCours = false;
   var popup = document.getElementById('popup-reunion');
   if (popup) popup.style.display = 'none';
-  if (state.winner === 'innocents') {
-    showNotif(t('innocentsVictory'), 'info');
+  jeuActif = false;
+  // Si l'ecran de fin est deja affiche (victoire detectee localement), ne rien refaire
+  var overlayFin = document.getElementById('fin-partie-overlay');
+  if (overlayFin && overlayFin.classList.contains('visible')) return;
+  // Afficher l'ecran de fin standard (roles, resume, boutons CONTINUER / MENU)
+  var gagnant = state.winner === 'virus' ? 'virus' : 'innocents';
+  if (typeof afficherFinPartie === 'function') {
+    afficherFinPartie(gagnant);
   } else {
-    showNotif(t('virusVictory'), 'warn');
+    showNotif(gagnant === 'virus' ? t('virusVictory') : t('innocentsVictory'), 'info');
   }
-  setTimeout(function() {
-    unsubscribeFromParty();
-    partieActuelleId = null;
-    lastGamePhase = null;
-    showScreen('menu-online');
-  }, 5000);
 }
 
 // Mettre a jour l'UI de la salle d'attente

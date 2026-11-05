@@ -532,6 +532,11 @@ function lancerJeu() {
     // === MODE VIRUS classique ===
     if (firebasePartyPlayers.length < 4) { showNotif(t('need4Players'), 'warn'); return; }
 
+    // Config de la partie depuis Firebase (partyData n'etait defini nulle part -> crash au demarrage)
+    var partyData = (typeof firebaseParties !== 'undefined')
+      ? firebaseParties.find(function(p) { return p._id === partieActuelleId; })
+      : null;
+
     // Assigner les roles cote client (host)
     var nbVirus = partyData ? partyData.mechants : 1;
     var hasJournaliste = partyData ? partyData.journaliste : false;
@@ -604,6 +609,18 @@ function lancerJeu() {
     var rolesBots = [];
     for (var b = 0; b < botsJoueurs.length; b++) rolesBots.push('innocent');
 
+    // Nettoyer les restes de la manche precedente (cadavres + reunions encore actives)
+    db.collection('cadavres').where('partyId', '==', partieActuelleId).get().then(function(snap) {
+      snap.forEach(function(d) { d.ref.delete().catch(function() {}); });
+    }).catch(function() {});
+    db.collection('meetings').where('partyId', '==', partieActuelleId).where('active', '==', true).get().then(function(snap) {
+      snap.forEach(function(d) { d.ref.update({ active: false }).catch(function() {}); });
+    }).catch(function() {});
+
+    // Identifiant de manche : isole les missions completees de cette manche
+    // (les docs missionsCompletees ne sont pas supprimables cote client - regles Firestore)
+    var roundId = monPlayerId + '-' + Date.now();
+
     // Assigner a chaque joueur
     var batch = db.batch();
     vraisJoueurs.forEach(function(p, idx) {
@@ -620,7 +637,7 @@ function lancerJeu() {
         });
       }
     });
-    batch.update(db.collection('parties').doc(partieActuelleId), { phase: 'playing' });
+    batch.update(db.collection('parties').doc(partieActuelleId), { phase: 'playing', roundId: roundId });
     batch.commit().then(function() {
       console.log('Partie demarree avec succes');
     }).catch(function(err) {
@@ -835,6 +852,7 @@ function demanderReunion() {
     db.collection('meetings').add({
       partyId: partieActuelleId,
       initiatorPlayerId: monPlayerId,
+      callerPseudo: pseudo,
       reason: 'emergency',
       active: true,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1051,7 +1069,12 @@ function updatePetSuivi(petObj, ownerX, ownerY, ownerMoved) {
   document.addEventListener('click', onClickCherif, true);
 })();
 
+var _gameLoopRafPending = false;
+
 function gameLoop() {
+  // Une frame est deja programmee : eviter de lancer une 2e boucle en parallele
+  // (sinon chaque reunion/relance double la vitesse du jeu)
+  if (_gameLoopRafPending) return;
   if (!jeuActif) return;
 
   var moved = false;
@@ -1296,8 +1319,12 @@ function gameLoop() {
     detecterVirusProches();
   }
 
+  // En partie en ligne : les boutons doivent marcher meme sans bots
+  // (avant, tout etait conditionne a bots.length > 0 -> virus sans bouton KILL en ligne)
+  var enPartieOnline = !modeHorsLigne && partieActuelleId;
+
   // Bouton KILL pour le joueur virus
-  if (bots.length > 0 && monRole === 'virus') {
+  if ((bots.length > 0 || enPartieOnline) && monRole === 'virus') {
     detecterCibleKill();
     var btnKill = document.getElementById('btn-kill');
     if (btnKill) {
@@ -1306,7 +1333,7 @@ function gameLoop() {
   }
 
   // Bouton SIGNALER pour cadavres
-  if (bots.length > 0) {
+  if (bots.length > 0 || enPartieOnline || cadavres.length > 0) {
     detecterCadavreProche();
     var btnSignaler = document.getElementById('btn-signaler');
     if (btnSignaler) {
@@ -1315,7 +1342,7 @@ function gameLoop() {
   }
 
   // Bouton ENQUETER pour le journaliste
-  if (bots.length > 0 && monRole === 'journaliste') {
+  if ((bots.length > 0 || enPartieOnline) && monRole === 'journaliste') {
     detecterCibleEnquete();
     var btnEnqueter = document.getElementById('btn-enqueter');
     if (btnEnqueter) {
@@ -1338,7 +1365,11 @@ function gameLoop() {
     }
   }
 
-  requestAnimationFrame(gameLoop);
+  _gameLoopRafPending = true;
+  requestAnimationFrame(function() {
+    _gameLoopRafPending = false;
+    gameLoop();
+  });
 }
 
 function updateJoueur() {

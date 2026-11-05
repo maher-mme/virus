@@ -246,7 +246,16 @@ function ouvrirReunion() {
     if (tempsRestant <= 0) {
       clearInterval(reunionTimer);
       reunionTimer = null;
-      if (!voteTermine) terminerVote();
+      if (!modeHorsLigne && partieActuelleId) {
+        // En ligne : seul le host conclut le vote via Firebase (meme si tout le
+        // monde n'a pas vote). Les autres clients attendent le changement de phase.
+        if (estHost && currentMeetingId && typeof concludeVote === 'function' && !_voteConclusion) {
+          _voteConclusion = true;
+          concludeVote(currentMeetingId);
+        }
+      } else if (!voteTermine) {
+        terminerVote();
+      }
     }
   }, 1000);
 
@@ -540,8 +549,10 @@ function botVoter(botIdx) {
 
   if (cibleIdx < 0 || cibleIdx >= joueursReunion.length) return;
 
-  // En mode en ligne : envoyer le vote bot a Firebase (seulement le host pour eviter doublons)
-  if (!modeHorsLigne && partieActuelleId && currentMeetingId && estHost && typeof db !== 'undefined') {
+  // En mode en ligne : seul le host envoie les votes des bots a Firebase.
+  // Les autres clients ne doivent PAS compter localement (sinon faux comptage).
+  if (!modeHorsLigne && partieActuelleId) {
+    if (!estHost || !currentMeetingId || typeof db === 'undefined') return;
     var ciblePseudo = joueursReunion[cibleIdx].pseudo;
     var ciblePlayerId = '';
     if (typeof firebasePartyPlayers !== 'undefined') {
@@ -575,6 +586,8 @@ function botVoter(botIdx) {
 }
 
 function verifierTousOntVote() {
+  // En ligne : la conclusion du vote est geree par le host via Firebase
+  if (!modeHorsLigne && partieActuelleId) return;
   var nbJoueursActifs = 0;
   for (var i = 0; i < joueursReunion.length; i++) {
     if (!joueursReunion[i].elimine) nbJoueursActifs++;
@@ -588,6 +601,8 @@ function verifierTousOntVote() {
 
 var voteTermine = false;
 function terminerVote() {
+  // En ligne : le resultat vient du host (concludeVote) -> jamais de comptage local
+  if (!modeHorsLigne && partieActuelleId) return;
   if (voteTermine) return;
   voteTermine = true;
   clearInterval(reunionTimer);

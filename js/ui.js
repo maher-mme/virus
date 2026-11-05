@@ -422,7 +422,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // === DETECTION DE MISE A JOUR ===
-var CURRENT_VERSION = '3.6.37';
+var CURRENT_VERSION = '3.6.38';
 var _updateDismissed = false;
 var _updateForceTimer = null;
 
